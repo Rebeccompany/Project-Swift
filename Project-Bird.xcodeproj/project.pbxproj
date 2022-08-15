@@ -17,6 +17,8 @@
 		BA654F0928A142F500EF72C8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDF28A142F100EF72C8 /* ContentView.swift */; };
 		BA654F0A28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
 		BA654F0B28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
+		BA654F1F28A14C7C00EF72C8 /* App-Feature in Frameworks */ = {isa = PBXBuildFile; productRef = BA654F1E28A14C7C00EF72C8 /* App-Feature */; };
+		BA654F2128A14C8500EF72C8 /* App-Feature in Frameworks */ = {isa = PBXBuildFile; productRef = BA654F2028A14C8500EF72C8 /* App-Feature */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,7 @@
 		BA654EFE28A142F500EF72C8 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA654F0228A142F500EF72C8 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		BA654F0428A142F500EF72C8 /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		BA654F1C28A14BF400EF72C8 /* Bird-Modules */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "Bird-Modules"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA654F1F28A14C7C00EF72C8 /* App-Feature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA654F2128A14C8500EF72C8 /* App-Feature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,11 +91,13 @@
 		BA654ED828A142F100EF72C8 = {
 			isa = PBXGroup;
 			children = (
+				BA654F1C28A14BF400EF72C8 /* Bird-Modules */,
 				BA654EDD28A142F100EF72C8 /* Shared */,
 				BA654EEC28A142F500EF72C8 /* macOS */,
 				BA654EF528A142F500EF72C8 /* Tests iOS */,
 				BA654F0128A142F500EF72C8 /* Tests macOS */,
 				BA654EE628A142F400EF72C8 /* Products */,
+				BA654F1D28A14C7C00EF72C8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -141,6 +148,13 @@
 			path = "Tests macOS";
 			sourceTree = "<group>";
 		};
+		BA654F1D28A14C7C00EF72C8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -151,12 +165,16 @@
 				BA654EE128A142F400EF72C8 /* Sources */,
 				BA654EE228A142F400EF72C8 /* Frameworks */,
 				BA654EE328A142F400EF72C8 /* Resources */,
+				BA654F1A28A143ED00EF72C8 /* Swift Lint */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "Project-Bird (iOS)";
+			packageProductDependencies = (
+				BA654F1E28A14C7C00EF72C8 /* App-Feature */,
+			);
 			productName = "Project-Bird (iOS)";
 			productReference = BA654EE528A142F400EF72C8 /* Project-Bird.app */;
 			productType = "com.apple.product-type.application";
@@ -168,12 +186,16 @@
 				BA654EE728A142F500EF72C8 /* Sources */,
 				BA654EE828A142F500EF72C8 /* Frameworks */,
 				BA654EE928A142F500EF72C8 /* Resources */,
+				BA654F1B28A149F400EF72C8 /* Swift Lint */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "Project-Bird (macOS)";
+			packageProductDependencies = (
+				BA654F2028A14C8500EF72C8 /* App-Feature */,
+			);
 			productName = "Project-Bird (macOS)";
 			productReference = BA654EEB28A142F500EF72C8 /* Project-Bird.app */;
 			productType = "com.apple.product-type.application";
@@ -293,6 +315,45 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BA654F1A28A143ED00EF72C8 /* Swift Lint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Swift Lint";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: Swiftlint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+		BA654F1B28A149F400EF72C8 /* Swift Lint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Swift Lint";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: Swiftlint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BA654EE128A142F400EF72C8 /* Sources */ = {
@@ -701,6 +762,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BA654F1E28A14C7C00EF72C8 /* App-Feature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "App-Feature";
+		};
+		BA654F2028A14C8500EF72C8 /* App-Feature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "App-Feature";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BA654ED928A142F100EF72C8 /* Project object */;
 }

@@ -9,7 +9,8 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "App-Feature",
-            targets: ["App-Feature"])
+            targets: ["App-Feature"]),
+        .library(name: "Woodpecker", targets: ["Woodpecker"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -23,6 +24,8 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "App-FeatureTests",
-            dependencies: ["App-Feature"])
+            dependencies: ["App-Feature"]),
+        .target(name: "Woodpecker"),
+        .testTarget(name: "WoodpeckerTests", dependencies: ["Woodpecker"])
     ]
 )
