@@ -8,33 +8,41 @@
 import XCTest
 @testable import Woodpecker
 
+
+struct testCardInfo {
+    var input: SM2CardInfo
+    var ExpectedOutput: SM2CardInfo
+}
+
 class WoodpeckerTests: XCTestCase {
     
-    var cardInfo: RepetitionAlgorithms.SM2CardInfo = {
-        return .init(userGrade: 0,
-                     streak: 0,
-                     easeFactor: 2.5,
-                     interval: 0)
+    var testsData: [testCardInfo] = {
+        return [
+            .init(input:          SM2CardInfo(userGrade: 0,
+                                              streak: 0,
+                                              easeFactor: 2.5,
+                                              interval: 0),
+                  ExpectedOutput: SM2CardInfo(userGrade: 0,
+                                              streak: 0,
+                                              easeFactor: 1.7,
+                                              interval: 1))
+            
+        
+        ]
     }()
 
     override func tearDownWithError() throws {
-    cardInfo = .init(userGrade: 0,
-                     streak: 0,
-                     easeFactor: 2.5,
-                     interval: 0)
+
     }
     
     func testSM2() {
-        cardInfo = .init(userGrade: 0,
-                         streak: 0,
-                         easeFactor: 2.5,
-                         interval: 0)
         
-        let result = RepetitionAlgorithms.SM2(cardInfo)
-        
-        XCTAssertEqual(result.interval, 1)
-        XCTAssertEqual(result.streak, 0)
-        XCTAssertEqual(result.easeFactor, 1.7)
+        for data in testsData {
+            let testingResult = SM2CardInfo.SM2(data.input)
+            XCTAssertEqual(testingResult.interval, data.ExpectedOutput.interval)
+            XCTAssertEqual(testingResult.streak, data.ExpectedOutput.streak)
+            XCTAssertEqual(testingResult.easeFactor, data.ExpectedOutput.easeFactor)
+        }
     }
 
 }

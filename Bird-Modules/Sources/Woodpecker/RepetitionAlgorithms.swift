@@ -7,15 +7,11 @@
 
 import Foundation
 
-class RepetitionAlgorithms {
-    
-    struct SM2CardInfo {
-        var userGrade: Int
-        var streak: Int
-        var easeFactor: Float
-        var interval: Int
-    }
-    
+struct SM2CardInfo {
+    var userGrade: Int
+    var streak: Int
+    var easeFactor: Float
+    var interval: Int
     
     static func SM2(_ cardInfo: SM2CardInfo) -> SM2CardInfo {
         
@@ -46,7 +42,11 @@ class RepetitionAlgorithms {
         
         return SM2CardInfo(userGrade: userGrade, streak: streak, easeFactor: easeFactor, interval: interval)
     }
-    
 }
+
+
+
+
+
 
 
