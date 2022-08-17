@@ -9,40 +9,77 @@ import XCTest
 @testable import Woodpecker
 
 
-struct testCardInfo {
-    var input: SM2CardInfo
-    var ExpectedOutput: SM2CardInfo
-}
 
 class WoodpeckerTests: XCTestCase {
-    
-    var testsData: [testCardInfo] = {
-        return [
-            .init(input:          SM2CardInfo(userGrade: 0,
-                                              streak: 0,
-                                              easeFactor: 2.5,
-                                              interval: 0),
-                  ExpectedOutput: SM2CardInfo(userGrade: 0,
-                                              streak: 0,
-                                              easeFactor: 1.7,
-                                              interval: 1))
-            
-        
-        ]
-    }()
 
-    override func tearDownWithError() throws {
-
+    //MARK: Stepper tests
+    //They are named with a code B = Box, G = user Grade, the number following the letters indicate their values.
+    func testB0G0() throws {
+        let destiny = try Woodpecker.stepper(step: 0, userGrade: .wrongHard, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.stay)
     }
     
-    func testSM2() {
-        
-        for data in testsData {
-            let testingResult = SM2CardInfo.SM2(data.input)
-            XCTAssertEqual(testingResult.interval, data.ExpectedOutput.interval)
-            XCTAssertEqual(testingResult.streak, data.ExpectedOutput.streak)
-            XCTAssertEqual(testingResult.easeFactor, data.ExpectedOutput.easeFactor)
-        }
+    func testB0G1() throws {
+        let destiny = try Woodpecker.stepper(step: 0, userGrade: .wrong, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.stay)
+    }
+    
+    func testB0G2() throws {
+        let destiny = try Woodpecker.stepper(step: 0, userGrade: .correct, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.foward)
     }
 
+    func testB0G3() throws {
+        let destiny = try Woodpecker.stepper(step: 0, userGrade: .correctEasy, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.graduate)
+    }
+    
+    func testB1G0() throws {
+        let destiny = try Woodpecker.stepper(step: 1, userGrade: .wrongHard, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.back)
+    }
+    
+    func testB1G1() throws {
+        let destiny = try Woodpecker.stepper(step: 1, userGrade: .wrong, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.stay)
+    }
+    
+    func testB1G2() throws {
+        let destiny = try Woodpecker.stepper(step: 1, userGrade: .correct, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.foward)
+    }
+    
+    func testB1G3() throws {
+        let destiny = try Woodpecker.stepper(step: 1, userGrade: .correctEasy, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.graduate)
+    }
+    
+    func testB2G0() throws {
+        let destiny = try Woodpecker.stepper(step: 2, userGrade: .wrongHard, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.back)
+    }
+    
+    func testB2G1() throws {
+        let destiny = try Woodpecker.stepper(step: 2, userGrade: .wrong, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.stay)
+    }
+    
+    func testB2G2() throws {
+        let destiny = try Woodpecker.stepper(step: 2, userGrade: .correct, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.stay)
+    }
+    
+    func testB2G3() throws {
+        let destiny = try Woodpecker.stepper(step: 2, userGrade: .correctEasy, maximumStep: 2)
+        XCTAssertEqual(destiny, CardDestiny.graduate)
+    }
+    
+    func testNegativeSteps() {
+        XCTAssertThrowsError(try Woodpecker.stepper(step: -1, userGrade: .correctEasy, maximumStep: 2))
+    }
+    
+    func testNotEnoughSteps() {
+        XCTAssertThrowsError(try Woodpecker.stepper(step: -1, userGrade: .correctEasy, maximumStep: 2))
+    }
+    
 }

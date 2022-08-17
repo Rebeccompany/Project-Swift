@@ -124,7 +124,7 @@ only_rules:
   - trailing_comma
   - trailing_newline
   - trailing_semicolon
-  - trailing_whitespace
+  
   - unavailable_condition
   - unavailable_function
   - unneeded_break_in_switch
@@ -140,8 +140,6 @@ only_rules:
   - valid_ibinspectable
   - vertical_parameter_alignment
   - vertical_parameter_alignment_on_call
-  - vertical_whitespace_closing_braces
-  - vertical_whitespace_opening_braces
   - void_return
   - xct_specific_matcher
   - xctfail_message
