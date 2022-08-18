@@ -8,7 +8,7 @@
 import Foundation
 
 ///Woodpecker contains the algorithms used for Spaced Repetition
-struct Woodpecker {
+public struct Woodpecker {
     
     /**
      The stepper static method is the algorithm based on the Leitner system used for the learning phase
@@ -20,7 +20,7 @@ struct Woodpecker {
      'WoodpeckerStepperErrors.notEnoughSteps' if maximumStep is lower than 1.
       - Returns: The case that determines the cards destiny.
      */
-    static func stepper(step: Int, userGrade: UserGrade, numberOfSteps: Int) throws -> CardDestiny {
+    public static func stepper(step: Int, userGrade: UserGrade, numberOfSteps: Int) throws -> CardDestiny {
         
         let maximumStep = numberOfSteps - 1
         
@@ -31,47 +31,15 @@ struct Woodpecker {
         }
         
         if step == 0 {
-            
-            switch userGrade {
-            case .wrongHard:
-                return .stay
-            case .wrong:
-                return .stay
-            case .correct:
-                return .foward
-            case .correctEasy:
-                return .graduate
-            }
-            
+            return getCardDestinyForFirstStep(userGrade)
         } else if step >= 1 && step < maximumStep {
-            
-            switch userGrade {
-            case .wrongHard:
-                return .back
-            case .wrong:
-                return .stay
-            case .correct:
-                return .foward
-            case .correctEasy:
-                return .graduate
-            }
-            
+            return getCardDestinyForMiddleSteps(userGrade)
         } else {
-            
-            switch userGrade {
-            case .wrongHard:
-                return .back
-            case .wrong:
-                return .stay
-            case .correct:
-                return .stay
-            case .correctEasy:
-                return .graduate
-            }
+            return getCardDestinyForLastStep(userGrade)
         }
     }
     
-    static func newSM2(_ card: WoodpeckerCardInfo, userGrade: UserGrade) throws -> WoodpeckerCardInfo {
+    static func wpSm2(_ card: WoodpeckerCardInfo, userGrade: UserGrade) throws -> WoodpeckerCardInfo {
         let streak: Int = card.streak
         let easeFactor: Float = card.easeFactor
         let interval: Int = card.interval
@@ -105,7 +73,48 @@ struct Woodpecker {
     }
 }
 
-struct WoodpeckerCardInfo {
+extension Woodpecker {
+    private static func getCardDestinyForFirstStep(_ userGrade: UserGrade) -> CardDestiny {
+        switch userGrade {
+        case .wrongHard:
+            return .stay
+        case .wrong:
+            return .stay
+        case .correct:
+            return .foward
+        case .correctEasy:
+            return .graduate
+        }
+    }
+    
+    private static func getCardDestinyForMiddleSteps(_ userGrade: UserGrade) -> CardDestiny {
+        switch userGrade {
+        case .wrongHard:
+            return .back
+        case .wrong:
+            return .stay
+        case .correct:
+            return .foward
+        case .correctEasy:
+            return .graduate
+        }
+    }
+    
+    private static func getCardDestinyForLastStep(_ userGrade: UserGrade) -> CardDestiny {
+        switch userGrade {
+        case .wrongHard:
+            return .back
+        case .wrong:
+            return .stay
+        case .correct:
+            return .stay
+        case .correctEasy:
+            return .graduate
+        }
+    }
+}
+
+public struct WoodpeckerCardInfo {
     var step: Int
     var isGraduated: Bool
     var easeFactor: Float
@@ -114,55 +123,14 @@ struct WoodpeckerCardInfo {
 }
 
 
-enum CardDestiny {
+public enum CardDestiny {
     case back, stay, foward, graduate
 }
 
-enum UserGrade: Int {
+public enum UserGrade: Int {
     case wrongHard, wrong, correct, correctEasy
 }
 
-enum WoodpeckerStepperErrors: Error {
+public enum WoodpeckerStepperErrors: Error {
     case negativeStep, notEnoughSteps
-}
-
-
-var maximumStep: Int = 2
-
-
-struct SM2CardInfo {
-    var userGrade: Int
-    var streak: Int
-    var easeFactor: Float
-    var interval: Int
-    
-    static func SM2(_ cardInfo: SM2CardInfo) -> SM2CardInfo {
-        
-        let userGrade: Int = cardInfo.userGrade
-        var streak: Int = cardInfo.streak
-        var easeFactor: Float = cardInfo.easeFactor
-        var interval: Int = cardInfo.interval
-        
-        if userGrade >= 3 {
-            if streak == 0 {
-                interval = 1
-            } else if streak == 1 {
-                interval = 6
-            } else {
-                interval = Int(round((Float(interval) * easeFactor)))
-            }
-            streak += 1
-        } else {
-            streak = 0
-            interval = 1
-        }
-        
-        easeFactor += (0.1 - (5 - Float(userGrade)) * (0.08 + (5 - Float(userGrade)) * 0.02))
-        
-        if easeFactor < 1.3 {
-            easeFactor = 1.3
-        }
-        
-        return SM2CardInfo(userGrade: userGrade, streak: streak, easeFactor: easeFactor, interval: interval)
-    }
 }
