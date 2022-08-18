@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BA24AFAD28AEAB8800D85DC3 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = BA24AFAC28AEAB8800D85DC3 /* AppFeature */; };
+		BA24AFAF28AEAB9800D85DC3 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = BA24AFAE28AEAB9800D85DC3 /* AppFeature */; };
 		BA654EF728A142F500EF72C8 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EF628A142F500EF72C8 /* Tests_iOS.swift */; };
 		BA654EF928A142F500EF72C8 /* Tests_iOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EF828A142F500EF72C8 /* Tests_iOSLaunchTests.swift */; };
 		BA654F0328A142F500EF72C8 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654F0228A142F500EF72C8 /* Tests_macOS.swift */; };
@@ -17,8 +19,6 @@
 		BA654F0928A142F500EF72C8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDF28A142F100EF72C8 /* ContentView.swift */; };
 		BA654F0A28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
 		BA654F0B28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
-		BA654F1F28A14C7C00EF72C8 /* App-Feature in Frameworks */ = {isa = PBXBuildFile; productRef = BA654F1E28A14C7C00EF72C8 /* App-Feature */; };
-		BA654F2128A14C8500EF72C8 /* App-Feature in Frameworks */ = {isa = PBXBuildFile; productRef = BA654F2028A14C8500EF72C8 /* App-Feature */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,7 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA654F1F28A14C7C00EF72C8 /* App-Feature in Frameworks */,
+				BA24AFAF28AEAB9800D85DC3 /* AppFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,7 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA654F2128A14C8500EF72C8 /* App-Feature in Frameworks */,
+				BA24AFAD28AEAB8800D85DC3 /* AppFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,7 +173,7 @@
 			);
 			name = "Project-Bird (iOS)";
 			packageProductDependencies = (
-				BA654F1E28A14C7C00EF72C8 /* App-Feature */,
+				BA24AFAE28AEAB9800D85DC3 /* AppFeature */,
 			);
 			productName = "Project-Bird (iOS)";
 			productReference = BA654EE528A142F400EF72C8 /* Project-Bird.app */;
@@ -194,7 +194,7 @@
 			);
 			name = "Project-Bird (macOS)";
 			packageProductDependencies = (
-				BA654F2028A14C8500EF72C8 /* App-Feature */,
+				BA24AFAC28AEAB8800D85DC3 /* AppFeature */,
 			);
 			productName = "Project-Bird (macOS)";
 			productReference = BA654EEB28A142F500EF72C8 /* Project-Bird.app */;
@@ -764,13 +764,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		BA654F1E28A14C7C00EF72C8 /* App-Feature */ = {
+		BA24AFAC28AEAB8800D85DC3 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = "App-Feature";
+			productName = AppFeature;
 		};
-		BA654F2028A14C8500EF72C8 /* App-Feature */ = {
+		BA24AFAE28AEAB9800D85DC3 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = "App-Feature";
+			productName = AppFeature;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
