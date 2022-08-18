@@ -19,3 +19,4 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
+let a = 0
