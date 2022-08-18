@@ -5,27 +5,32 @@ import PackageDescription
 
 let package = Package(
     name: "Bird-Modules",
+    platforms: [.iOS(.v15), .macOS(.v12)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
-            name: "App-Feature",
-            targets: ["App-Feature"]),
-        .library(name: "Woodpecker", targets: ["Woodpecker"])
+            name: "AppFeature",
+            targets: ["AppFeature"]),
+        .library(name: "Woodpecker", targets: ["Woodpecker"]),
+        .library(name: "ImportingFeature", targets: ["ImportingFeature"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/Rebeccompany/Owl.git", from: "1.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "App-Feature",
+            name: "AppFeature",
             dependencies: []),
         .testTarget(
-            name: "App-FeatureTests",
-            dependencies: ["App-Feature"]),
+            name: "AppFeatureTests",
+            dependencies: ["AppFeature"]),
         .target(name: "Woodpecker"),
-        .testTarget(name: "WoodpeckerTests", dependencies: ["Woodpecker"])
+        .testTarget(name: "WoodpeckerTests", dependencies: ["Woodpecker"]),
+        .target(name: "ImportingFeature", dependencies: ["Owl"]),
+        .testTarget(name: "ImportingFeatureTests", dependencies: ["ImportingFeature"])
     ]
 )
