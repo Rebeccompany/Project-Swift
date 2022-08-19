@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Card.swift
 //  
 //
 //  Created by Caroline Taus on 19/08/22.
