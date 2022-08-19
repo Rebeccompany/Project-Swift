@@ -9,8 +9,6 @@ import XCTest
 @testable import Woodpecker
 import Models
 
-
-
 final class StepperTests: XCTestCase {
 
     //They are named with a code B = Box, G = user Grade, the number following the letters indicate their values.

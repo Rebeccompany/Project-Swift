@@ -19,6 +19,8 @@
 		BA654F0928A142F500EF72C8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDF28A142F100EF72C8 /* ContentView.swift */; };
 		BA654F0A28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
 		BA654F0B28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
+		BA654F1F28A14C7C00EF72C8 /* App-Feature in Frameworks */ = {isa = PBXBuildFile; productRef = BA654F1E28A14C7C00EF72C8 /* App-Feature */; };
+		BA654F2128A14C8500EF72C8 /* App-Feature in Frameworks */ = {isa = PBXBuildFile; productRef = BA654F2028A14C8500EF72C8 /* App-Feature */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */

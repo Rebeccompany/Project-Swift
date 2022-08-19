@@ -8,6 +8,7 @@
 import Foundation
 import Models
 
+
 ///Woodpecker contains the algorithms used for Spaced Repetition
 public struct Woodpecker {
     
@@ -88,7 +89,6 @@ public struct Woodpecker {
         
         return result
     }
-    
 }
 
 extension Woodpecker {
