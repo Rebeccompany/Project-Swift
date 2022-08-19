@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Card information used in woodpeckers spaced repetion algorithms
+/// Card information used in woodpeckers spaced repetition algorithms
 public struct WoodpeckerCardInfo: Equatable {
     
     /// indicates the step (box) the card is in the learning stage.
