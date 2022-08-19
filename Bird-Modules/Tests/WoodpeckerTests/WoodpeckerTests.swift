@@ -13,7 +13,6 @@ import Models
 
 final class StepperTests: XCTestCase {
 
-    // MARK: Stepper tests
     //They are named with a code B = Box, G = user Grade, the number following the letters indicate their values.
     func testB0G0() throws {
         let destiny = try Woodpecker.stepper(step: 0, userGrade: .wrongHard, numberOfSteps: 3)
