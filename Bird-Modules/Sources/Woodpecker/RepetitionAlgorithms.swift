@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import Models
+
 
 ///Woodpecker contains the algorithms used for Spaced Repetition
 public struct Woodpecker {
     
     /**
-     The stepper static method is the algorithm based on the Leitner system used for the learning phase
+     The stepper static method is the algorithm based on the Leitner system used for the learning stage
       - Parameters:
           - step: The step where the card currently is. From 0 to maximumStep.
           - userGrade: The grade user gives to the difficulty of the card.
@@ -39,16 +41,27 @@ public struct Woodpecker {
         }
     }
     
+    /**
+     The wpSm2 static method contains the algorithm based on Super Memo 2 algorithm used for scheduling cards in the reviewing stage.
+    - Parameters:
+        - card: The card that is going to be scheduled.
+        - userGrade: The grade user gives to the difficulty of the card.
+    - Throws: 'WoodpeckerSm2Errors.isNotGraduated' if the card is not graduated.
+     'WoodpeckerSm2Errors.stepNot0' if the card has a step different from 0.
+    - Returns: The modified card. It might modify its Interval, isGraduated, streak, and easeFactor.
+     */
     static func wpSm2(_ card: WoodpeckerCardInfo, userGrade: UserGrade) throws -> WoodpeckerCardInfo {
         let streak: Int = card.streak
-        let easeFactor: Float = card.easeFactor
+        let easeFactor: Double = card.easeFactor
         let interval: Int = card.interval
-        let userGradeValue: Float = Float(userGrade.rawValue)
+        let userGradeValue = Double(userGrade.rawValue)
         
         var result = card
         
         if !card.isGraduated {
-            throw NSError()
+            throw WoodpeckerSm2Errors.isNotGraduated
+        } else if card.step != 0 {
+            throw WoodpeckerSm2Errors.stepNot0
         }
         
         if userGradeValue >= 2 {
@@ -57,7 +70,7 @@ public struct Woodpecker {
             } else if streak == 1 {
                 result.interval = 6
             } else {
-                result.interval = Int(round((Float(interval) * easeFactor)))
+                result.interval = Int(round((Double(interval) * easeFactor)))
             }
             result.streak += 1
         } else if userGradeValue == 1 {
@@ -65,10 +78,15 @@ public struct Woodpecker {
             result.interval = 1
         } else {
             result.isGraduated = false
-            result.interval = 1
+            result.interval = 0
             result.streak = 0
         }
-        result.easeFactor = easeFactor + (0.36 * userGradeValue) - (0.02 * pow(userGradeValue, 2)) - 0.8
+        result.easeFactor = easeFactor + calculateEaseFactor(userGrade)
+        
+        if result.easeFactor < 1.3 {
+            result.easeFactor = 1.3
+        }
+        
         return result
     }
 }
@@ -112,25 +130,17 @@ extension Woodpecker {
             return .graduate
         }
     }
-}
-
-public struct WoodpeckerCardInfo {
-    var step: Int
-    var isGraduated: Bool
-    var easeFactor: Float
-    var streak: Int
-    var interval: Int
-}
-
-
-public enum CardDestiny {
-    case back, stay, foward, graduate
-}
-
-public enum UserGrade: Int {
-    case wrongHard, wrong, correct, correctEasy
-}
-
-public enum WoodpeckerStepperErrors: Error {
-    case negativeStep, notEnoughSteps
+    
+    private static func calculateEaseFactor(_ userGrade: UserGrade) -> Double {
+        switch userGrade {
+        case .wrongHard:
+            return -0.8
+        case .wrong:
+            return -0.5
+        case .correct:
+            return 0
+        case .correctEasy:
+            return 0.1
+        }
+    }
 }
