@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  RepetitionAlgorithms.swift
 //  
 //
 //  Created by Marcos Chevis on 15/08/22.

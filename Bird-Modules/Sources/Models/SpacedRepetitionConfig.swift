@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  SpacedRepetitionConfig.swift
 //  
 //
 //  Created by Caroline Taus on 19/08/22.
