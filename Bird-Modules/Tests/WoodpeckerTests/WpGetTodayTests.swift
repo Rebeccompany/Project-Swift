@@ -47,12 +47,16 @@ class WpGetTodayTests: XCTestCase {
         
     }
     
-    
+    // Learning Has Been Presented Cards
     let LHB: [Card] = []
+    // Learning Has Not Been Presented Cards
     let LNHB: [Card] = []
     
+    // Reviewing Today Cards
     let RDT: [Card] = []
+    // Reviewing Yesterday Cards
     let RDY: [Card] = []
+    // Reviewing Later Cards
     let RDL: [Card]
 
 }
