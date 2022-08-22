@@ -18,7 +18,6 @@
 		BA654F0928A142F500EF72C8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDF28A142F100EF72C8 /* ContentView.swift */; };
 		BA654F0A28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
 		BA654F0B28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
-		BA654F2128A14C8500EF72C8 /* App-Feature in Frameworks */ = {isa = PBXBuildFile; productRef = BA654F2028A14C8500EF72C8 /* App-Feature */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,7 +66,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA24AFAD28AEAB8800D85DC3 /* AppFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,7 +192,6 @@
 			);
 			name = "Project-Bird (macOS)";
 			packageProductDependencies = (
-				BA24AFAC28AEAB8800D85DC3 /* AppFeature */,
 			);
 			productName = "Project-Bird (macOS)";
 			productReference = BA654EEB28A142F500EF72C8 /* Project-Bird.app */;
@@ -765,11 +762,6 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		9D1A9FC628AEAB950065DE6E /* AppFeature */ = {
-
-			isa = XCSwiftPackageProductDependency;
-			productName = AppFeature;
-		};
-		BA24AFAE28AEAB9800D85DC3 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
 		};

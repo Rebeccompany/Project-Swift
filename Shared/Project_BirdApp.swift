@@ -12,7 +12,10 @@ import AppFeature
 struct Project_BirdApp: App {
     var body: some Scene {
         WindowGroup {
-            AppView()
+            Text("oi")
+                .onAppear {
+                    Bird_Modules.test()
+                }
         }
     }
 }

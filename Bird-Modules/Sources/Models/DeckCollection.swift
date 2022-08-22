@@ -11,7 +11,7 @@ import Foundation
 public struct DeckCollection {
     public let id: UUID
     /// The name of the collection.
-    public var name: UUID
+    public var name: String
     /// The url of the icon of the collection
     public var iconPath: URL
     /// Logs of dates.
@@ -19,7 +19,7 @@ public struct DeckCollection {
     /// A list of the decks ids that belongs to the collection
     public var decksIds: [UUID]
     
-    internal init(id: UUID, name: UUID, iconPath: URL, datesLogs: DateLogs, decksIds: [UUID]) {
+    internal init(id: UUID, name: String, iconPath: URL, datesLogs: DateLogs, decksIds: [UUID]) {
         self.id = id
         self.name = name
         self.iconPath = iconPath

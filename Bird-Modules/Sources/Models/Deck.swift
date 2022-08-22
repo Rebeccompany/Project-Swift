@@ -15,7 +15,7 @@ public struct Deck {
     /// The icon of a deck, an emoji.
     public var icon: Character
     /// Logs of dates.
-    public var datesLogs: [DateLogs]
+    public var datesLogs: DateLogs
     /// A list of collection ids the deck belongs to.
     public var collectionsIds: [UUID]
     /// A list of flashcard ids the deck contains
@@ -23,7 +23,7 @@ public struct Deck {
     /// Configurantion for Spaced repetition.
     public var spacedRepetitionConfig: [SpacedRepetitionConfig]
     
-    public init(id: UUID, name: String, icon: Character, datesLogs: [DateLogs], collectionsIds: [UUID], cardsIds: [UUID], spacedRepetitionConfig: [SpacedRepetitionConfig]) {
+    public init(id: UUID, name: String, icon: Character, datesLogs: DateLogs, collectionsIds: [UUID], cardsIds: [UUID], spacedRepetitionConfig: [SpacedRepetitionConfig]) {
         self.id = id
         self.name = name
         self.icon = icon
