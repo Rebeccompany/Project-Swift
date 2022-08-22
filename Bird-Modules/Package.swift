@@ -13,7 +13,7 @@ let package = Package(
         .library(
             name: "AppFeature",
             targets: ["AppFeature"]),
-        .library(name: "ImportingFeature", targets: ["ImportingFeature"])
+        .library(name: "ImportingFeature", targets: ["ImportingFeature"]),
         .library(name: "Woodpecker",
                  targets: ["Woodpecker"]),
         .library(name: "Models",
@@ -32,7 +32,7 @@ let package = Package(
             name: "AppFeature",
             dependencies: ["ImportingFeature"]),
         .target(name: "ImportingFeature", dependencies: ["Owl"]),
-        .testTarget(name: "ImportingFeatureTests", dependencies: ["ImportingFeature"])
+        .testTarget(name: "ImportingFeatureTests", dependencies: ["ImportingFeature"]),
         .testTarget(
             name: "AppFeatureTests",
             dependencies: ["AppFeature"]),
