@@ -19,16 +19,14 @@ struct DocumentPicker: UIViewControllerRepresentable {
         return controller
     }
     
-    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {
-        
-    }
+    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context){}
     
     func makeCoordinator() -> DocumentPickerCoordinator {
         DocumentPickerCoordinator(fileContent: $fileContent)
     }
 }
 
-
+#warning("Testing not implemented")
 final class DocumentPickerCoordinator: NSObject, UIDocumentPickerDelegate, UINavigationControllerDelegate {
     @Binding var fileContent: Data
     
@@ -40,7 +38,6 @@ final class DocumentPickerCoordinator: NSObject, UIDocumentPickerDelegate, UINav
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let fileURL = urls.first, let content = try? Data(contentsOf: fileURL, options: .mappedIfSafe)
         else { return }
-        print(String(data: content, encoding: .utf8))
         fileContent = content
     }
 }
@@ -48,29 +45,32 @@ final class DocumentPickerCoordinator: NSObject, UIDocumentPickerDelegate, UINav
 
 public struct DeckFilePicker: View {
     @Binding public var selectedData: [ImportedCardInfo]?
-    @StateObject private var viewModel: CSVPickerViewModel = .init()
+    @ObservedObject private var viewModel: CSVPickerViewModel
     
-    public init(selectedData: Binding<[ImportedCardInfo]?>) {
+    public init(selectedData: Binding<[ImportedCardInfo]?>,
+                viewModel: CSVPickerViewModel = .init()) {
         self._selectedData = selectedData
+        self.viewModel = viewModel
     }
     
     public var body: some View {
         DocumentPicker(fileContent: $viewModel.fileContent)
-            .onReceive(viewModel.convertedFilePublisher) { data in
-                selectedData = data
+            .onReceive(viewModel.$fileContent) { data in
+                selectedData = viewModel.convert(data)
             }
     }
 }
 
-final class CSVPickerViewModel: ObservableObject {
-    @Published var fileContent = Data()
-    private let deckConverter: DeckConverter = .init()
+public final class CSVPickerViewModel: ObservableObject {
+    @Published var fileContent: Data
+    private let deckConverter: DeckConverter
     
-    var convertedFilePublisher: AnyPublisher<[ImportedCardInfo]?, Never> {
-        $fileContent
-            .tryMap(deckConverter.convert)
-            .print()
-            .replaceError(with: nil)
-            .eraseToAnyPublisher()
+    public init() {
+        self.fileContent = Data()
+        self.deckConverter = .init()
+    }
+    
+    func convert(_ data: Data) -> [ImportedCardInfo]? {
+        try? deckConverter.convert(data)
     }
 }

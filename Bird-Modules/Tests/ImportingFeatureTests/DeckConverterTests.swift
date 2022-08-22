@@ -9,23 +9,25 @@
 import XCTest
 
 final class DeckConverterTests: XCTestCase {
-    var sut: DeckConverter! = nil
+    private var sut: DeckConverter! = nil
     
-    var dummyData: Data = """
-    front;back;tags;deck
-    Ausculta dos Batimentos Cardiofetais;"Pinard - 20 semanas&nbsp;<br>Sonar - 10-12 semanas";;Obstetro - Diagnostico de gravidez
-    "Calculo da idade gestacional&nbsp;";"Intervalo de tempo entre a data da ultima menstruacao e a data atual (do parto) em semanas e dias&nbsp;";;Obstetro - Diagnostico de gravidez
-    """.data(using: .utf8)!
-    
-    override func setUp() async throws {
+    override func setUp() {
         sut = DeckConverter()
+        super.setUp()
     }
     
     override func tearDown() {
         sut = nil
+        super.tearDown()
     }
     
     func testDecodeCSV() throws {
-        let deck = try sut.convert(dummyData)
+        try DummyCSVData
+            .dummyData
+            .forEach { data in
+                let result = try sut.convert(data)
+                print(result)
+                XCTAssertFalse(result.isEmpty)
+            }
     }
 }

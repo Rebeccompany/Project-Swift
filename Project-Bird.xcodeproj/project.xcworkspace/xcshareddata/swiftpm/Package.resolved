@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Rebeccompany/Owl.git",
       "state" : {
-        "revision" : "b2952009e42eaaaee726ab888696f96be5aabd0d",
-        "version" : "1.0.1"
+        "revision" : "2ee76e4bd5c263fa40220890eefe03eabd181bd2",
+        "version" : "1.0.2"
       }
     }
   ],
