@@ -67,7 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA654F2128A14C8500EF72C8 /* App-Feature in Frameworks */,
+				BA24AFAD28AEAB8800D85DC3 /* AppFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,7 +194,7 @@
 			);
 			name = "Project-Bird (macOS)";
 			packageProductDependencies = (
-				BA654F2028A14C8500EF72C8 /* App-Feature */,
+				BA24AFAC28AEAB8800D85DC3 /* AppFeature */,
 			);
 			productName = "Project-Bird (macOS)";
 			productReference = BA654EEB28A142F500EF72C8 /* Project-Bird.app */;
@@ -765,12 +765,13 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		9D1A9FC628AEAB950065DE6E /* AppFeature */ = {
+
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
 		};
-		BA654F2028A14C8500EF72C8 /* App-Feature */ = {
+		BA24AFAE28AEAB9800D85DC3 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = "App-Feature";
+			productName = AppFeature;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
