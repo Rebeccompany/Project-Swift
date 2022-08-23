@@ -40,6 +40,8 @@ let package = Package(
                 dependencies: ["Models"]),
         .testTarget(name: "WoodpeckerTests",
                     dependencies: ["Woodpecker", "Models"]),
-        .target(name: "Models")
+        .target(name: "Models"),
+        .testTarget(name: "CardModelTests",
+                   dependencies: ["Models"])
     ]
 )
