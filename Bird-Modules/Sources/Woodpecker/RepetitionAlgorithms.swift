@@ -12,13 +12,23 @@ import Models
 ///Woodpecker contains the algorithms used for Spaced Repetition
 public struct Woodpecker {
     
-    // id, woodkpecker, dueDate. 
-    public static func getTodaysCards(cardsInfo: [SchedulerCardInfo], config: SpacedRepetitionConfig ,currentDate: Date = Date()) throws -> (todayCards: [UUID], toModify: [UUID]) {
+    /**
+     The wpScheduler static method is responsible for getting the cards to be displayed today, and the cards that have to have their dueDates modified.
+     - Parameters:
+     - cardsInfo: The information needed from the cards.
+     - config: Spaced repetition configuration.
+     - currentDate: Defaults to today's date.
+     - Throws: 'WoodpeckerStepperErrors.maxReviewingNotGreaterThan0' if the number of maxReviewingCards in config is not greater than 0.
+     'WoodpeckerStepperErrors.maxLearningNotGreaterThan0' if the number of maxLearningCards in config is not greater than 0.
+     'WoodpeckerSchedulerErrors.timezoneError' if a timezone error occurs.
+     - Returns: A tuple containing an array of the UUIDs of the cards to be displayed today, and an array of the UUIDs of the cards to be modified.
+     */
+    public static func wpScheduler(cardsInfo: [SchedulerCardInfo], config: SpacedRepetitionConfig ,currentDate: Date = Date()) throws -> (todayCards: [UUID], toModify: [UUID]) {
         
-        if config.maxReviewingCards == 0 {
-            throw NSError()
-        } else if config.maxReviewingCards == 0 {
-            throw NSError()
+        if config.maxReviewingCards <= 0 {
+            throw WoodpeckerSchedulerErrors.maxReviewingNotGreaterThan0
+        } else if config.maxLearningCards <= 0 {
+            throw WoodpeckerSchedulerErrors.maxLearningNotGreaterThan0
         }
         
         var learningCards: [SchedulerCardInfo] = cardsInfo
@@ -36,7 +46,7 @@ public struct Woodpecker {
         
         var cal = Calendar(identifier: .gregorian)
         guard let timezone = TimeZone(identifier: "UTC") else {
-            throw NSError()
+            throw WoodpeckerSchedulerErrors.timezoneError
         }
         cal.timeZone = timezone
         
@@ -56,7 +66,7 @@ public struct Woodpecker {
         
         let toModify: [SchedulerCardInfo]
         if reviewingDueTodayCards.count > config.maxReviewingCards {
-            toModify = Array(reviewingDueTodayCards[config.maxReviewingCards...reviewingDueTodayCards.count])
+            toModify = Array(reviewingDueTodayCards[config.maxReviewingCards...reviewingDueTodayCards.count-1])
         } else {
             toModify = []
         }
