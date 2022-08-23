@@ -13,7 +13,7 @@ import Models
 public struct Woodpecker {
     
     // id, woodkpecker, dueDate. 
-    public static func getTodaysCards(cards: [Card], config: SpacedRepetitionConfig ,currentDate: Date = Date()) throws -> (todayCards: [Card], toModify: [Card]) {
+    public static func getTodaysCards(cardsInfo: [SchedulerCardInfo], config: SpacedRepetitionConfig ,currentDate: Date = Date()) throws -> (todayCards: [UUID], toModify: [UUID]) {
         
         if config.maxReviewingCards == 0 {
             throw NSError()
@@ -21,7 +21,7 @@ public struct Woodpecker {
             throw NSError()
         }
         
-        var learningCards: [Card] = cards
+        var learningCards: [SchedulerCardInfo] = cardsInfo
             .filter({ !$0.woodpeckerCardInfo.isGraduated })
             .shuffled()
         
@@ -40,7 +40,7 @@ public struct Woodpecker {
         }
         cal.timeZone = timezone
         
-        let reviewingDueTodayCards: [Card] = cards
+        let reviewingDueTodayCards: [SchedulerCardInfo] = cardsInfo
             .filter { card in
                 guard let dueDate = card.dueDate else {
                     return false
@@ -54,12 +54,17 @@ public struct Woodpecker {
         let todayReviewingCards = Array(reviewingDueTodayCards
             .prefix(config.maxReviewingCards))
         
-        let toModify = Array(reviewingDueTodayCards[config.maxReviewingCards...reviewingDueTodayCards.count])
+        let toModify: [SchedulerCardInfo]
+        if reviewingDueTodayCards.count > config.maxReviewingCards {
+            toModify = Array(reviewingDueTodayCards[config.maxReviewingCards...reviewingDueTodayCards.count])
+        } else {
+            toModify = []
+        }
         
         let todayCards = (todayReviewingCards + learningCards)
             .shuffled()
         
-        return (todayCards, toModify)
+        return (todayCards.map({ $0.cardId }), toModify.map({ $0.cardId }))
         
     }
     

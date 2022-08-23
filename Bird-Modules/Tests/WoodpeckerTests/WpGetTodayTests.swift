@@ -10,53 +10,34 @@ import XCTest
 import Models
 
 class WpGetTodayTests: XCTestCase {
-    let today: Date = Date(timeIntervalSince1970: 0)
     
-    // Learning stage with 40 cards never been presented and 0 that have been presented
-    func testLearning40N0HB() {
-        let cards = [Card(id: UUID(),
-                          front: "",
-                          back: "",
-                          datesLogs: DateLogs(lastAccess: Date(),
-                                              lastEdit: Date(),
-                                              createdAt: Date()),
-                          deckID: UUID(),
-                          woodpeckerCardInfo: WoodpeckerCardInfo(step: 0,
-                                                                 isGraduated: false,
-                                                                 easeFactor: 2.5,
-                                                                 streak: 0,
-                                                                 interval: 0,
-                                                                 hasBeenPresented: false),
-                          history: []),
-                     Card(id: UUID(),
-                          front: "",
-                          back: "",
-                          datesLogs: DateLogs(lastAccess: Date(),
-                                              lastEdit: Date(),
-                                              createdAt: Date()),
-                          deckID: UUID(),
-                          woodpeckerCardInfo: WoodpeckerCardInfo(step: 0,
-                                                                 isGraduated: false,
-                                                                 easeFactor: 2.5, streak: 0,
-                                                                 interval: 0,
-                                                                 hasBeenPresented: false),
-                          history: []),
-                     
-        ]
-        let resultCards = try! Woodpecker.getTodaysCards(cards: [], config: SpacedRepetitionConfig(maxLearningCards: 4, maxReviewingCards: 4), currentDate: today)
+    // Learning stage with 4 cards never been presented and 0 that have been presented
+    func testLearning4N0HB() {
+        let result = try! Woodpecker.getTodaysCards(cardsInfo: SchedulerInfoDummy.LNHB,
+                                  config: SpacedRepetitionConfig(maxLearningCards: 4,
+                                                                 maxReviewingCards: 4),
+                                       currentDate: SchedulerInfoDummy.today)
+        
+        
+        XCTAssertEqual(result.todayCards.sorted(by: sortUUID), SchedulerInfoDummy.LNHB.map({ $0.cardId }).sorted(by: sortUUID))
+    }
+    
+    func testLearning2N2HB() {
         
     }
     
-    // Learning Has Been Presented Cards
-    let LHB: [Card] = []
-    // Learning Has Not Been Presented Cards
-    let LNHB: [Card] = []
+    func testLearning
     
-    // Reviewing Today Cards
-    let RDT: [Card] = []
-    // Reviewing Yesterday Cards
-    let RDY: [Card] = []
-    // Reviewing Later Cards
-    let RDL: [Card]
-
+    
+    
+    
+    
+    
+    
+    
+    private func sortUUID(a: UUID, b: UUID) -> Bool {
+        a.uuidString < b.uuidString
+    }
+    
+    
 }
