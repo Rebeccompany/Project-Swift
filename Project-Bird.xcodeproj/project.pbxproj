@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BA24AFAD28AEAB8800D85DC3 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = BA24AFAC28AEAB8800D85DC3 /* AppFeature */; };
-		BA24AFAF28AEAB9800D85DC3 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = BA24AFAE28AEAB9800D85DC3 /* AppFeature */; };
+		9D1A9FC728AEAB950065DE6E /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 9D1A9FC628AEAB950065DE6E /* AppFeature */; };
 		BA654EF728A142F500EF72C8 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EF628A142F500EF72C8 /* Tests_iOS.swift */; };
 		BA654EF928A142F500EF72C8 /* Tests_iOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EF828A142F500EF72C8 /* Tests_iOSLaunchTests.swift */; };
 		BA654F0328A142F500EF72C8 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654F0228A142F500EF72C8 /* Tests_macOS.swift */; };
@@ -19,7 +18,6 @@
 		BA654F0928A142F500EF72C8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDF28A142F100EF72C8 /* ContentView.swift */; };
 		BA654F0A28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
 		BA654F0B28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
-		BA654F1F28A14C7C00EF72C8 /* App-Feature in Frameworks */ = {isa = PBXBuildFile; productRef = BA654F1E28A14C7C00EF72C8 /* App-Feature */; };
 		BA654F2128A14C8500EF72C8 /* App-Feature in Frameworks */ = {isa = PBXBuildFile; productRef = BA654F2028A14C8500EF72C8 /* App-Feature */; };
 /* End PBXBuildFile section */
 
@@ -61,7 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA24AFAF28AEAB9800D85DC3 /* AppFeature in Frameworks */,
+				9D1A9FC728AEAB950065DE6E /* AppFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -175,7 +173,7 @@
 			);
 			name = "Project-Bird (iOS)";
 			packageProductDependencies = (
-				BA24AFAE28AEAB9800D85DC3 /* AppFeature */,
+				9D1A9FC628AEAB950065DE6E /* AppFeature */,
 			);
 			productName = "Project-Bird (iOS)";
 			productReference = BA654EE528A142F400EF72C8 /* Project-Bird.app */;
@@ -526,7 +524,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QRB568C47A;
+				DEVELOPMENT_TEAM = WK7599VNDW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -556,7 +554,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QRB568C47A;
+				DEVELOPMENT_TEAM = WK7599VNDW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -766,7 +764,8 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		BA24AFAC28AEAB8800D85DC3 /* AppFeature */ = {
+		9D1A9FC628AEAB950065DE6E /* AppFeature */ = {
+
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
 		};

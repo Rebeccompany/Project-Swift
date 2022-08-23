@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import AppFeature
 
 @main
 struct Project_BirdApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppView()
         }
     }
 }
