@@ -21,9 +21,9 @@ public struct Deck {
     /// A list of flashcard ids the deck contains
     public var cardsIds: [UUID]
     /// Configurantion for Spaced repetition.
-    public var spacedRepetitionConfig: [SpacedRepetitionConfig]
+    public var spacedRepetitionConfig: SpacedRepetitionConfig
     
-    public init(id: UUID, name: String, icon: Character, datesLogs: DateLogs, collectionsIds: [UUID], cardsIds: [UUID], spacedRepetitionConfig: [SpacedRepetitionConfig]) {
+    public init(id: UUID, name: String, icon: Character, datesLogs: DateLogs, collectionsIds: [UUID], cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig) {
         self.id = id
         self.name = name
         self.icon = icon
