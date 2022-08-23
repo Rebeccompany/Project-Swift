@@ -13,17 +13,18 @@ public struct DeckCollection {
     /// The name of the collection.
     public var name: String
     /// The url of the icon of the collection
-    public var iconPath: URL
+    public var iconPath: String
     /// Logs of dates.
     public var datesLogs: DateLogs
     /// A list of the decks ids that belongs to the collection
     public var decksIds: [UUID]
     
-    internal init(id: UUID, name: String, iconPath: URL, datesLogs: DateLogs, decksIds: [UUID]) {
+    public init(id: UUID, name: String, iconPath: String, datesLogs: DateLogs, decksIds: [UUID]) {
         self.id = id
         self.name = name
         self.iconPath = iconPath
         self.datesLogs = datesLogs
         self.decksIds = decksIds
+        #warning("corrigir modelo que não é uma lista!")
     }
 }
