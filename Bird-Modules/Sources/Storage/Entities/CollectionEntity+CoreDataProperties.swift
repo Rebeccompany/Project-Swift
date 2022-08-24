@@ -8,8 +8,6 @@
 
 import Foundation
 import CoreData
-import Storage
-
 extension CollectionEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CollectionEntity> {

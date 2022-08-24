@@ -8,7 +8,7 @@
 import Foundation
 
 /// Log of the dates of subjects.
-public struct DateLogs {
+public struct DateLogs: Equatable {
     /// Date of the last time a subject was accessed.
     public var lastAccess: Date
     /// Date of the last time a subject was edited.

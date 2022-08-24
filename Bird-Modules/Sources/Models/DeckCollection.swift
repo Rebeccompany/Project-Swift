@@ -25,6 +25,5 @@ public struct DeckCollection {
         self.iconPath = iconPath
         self.datesLogs = datesLogs
         self.decksIds = decksIds
-        #warning("corrigir modelo que não é uma lista!")
     }
 }

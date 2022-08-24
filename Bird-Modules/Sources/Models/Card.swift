@@ -8,7 +8,7 @@
 import Foundation
 
 /// A flashcard.
-public struct Card {
+public struct Card: Equatable {
     public let id: UUID
     /// Information displayed on the front of the card.
     public var front: AttributedString
