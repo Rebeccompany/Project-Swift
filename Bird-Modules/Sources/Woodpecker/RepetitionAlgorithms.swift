@@ -21,9 +21,9 @@ public struct Woodpecker {
      - Throws: 'WoodpeckerStepperErrors.maxReviewingNotGreaterThan0' if the number of maxReviewingCards in config is not greater than 0.
      'WoodpeckerStepperErrors.maxLearningNotGreaterThan0' if the number of maxLearningCards in config is not greater than 0.
      'WoodpeckerSchedulerErrors.timezoneError' if a timezone error occurs.
-     - Returns: A tuple containing an array of the UUIDs of the cards to be displayed today, and an array of the UUIDs of the cards to be modified.
+     - Returns: A tuple containing an array of the UUIDs of the Reviewing cards to be displayed today, an array of the UUIDs of the Learning cards to be displayed today, and an array of the UUIDs of the cards to be modified.
      */
-    public static func wpScheduler(cardsInfo: [SchedulerCardInfo], config: SpacedRepetitionConfig ,currentDate: Date = Date()) throws -> (todayCards: [UUID], toModify: [UUID]) {
+    public static func wpScheduler(cardsInfo: [SchedulerCardInfo], config: SpacedRepetitionConfig ,currentDate: Date = Date()) throws -> (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) {
         
         if config.maxReviewingCards <= 0 {
             throw WoodpeckerSchedulerErrors.maxReviewingNotGreaterThan0
@@ -31,17 +31,17 @@ public struct Woodpecker {
             throw WoodpeckerSchedulerErrors.maxLearningNotGreaterThan0
         }
         
-        var learningCards: [SchedulerCardInfo] = cardsInfo
+        var todayLearningCards: [SchedulerCardInfo] = cardsInfo
             .filter({ !$0.woodpeckerCardInfo.isGraduated })
             .shuffled()
         
-        let learningHasBeenPresented = learningCards
+        let learningHasBeenPresented = todayLearningCards
             .filter({ $0.woodpeckerCardInfo.hasBeenPresented })
         
-        let learningHasntBeenPresented = learningCards
+        let learningHasntBeenPresented = todayLearningCards
             .filter({ !$0.woodpeckerCardInfo.hasBeenPresented })
         
-        learningCards = Array((learningHasBeenPresented + learningHasntBeenPresented)
+        todayLearningCards = Array((learningHasBeenPresented + learningHasntBeenPresented)
             .prefix(config.maxLearningCards))
         
         var cal = Calendar(identifier: .gregorian)
@@ -71,10 +71,8 @@ public struct Woodpecker {
             toModify = []
         }
         
-        let todayCards = (todayReviewingCards + learningCards)
-            .shuffled()
         
-        return (todayCards.map({ $0.cardId }), toModify.map({ $0.cardId }))
+        return (todayReviewingCards.map({ $0.cardId }), todayLearningCards.map({ $0.cardId }), toModify.map({ $0.cardId }))
         
     }
     

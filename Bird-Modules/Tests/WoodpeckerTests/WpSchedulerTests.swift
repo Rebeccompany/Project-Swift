@@ -20,7 +20,8 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayCards.sorted(by: sortUUID), SchedulerInfoDummy.LNHB.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), SchedulerInfoDummy.LNHB.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertTrue(result.todayReviewingCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
@@ -33,7 +34,7 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
@@ -46,7 +47,8 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertTrue(result.todayReviewingCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
@@ -59,7 +61,8 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertTrue(result.todayReviewingCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
@@ -72,7 +75,8 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertTrue(result.todayReviewingCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
@@ -85,7 +89,8 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayCards.sorted(by: sortUUID), SchedulerInfoDummy.LHB.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), SchedulerInfoDummy.LHB.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertTrue(result.todayReviewingCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
@@ -98,15 +103,16 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertTrue(result.todayCards.contains(where: { $0 == SchedulerInfoDummy.LHB.prefix(2).map({ $0.cardId })[0] }))
-        XCTAssertTrue(result.todayCards.contains(where: { $0 == SchedulerInfoDummy.LHB.prefix(2).map({ $0.cardId })[1] }))
+        XCTAssertTrue(result.todayLearningCards.contains(where: { $0 == SchedulerInfoDummy.LHB.prefix(2).map({ $0.cardId })[0] }))
+        XCTAssertTrue(result.todayLearningCards.contains(where: { $0 == SchedulerInfoDummy.LHB.prefix(2).map({ $0.cardId })[1] }))
         var count = 0
-        for r in result.todayCards {
+        for r in result.todayLearningCards {
             if SchedulerInfoDummy.LNHB.map({ $0.cardId }).contains(where: { $0 == r }) {
                 count += 1
             }
         }
         XCTAssertEqual(count, 2)
+        XCTAssertTrue(result.todayReviewingCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
@@ -114,7 +120,7 @@ class WpSchedulerTests: XCTestCase {
     // MARK: Reviewing Tests
     // P = past; T = today; F = future
     
-    func test0P0T1F() {
+    func testReviewing0P0T1F() {
         let pastCards: [SchedulerCardInfo] = []
         let todayCards: [SchedulerCardInfo] = []
         let futureCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(1))
@@ -125,11 +131,12 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertTrue(result.todayCards.isEmpty)
+        XCTAssertTrue(result.todayReviewingCards.isEmpty)
+        XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
-    func test0P0T0F() {
+    func testReviewing0P0T0F() {
         let pastCards: [SchedulerCardInfo] = []
         let todayCards: [SchedulerCardInfo] = []
         let futureCards: [SchedulerCardInfo] = []
@@ -140,11 +147,12 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertTrue(result.todayCards.isEmpty)
+        XCTAssertTrue(result.todayReviewingCards.isEmpty)
+        XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
-    func test0P1T1F() {
+    func testReviewing0P1T1F() {
         let pastCards: [SchedulerCardInfo] = []
         let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
         let futureCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(1))
@@ -155,11 +163,12 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertEqual(todayCards.map({$0.cardId}), result.todayCards)
+        XCTAssertEqual(todayCards.map({$0.cardId}), result.todayReviewingCards)
+        XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
-    func test0P1T0F() {
+    func testReviewing0P1T0F() {
         let pastCards: [SchedulerCardInfo] = []
         let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
         let futureCards: [SchedulerCardInfo] = []
@@ -170,11 +179,12 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertEqual(todayCards.map({$0.cardId}), result.todayCards)
+        XCTAssertEqual(todayCards.map({$0.cardId}), result.todayReviewingCards)
+        XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
-    func test1P0T0F() {
+    func testReviewing1P0T0F() {
         let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
         let todayCards: [SchedulerCardInfo] = []
         let futureCards: [SchedulerCardInfo] = []
@@ -185,11 +195,12 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertEqual(pastCards.map({$0.cardId}), result.todayCards)
+        XCTAssertEqual(pastCards.map({$0.cardId}), result.todayReviewingCards)
+        XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
-    func test1P1T0F() {
+    func testReviewing1P1T0F() {
         let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
         let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
         let futureCards: [SchedulerCardInfo] = []
@@ -200,11 +211,12 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertEqual(cardsInfos.map({$0.cardId}).sorted(by: sortUUID), result.todayCards.sorted(by: sortUUID))
+        XCTAssertEqual(cardsInfos.map({$0.cardId}).sorted(by: sortUUID), result.todayReviewingCards.sorted(by: sortUUID))
+        XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
-    func test1P0T1F() {
+    func testReviewing1P0T1F() {
         let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
         let todayCards: [SchedulerCardInfo] = []
         let futureCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(1))
@@ -215,11 +227,12 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertEqual(pastCards.map({$0.cardId}), result.todayCards)
+        XCTAssertEqual(pastCards.map({$0.cardId}), result.todayReviewingCards)
+        XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
-    func test2P1T0F() {
+    func testReviewing2P1T0F() {
         let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(2))
         let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
         let futureCards: [SchedulerCardInfo] = []
@@ -231,7 +244,7 @@ class WpSchedulerTests: XCTestCase {
                                                  currentDate: SchedulerInfoDummy.today)
         
         var count = 0
-        for r in result.todayCards {
+        for r in result.todayReviewingCards {
             if cardsInfos.map({ $0.cardId }).contains(where: { $0 == r }) {
                 count += 1
             }
@@ -244,9 +257,10 @@ class WpSchedulerTests: XCTestCase {
             }
         }
         XCTAssertEqual(countModify, 1)
+        XCTAssertTrue(result.todayLearningCards.isEmpty)
     }
     
-    func test1P2T0F() {
+    func testReviewing1P2T0F() {
         let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
         let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(2))
         let futureCards: [SchedulerCardInfo] = []
@@ -258,7 +272,7 @@ class WpSchedulerTests: XCTestCase {
                                                  currentDate: SchedulerInfoDummy.today)
         
         var count = 0
-        for r in result.todayCards {
+        for r in result.todayReviewingCards {
             if cardsInfos.map({ $0.cardId }).contains(where: { $0 == r }) {
                 count += 1
             }
@@ -273,9 +287,10 @@ class WpSchedulerTests: XCTestCase {
             }
         }
         XCTAssertEqual(countModify, 1)
+        XCTAssertTrue(result.todayLearningCards.isEmpty)
     }
     
-    func test2P2T2F() {
+    func testReviewing2P2T2F() {
         let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(2))
         let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(2))
         let futureCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(2))
@@ -287,7 +302,7 @@ class WpSchedulerTests: XCTestCase {
                                                  currentDate: SchedulerInfoDummy.today)
         
         var countToday = 0
-        for r in result.todayCards {
+        for r in result.todayReviewingCards {
             if pastAndToday.map({ $0.cardId }).contains(where: { $0 == r }) {
                 countToday += 1
             }
@@ -303,7 +318,7 @@ class WpSchedulerTests: XCTestCase {
         XCTAssertEqual(countModify, 2)
 
         var hasRepeated: Bool = false
-        for x in result.todayCards {
+        for x in result.todayReviewingCards {
             for y in result.toModify {
                 if x == y {
                     hasRepeated = true
@@ -312,6 +327,7 @@ class WpSchedulerTests: XCTestCase {
         }
         
         XCTAssertTrue(!hasRepeated)
+        XCTAssertTrue(result.todayLearningCards.isEmpty)
     }
     
     // MARK: Error tests
@@ -340,17 +356,9 @@ class WpSchedulerTests: XCTestCase {
         
         
     }
-   
-    
-    
-    
-    
-    
-    
     
     private func sortUUID(a: UUID, b: UUID) -> Bool {
         a.uuidString < b.uuidString
     }
-    
     
 }
