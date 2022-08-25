@@ -15,7 +15,7 @@ public struct Woodpecker {
     
         
     /**
-     The wpScheduler static method is responsible for getting the cards to be displayed today, and the cards that have to have their dueDates modified.
+     The scheduler static method is responsible for getting the cards to be displayed today, and the cards that have to have their dueDates modified.
      - Parameters:
      - cardsInfo: The information needed from the cards.
      - config: Spaced repetition configuration.
@@ -25,7 +25,7 @@ public struct Woodpecker {
      'WoodpeckerSchedulerErrors.timezoneError' if a timezone error occurs.
      - Returns: A tuple containing an array of the UUIDs of the Reviewing cards to be displayed today, an array of the UUIDs of the Learning cards to be displayed today, and an array of the UUIDs of the cards to be modified.
      */
-    public static func wpScheduler(cardsInfo: [SchedulerCardInfo], config: SpacedRepetitionConfig ,currentDate: Date = Date()) throws -> (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) {
+    public static func scheduler(cardsInfo: [OrganizerCardInfo], config: SpacedRepetitionConfig ,currentDate: Date = Date()) throws -> (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) {
         
         if config.maxReviewingCards <= 0 {
             throw WoodpeckerSchedulerErrors.maxReviewingNotGreaterThan0
@@ -33,7 +33,7 @@ public struct Woodpecker {
             throw WoodpeckerSchedulerErrors.maxLearningNotGreaterThan0
         }
         
-        var todayLearningCards: [SchedulerCardInfo] = cardsInfo
+        var todayLearningCards: [OrganizerCardInfo] = cardsInfo
             .filter({ !$0.woodpeckerCardInfo.isGraduated })
             .shuffled()
         
@@ -52,7 +52,7 @@ public struct Woodpecker {
         }
         cal.timeZone = timezone
         
-        let reviewingDueTodayCards: [SchedulerCardInfo] = cardsInfo
+        let reviewingDueTodayCards: [OrganizerCardInfo] = cardsInfo
             .filter { card in
                 guard let dueDate = card.dueDate else {
                     return false
@@ -66,7 +66,7 @@ public struct Woodpecker {
         let todayReviewingCards = Array(reviewingDueTodayCards
             .prefix(config.maxReviewingCards))
         
-        let toModify: [SchedulerCardInfo]
+        let toModify: [OrganizerCardInfo]
         if reviewingDueTodayCards.count > config.maxReviewingCards {
             toModify = Array(reviewingDueTodayCards[config.maxReviewingCards...reviewingDueTodayCards.count-1])
         } else {
@@ -74,7 +74,7 @@ public struct Woodpecker {
         }
         
         
-        return (todayReviewingCards.map({ $0.cardId }), todayLearningCards.map({ $0.cardId }), toModify.map({ $0.cardId }))
+        return (todayReviewingCards.map({ $0.id }), todayLearningCards.map({ $0.id }), toModify.map({ $0.id }))
     }
     
     /**
@@ -174,14 +174,14 @@ extension Woodpecker {
     }
     
     // Organizes the Learning Cards of a session by step and userGrade.
-    private static func organizeLearningSession(cards: [SortingLearningCardsStruct]) -> [UUID] {
+    private static func organizeLearningSession(cards: [OrganizerCardInfo]) throws -> [UUID] {
         var cards = cards.sorted(by: sortCardByStep)
-        var auxMatrix: [[SortingLearningCardsStruct]] = []
-        var auxList: [SortingLearningCardsStruct] = []
+        var auxMatrix: [[OrganizerCardInfo]] = []
+        var auxList: [OrganizerCardInfo] = []
         var lastStep: Int = 0
         
         for card in cards {
-            if lastStep == card.step {
+            if lastStep == card.woodpeckerCardInfo.step {
                 auxList.append(card)
             }
             else {
@@ -193,20 +193,23 @@ extension Woodpecker {
         
         cards = []
         for list in auxMatrix {
-            cards += list.sorted(by: sortCardByUserGrade)
+            cards += try list.sorted(by: sortCardByUserGrade)
         }
         
         return cards.map({$0.id})
     }
     
     // Sorts cards by step.
-    private static func sortCardByStep(card0: SortingLearningCardsStruct, card1: SortingLearningCardsStruct) -> Bool {
-        return card0.step < card1.step
+    private static func sortCardByStep(card0: OrganizerCardInfo, card1: OrganizerCardInfo) -> Bool {
+        return card0.woodpeckerCardInfo.step < card1.woodpeckerCardInfo.step
     }
     
     // Sorts cards by user grade.
-    private static func sortCardByUserGrade(card0: SortingLearningCardsStruct, card1: SortingLearningCardsStruct) -> Bool {
-        return card0.lastUserGrade.rawValue < card1.lastUserGrade.rawValue
+    private static func sortCardByUserGrade(card0: OrganizerCardInfo, card1: OrganizerCardInfo) throws -> Bool {
+        guard let lastUserGrade0 = card0.lastUserGrade?.rawValue, let lastUserGrade1 = card1.lastUserGrade?.rawValue else {
+            throw WoodpeckerSortErrors.lastUserGradeIsNil
+        }
+        return lastUserGrade0 < lastUserGrade1
     }
     
     // Organizes the Reviewing Cards of a session by shuffling.

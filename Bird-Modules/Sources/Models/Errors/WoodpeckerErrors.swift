@@ -26,3 +26,7 @@ public enum WoodpeckerSchedulerErrors: Error {
 public enum WoodpeckerOrganizerErrors: Error {
     case numberOfLearningAndReviewingCardsEqualTo0, numberOfReviewingCardsLessThan0, numberOfLearningCardsLessThan0
 }
+
+public enum WoodpeckerSortErrors: Error {
+    case lastUserGradeIsNil
+}
