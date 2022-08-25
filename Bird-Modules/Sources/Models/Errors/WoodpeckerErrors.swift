@@ -17,6 +17,12 @@ public enum WoodpeckerSm2Errors: Error {
     case isNotGraduated, stepNot0
 }
 
+/// Woodpecker scheduler Errors
 public enum WoodpeckerSchedulerErrors: Error {
     case maxLearningNotGreaterThan0, maxReviewingNotGreaterThan0, timezoneError
+}
+
+/// Woodpecker organizer Errors
+public enum WoodpeckerOrganizerErrors: Error {
+    case numberOfLearningAndReviewingCardsEqualTo0, numberOfReviewingCardsLessThan0, numberOfLearningCardsLessThan0
 }

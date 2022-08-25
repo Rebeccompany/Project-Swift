@@ -12,6 +12,8 @@ import Models
 ///Woodpecker contains the algorithms used for Spaced Repetition
 public struct Woodpecker {
     
+    
+        
     /**
      The wpScheduler static method is responsible for getting the cards to be displayed today, and the cards that have to have their dueDates modified.
      - Parameters:
@@ -73,9 +75,7 @@ public struct Woodpecker {
         
         
         return (todayReviewingCards.map({ $0.cardId }), todayLearningCards.map({ $0.cardId }), toModify.map({ $0.cardId }))
-        
     }
-    
     
     /**
      The stepper static method is the algorithm based on the Leitner system used for the learning stage
@@ -156,6 +156,67 @@ public struct Woodpecker {
     }
 }
 
+// MARK: PrepareStudySession Helpers
+extension Woodpecker {
+    // Decides if the card that is displayed next is a Learning card or a Reviewing card.
+    private static func shouldGetLearningCard(numberOfLearningCards: Int, numberOfReviewingCards: Int) throws -> Bool {
+        if numberOfLearningCards == 0 && numberOfReviewingCards == 0 {
+            throw WoodpeckerOrganizerErrors.numberOfLearningAndReviewingCardsEqualTo0
+        }
+        else if numberOfLearningCards < 0 {
+            throw WoodpeckerOrganizerErrors.numberOfLearningCardsLessThan0
+        }
+        else if numberOfReviewingCards < 0 {
+            throw WoodpeckerOrganizerErrors.numberOfReviewingCardsLessThan0
+        }
+        
+        return Int.random(in: -numberOfLearningCards...numberOfReviewingCards-1) < 0
+    }
+    
+    // Organizes the Learning Cards of a session by step and userGrade.
+    private static func organizeLearningSession(cards: [SortingLearningCardsStruct]) -> [UUID] {
+        var cards = cards.sorted(by: sortCardByStep)
+        var auxMatrix: [[SortingLearningCardsStruct]] = []
+        var auxList: [SortingLearningCardsStruct] = []
+        var lastStep: Int = 0
+        
+        for card in cards {
+            if lastStep == card.step {
+                auxList.append(card)
+            }
+            else {
+                auxMatrix.append(auxList)
+                auxList = [card]
+                lastStep += 1
+            }
+        }
+        
+        cards = []
+        for list in auxMatrix {
+            cards += list.sorted(by: sortCardByUserGrade)
+        }
+        
+        return cards.map({$0.id})
+    }
+    
+    // Sorts cards by step.
+    private static func sortCardByStep(card0: SortingLearningCardsStruct, card1: SortingLearningCardsStruct) -> Bool {
+        return card0.step < card1.step
+    }
+    
+    // Sorts cards by user grade.
+    private static func sortCardByUserGrade(card0: SortingLearningCardsStruct, card1: SortingLearningCardsStruct) -> Bool {
+        return card0.lastUserGrade.rawValue < card1.lastUserGrade.rawValue
+    }
+    
+    // Organizes the Reviewing Cards of a session by shuffling.
+    private static func organizeReviewingSession(reviewingCards: [UUID]) -> [UUID] {
+        return reviewingCards.shuffled()
+    }
+
+}
+
+// MARK: Stepper Helpers
 extension Woodpecker {
     private static func getCardDestinyForFirstStep(_ userGrade: UserGrade) -> CardDestiny {
         switch userGrade {
@@ -195,7 +256,10 @@ extension Woodpecker {
             return .graduate
         }
     }
-    
+}
+
+// MARK: NewSM Helpers
+extension Woodpecker {
     private static func calculateEaseFactor(_ userGrade: UserGrade) -> Double {
         switch userGrade {
         case .wrongHard:
