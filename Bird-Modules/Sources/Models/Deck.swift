@@ -8,7 +8,7 @@
 import Foundation
 
 /// A deck of flashcards.
-public struct Deck {
+public struct Deck: Equatable {
     public let id: UUID
     /// The name of the deck.
     public var name: String

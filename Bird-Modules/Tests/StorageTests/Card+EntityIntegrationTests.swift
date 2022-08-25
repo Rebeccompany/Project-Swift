@@ -8,6 +8,7 @@
 import XCTest
 @testable import Storage
 import Models
+import UIKit
 
 class CardEntityIntegrationTests: XCTestCase {
     
@@ -19,8 +20,8 @@ class CardEntityIntegrationTests: XCTestCase {
         let frontData = "Toxoplasmose: exame e seus respectivo tempo e tratamento".data(using: .utf8)!
         let backData =  ". Sorologia (IgM,IgG) -&gt; Teste de Avidez (&lt;30% aguda, &gt;60% cronica)&nbsp;<br>. Espiramicina 3g -VO 2 cp de 500mg por 8/8h&nbsp;".data(using: .utf8)!
         
-        let frontNSAttributedString = NSAttributedString(html: frontData, documentAttributes: nil)!
-        let backNSAttributedString = NSAttributedString(html: backData, documentAttributes: nil)!
+        let frontNSAttributedString = try! NSAttributedString(data: frontData, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
+        let backNSAttributedString = try! NSAttributedString(data: backData, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
         let dateLog = DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                lastEdit: Date(timeIntervalSince1970: 0),
                                createdAt: Date(timeIntervalSince1970: 0))
@@ -72,8 +73,8 @@ class CardEntityIntegrationTests: XCTestCase {
         XCTAssertEqual(entity.deck, nil)
         XCTAssertEqual(entity.history?.array.isEmpty, true)
         
-        let frontNS = NSAttributedString(rtf: entity.front!, documentAttributes: nil)!
-        let backNS = NSAttributedString(rtf: entity.back!, documentAttributes: nil)!
+        let frontNS = try! NSAttributedString(data: entity.front!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
+        let backNS = try! NSAttributedString(data: entity.back!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
         
         XCTAssertEqual(NSAttributedString(model.front).string, frontNS.string)
         XCTAssertEqual(NSAttributedString(model.back).string, backNS.string)
@@ -91,8 +92,8 @@ class CardEntityIntegrationTests: XCTestCase {
         XCTAssertEqual(entity.deck!.id, model.deckID)
         XCTAssertEqual(entity.history?.array.isEmpty, true)
         
-        let frontNS = NSAttributedString(rtf: entity.front!, documentAttributes: nil)!
-        let backNS = NSAttributedString(rtf: entity.back!, documentAttributes: nil)!
+        let frontNS = try! NSAttributedString(data: entity.front!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
+        let backNS = try! NSAttributedString(data: entity.back!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
         
         XCTAssertEqual(NSAttributedString(model.front).string, frontNS.string)
         XCTAssertEqual(NSAttributedString(model.back).string, backNS.string)

@@ -12,11 +12,12 @@ public protocol RepositoryProtocol {
     associatedtype T
     
     func fetchAll() -> AnyPublisher<[T], RepositoryError>
-    func listener() -> AnyPublisher<[T], RepositoryError>
-    func fetchById() -> AnyPublisher<T, RepositoryError>
-    func create(_ value: T) -> AnyPublisher<Void, RepositoryError>
-    func edit(_ value: T) -> AnyPublisher<Void, RepositoryError>
-    func delete(_ value: T) -> AnyPublisher<Void, RepositoryError>
+    func listener() throws -> AnyPublisher<[T], RepositoryError>
+    func fetchById(_ id: UUID) -> AnyPublisher<T, RepositoryError>
+    func fetchMultipleById(_ ids: [UUID]) -> AnyPublisher<[T], RepositoryError>
+    func create(_ value: T) throws
+    func edit(_ value: T) throws
+    func delete(_ value: T) throws
 }
 
 public enum RepositoryError: Error {
