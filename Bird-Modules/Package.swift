@@ -49,5 +49,7 @@ let package = Package(
                 resources: [.copy("Resources/Bird.xcdatamodeld")]),
         .testTarget(name: "StorageTests",
                     dependencies: ["Storage", "Models"])
+        .testTarget(name: "CardModelTests",
+                   dependencies: ["Models"])
     ]
 )
