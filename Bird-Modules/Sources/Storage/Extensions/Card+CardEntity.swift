@@ -63,13 +63,13 @@ extension CardEntity {
     }
 }
 
-private extension Data {
+extension Data {
     func toRtf() -> NSAttributedString? {
         try? NSAttributedString(data: self, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
     }
 }
 
-private extension NSAttributedString {
+extension NSAttributedString {
     func rftData() -> Data? {
         try? data(from: .init(location: 0, length: length), documentAttributes: [.documentType: NSAttributedString.DocumentType.rtf])
     }

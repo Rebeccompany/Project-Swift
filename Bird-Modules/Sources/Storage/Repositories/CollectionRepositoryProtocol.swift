@@ -106,27 +106,19 @@ public final class CollectionRepository: NSObject, CollectionRepositoryProtocol 
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \CollectionEntity.name, ascending: true)]
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as NSUUID)
         
-        do {
-            let data = try dataStorage.mainContext.fetch(fetchRequest)
-            
-            guard let first = data.first,
-                  let mappedData = DeckCollection(entity: first)
-            else {
-                throw 
-            }
-            
-            return Just(mappedData).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
-        } catch {
-            print("func fetchById", error)
-            return Fail<DeckCollection, RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
+        let data = try dataStorage.mainContext.fetch(fetchRequest)
+        
+        guard let first = data.first
+        else {
+            throw RepositoryError.failedFetching
         }
+        
+        return first
     }
     
     public func create(_ value: DeckCollection) throws {
-        guard let entity = CollectionEntity(withData: value, on: dataStorage.mainContext)
-        else {
-            throw RepositoryError.couldNotCreate
-        }
+        let entity = CollectionEntity(withData: value, on: dataStorage.mainContext)
+        
         
         do {
             try dataStorage.save()
