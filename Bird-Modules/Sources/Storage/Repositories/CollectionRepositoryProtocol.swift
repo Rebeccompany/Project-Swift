@@ -117,7 +117,7 @@ public final class CollectionRepository: NSObject, CollectionRepositoryProtocol 
     }
     
     public func create(_ value: DeckCollection) throws {
-        let entity = CollectionEntity(withData: value, on: dataStorage.mainContext)
+        let entity = CollectionEntity(with: value, on: dataStorage.mainContext)
         
         
         do {

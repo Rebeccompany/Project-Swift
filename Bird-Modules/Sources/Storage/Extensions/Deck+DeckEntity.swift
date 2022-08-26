@@ -33,7 +33,7 @@ extension Deck {
 }
 
 extension DeckEntity {
-    convenience init(withData deck: Deck, on context: NSManagedObjectContext) {
+    convenience init(with deck: Deck, on context: NSManagedObjectContext) {
         self.init(context: context)
         self.createdAt = deck.datesLogs.createdAt
         self.icon = deck.icon

@@ -13,9 +13,7 @@ struct Project_BirdApp: App {
     var body: some Scene {
         WindowGroup {
             Text("oi")
-                .onAppear {
-                    Bird_Modules.test()
-                }
+               
         }
     }
 }

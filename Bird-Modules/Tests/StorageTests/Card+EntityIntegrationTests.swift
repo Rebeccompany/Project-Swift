@@ -8,7 +8,11 @@
 import XCTest
 @testable import Storage
 import Models
-import UIKit
+#if os(macOS)
+    import AppKit
+#else
+    import UIKit
+#endif
 
 class CardEntityIntegrationTests: XCTestCase {
     

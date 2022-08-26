@@ -34,7 +34,7 @@ class CollectionEntityTests: XCTestCase {
     func testModelToEntity() throws {
         let model = collection
         
-        _ = CollectionEntity(withData: model, on: dataStorage.mainContext)
+        _ = CollectionEntity(with: model, on: dataStorage.mainContext)
         try dataStorage.save()
         
         let saved = try dataStorage.mainContext.fetch(CollectionEntity.fetchRequest()).first!
@@ -51,7 +51,7 @@ class CollectionEntityTests: XCTestCase {
     func testEntityToModel() throws {
         let model = collection
         
-        _ = CollectionEntity(withData: model, on: dataStorage.mainContext)
+        _ = CollectionEntity(with: model, on: dataStorage.mainContext)
         try dataStorage.save()
         
         let saved = try dataStorage.mainContext.fetch(CollectionEntity.fetchRequest()).first!

@@ -70,7 +70,7 @@ class CardModelTests: XCTestCase {
         XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: 200 * secondsInADay)))
     }
     
-    private func getCard(sut: Card?, snapshotDate: Date, interval: Int) ->  Card {
+    private func getCard(sut: Card?, snapshotDate: Date, interval: Int) -> Card {
         
         var sut = sut!
         sut.history = [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(step: 1, isGraduated: true, easeFactor: 2.5, streak: 2, interval: 2, hasBeenPresented: true), userGrade: .correct, timeSpend: 3, date: snapshotDate)]

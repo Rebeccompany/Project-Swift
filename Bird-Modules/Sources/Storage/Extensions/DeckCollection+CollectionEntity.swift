@@ -29,7 +29,7 @@ extension DeckCollection {
 }
 
 extension CollectionEntity {
-    convenience init(withData collection: DeckCollection, on context: NSManagedObjectContext) {
+    convenience init(with collection: DeckCollection, on context: NSManagedObjectContext) {
         self.init(context: context)
         self.id = collection.id
         self.name = collection.name

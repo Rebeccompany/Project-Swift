@@ -38,7 +38,7 @@ class DeckEntityTests: XCTestCase {
     
     func testDeckToEntity() throws {
         let deck = self.deck
-        let entity = DeckEntity(withData: deck, on: dataStorage.mainContext)
+        let entity = DeckEntity(with: deck, on: dataStorage.mainContext)
         try dataStorage.save()
         let count = try dataStorage.mainContext.count(for: DeckEntity.fetchRequest())
         XCTAssertEqual(1, count)
@@ -53,7 +53,7 @@ class DeckEntityTests: XCTestCase {
     }
     
     func testEntityToDeck() throws {
-        _ = DeckEntity(withData: deck, on: dataStorage.mainContext)
+        _ = DeckEntity(with: deck, on: dataStorage.mainContext)
         try dataStorage.save()
         
         let saved = try dataStorage.mainContext.fetch(DeckEntity.fetchRequest()).first!
