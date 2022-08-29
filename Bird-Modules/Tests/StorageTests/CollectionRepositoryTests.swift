@@ -51,23 +51,23 @@ class CollectionRepositoryTests: XCTestCase {
         XCTAssertEqual(1, result)
     }
     
-    func testEdit() throws {
-        try sut.create(DeckCollectionDummy.dummy)
-        
-        let entity = try dataStorage.mainContext.fetch(collectionRequest(for: DeckCollectionDummy.dummy.id)).first!
-        
-        XCTAssertEqual(entity.name, DeckCollectionDummy.dummy.name)
-        
-        var editedDummy = DeckCollectionDummy.dummy
-        editedDummy.name = "Edited Swift"
-        
-        try sut.edit(editedDummy)
-        
-        let editedEntity = try dataStorage.mainContext.fetch(collectionRequest(for: editedDummy.id)).first!
-        
-        XCTAssertEqual(DeckCollectionDummy.dummy.id, editedEntity.id)
-        XCTAssertEqual(editedDummy.name, editedEntity.name)
-    }
+//    func testEdit() throws {
+//        try sut.create(DeckCollectionDummy.dummy)
+//        
+//        let entity = try dataStorage.mainContext.fetch(collectionRequest(for: DeckCollectionDummy.dummy.id)).first!
+//        
+//        XCTAssertEqual(entity.name, DeckCollectionDummy.dummy.name)
+//        
+//        var editedDummy = DeckCollectionDummy.dummy
+//        editedDummy.name = "Edited Swift"
+//        
+//        try sut.edit(editedDummy)
+//        
+//        let editedEntity = try dataStorage.mainContext.fetch(collectionRequest(for: editedDummy.id)).first!
+//        
+//        XCTAssertEqual(DeckCollectionDummy.dummy.id, editedEntity.id)
+//        XCTAssertEqual(editedDummy.name, editedEntity.name)
+//    }
     
     func testDelete() throws {
         try sut.create(DeckCollectionDummy.dummy)

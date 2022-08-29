@@ -1,5 +1,5 @@
 //
-//  CollectionEntityTests.swift
+//  CollectionModelEntityTransformeTests.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 25/08/22.
@@ -9,22 +9,25 @@ import XCTest
 @testable import Storage
 import Models
 
-class CollectionEntityTests: XCTestCase {
+class CollectionModelEntityTransformeTests: XCTestCase {
     
     var dataStorage: DataStorage! = nil
+    var sut: CollectionModelEntityTransformer!
 
     override func setUp() {
         dataStorage = DataStorage(StoreType.inMemory)
+        sut = .init()
     }
     
     override func tearDown() {
         dataStorage = nil
+        sut = nil
     }
     
     func testModelToEntity() throws {
         let model = DeckCollectionDummy.dummy
         
-        _ = CollectionEntity(withData: model, on: dataStorage.mainContext)
+        _ = sut.modelToEntity(model, on: dataStorage.mainContext)
         try dataStorage.save()
         
         let saved = try dataStorage.mainContext.fetch(CollectionEntity.fetchRequest()).first!
@@ -41,12 +44,12 @@ class CollectionEntityTests: XCTestCase {
     func testEntityToModel() throws {
         let model = DeckCollectionDummy.dummy
         
-        _ = CollectionEntity(withData: model, on: dataStorage.mainContext)
+        _ = sut.modelToEntity(model, on: dataStorage.mainContext)
         try dataStorage.save()
         
         let saved = try dataStorage.mainContext.fetch(CollectionEntity.fetchRequest()).first!
         
-        let savedModel = DeckCollection(entity: saved)
+        let savedModel = sut.entityToModel(saved)
         
         XCTAssertEqual(model, savedModel)
     }

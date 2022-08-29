@@ -92,10 +92,10 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
             throw RepositoryError.couldNotCreate
         }
     }
-    
-        func edit(_ value: Model) throws {
-            fatalError()
-        }
+//    
+//        func edit(_ value: Model) throws {
+//            fatalError()
+//        }
     
     func delete(_ value: Model) throws {
         let entity = try fetchEntityById(value.id)
@@ -143,19 +143,7 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
     }
 }
 
-struct CollectionModelEntityTransformer: ModelEntityTransformer {
-    func requestForAll() -> NSFetchRequest<CollectionEntity> {
-        let request = CollectionEntity.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \CollectionEntity.name, ascending: true)]
-        return request
-    }
-    func modelToEntity(_ model: DeckCollection, on context: NSManagedObjectContext) -> CollectionEntity {
-        CollectionEntity(withData: model, on: context)
-    }
-    func entityToModel(_ entity: CollectionEntity) -> DeckCollection? {
-        DeckCollection(entity: entity)
-    }
-}
+
 
 public enum RepositoryError: Error {
     case failedFetching
