@@ -12,16 +12,6 @@ import Models
 class CollectionEntityTests: XCTestCase {
     
     var dataStorage: DataStorage! = nil
-    
-    var collection: DeckCollection {
-        DeckCollection(id: UUID(uuidString: "1ce212cd-7b81-4cbb-88ba-f57ca6161986")!,
-                       name: "Coding",
-                       iconPath: "chevron.down",
-                       datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
-                                           lastEdit: Date(timeIntervalSince1970: 0),
-                                           createdAt: Date(timeIntervalSince1970: 0)),
-                       decksIds: [])
-    }
 
     override func setUp() {
         dataStorage = DataStorage(StoreType.inMemory)
@@ -32,7 +22,7 @@ class CollectionEntityTests: XCTestCase {
     }
     
     func testModelToEntity() throws {
-        let model = collection
+        let model = DeckCollectionDummy.dummy
         
         _ = CollectionEntity(withData: model, on: dataStorage.mainContext)
         try dataStorage.save()
@@ -49,7 +39,7 @@ class CollectionEntityTests: XCTestCase {
     }
     
     func testEntityToModel() throws {
-        let model = collection
+        let model = DeckCollectionDummy.dummy
         
         _ = CollectionEntity(withData: model, on: dataStorage.mainContext)
         try dataStorage.save()

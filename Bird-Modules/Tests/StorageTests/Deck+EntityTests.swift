@@ -13,21 +13,6 @@ class DeckEntityTests: XCTestCase {
     
     var dataStorage: DataStorage! = nil
     
-    var deck: Deck {
-        let dateLog = DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
-                               lastEdit: Date(timeIntervalSince1970: 0),
-                               createdAt: Date(timeIntervalSince1970: 0))
-        
-        return Deck(id: UUID(uuidString: "1ce212cd-7b81-4cbb-88ba-f57ca6161986")!,
-                    name: "Progamação Swift",
-                    icon: "chevron.down",
-                    datesLogs: dateLog,
-                    collectionsIds: [],
-                    cardsIds: [],
-                    spacedRepetitionConfig: .init(maxLearningCards: 20,
-                                                  maxReviewingCards: 200))
-    }
-    
     override func setUp() {
         dataStorage = DataStorage(StoreType.inMemory)
     }
@@ -37,7 +22,7 @@ class DeckEntityTests: XCTestCase {
     }
     
     func testDeckToEntity() throws {
-        let deck = self.deck
+        let deck = DeckDummy.dummy
         let entity = DeckEntity(withData: deck, on: dataStorage.mainContext)
         try dataStorage.save()
         let count = try dataStorage.mainContext.count(for: DeckEntity.fetchRequest())
@@ -53,13 +38,13 @@ class DeckEntityTests: XCTestCase {
     }
     
     func testEntityToDeck() throws {
-        _ = DeckEntity(withData: deck, on: dataStorage.mainContext)
+        _ = DeckEntity(withData: DeckDummy.dummy, on: dataStorage.mainContext)
         try dataStorage.save()
         
         let saved = try dataStorage.mainContext.fetch(DeckEntity.fetchRequest()).first!
         let model = Deck(entity: saved)
         
-        XCTAssertEqual(model, deck)
+        XCTAssertEqual(model, DeckDummy.dummy)
     }
     
 }

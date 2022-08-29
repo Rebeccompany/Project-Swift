@@ -24,22 +24,6 @@ class CollectionRepositoryTests: XCTestCase {
         return fetchRequest
     }
     
-    private var dummyDeck: Deck {
-        let dateLog = DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
-                               lastEdit: Date(timeIntervalSince1970: 0),
-                               createdAt: Date(timeIntervalSince1970: 0))
-        
-        return Deck(id: UUID(uuidString: "1ce212cd-7b81-4cbb-88ba-f57ca6161986")!,
-                    name: "Progamação Swift",
-                    icon: "chevron.down",
-                    datesLogs: dateLog,
-                    collectionsIds: [],
-                    cardsIds: [],
-                    spacedRepetitionConfig: .init(maxLearningCards: 20,
-                                                  maxReviewingCards: 200))
-        
-    }
-    
     override func setUp() {
         dataStorage = DataStorage(StoreType.inMemory)
         sut = CollectionRepository(dataStorage)
