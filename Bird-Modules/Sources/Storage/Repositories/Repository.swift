@@ -143,6 +143,10 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
             listenerSubject.send(completion: .failure(.errorOnListening))
         }
     }
+    
+    func save() throws {
+        try dataStorage.save()
+    }
 }
 
 

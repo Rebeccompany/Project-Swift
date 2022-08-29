@@ -106,5 +106,4 @@ public final class DeckRepository: DeckRepositoryProtocol {
         fatalError()
     }
     
-    
 }
