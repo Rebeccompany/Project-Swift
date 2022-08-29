@@ -14,7 +14,7 @@ import Combine
 class CollectionRepositoryTests: XCTestCase {
     
     var dataStorage: DataStorage! = nil
-    var sut: CollectionRepository! = nil
+    var sut: Repository<DeckCollection, CollectionEntity, CollectionModelEntityTransformer>! = nil
     var cancellables: Set<AnyCancellable>! = nil
     
     func collectionRequest(for id: UUID) -> NSFetchRequest<CollectionEntity> {
@@ -26,7 +26,7 @@ class CollectionRepositoryTests: XCTestCase {
     
     override func setUp() {
         dataStorage = DataStorage(StoreType.inMemory)
-        sut = CollectionRepository(dataStorage)
+        sut = Repository(transformer: CollectionModelEntityTransformer(), dataStorage)
         cancellables = .init()
     }
     
