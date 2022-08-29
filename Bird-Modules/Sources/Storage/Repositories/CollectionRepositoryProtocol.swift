@@ -10,7 +10,7 @@ import Combine
 import Models
 import CoreData
 
-public protocol CollectionRepositoryProtocol: RepositoryProtocol where T == DeckCollection {
+public protocol CollectionRepositoryProtocol {
     func addDeck(_ deck: Deck, in collection: DeckCollection) throws
 }
 

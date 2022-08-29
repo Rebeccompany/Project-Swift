@@ -7,17 +7,21 @@
 
 import Foundation
 import Combine
+import CoreData
 
-public protocol RepositoryProtocol {
-    associatedtype T
+protocol RepositoryProtocol {
+    associatedtype Model
+    associatedtype Entity: NSManagedObject
     
-    func fetchAll() -> AnyPublisher<[T], RepositoryError>
-    func listener() throws -> AnyPublisher<[T], RepositoryError>
-    func fetchById(_ id: UUID) -> AnyPublisher<T, RepositoryError>
-    func fetchMultipleById(_ ids: [UUID]) -> AnyPublisher<[T], RepositoryError>
-    func create(_ value: T) throws
-    func edit(_ value: T) throws
-    func delete(_ value: T) throws
+    
+    
+    func fetchAll() -> AnyPublisher<[Model], RepositoryError>
+    func listener() throws -> AnyPublisher<[Model], RepositoryError>
+    func fetchById(_ id: UUID) -> AnyPublisher<Model, RepositoryError>
+    func fetchMultipleById(_ ids: [UUID]) -> AnyPublisher<[Model], RepositoryError>
+    func create(_ value: Model) throws
+    func edit(_ value: Model) throws
+    func delete(_ value: Model) throws
 }
 
 public enum RepositoryError: Error {
