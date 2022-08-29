@@ -20,6 +20,9 @@ public protocol DeckRepositoryProtocol {
     func deleteDeck(_ deck: Deck) throws
     func editDeck(_ deck: Deck) throws
     
+    func addCard(_ card: Card, to deck: Deck) throws
+    func removeCard(_ card: Card, from deck: Deck) throws
+    
     // Card
     func fetchCardById(_ id: UUID) -> AnyPublisher<Card, RepositoryError>
     func fetchCardsByIds(_ ids: [UUID]) -> AnyPublisher<[Card], RepositoryError>
@@ -84,6 +87,14 @@ public final class DeckRepository: DeckRepositoryProtocol {
     
     public func editDeck(_ deck: Deck) throws {
         fatalError()
+    }
+    
+    public func addCard(_ card: Card, to deck: Deck) throws {
+        
+    }
+    
+    public func removeCard(_ card: Card, from deck: Deck) throws {
+        
     }
     
     public func fetchCardById(_ id: UUID) -> AnyPublisher<Card, RepositoryError> {

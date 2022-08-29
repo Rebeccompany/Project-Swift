@@ -144,7 +144,7 @@ class RepositoryTests: XCTestCase {
         
         try ids
             .map(DeckCollectionDummy.newDummyCollection(with:))
-            .forEach { try sut.create($0)}
+            .forEach { try sut.create($0) }
         
         let expectation = expectation(description: "Wait for listening to finish")
         let listenOccurrencesExpectation = 1
