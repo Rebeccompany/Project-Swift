@@ -12,9 +12,14 @@ import CoreData
 
 public protocol CollectionRepositoryProtocol {
     func addDeck(_ deck: Deck, in collection: DeckCollection) throws
+    func removeDeck(_ deck: Deck, from collection: DeckCollection) throws
 }
 
 public final class CollectionRepository: NSObject, CollectionRepositoryProtocol {
+    public func removeDeck(_ deck: Deck, from collection: DeckCollection) throws {
+        
+    }
+    
     
     //MARK: CoreData Objects
     private let dataStorage: DataStorage
@@ -117,8 +122,7 @@ public final class CollectionRepository: NSObject, CollectionRepositoryProtocol 
     }
     
     public func create(_ value: DeckCollection) throws {
-        let entity = CollectionEntity(withData: value, on: dataStorage.mainContext)
-        
+        _ = CollectionEntity(withData: value, on: dataStorage.mainContext)
         
         do {
             try dataStorage.save()
@@ -130,16 +134,51 @@ public final class CollectionRepository: NSObject, CollectionRepositoryProtocol 
     }
     
     public func edit(_ value: DeckCollection) throws {
-        fatalError("Not implemented")
+        let entity = try fetchEntityById(value.id)
+        
+        entity.name = value.name
+        entity.iconPath = value.iconPath
+        entity.lastEdit = value.datesLogs.lastEdit
+        entity.lastAccess = value.datesLogs.lastAccess
+        
+        try dataStorage.save()
     }
     
     public func delete(_ value: DeckCollection) throws {
-        fatalError("Not implemented")
+        let entity = try fetchEntityById(value.id)
+        
+        dataStorage.mainContext.delete(entity)
+        
+        try dataStorage.save()
     }
     
     //MARK: Collection especific features
     public func addDeck(_ deck: Deck, in collection: DeckCollection) throws {
+        let entity = try fetchEntityById(collection.id)
         
+        if let deckEntity = try? fetchSingleDeckById(deck.id) {
+            entity.addToDecks(deckEntity)
+        } else {
+            let newDeck = DeckEntity(withData: deck, on: dataStorage.mainContext)
+            entity.addToDecks(newDeck)
+        }
+        
+        try dataStorage.save()
+    }
+    
+    private func fetchSingleDeckById(_ id: UUID) throws -> DeckEntity {
+        let fetchRequest = DeckEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \DeckEntity.name, ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id as NSUUID)
+        
+        let data = try dataStorage.mainContext.fetch(fetchRequest)
+        
+        guard let first = data.first
+        else {
+            throw RepositoryError.failedFetching
+        }
+        
+        return first
     }
 }
 
