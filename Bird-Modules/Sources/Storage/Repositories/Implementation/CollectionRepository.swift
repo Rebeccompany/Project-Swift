@@ -10,31 +10,42 @@ import Models
 import Combine
 
 class CollectionRepository: CollectionRepositoryProtocol {
-    private let repository: Repository<DeckCollection, CollectionEntity, CollectionModelEntityTransformer>
+    private let collectionRepository: Repository<DeckCollection, CollectionEntity, CollectionModelEntityTransformer>
+    private let deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>
     
-    init(repository: Repository<DeckCollection, CollectionEntity, CollectionModelEntityTransformer>) {
-        self.repository = repository
+    init(collectionRepository: Repository<DeckCollection, CollectionEntity, CollectionModelEntityTransformer>,
+         deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>) {
+        self.collectionRepository = collectionRepository
+        self.deckRepository = deckRepository
     }
     
     convenience public init() {
-        self.init(repository: Repository(transformer: CollectionModelEntityTransformer(), .shared))
+        self.init(collectionRepository: Repository(transformer: CollectionModelEntityTransformer(), .shared),
+                  deckRepository: Repository(transformer: DeckModelEntityTransformer(), .shared)
+        )
     }
     
     func addDeck(_ deck: Deck, in collection: DeckCollection) throws {
-        
+        let collectionEntity = try collectionRepository.fetchEntityById(collection.id)
+        let deckEntity = try deckRepository.fetchEntityById(deck.id)
+        collectionEntity.addToDecks(deckEntity)
+        try collectionRepository.save()
     }
     
     func removeDeck(_ deck: Deck, from collection: DeckCollection) throws {
-        
+        let collectionEntity = try collectionRepository.fetchEntityById(collection.id)
+        let deckEntity = try deckRepository.fetchEntityById(deck.id)
+        collectionEntity.removeFromDecks(deckEntity)
+        try collectionRepository.save()
     }
     
     func createCollection(_ collection: DeckCollection) throws {
-        try repository.create(collection)
+        try collectionRepository.create(collection)
     }
     
     func listener() -> AnyPublisher<[DeckCollection], RepositoryError> {
         do {
-            let listener = try repository.listener()
+            let listener = try collectionRepository.listener()
             return listener
         } catch {
             return Fail<[DeckCollection], RepositoryError>(error: .errorOnListening)
