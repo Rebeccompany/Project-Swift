@@ -8,10 +8,11 @@
 import Foundation
 import Combine
 import Models
-import CoreData
 
 public protocol CollectionRepositoryProtocol {
     func addDeck(_ deck: Deck, in collection: DeckCollection) throws
     func removeDeck(_ deck: Deck, from collection: DeckCollection) throws
+    func createCollection(_ collection: DeckCollection) throws
+    func listener() -> AnyPublisher<[DeckCollection], RepositoryError>
 }
 
