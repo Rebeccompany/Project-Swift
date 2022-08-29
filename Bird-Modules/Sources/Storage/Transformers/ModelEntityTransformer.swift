@@ -13,6 +13,7 @@ protocol ModelEntityTransformer {
     associatedtype Entity: NSManagedObject
     
     func requestForAll() -> NSFetchRequest<Entity>
+    func listenerRequest() -> NSFetchRequest<Entity>
     func modelToEntity(_ model: Model, on context: NSManagedObjectContext) -> Entity
     func entityToModel(_ entity: Entity) -> Model?
 }
