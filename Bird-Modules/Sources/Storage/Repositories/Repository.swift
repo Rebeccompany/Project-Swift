@@ -1,5 +1,5 @@
 //
-//  RepositoryProtocol.swift
+//  Repository.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 22/08/22.
@@ -116,7 +116,7 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
         }
     }
     
-    private func fetchEntityById(_ id: UUID) throws -> Entity {
+    func fetchEntityById(_ id: UUID) throws -> Entity {
         let fetchRequest = transformer.requestForAll()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as NSUUID)
         
