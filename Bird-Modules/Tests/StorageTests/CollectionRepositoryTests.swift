@@ -11,7 +11,7 @@ import Combine
 import Models
 
 class CollectionRepositoryTests: XCTestCase {
-
+    
     var sut: CollectionRepository!
     var dataStorage: DataStorage!
     
@@ -20,6 +20,8 @@ class CollectionRepositoryTests: XCTestCase {
     
     var deckTransformer: DeckModelEntityTransformer!
     var deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>!
+    
+    var cancellables: Set<AnyCancellable>!
     
     
     override func setUpWithError() throws {
@@ -35,16 +37,20 @@ class CollectionRepositoryTests: XCTestCase {
         
         sut = CollectionRepository(collectionRepository: collectionRepository,
                                    deckRepository: deckRepository)
+        
+        cancellables = .init()
     }
-
+    
     override func tearDownWithError() throws {
         collectionRepository = nil
         deckRepository = nil
         deckTransformer = nil
         dataStorage = nil
         sut = nil
+        cancellables.forEach({ $0.cancel() })
+        cancellables = nil
     }
-
+    
     func testAddDeck() throws {
         let deck = DeckDummy.dummy
         let collection = DeckCollectionDummy.dummy
@@ -90,27 +96,72 @@ class CollectionRepositoryTests: XCTestCase {
         let collection = DeckCollectionDummy.dummy
         try sut.createCollection(collection)
         
-        let resultCollections = try collectionRepository.fetchEntityById(collection.id)
-        XCTAssertEqual(resultCollections.id, collection.id)
+        let resultCollection = try collectionRepository.fetchEntityById(collection.id)
+        XCTAssertEqual(resultCollection.id, collection.id)
+    }
+    
+    func testDeleteCollection() throws {
+        let collection = DeckCollectionDummy.dummy
+        try sut.createCollection(collection)
+        
+        
+        try sut.deleteCollection(collection)
+        
+        XCTAssertThrowsError(try collectionRepository.fetchEntityById(collection.id))
+    }
+    
+    func testEditCollection() throws {
+        var collection = DeckCollectionDummy.dummy
+        try sut.createCollection(collection)
+        
+        collection.datesLogs.lastEdit = Date(timeIntervalSince1970: 400)
+        collection.name = "newName"
+        try sut.editCollection(collection)
+        
+        let collectionEntity = try collectionRepository.fetchEntityById(collection.id)
+        
+        XCTAssertEqual(collectionEntity.lastEdit, collection.datesLogs.lastEdit)
+        XCTAssertEqual(collectionEntity.name, collection.name)
     }
     
     func testListener() throws {
+        var ids = UUIDDummy
+            .dummy
+            .enumerated()
+            .filter { index, _ in index % 2 == 0 }
+            .map(\.element)
         
+        try ids
+            .map(DeckCollectionDummy.newDummyCollection(with:))
+            .forEach { try sut.createCollection($0)}
+        
+        let expectation = expectation(description: "Wait for listening to finish")
+        let listenOccurrencesExpectation = 1
+        var listenOccurences = 0
+        
+        sut.listener()
+            .sink {
+                XCTAssertEqual($0, .finished)
+            } receiveValue: { values in
+                XCTAssertEqual(ids.count, values.count)
+                print(values.count)
+                
+                values.forEach { collection in
+                    let doesContainId = ids.contains(collection.id)
+                    XCTAssertTrue(doesContainId)
+                }
+                
+                if listenOccurrencesExpectation == listenOccurences {
+                    expectation.fulfill()
+                }
+                listenOccurences += 1
+            }
+            .store(in: &cancellables)
+        
+        ids.append(DeckCollectionDummy.dummy.id)
+        try sut.createCollection(DeckCollectionDummy.dummy)
+        
+        wait(for: [expectation], timeout: 1)
     }
     
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }
