@@ -19,7 +19,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
         return controller
     }
     
-    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context){}
+    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
     
     func makeCoordinator() -> DocumentPickerCoordinator {
         DocumentPickerCoordinator(fileContent: $fileContent)
@@ -42,7 +42,7 @@ final class DocumentPickerCoordinator: NSObject, UIDocumentPickerDelegate, UINav
     }
 }
 
-
+// swiftlint:disable discouraged_optional_collection
 public struct DeckFilePicker: View {
     @Binding public var selectedData: [ImportedCardInfo]?
     @ObservedObject private var viewModel: CSVPickerViewModel

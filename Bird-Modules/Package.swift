@@ -5,9 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "Bird-Modules",
-    
-    platforms: [.iOS(.v15), .macOS(.v12)],
-    
+
+    platforms: [
+                .iOS(.v15),
+                .macOS(.v12)
+    ],
+
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(name: "AppFeature",
@@ -21,35 +24,79 @@ let package = Package(
         .library(name: "Storage",
                  targets: ["Storage"])
         
+=======
+
+    platforms: [
+                .iOS(.v15),
+                .macOS(.v12)
     ],
+    
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: "https://github.com/Rebeccompany/Owl.git", from: "1.0.2")
+        .package(
+            url: "https://github.com/Rebeccompany/Owl.git",
+            from: "1.0.2"
+        )
     ],
+    
+    // MARK: Targets
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
-        .target(name: "AppFeature",
-                dependencies: ["ImportingFeature", "Storage"]),
-        .target(name: "ImportingFeature",
-                dependencies: ["Owl"]),
-        .testTarget(name: "ImportingFeatureTests",
-                    dependencies: ["ImportingFeature"]),
+        .target(
+            name: "AppFeature",
+            dependencies: [
+                "ImportingFeature"
+            ]
+        ),
+        
+        .target(
+            name: "ImportingFeature",
+            dependencies: [
+                "Owl"
+            ]
+        ),
+        
+        .target(
+            name: "Models"
+        ),
+        
+        .target(
+            name: "Woodpecker" ,
+            dependencies: [
+                "Models"
+            ]
+        ),
+        
+        // MARK: Test Targets
+        .testTarget(
+            name: "ImportingFeatureTests",
+            dependencies: [
+                "ImportingFeature"
+            ]
+        ),
+        
         .testTarget(
             name: "AppFeatureTests",
-            dependencies: ["AppFeature"]),
-        .target(name: "Woodpecker" ,
-                dependencies: ["Models"]),
-        .testTarget(name: "WoodpeckerTests",
-                    dependencies: ["Woodpecker", "Models"]),
-        .target(name: "Models"),
-        .target(name: "Storage",
-                dependencies: ["Models"],
-                resources: [.copy("Resources/Bird.xcdatamodeld")]),
-        .testTarget(name: "StorageTests",
-                    dependencies: ["Storage", "Models"]),
-        .testTarget(name: "CardModelTests",
-                   dependencies: ["Models"])
+            dependencies: [
+                "AppFeature"
+            ]
+        ),
+        
+        .testTarget(
+            name: "WoodpeckerTests",
+            dependencies: [
+                "Woodpecker",
+                "Models"
+            ]
+        ),
+        
+        .testTarget(
+            name: "CardModelTests",
+            dependencies: [
+                "Models"
+            ]
+        )
     ]
 )
