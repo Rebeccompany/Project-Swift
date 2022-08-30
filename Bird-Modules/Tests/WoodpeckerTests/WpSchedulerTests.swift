@@ -20,7 +20,7 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), SchedulerInfoDummy.LNHB.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), SchedulerInfoDummy.LNHB.map({ $0.id }).sorted(by: sortUUID))
         XCTAssertTrue(result.todayReviewingCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
@@ -34,7 +34,7 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.id }).sorted(by: sortUUID))
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
@@ -47,7 +47,7 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.id }).sorted(by: sortUUID))
         XCTAssertTrue(result.todayReviewingCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
@@ -61,7 +61,7 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.id }).sorted(by: sortUUID))
         XCTAssertTrue(result.todayReviewingCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
@@ -75,7 +75,7 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), cardsInfos.map({ $0.id }).sorted(by: sortUUID))
         XCTAssertTrue(result.todayReviewingCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
@@ -89,7 +89,7 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), SchedulerInfoDummy.LHB.map({ $0.cardId }).sorted(by: sortUUID))
+        XCTAssertEqual(result.todayLearningCards.sorted(by: sortUUID), SchedulerInfoDummy.LHB.map({ $0.id }).sorted(by: sortUUID))
         XCTAssertTrue(result.todayReviewingCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
@@ -103,11 +103,11 @@ class WpSchedulerTests: XCTestCase {
                                        currentDate: SchedulerInfoDummy.today)
         
         
-        XCTAssertTrue(result.todayLearningCards.contains(where: { $0 == SchedulerInfoDummy.LHB.prefix(2).map({ $0.cardId })[0] }))
-        XCTAssertTrue(result.todayLearningCards.contains(where: { $0 == SchedulerInfoDummy.LHB.prefix(2).map({ $0.cardId })[1] }))
+        XCTAssertTrue(result.todayLearningCards.contains(where: { $0 == SchedulerInfoDummy.LHB.prefix(2).map({ $0.id })[0] }))
+        XCTAssertTrue(result.todayLearningCards.contains(where: { $0 == SchedulerInfoDummy.LHB.prefix(2).map({ $0.id })[1] }))
         var count = 0
         for r in result.todayLearningCards {
-            if SchedulerInfoDummy.LNHB.map({ $0.cardId }).contains(where: { $0 == r }) {
+            if SchedulerInfoDummy.LNHB.map({ $0.id }).contains(where: { $0 == r }) {
                 count += 1
             }
         }
@@ -121,9 +121,9 @@ class WpSchedulerTests: XCTestCase {
     // P = past; T = today; F = future
     
     func testReviewing0P0T1F() {
-        let pastCards: [SchedulerCardInfo] = []
-        let todayCards: [SchedulerCardInfo] = []
-        let futureCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(1))
+        let pastCards: [OrganizerCardInfo] = []
+        let todayCards: [OrganizerCardInfo] = []
+        let futureCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(1))
         let cardsInfos = pastCards + todayCards + futureCards
         
         let result = try! Woodpecker.scheduler(cardsInfo: cardsInfos,
@@ -137,9 +137,9 @@ class WpSchedulerTests: XCTestCase {
     }
     
     func testReviewing0P0T0F() {
-        let pastCards: [SchedulerCardInfo] = []
-        let todayCards: [SchedulerCardInfo] = []
-        let futureCards: [SchedulerCardInfo] = []
+        let pastCards: [OrganizerCardInfo] = []
+        let todayCards: [OrganizerCardInfo] = []
+        let futureCards: [OrganizerCardInfo] = []
         let cardsInfos = pastCards + todayCards + futureCards
         
         let result = try! Woodpecker.scheduler(cardsInfo: cardsInfos,
@@ -153,9 +153,9 @@ class WpSchedulerTests: XCTestCase {
     }
     
     func testReviewing0P1T1F() {
-        let pastCards: [SchedulerCardInfo] = []
-        let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
-        let futureCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(1))
+        let pastCards: [OrganizerCardInfo] = []
+        let todayCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
+        let futureCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(1))
         let cardsInfos = pastCards + todayCards + futureCards
         
         let result = try! Woodpecker.scheduler(cardsInfo: cardsInfos,
@@ -163,15 +163,15 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertEqual(todayCards.map({$0.cardId}), result.todayReviewingCards)
+        XCTAssertEqual(todayCards.map({$0.id}), result.todayReviewingCards)
         XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
     func testReviewing0P1T0F() {
-        let pastCards: [SchedulerCardInfo] = []
-        let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
-        let futureCards: [SchedulerCardInfo] = []
+        let pastCards: [OrganizerCardInfo] = []
+        let todayCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
+        let futureCards: [OrganizerCardInfo] = []
         let cardsInfos = pastCards + todayCards + futureCards
         
         let result = try! Woodpecker.scheduler(cardsInfo: cardsInfos,
@@ -179,15 +179,15 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertEqual(todayCards.map({$0.cardId}), result.todayReviewingCards)
+        XCTAssertEqual(todayCards.map({$0.id}), result.todayReviewingCards)
         XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
     func testReviewing1P0T0F() {
-        let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
-        let todayCards: [SchedulerCardInfo] = []
-        let futureCards: [SchedulerCardInfo] = []
+        let pastCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
+        let todayCards: [OrganizerCardInfo] = []
+        let futureCards: [OrganizerCardInfo] = []
         let cardsInfos = pastCards + todayCards + futureCards
         
         let result = try! Woodpecker.scheduler(cardsInfo: cardsInfos,
@@ -195,15 +195,15 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertEqual(pastCards.map({$0.cardId}), result.todayReviewingCards)
+        XCTAssertEqual(pastCards.map({$0.id}), result.todayReviewingCards)
         XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
     func testReviewing1P1T0F() {
-        let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
-        let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
-        let futureCards: [SchedulerCardInfo] = []
+        let pastCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
+        let todayCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
+        let futureCards: [OrganizerCardInfo] = []
         let cardsInfos = pastCards + todayCards + futureCards
         
         let result = try! Woodpecker.scheduler(cardsInfo: cardsInfos,
@@ -211,15 +211,15 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertEqual(cardsInfos.map({$0.cardId}).sorted(by: sortUUID), result.todayReviewingCards.sorted(by: sortUUID))
+        XCTAssertEqual(cardsInfos.map({$0.id}).sorted(by: sortUUID), result.todayReviewingCards.sorted(by: sortUUID))
         XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
     func testReviewing1P0T1F() {
-        let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
-        let todayCards: [SchedulerCardInfo] = []
-        let futureCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(1))
+        let pastCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
+        let todayCards: [OrganizerCardInfo] = []
+        let futureCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(1))
         let cardsInfos = pastCards + todayCards + futureCards
         
         let result = try! Woodpecker.scheduler(cardsInfo: cardsInfos,
@@ -227,15 +227,15 @@ class WpSchedulerTests: XCTestCase {
                                                                                 maxReviewingCards: 2),
                                                  currentDate: SchedulerInfoDummy.today)
         
-        XCTAssertEqual(pastCards.map({$0.cardId}), result.todayReviewingCards)
+        XCTAssertEqual(pastCards.map({$0.id}), result.todayReviewingCards)
         XCTAssertTrue(result.todayLearningCards.isEmpty)
         XCTAssertTrue(result.toModify.isEmpty)
     }
     
     func testReviewing2P1T0F() {
-        let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(2))
-        let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
-        let futureCards: [SchedulerCardInfo] = []
+        let pastCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(2))
+        let todayCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(1))
+        let futureCards: [OrganizerCardInfo] = []
         let cardsInfos = pastCards + todayCards + futureCards
         
         let result = try! Woodpecker.scheduler(cardsInfo: cardsInfos,
@@ -245,14 +245,14 @@ class WpSchedulerTests: XCTestCase {
         
         var count = 0
         for r in result.todayReviewingCards {
-            if cardsInfos.map({ $0.cardId }).contains(where: { $0 == r }) {
+            if cardsInfos.map({ $0.id }).contains(where: { $0 == r }) {
                 count += 1
             }
         }
         XCTAssertEqual(count, 2)
         var countModify = 0
         for r in result.toModify {
-            if cardsInfos.map({ $0.cardId }).contains(where: { $0 == r }) {
+            if cardsInfos.map({ $0.id }).contains(where: { $0 == r }) {
                 countModify += 1
             }
         }
@@ -261,9 +261,9 @@ class WpSchedulerTests: XCTestCase {
     }
     
     func testReviewing1P2T0F() {
-        let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
-        let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(2))
-        let futureCards: [SchedulerCardInfo] = []
+        let pastCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(1))
+        let todayCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(2))
+        let futureCards: [OrganizerCardInfo] = []
         let cardsInfos = pastCards + todayCards + futureCards
         
         let result = try! Woodpecker.scheduler(cardsInfo: cardsInfos,
@@ -273,7 +273,7 @@ class WpSchedulerTests: XCTestCase {
         
         var count = 0
         for r in result.todayReviewingCards {
-            if cardsInfos.map({ $0.cardId }).contains(where: { $0 == r }) {
+            if cardsInfos.map({ $0.id }).contains(where: { $0 == r }) {
                 count += 1
             }
         }
@@ -282,7 +282,7 @@ class WpSchedulerTests: XCTestCase {
         
         var countModify = 0
         for r in result.toModify {
-            if cardsInfos.map({ $0.cardId }).contains(where: { $0 == r }) {
+            if cardsInfos.map({ $0.id }).contains(where: { $0 == r }) {
                 countModify += 1
             }
         }
@@ -291,9 +291,9 @@ class WpSchedulerTests: XCTestCase {
     }
     
     func testReviewing2P2T2F() {
-        let pastCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(2))
-        let todayCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(2))
-        let futureCards: [SchedulerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(2))
+        let pastCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDP.prefix(2))
+        let todayCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDT.prefix(2))
+        let futureCards: [OrganizerCardInfo] = Array(SchedulerInfoDummy.RDF.prefix(2))
         let cardsInfos = pastCards + todayCards + futureCards
         let pastAndToday = pastCards + todayCards
         let result = try! Woodpecker.scheduler(cardsInfo: cardsInfos,
@@ -303,7 +303,7 @@ class WpSchedulerTests: XCTestCase {
         
         var countToday = 0
         for r in result.todayReviewingCards {
-            if pastAndToday.map({ $0.cardId }).contains(where: { $0 == r }) {
+            if pastAndToday.map({ $0.id }).contains(where: { $0 == r }) {
                 countToday += 1
             }
         }
@@ -311,7 +311,7 @@ class WpSchedulerTests: XCTestCase {
         
         var countModify = 0
         for r in result.toModify {
-            if pastAndToday.map({ $0.cardId }).contains(where: { $0 == r }) {
+            if pastAndToday.map({ $0.id }).contains(where: { $0 == r }) {
                 countModify += 1
             }
         }

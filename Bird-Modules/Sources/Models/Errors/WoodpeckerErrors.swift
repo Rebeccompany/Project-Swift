@@ -9,7 +9,7 @@ import Foundation
 
 /// Woodpecker stepper Errors
 public enum WoodpeckerStepperErrors: Error {
-    case negativeStep, notEnoughSteps
+    case negativeStep, notEnoughSteps, isGraduated
 }
 
 /// Woodpecker sm2 Errors

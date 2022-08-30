@@ -86,19 +86,21 @@ public struct Woodpecker {
      'WoodpeckerStepperErrors.notEnoughSteps' if maximumStep is lower than 1.
      - Returns: The case that determines the cards destiny.
      */
-    public static func stepper(step: Int, userGrade: UserGrade, numberOfSteps: Int) throws -> CardDestiny {
+    public static func stepper(cardInfo: WoodpeckerCardInfo, userGrade: UserGrade, numberOfSteps: Int) throws -> CardDestiny {
         
         let maximumStep = numberOfSteps - 1
         
-        if step < 0 {
+        if cardInfo.step < 0 {
             throw WoodpeckerStepperErrors.negativeStep
         } else if maximumStep < 1 {
             throw WoodpeckerStepperErrors.notEnoughSteps
+        } else if cardInfo.isGraduated {
+            throw WoodpeckerStepperErrors.isGraduated
         }
         
-        if step == 0 {
+        if cardInfo.step == 0 {
             return getCardDestinyForFirstStep(userGrade)
-        } else if step >= 1 && step < maximumStep {
+        } else if cardInfo.step >= 1 && cardInfo.step < maximumStep {
             return getCardDestinyForMiddleSteps(userGrade)
         } else {
             return getCardDestinyForLastStep(userGrade)
