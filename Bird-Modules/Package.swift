@@ -20,6 +20,36 @@ let package = Package(
             ]
         ),
         
+        .library(name: "CollectionFeature",
+                 targets: [
+                    "CollectionFeature"
+                 ]
+        ),
+        
+        .library(name: "DeckFeature",
+                 targets: [
+                    "DeckFeature"
+                 ]
+        ),
+        
+        .library(name: "EditFlashcardFeature",
+                 targets: [
+                    "EditFlashcardFeature"
+                 ]
+        ),
+        
+        .library(name: "GameFeature",
+                 targets: [
+                    "GameFeature"
+                 ]
+        ),
+        
+        .library(name: "HomePageFeature",
+                 targets: [
+                    "HomePageFeature"
+                 ]
+        ),
+
         .library(
             name: "ImportingFeature",
             targets: [
@@ -28,19 +58,33 @@ let package = Package(
         ),
         
         .library(
-            name: "Woodpecker",
-            targets: [
-                "Woodpecker"
-            ]
-        ),
-        
-        .library(
             name: "Models",
             targets: [
                 "Models"
             ]
-        )
+        ),
+        
+        .library(
+            name: "NewCollectionFeature",
+            targets: [
+                "NewCollectionFeature"
+            ]
+        ),
+        .library(
+            name: "NewDeckFeature",
+            targets: [
+                "NewDeckFeature"
+            ]
+        ),
 
+        .library(
+            name: "Woodpecker",
+            targets: [
+                "Woodpecker"
+            ]
+        )
+        
+        
     ],
     
     dependencies: [
