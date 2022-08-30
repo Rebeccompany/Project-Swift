@@ -5,12 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "Bird-Modules",
-
+    
     platforms: [
-                .iOS(.v15),
-                .macOS(.v12)
+        .iOS(.v15),
+        .macOS(.v12)
     ],
-
+    
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(name: "AppFeature",
@@ -23,12 +23,6 @@ let package = Package(
                  targets: ["Models"]),
         .library(name: "Storage",
                  targets: ["Storage"])
-        
-=======
-
-    platforms: [
-                .iOS(.v15),
-                .macOS(.v12)
     ],
     
     dependencies: [
@@ -59,13 +53,23 @@ let package = Package(
         ),
         
         .target(
-            name: "Models"
-        ),
+                name: "Models"
+            ),
         
         .target(
             name: "Woodpecker" ,
             dependencies: [
                 "Models"
+            ]
+        ),
+        
+        .target(
+            name: "Storage",
+            dependencies: [
+                "Models"
+            ],
+            resources: [
+                .copy("Resources/Bird.xcdatamodeld")
             ]
         ),
         
@@ -95,6 +99,14 @@ let package = Package(
         .testTarget(
             name: "CardModelTests",
             dependencies: [
+                "Models"
+            ]
+        ),
+        
+        .testTarget(
+            name: "StorageTests",
+            dependencies: [
+                "Storage",
                 "Models"
             ]
         )

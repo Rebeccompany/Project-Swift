@@ -57,7 +57,7 @@ struct CardModelEntityTransformer: ModelEntityTransformer {
     }
     
     func modelToEntity(_ model: Card, on context: NSManagedObjectContext) -> CardEntity {
-        let card = CardEntity.init(context: context)
+        let card = CardEntity(context: context)
         
         card.front = NSAttributedString(model.front).rtfData()
         card.back = NSAttributedString(model.back).rtfData()

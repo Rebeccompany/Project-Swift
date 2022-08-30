@@ -20,9 +20,10 @@ public struct Card: Identifiable, Equatable {
     public var deckID: UUID
     /// The due date for the card to appear to the user
     public var dueDate: Date? {
-        guard let newestItem0 = history.max(by: { card0, card1 in
+        guard let newestItem = history.max(by: { card0, card1 in
             card0.date > card1.date
-        })
+        }) else { return nil }
+        
         return newestItem.date.advanced(by: TimeInterval(86400 * woodpeckerCardInfo.interval))
     }
     /// The woodpeckerCardInfo of the card.

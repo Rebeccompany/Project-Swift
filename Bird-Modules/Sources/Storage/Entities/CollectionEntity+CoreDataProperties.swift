@@ -8,6 +8,8 @@
 
 import Foundation
 import CoreData
+
+// swiftlint:disable implicit_return
 extension CollectionEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CollectionEntity> {

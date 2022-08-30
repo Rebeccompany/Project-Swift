@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 
+// swiftlint:disable implicit_return
 extension DeckEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<DeckEntity> {

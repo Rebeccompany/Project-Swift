@@ -13,12 +13,12 @@ import Models
 final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTransformer>: NSObject, NSFetchedResultsControllerDelegate where Transformer.Entity == Entity, Transformer.Model == Model, Model.ID == UUID {
     
     private let transformer: Transformer
-    //MARK: CoreData Objects
+    // MARK: CoreData Objects
     private let dataStorage: DataStorage
     private let requestController: NSFetchedResultsController<Entity>
     private let listenerRequest: NSFetchRequest<Entity>
     
-    //MARK: Subjects
+    // MARK: Subjects
     private let listenerSubject: CurrentValueSubject<[Model], RepositoryError>
     
     init(transformer: Transformer, _ storage: DataStorage) {
@@ -28,7 +28,8 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
         self.listenerSubject = .init([])
         self.requestController = NSFetchedResultsController(fetchRequest: listenerRequest,
                                                             managedObjectContext: dataStorage.mainContext,
-                                                            sectionNameKeyPath: nil, cacheName: nil)
+                                                            sectionNameKeyPath: nil,
+                                                            cacheName: nil)
         
         super.init()
         
@@ -113,13 +114,13 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
             let mappedData = data.compactMap(transformer.entityToModel(_:))
             
             if mappedData.isEmpty {
-                return Fail<[Model],RepositoryError>(error: RepositoryError.failedFetching).eraseToAnyPublisher()
+                return Fail<[Model], RepositoryError>(error: RepositoryError.failedFetching).eraseToAnyPublisher()
             }
             
             return Just(mappedData).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
         } catch {
             print("func singleRequest()", error)
-            return Fail<[Model],RepositoryError>(error: RepositoryError.failedFetching).eraseToAnyPublisher()
+            return Fail<[Model], RepositoryError>(error: RepositoryError.failedFetching).eraseToAnyPublisher()
         }
     }
     
@@ -138,7 +139,8 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        guard let data = controller.fetchedObjects as? [Entity] else { return }
+        guard let data = controller.fetchedObjects as? [Entity]
+        else { return }
         
         do {
             try dataStorage.mainContext.obtainPermanentIDs(for: data)

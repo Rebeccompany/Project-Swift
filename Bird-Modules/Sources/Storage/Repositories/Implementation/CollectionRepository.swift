@@ -9,46 +9,48 @@ import Foundation
 import Models
 import Combine
 
-class CollectionRepository: CollectionRepositoryProtocol {
+public final class CollectionRepository: CollectionRepositoryProtocol {
 
     private let collectionRepository: Repository<DeckCollection, CollectionEntity, CollectionModelEntityTransformer>
     private let deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>
     
-    init(collectionRepository: Repository<DeckCollection, CollectionEntity, CollectionModelEntityTransformer>,
-         deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>) {
+    internal init(
+        collectionRepository: Repository<DeckCollection, CollectionEntity, CollectionModelEntityTransformer>,
+        deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>
+    ) {
         self.collectionRepository = collectionRepository
         self.deckRepository = deckRepository
     }
     
-    convenience public init() {
+    public convenience init() {
         self.init(collectionRepository: Repository(transformer: CollectionModelEntityTransformer(), .shared),
                   deckRepository: Repository(transformer: DeckModelEntityTransformer(), .shared)
         )
     }
     
-    func addDeck(_ deck: Deck, in collection: DeckCollection) throws {
+    public func addDeck(_ deck: Deck, in collection: DeckCollection) throws {
         let collectionEntity = try collectionRepository.fetchEntityById(collection.id)
         let deckEntity = try deckRepository.fetchEntityById(deck.id)
         collectionEntity.addToDecks(deckEntity)
         try collectionRepository.save()
     }
     
-    func removeDeck(_ deck: Deck, from collection: DeckCollection) throws {
+    public func removeDeck(_ deck: Deck, from collection: DeckCollection) throws {
         let collectionEntity = try collectionRepository.fetchEntityById(collection.id)
         let deckEntity = try deckRepository.fetchEntityById(deck.id)
         collectionEntity.removeFromDecks(deckEntity)
         try collectionRepository.save()
     }
     
-    func createCollection(_ collection: DeckCollection) throws {
+    public func createCollection(_ collection: DeckCollection) throws {
         try collectionRepository.create(collection)
     }
     
-    func deleteCollection(_ collection: DeckCollection) throws {
+    public func deleteCollection(_ collection: DeckCollection) throws {
         try collectionRepository.delete(collection)
     }
     
-    func editCollection(_ collection: DeckCollection) throws {
+    public func editCollection(_ collection: DeckCollection) throws {
         let collectionEntity = try collectionRepository.fetchEntityById(collection.id)
         collectionEntity.lastEdit = collection.datesLogs.lastEdit
         collectionEntity.lastAccess = collection.datesLogs.lastAccess
@@ -57,7 +59,7 @@ class CollectionRepository: CollectionRepositoryProtocol {
         try collectionRepository.save()
     }
     
-    func listener() -> AnyPublisher<[DeckCollection], RepositoryError> {
+    public func listener() -> AnyPublisher<[DeckCollection], RepositoryError> {
         do {
             let listener = try collectionRepository.listener()
             return listener

@@ -17,4 +17,3 @@ public protocol CollectionRepositoryProtocol {
     func editCollection(_ collection: DeckCollection) throws
     func listener() -> AnyPublisher<[DeckCollection], RepositoryError>
 }
-

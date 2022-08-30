@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 
+// swiftlint:disable implicit_return
 extension CardSnapshotEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CardSnapshotEntity> {

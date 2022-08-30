@@ -7,13 +7,6 @@
 
 import CoreData
 
-public class Test {
-    public static func test() {
-        let data = try! DataStorage.shared.mainContext.fetch(CardEntity.fetchRequest())
-        print(data)
-    }
-}
-
 final class DataStorage {
 
     static let shared = DataStorage()
