@@ -1,5 +1,5 @@
 //
-//  Card+EntityIntegrationTests.swift
+//  CardModelEntityTransformerTests.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 22/08/22.
@@ -8,31 +8,34 @@
 import XCTest
 @testable import Storage
 import Models
-import UIKit
+import SwiftUI
 
-class CardEntityIntegrationTests: XCTestCase {
+class CardModelEntityTransformerTests: XCTestCase {
     
     var dataStorage: DataStorage! = nil
+    var sut: CardModelEntityTransformer! = nil
     
     override func setUp() {
         dataStorage = .init(StoreType.inMemory)
+        sut = .init()
     }
     
     override func tearDown() {
         dataStorage = nil
+        sut = nil
     }
     
     func testCreateEntityFromModel() {
         let dummyCard = CardDummy.dummy
         
-        let entity = CardEntity(with: dummyCard, on: dataStorage.mainContext)
+        let entity = sut.modelToEntity(dummyCard, on: dataStorage.mainContext)
         assertModel(model: dummyCard, entity: entity)
     }
     
     func testCreateModelFromEntity() throws {
         let dummyCard = CardDummy.dummy
         
-        let entity = CardEntity(with: dummyCard, on: dataStorage.mainContext)
+        let entity = sut.modelToEntity(dummyCard, on: dataStorage.mainContext)
         let deck = DeckEntity(context: dataStorage.mainContext)
         deck.id = UUID(uuidString: "1ce212cd-7b81-4cbb-88ba-f57ca6161986")
         entity.deck = deck
@@ -40,7 +43,7 @@ class CardEntityIntegrationTests: XCTestCase {
         try dataStorage.save()
         
         
-        let card = Card(entity: entity)!
+        let card = sut.entityToModel(entity)!
         assertEntity(model: card, entity: entity)
     }
     

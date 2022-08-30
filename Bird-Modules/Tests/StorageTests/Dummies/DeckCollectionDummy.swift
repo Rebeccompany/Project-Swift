@@ -18,7 +18,7 @@ enum DeckCollectionDummy {
                        decksIds: [])
     }
     
-    static func newDummyCollection(with id: UUID = UUID()) -> DeckCollection {
+    static func newDummyDeck(with id: UUID = UUID()) -> DeckCollection {
         let dateLog = DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                lastEdit: Date(timeIntervalSince1970: 0),
                                createdAt: Date(timeIntervalSince1970: 0))

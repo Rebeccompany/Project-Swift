@@ -10,12 +10,27 @@ import CoreData
 import Models
 
 struct DeckModelEntityTransformer: ModelEntityTransformer {
+    let collectionIds: UUID?
+    
+    init(collectionIds: UUID? = nil) {
+        self.collectionIds = collectionIds
+    }
+    
     func requestForAll() -> NSFetchRequest<DeckEntity> {
         let request = DeckEntity.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \DeckEntity.name, ascending: true)]
         return request
     }
     
+    func listenerRequest() -> NSFetchRequest<DeckEntity> {
+        if let collectionIds = collectionIds {
+            let request = requestForAll()
+            request.predicate = NSPredicate(format: "%@ IN collections", collectionIds as NSUUID)
+            return request
+        } else {
+            return requestForAll()
+        }
+    }
     
     func entityToModel(_ entity: DeckEntity) -> Deck? {
         guard

@@ -132,7 +132,7 @@ class CollectionRepositoryTests: XCTestCase {
             .map(\.element)
         
         try ids
-            .map(DeckCollectionDummy.newDummyCollection(with:))
+            .map(DeckCollectionDummy.newDummyDeck(with:))
             .forEach { try sut.createCollection($0)}
         
         let expectation = expectation(description: "Wait for listening to finish")

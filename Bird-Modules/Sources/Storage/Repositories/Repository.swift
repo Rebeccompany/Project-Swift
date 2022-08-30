@@ -23,7 +23,7 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
     
     init(transformer: Transformer, _ storage: DataStorage) {
         self.transformer = transformer
-        self.listenerRequest = transformer.requestForAll()
+        self.listenerRequest = transformer.listenerRequest()
         self.dataStorage = storage
         self.listenerSubject = .init([])
         self.requestController = NSFetchedResultsController(fetchRequest: listenerRequest,
@@ -82,11 +82,13 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
         return singleRequest(fetchRequest)
     }
     
-    func create(_ value: Model) throws {
-        let collection = transformer.modelToEntity(value, on: dataStorage.mainContext)
+    @discardableResult
+    func create(_ value: Model) throws -> Entity {
+        let entity = transformer.modelToEntity(value, on: dataStorage.mainContext)
         
         do {
             try dataStorage.save()
+            return entity
         } catch {
             print("func create", error)
             throw RepositoryError.couldNotCreate
@@ -109,6 +111,11 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
         do {
             let data = try dataStorage.mainContext.fetch(request)
             let mappedData = data.compactMap(transformer.entityToModel(_:))
+            
+            if mappedData.isEmpty {
+                return Fail<[Model],RepositoryError>(error: RepositoryError.failedFetching).eraseToAnyPublisher()
+            }
+            
             return Just(mappedData).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
         } catch {
             print("func singleRequest()", error)

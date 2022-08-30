@@ -99,7 +99,7 @@ class RepositoryTests: XCTestCase {
     
     func testFetchByMultipleId() throws {
         try UUIDDummy.dummy
-            .map(DeckCollectionDummy.newDummyCollection(with:))
+            .map(DeckCollectionDummy.newDummyDeck(with:))
             .forEach {
                 try sut.create($0)
             }
@@ -143,8 +143,8 @@ class RepositoryTests: XCTestCase {
             .map(\.element)
         
         try ids
-            .map(DeckCollectionDummy.newDummyCollection(with:))
-            .forEach { try sut.create($0)}
+            .map(DeckCollectionDummy.newDummyDeck(with:))
+            .forEach { try sut.create($0) }
         
         let expectation = expectation(description: "Wait for listening to finish")
         let listenOccurrencesExpectation = 1
@@ -179,7 +179,7 @@ class RepositoryTests: XCTestCase {
         let expectation = expectation(description: "Wait for fetching single element")
         
         try UUIDDummy.dummy
-            .map(DeckCollectionDummy.newDummyCollection(with:))
+            .map(DeckCollectionDummy.newDummyDeck(with:))
             .forEach { try sut.create($0)}
         
         try sut.create(DeckCollectionDummy.dummy)

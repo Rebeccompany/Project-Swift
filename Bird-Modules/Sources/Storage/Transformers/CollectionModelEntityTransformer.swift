@@ -15,6 +15,11 @@ struct CollectionModelEntityTransformer: ModelEntityTransformer {
         request.sortDescriptors = [NSSortDescriptor(keyPath: \CollectionEntity.name, ascending: true)]
         return request
     }
+    
+    func listenerRequest() -> NSFetchRequest<CollectionEntity> {
+        requestForAll()
+    }
+    
     func modelToEntity(_ model: DeckCollection, on context: NSManagedObjectContext) -> CollectionEntity {
         let collection = CollectionEntity(context: context)
         collection.id = model.id
@@ -26,6 +31,7 @@ struct CollectionModelEntityTransformer: ModelEntityTransformer {
         
         return collection
     }
+    
     func entityToModel(_ entity: CollectionEntity) -> DeckCollection? {
         guard
             let id = entity.id,
