@@ -25,7 +25,7 @@ public struct Woodpecker {
      'WoodpeckerSchedulerErrors.timezoneError' if a timezone error occurs.
      - Returns: A tuple containing an array of the UUIDs of the Reviewing cards to be displayed today, an array of the UUIDs of the Learning cards to be displayed today, and an array of the UUIDs of the cards to be modified.
      */
-    public static func scheduler(cardsInfo: [OrganizerCardInfo], config: SpacedRepetitionConfig ,currentDate: Date = Date()) throws -> (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) {
+    public static func scheduler(cardsInfo: [OrganizerCardInfo], config: SpacedRepetitionConfig, currentDate: Date = Date()) throws -> (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) {
 
         
         if config.maxReviewingCards <= 0 {
@@ -35,14 +35,14 @@ public struct Woodpecker {
         }
         
         var todayLearningCards: [OrganizerCardInfo] = cardsInfo
-            .filter({ !$0.woodpeckerCardInfo.isGraduated })
+            .filter { !$0.woodpeckerCardInfo.isGraduated }
             .shuffled()
         
         let learningHasBeenPresented = todayLearningCards
-            .filter({ $0.woodpeckerCardInfo.hasBeenPresented })
+            .filter { $0.woodpeckerCardInfo.hasBeenPresented }
         
         let learningHasntBeenPresented = todayLearningCards
-            .filter({ !$0.woodpeckerCardInfo.hasBeenPresented })
+            .filter { !$0.woodpeckerCardInfo.hasBeenPresented }
         
         todayLearningCards = Array((learningHasBeenPresented + learningHasntBeenPresented)
             .prefix(config.maxLearningCards))
@@ -73,7 +73,7 @@ public struct Woodpecker {
         } else {
             toModify = []
         }
-        return (todayReviewingCards.map({ $0.id }), todayLearningCards.map({ $0.id }), toModify.map({ $0.id }))
+        return (todayReviewingCards.map { $0.id }, todayLearningCards.map { $0.id }, toModify.map { $0.id })
     }
     
     /**
@@ -161,15 +161,13 @@ extension Woodpecker {
     private static func shouldGetLearningCard(numberOfLearningCards: Int, numberOfReviewingCards: Int) throws -> Bool {
         if numberOfLearningCards == 0 && numberOfReviewingCards == 0 {
             throw WoodpeckerOrganizerErrors.numberOfLearningAndReviewingCardsEqualTo0
-        }
-        else if numberOfLearningCards < 0 {
+        } else if numberOfLearningCards < 0 {
             throw WoodpeckerOrganizerErrors.numberOfLearningCardsLessThan0
-        }
-        else if numberOfReviewingCards < 0 {
+        } else if numberOfReviewingCards < 0 {
             throw WoodpeckerOrganizerErrors.numberOfReviewingCardsLessThan0
         }
         
-        return Int.random(in: -numberOfLearningCards...numberOfReviewingCards-1) < 0
+        return Int.random(in: -numberOfLearningCards...numberOfReviewingCards - 1) < 0
     }
     
     // Organizes the Learning Cards of a session by step and userGrade.
@@ -182,8 +180,7 @@ extension Woodpecker {
         for card in cards {
             if lastStep == card.woodpeckerCardInfo.step {
                 auxList.append(card)
-            }
-            else {
+            } else {
                 auxMatrix.append(auxList)
                 auxList = [card]
                 lastStep += 1
@@ -195,12 +192,12 @@ extension Woodpecker {
             cards += try list.sorted(by: sortCardByUserGrade)
         }
         
-        return cards.map({$0.id})
+        return cards.map { $0.id }
     }
     
     // Sorts cards by step.
     private static func sortCardByStep(card0: OrganizerCardInfo, card1: OrganizerCardInfo) -> Bool {
-        return card0.woodpeckerCardInfo.step < card1.woodpeckerCardInfo.step
+        card0.woodpeckerCardInfo.step < card1.woodpeckerCardInfo.step
     }
     
     // Sorts cards by user grade.
@@ -213,7 +210,7 @@ extension Woodpecker {
     
     // Organizes the Reviewing Cards of a session by shuffling.
     private static func organizeReviewingSession(reviewingCards: [UUID]) -> [UUID] {
-        return reviewingCards.shuffled()
+        reviewingCards.shuffled()
     }
 
 }
