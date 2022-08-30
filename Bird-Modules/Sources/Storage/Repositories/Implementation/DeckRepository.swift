@@ -9,31 +9,6 @@ import Foundation
 import Combine
 import Models
 
-//MARK: - Protocol
-public protocol DeckRepositoryProtocol {
-    // Deck
-    func fetchDeckById(_ id: UUID) -> AnyPublisher<Deck, RepositoryError>
-    func fetchDecksByIds(_ ids: [UUID]) -> AnyPublisher<[Deck], RepositoryError>
-    func deckListener() -> AnyPublisher<[Deck], RepositoryError>
-    
-    func createDeck(_ deck: Deck, cards: [Card]) throws
-    func deleteDeck(_ deck: Deck) throws
-    func editDeck(_ deck: Deck) throws
-    
-    func addCard(_ card: Card, to deck: Deck) throws
-    func removeCard(_ card: Card, from deck: Deck) throws
-    
-    // Card
-    func fetchCardById(_ id: UUID) -> AnyPublisher<Card, RepositoryError>
-    func fetchCardsByIds(_ ids: [UUID]) -> AnyPublisher<[Card], RepositoryError>
-    
-    func deleteCard(_ card: Card) throws
-    func editCard(_ card: Card) throws
-    
-}
-
-//MARK: - Implementation
-
 public final class DeckRepository: DeckRepositoryProtocol {
     
     private let deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>
