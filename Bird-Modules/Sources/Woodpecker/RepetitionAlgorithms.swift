@@ -23,7 +23,7 @@ public struct Woodpecker {
      'WoodpeckerSchedulerErrors.timezoneError' if a timezone error occurs.
      - Returns: A tuple containing an array of the UUIDs of the cards to be displayed today, and an array of the UUIDs of the cards to be modified.
      */
-    public static func wpScheduler(cardsInfo: [SchedulerCardInfo], config: SpacedRepetitionConfig ,currentDate: Date = Date()) throws -> (todayCards: [UUID], toModify: [UUID]) {
+    public static func wpScheduler(cardsInfo: [SchedulerCardInfo], config: SpacedRepetitionConfig, currentDate: Date = Date()) throws -> (todayCards: [UUID], toModify: [UUID]) {
         
         if config.maxReviewingCards <= 0 {
             throw WoodpeckerSchedulerErrors.maxReviewingNotGreaterThan0
@@ -32,14 +32,14 @@ public struct Woodpecker {
         }
         
         var learningCards: [SchedulerCardInfo] = cardsInfo
-            .filter({ !$0.woodpeckerCardInfo.isGraduated })
+            .filter { !$0.woodpeckerCardInfo.isGraduated }
             .shuffled()
         
         let learningHasBeenPresented = learningCards
-            .filter({ $0.woodpeckerCardInfo.hasBeenPresented })
+            .filter { $0.woodpeckerCardInfo.hasBeenPresented }
         
         let learningHasntBeenPresented = learningCards
-            .filter({ !$0.woodpeckerCardInfo.hasBeenPresented })
+            .filter { !$0.woodpeckerCardInfo.hasBeenPresented }
         
         learningCards = Array((learningHasBeenPresented + learningHasntBeenPresented)
             .prefix(config.maxLearningCards))
@@ -66,7 +66,7 @@ public struct Woodpecker {
         
         let toModify: [SchedulerCardInfo]
         if reviewingDueTodayCards.count > config.maxReviewingCards {
-            toModify = Array(reviewingDueTodayCards[config.maxReviewingCards...reviewingDueTodayCards.count-1])
+            toModify = Array(reviewingDueTodayCards[config.maxReviewingCards...reviewingDueTodayCards.count - 1])
         } else {
             toModify = []
         }
@@ -74,7 +74,7 @@ public struct Woodpecker {
         let todayCards = (todayReviewingCards + learningCards)
             .shuffled()
         
-        return (todayCards.map({ $0.cardId }), toModify.map({ $0.cardId }))
+        return (todayCards.map { $0.cardId }, toModify.map { $0.cardId })
         
     }
     
