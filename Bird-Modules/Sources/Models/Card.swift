@@ -21,20 +21,15 @@ public struct Card {
     /// The due date for the card to appear to the user
     public var dueDate: Date? {
         get {
-            guard let newestItem = history.sorted(by: { card, card2 in
-                card.date > card2.date
-            }).last else {
-                return nil
-            }
+            guard let newestItem = history.max(by: { card0, card1 in
+            card0.date > card1.date
+        })
             return newestItem.date.advanced(by: TimeInterval(86400 * woodpeckerCardInfo.interval))
         }
         set {
-            guard let newValue = newValue, let newestItem = history.sorted(by: { card, card2 in
-                card.date > card2.date
-            }).last else {
-                return
-            }
-            
+            guard let newValue = newValue, let newestItem = history.max(by: { card0, card1 in
+            card0.date > card1.date
+        })
             let increment = Int((newValue.addingTimeInterval(-newestItem.date.timeIntervalSince1970)).timeIntervalSince1970 / 86400)
             let newInterval = woodpeckerCardInfo.interval + increment
             if newInterval < 0 {
@@ -42,7 +37,6 @@ public struct Card {
             } else {
                 woodpeckerCardInfo.interval = newInterval
             }
-            
         }
     }
     /// The woodpeckerCardInfo of the card.

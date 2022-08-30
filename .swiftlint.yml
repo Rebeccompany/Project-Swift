@@ -1,3 +1,8 @@
+included:
+
+excluded:
+  - Bird-Modules/Tests
+
 only_rules:
   - anyobject_protocol
   - array_init
@@ -72,14 +77,12 @@ only_rules:
   - multiline_function_chains
   - multiline_literal_brackets
   - multiline_parameters
-  - multiline_parameters_brackets
   - nimble_operator
   - no_extension_access_modifier
   - no_fallthrough_only
   - no_space_in_method_call
   - notification_center_detachment
   - nsobject_prefer_isequal
-  - number_separator
   - opening_brace
   - operator_usage_whitespace
   - operator_whitespace
@@ -102,7 +105,6 @@ only_rules:
   - redundant_optional_initialization
   - redundant_set_access_control
   - redundant_string_enum_value
-  - redundant_type_annotation
   - redundant_void_return
   - required_enum_case
   - return_arrow_whitespace
@@ -149,8 +151,6 @@ analyzer_rules:
   - unused_declaration
   - unused_import
   - typesafe_array_init
-number_separator:
-  minimum_length: 5
 identifier_name:
   max_length:
     warning: 100

@@ -26,6 +26,7 @@ public struct Woodpecker {
      - Returns: A tuple containing an array of the UUIDs of the Reviewing cards to be displayed today, an array of the UUIDs of the Learning cards to be displayed today, and an array of the UUIDs of the cards to be modified.
      */
     public static func scheduler(cardsInfo: [OrganizerCardInfo], config: SpacedRepetitionConfig ,currentDate: Date = Date()) throws -> (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) {
+
         
         if config.maxReviewingCards <= 0 {
             throw WoodpeckerSchedulerErrors.maxReviewingNotGreaterThan0
@@ -68,12 +69,10 @@ public struct Woodpecker {
         
         let toModify: [OrganizerCardInfo]
         if reviewingDueTodayCards.count > config.maxReviewingCards {
-            toModify = Array(reviewingDueTodayCards[config.maxReviewingCards...reviewingDueTodayCards.count-1])
+            toModify = Array(reviewingDueTodayCards[config.maxReviewingCards...reviewingDueTodayCards.count - 1])
         } else {
             toModify = []
         }
-        
-        
         return (todayReviewingCards.map({ $0.id }), todayLearningCards.map({ $0.id }), toModify.map({ $0.id }))
     }
     
