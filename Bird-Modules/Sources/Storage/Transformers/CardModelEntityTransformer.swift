@@ -9,7 +9,10 @@ import Foundation
 import Models
 import CoreData
 
+import SwiftUI
+
 struct CardModelEntityTransformer: ModelEntityTransformer {
+    //private let deckId
     
     func requestForAll() -> NSFetchRequest<CardEntity> {
         let request = CardEntity.fetchRequest()
@@ -44,7 +47,6 @@ struct CardModelEntityTransformer: ModelEntityTransformer {
         let dateLog = DateLogs(lastAccess: lastAccess, lastEdit: lastEdit, createdAt: createdAt)
         let history = snapshotsEntities.compactMap(CardSnapshot.init)
         
-        
         return Card(id: id,
                     front: AttributedString(frontNSAttributedString),
                     back: AttributedString(backNSAttributedString),
@@ -57,8 +59,8 @@ struct CardModelEntityTransformer: ModelEntityTransformer {
     func modelToEntity(_ model: Card, on context: NSManagedObjectContext) -> CardEntity {
         let card = CardEntity.init(context: context)
         
-        card.front = NSAttributedString(model.front).rftData()
-        card.back = NSAttributedString(model.back).rftData()
+        card.front = NSAttributedString(model.front).rtfData()
+        card.back = NSAttributedString(model.back).rtfData()
         card.createdAt = model.datesLogs.createdAt
         card.lastEdit = model.datesLogs.lastEdit
         card.lastAccess = model.datesLogs.lastAccess

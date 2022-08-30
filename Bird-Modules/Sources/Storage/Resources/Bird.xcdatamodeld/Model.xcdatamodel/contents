@@ -44,13 +44,13 @@
         <attribute name="maxLearningCards" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="maxReviewingCards" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="cards" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CardEntity" inverseName="deck" inverseEntity="CardEntity"/>
+        <relationship name="cards" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CardEntity" inverseName="deck" inverseEntity="CardEntity"/>
         <relationship name="collections" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CollectionEntity" inverseName="decks" inverseEntity="CollectionEntity"/>
     </entity>
     <elements>
         <element name="CardEntity" positionX="-27" positionY="90" width="128" height="14"/>
         <element name="CardSnapshotEntity" positionX="-18" positionY="162" width="128" height="14"/>
         <element name="CollectionEntity" positionX="-63" positionY="-9" width="128" height="14"/>
-        <element name="DeckEntity" positionX="-54" positionY="-9" width="128" height="14"/>
+        <element name="DeckEntity" positionX="-54" positionY="-9" width="128" height="179"/>
     </elements>
 </model>

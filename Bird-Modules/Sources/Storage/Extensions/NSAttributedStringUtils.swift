@@ -14,7 +14,7 @@ extension Data {
 }
 
 extension NSAttributedString {
-    func rftData() -> Data? {
+    func rtfData() -> Data? {
         try? data(from: .init(location: 0, length: length), documentAttributes: [.documentType: NSAttributedString.DocumentType.rtf])
     }
 }

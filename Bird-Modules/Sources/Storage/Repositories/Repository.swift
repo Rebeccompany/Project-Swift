@@ -111,6 +111,11 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
         do {
             let data = try dataStorage.mainContext.fetch(request)
             let mappedData = data.compactMap(transformer.entityToModel(_:))
+            
+            if mappedData.isEmpty {
+                return Fail<[Model],RepositoryError>(error: RepositoryError.failedFetching).eraseToAnyPublisher()
+            }
+            
             return Just(mappedData).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
         } catch {
             print("func singleRequest()", error)
