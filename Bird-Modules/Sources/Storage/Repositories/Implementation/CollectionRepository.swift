@@ -10,6 +10,7 @@ import Models
 import Combine
 
 class CollectionRepository: CollectionRepositoryProtocol {
+
     private let collectionRepository: Repository<DeckCollection, CollectionEntity, CollectionModelEntityTransformer>
     private let deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>
     
@@ -41,6 +42,19 @@ class CollectionRepository: CollectionRepositoryProtocol {
     
     func createCollection(_ collection: DeckCollection) throws {
         try collectionRepository.create(collection)
+    }
+    
+    func deleteCollection(_ collection: DeckCollection) throws {
+        try collectionRepository.delete(collection)
+    }
+    
+    func editCollection(_ collection: DeckCollection) throws {
+        let collectionEntity = try collectionRepository.fetchEntityById(collection.id)
+        collectionEntity.lastEdit = collection.datesLogs.lastEdit
+        collectionEntity.lastAccess = collection.datesLogs.lastAccess
+        collectionEntity.name = collection.name
+        collectionEntity.iconPath = collection.iconPath
+        try collectionRepository.save()
     }
     
     func listener() -> AnyPublisher<[DeckCollection], RepositoryError> {
