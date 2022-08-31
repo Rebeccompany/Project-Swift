@@ -107,6 +107,36 @@ let package = Package(
             ]
         ),
         
+        .target(name: "CollectionFeature",
+                dependencies: [
+                    "Models"
+                ]
+        ),
+            
+        .target(name: "DeckFeature",
+                dependencies: [
+                    "Models"
+                ]
+        ),
+            
+        .target(name: "EditFlashcardFeature",
+                dependencies: [
+                     "Models"
+                ]
+        ),
+            
+        .target(name: "GameFeature",
+                dependencies: [
+                     "Models"
+                ]
+        ),
+            
+        .target(name: "HomePageFeature",
+                dependencies: [
+                     "Models"
+                ]
+        ),
+        
         .target(
             name: "ImportingFeature",
             dependencies: [
@@ -116,6 +146,20 @@ let package = Package(
         
         .target(
             name: "Models"
+        ),
+        
+        .target(
+            name: "NewCollectionFeature",
+            dependencies: [
+                "Models"
+            ]
+        ),
+        
+        .target(
+            name: "NewDeckFeature",
+            dependencies: [
+                "Models"
+            ]
         ),
         
         .target(
