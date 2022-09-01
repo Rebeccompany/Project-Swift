@@ -82,7 +82,7 @@ let package = Package(
             targets: [
                 "Woodpecker"
             ]
-        )
+        ),
         
         .library(name: "Storage",
                  targets: [
