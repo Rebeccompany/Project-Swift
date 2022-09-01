@@ -13,16 +13,82 @@ let package = Package(
     
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(name: "AppFeature",
-                 targets: ["AppFeature"]),
-        .library(name: "ImportingFeature",
-                 targets: ["ImportingFeature"]),
-        .library(name: "Woodpecker",
-                 targets: ["Woodpecker"]),
-        .library(name: "Models",
-                 targets: ["Models"]),
+        .library(
+            name: "AppFeature",
+            targets: [
+                "AppFeature"
+            ]
+        ),
+        
+        .library(name: "CollectionFeature",
+                 targets: [
+                    "CollectionFeature"
+                 ]
+        ),
+        
+        .library(name: "DeckFeature",
+                 targets: [
+                    "DeckFeature"
+                 ]
+        ),
+        
+        .library(name: "EditFlashcardFeature",
+                 targets: [
+                    "EditFlashcardFeature"
+                 ]
+        ),
+        
+        .library(name: "GameFeature",
+                 targets: [
+                    "GameFeature"
+                 ]
+        ),
+        
+        .library(name: "HomePageFeature",
+                 targets: [
+                    "HomePageFeature"
+                 ]
+        ),
+
+        .library(
+            name: "ImportingFeature",
+            targets: [
+                "ImportingFeature"
+            ]
+        ),
+        
+        .library(
+            name: "Models",
+            targets: [
+                "Models"
+            ]
+        ),
+        
+        .library(
+            name: "NewCollectionFeature",
+            targets: [
+                "NewCollectionFeature"
+            ]
+        ),
+        .library(
+            name: "NewDeckFeature",
+            targets: [
+                "NewDeckFeature"
+            ]
+        ),
+
+        .library(
+            name: "Woodpecker",
+            targets: [
+                "Woodpecker"
+            ]
+        ),
+        
         .library(name: "Storage",
-                 targets: ["Storage"])
+                 targets: [
+                    "Storage"
+                 ]
+        )
     ],
     
     dependencies: [
@@ -46,6 +112,36 @@ let package = Package(
             ]
         ),
         
+        .target(name: "CollectionFeature",
+                dependencies: [
+                    "Models"
+                ]
+        ),
+            
+        .target(name: "DeckFeature",
+                dependencies: [
+                    "Models"
+                ]
+        ),
+            
+        .target(name: "EditFlashcardFeature",
+                dependencies: [
+                     "Models"
+                ]
+        ),
+            
+        .target(name: "GameFeature",
+                dependencies: [
+                     "Models"
+                ]
+        ),
+            
+        .target(name: "HomePageFeature",
+                dependencies: [
+                     "Models"
+                ]
+        ),
+        
         .target(
             name: "ImportingFeature",
             dependencies: [
@@ -56,6 +152,20 @@ let package = Package(
         .target(
                 name: "Models"
             ),
+        
+        .target(
+            name: "NewCollectionFeature",
+            dependencies: [
+                "Models"
+            ]
+        ),
+        
+        .target(
+            name: "NewDeckFeature",
+            dependencies: [
+                "Models"
+            ]
+        ),
         
         .target(
             name: "Woodpecker" ,
