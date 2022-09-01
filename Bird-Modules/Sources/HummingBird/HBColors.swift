@@ -52,16 +52,83 @@ enum HBColor {
             dark: "#B388E5")
     }
     
-    static var collectionStrongPink: Color {
+    static var collectionPink: Color {
         Color(
             light: "#DB5DBF",
             dark: "#C75BAB")
     }
     
-    static var collectionWeakPink: Color {
+    static var collectionOtherPink: Color {
         Color(
             light: "#E7667D",
-            dark: "#C75BAB")
+            dark: "#C64573")
     }
+    
+    static var collectionBeigeBrown: Color {
+        Color(
+            light: "#C89085",
+            dark: "#E3B7B0")
+    }
+    
+    static var collectionGray: Color {
+        Color(
+            light: "#929292",
+            dark: "#8B868D")
+    }
+    
+    static var collectionDarkBlue: Color {
+        Color(
+            light: "#254A93",
+            dark: "#354F83")
+    }
+    
+    static var actionColor: Color {
+        Color(
+            light: "#1394F7",
+            dark: "#21B3C9")
+    }
+    
+    static var secondaryPurpleColor: Color {
+        Color(
+            light: "#4C3DF5",
+            dark: "#7A6EF7")
+    }
+    
+    static var secondaryOrangeYellowColor: Color {
+        Color(
+            light: "#FE4C0E",
+            dark: "#FEE440")
+    }
+    
+    static var secondaryGreenColor: Color {
+        Color(
+            light: "#05A287",
+            dark: "#B4E40E")
+    }
+    
+    static var veryHardColor: Color {
+        Color(
+            light: "#FF6961",
+            dark: "#FF6961")
+    }
+
+    static var hardColor: Color {
+        Color(
+            light: "#FFB340",
+            dark: "#FFB340")
+    }
+    
+    static var easyColor: Color {
+        Color(
+            light: "#409CFF",
+            dark: "#409CFF")
+    }
+    
+    static var veryeasyColor: Color {
+        Color(
+            light: "#30DB5B",
+            dark: "#30DB5B")
+    }
+
 }
 
