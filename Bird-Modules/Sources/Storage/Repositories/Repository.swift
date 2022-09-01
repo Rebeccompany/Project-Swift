@@ -52,7 +52,6 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
             listenerSubject.value = mappedObjects
             return listenerSubject.eraseToAnyPublisher()
         } catch {
-            print("func listener()", error)
             throw RepositoryError.errorOnListening
         }
     }
@@ -72,7 +71,6 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
             
             return Just(mappedData).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
         } catch {
-            print("func fetchById", error)
             return Fail<Model, RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
         }
     }
@@ -91,14 +89,9 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
             try dataStorage.save()
             return entity
         } catch {
-            print("func create", error)
             throw RepositoryError.couldNotCreate
         }
     }
-//    
-//        func edit(_ value: Model) throws {
-//            fatalError()
-//        }
     
     func delete(_ value: Model) throws {
         let entity = try fetchEntityById(value.id)
@@ -119,7 +112,6 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
             
             return Just(mappedData).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
         } catch {
-            print("func singleRequest()", error)
             return Fail<[Model], RepositoryError>(error: RepositoryError.failedFetching).eraseToAnyPublisher()
         }
     }

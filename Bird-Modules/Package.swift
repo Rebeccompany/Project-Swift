@@ -41,7 +41,8 @@ let package = Package(
         .target(
             name: "AppFeature",
             dependencies: [
-                "ImportingFeature"
+                "ImportingFeature",
+                "Storage"
             ]
         ),
         

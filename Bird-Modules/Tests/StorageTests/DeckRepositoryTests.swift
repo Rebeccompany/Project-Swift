@@ -39,7 +39,6 @@ final class DeckRepositoryTests: XCTestCase {
     
     func testFetchDeckById() throws {
         let count = try dataStorage.mainContext.count(for: DeckEntity.fetchRequest())
-        print(count)
         try createStandardDeck()
         
         let expectation = expectation(description: "fetch a single Deck")
@@ -107,7 +106,6 @@ final class DeckRepositoryTests: XCTestCase {
                 expectation.fulfill()
                 
             } receiveValue: { values in
-                print(values)
             }
             .store(in: &cancellables)
         

@@ -144,7 +144,6 @@ class CollectionRepositoryTests: XCTestCase {
                 XCTAssertEqual($0, .finished)
             } receiveValue: { values in
                 XCTAssertEqual(ids.count, values.count)
-                print(values.count)
                 
                 values.forEach { collection in
                     let doesContainId = ids.contains(collection.id)

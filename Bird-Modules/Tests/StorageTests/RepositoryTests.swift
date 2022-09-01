@@ -51,24 +51,6 @@ class RepositoryTests: XCTestCase {
         XCTAssertEqual(1, result)
     }
     
-//    func testEdit() throws {
-//        try sut.create(DeckCollectionDummy.dummy)
-//        
-//        let entity = try dataStorage.mainContext.fetch(collectionRequest(for: DeckCollectionDummy.dummy.id)).first!
-//        
-//        XCTAssertEqual(entity.name, DeckCollectionDummy.dummy.name)
-//        
-//        var editedDummy = DeckCollectionDummy.dummy
-//        editedDummy.name = "Edited Swift"
-//        
-//        try sut.edit(editedDummy)
-//        
-//        let editedEntity = try dataStorage.mainContext.fetch(collectionRequest(for: editedDummy.id)).first!
-//        
-//        XCTAssertEqual(DeckCollectionDummy.dummy.id, editedEntity.id)
-//        XCTAssertEqual(editedDummy.name, editedEntity.name)
-//    }
-    
     func testDelete() throws {
         try sut.create(DeckCollectionDummy.dummy)
         
@@ -155,7 +137,6 @@ class RepositoryTests: XCTestCase {
                 XCTAssertEqual($0, .finished)
             } receiveValue: { values in
                 XCTAssertEqual(ids.count, values.count)
-                print(values.count)
                 
                 values.forEach { collection in
                     let doesContainId = ids.contains(collection.id)
