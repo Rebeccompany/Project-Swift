@@ -5,42 +5,24 @@ import PackageDescription
 
 let package = Package(
     name: "Bird-Modules",
-
+    
     platforms: [
-                .iOS(.v15),
-                .macOS(.v12)
+        .iOS(.v15),
+        .macOS(.v12)
     ],
-
+    
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(
-            name: "AppFeature",
-            targets: [
-                "AppFeature"
-            ]
-        ),
-        
-        .library(
-            name: "ImportingFeature",
-            targets: [
-                "ImportingFeature"
-            ]
-        ),
-        
-        .library(
-            name: "Woodpecker",
-            targets: [
-                "Woodpecker"
-            ]
-        ),
-        
-        .library(
-            name: "Models",
-            targets: [
-                "Models"
-            ]
-        )
-
+        .library(name: "AppFeature",
+                 targets: ["AppFeature"]),
+        .library(name: "ImportingFeature",
+                 targets: ["ImportingFeature"]),
+        .library(name: "Woodpecker",
+                 targets: ["Woodpecker"]),
+        .library(name: "Models",
+                 targets: ["Models"]),
+        .library(name: "Storage",
+                 targets: ["Storage"])
     ],
     
     dependencies: [
@@ -59,7 +41,8 @@ let package = Package(
         .target(
             name: "AppFeature",
             dependencies: [
-                "ImportingFeature"
+                "ImportingFeature",
+                "Storage"
             ]
         ),
         
@@ -71,13 +54,23 @@ let package = Package(
         ),
         
         .target(
-            name: "Models"
-        ),
+                name: "Models"
+            ),
         
         .target(
             name: "Woodpecker" ,
             dependencies: [
                 "Models"
+            ]
+        ),
+        
+        .target(
+            name: "Storage",
+            dependencies: [
+                "Models"
+            ],
+            resources: [
+                .copy("Resources/Bird.xcdatamodeld")
             ]
         ),
         
@@ -107,6 +100,14 @@ let package = Package(
         .testTarget(
             name: "CardModelTests",
             dependencies: [
+                "Models"
+            ]
+        ),
+        
+        .testTarget(
+            name: "StorageTests",
+            dependencies: [
+                "Storage",
                 "Models"
             ]
         )
