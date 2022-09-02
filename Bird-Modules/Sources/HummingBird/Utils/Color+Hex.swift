@@ -114,12 +114,12 @@ extension Color {
     }
 }
 
-public extension Color {
-    init(light: Color, dark: Color) {
+extension Color {
+    public init(light: Color, dark: Color) {
         self.init(uiColor: .init(light: UIColor(light), dark: UIColor(dark)))
     }
     
-    init(light: String, dark: String) {
+    public init(light: String, dark: String) {
         let lightColor: Color = Color(hex: light) ?? .clear
         let darkColor: Color = Color(hex: dark) ?? .clear
         
