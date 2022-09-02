@@ -146,8 +146,15 @@ public enum HBColor {
     
     public static var shadowColor: Color {
         Color(
-            light: "00000080",
-            dark: "FFFFFF80"
+            light: "00000038",
+            dark: "FFFFFF38"
+        )
+    }
+    
+    public static var collectionTextColor: Color {
+        Color(
+            light: "000000",
+            dark: "FFFFFF"
         )
     }
 

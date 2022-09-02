@@ -25,14 +25,12 @@ struct DeckView: View {
         
                 Spacer()
                 
-                HStack {
-                    Text("\(info.numberOfCards) cartas")
-                        .padding(8)
-                        .background(.white)
-                        .cornerRadius(10)
-                        .foregroundColor(info.backgroundColor)
-                        .font(.caption2.bold())
-                }
+                Text("\(info.numberOfCards) cartas")
+                    .padding(8)
+                    .background(.white)
+                    .cornerRadius(10)
+                    .foregroundColor(info.backgroundColor)
+                    .font(.caption2.bold())
                 
             }
             
