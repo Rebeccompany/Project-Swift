@@ -6,56 +6,80 @@
 //
 
 import SwiftUI
+import HummingBird
 
 struct DeckView: View {
-    var backgroundColor: Color
-    var iconName: String
-    var numberOfCards: Int
+    let info: DeckInfo
     
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                ZStack {
-                    Circle()
-                        .fill(.white)
-                        .frame(width: 40, height: 40, alignment: .topLeading)
-                
-                    Image(systemName: iconName).foregroundColor(backgroundColor)
-                }
+                Image(systemName: info.iconName)
+                    .foregroundColor(info.backgroundColor)
+                    .frame(width: 35, height: 35)
+                    .background(
+                        Circle()
+                            .fill(.white)
+
+                    )
         
                 Spacer()
                 
                 HStack {
-                    Text("\(numberOfCards) cartas")
+                    Text("\(info.numberOfCards) cartas")
                         .padding(8)
                         .background(.white)
                         .cornerRadius(10)
-                        .foregroundColor(backgroundColor)
-                        .font(.system(size: 10))
+                        .foregroundColor(info.backgroundColor)
+                        .font(.caption2.bold())
                 }
                 
             }
             
             Spacer()
-            Text("Nome do Baralho 1")
+            Text(info.deckName)
                 .foregroundColor(.white)
-                .font(.system(size: 15))
+                .fontWeight(.bold)
             
-        }.frame(width: 250, height: 125)
+        }
             .padding()
-            .background(RoundedRectangle(cornerRadius: 10)
-            .fill(backgroundColor)
-            ).padding()
-            .background(Color(red: 242, green: 242, blue: 247))
+            .background(info.backgroundColor)
+            .cornerRadius(8)
+            .shadow(color: <#T##Color#>, radius: <#T##CGFloat#>, x: <#T##CGFloat#>, y: <#T##CGFloat#>)
             
     }
 }
 
 struct DeckView_Preview: PreviewProvider {
     static var previews: some View {
-        Group {
-            DeckView(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 12)
-                .previewLayout(.sizeThatFits)
-        }
+        LazyVGrid(columns: [GridItem(.flexible(minimum: 170, maximum: 200)), GridItem(.flexible(minimum: 170, maximum: 200))], spacing: 8) {
+            DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
+                .frame(height: 100)
+            DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
+                .frame(height: 100)
+            DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
+                .frame(height: 100)
+            DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
+                .frame(height: 100)
+        }.padding()
+            
+            List {
+                DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
+                    .frame(height: 120)
+                DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
+                    .frame(height: 120)
+                DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
+                    .frame(height: 120)
+                DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
+                    .frame(height: 120)
+                DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
+                    .frame(height: 120)
+                DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
+                    .frame(height: 120)
+                    
+            }
+            .listStyle(.plain)
+            .preferredColorScheme(.dark)
+        
     }
 }
