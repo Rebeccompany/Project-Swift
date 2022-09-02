@@ -143,6 +143,13 @@ public enum HBColor {
             dark: "#2B354C"
         )
     }
+    
+    public static var shadowColor: Color {
+        Color(
+            light: "000000",
+            dark: "FFFFFF"
+        )
+    }
 
 }
 
