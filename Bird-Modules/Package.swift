@@ -115,7 +115,6 @@ let package = Package(
         .target(
             name: "AppFeature",
             dependencies: [
-                "ImportingFeature",
                 "Storage"
             ]
         ),
@@ -140,7 +139,8 @@ let package = Package(
             
         .target(name: "GameFeature",
                 dependencies: [
-                     "Models"
+                     "Models",
+                     "HummingBird"
                 ]
         ),
             
