@@ -167,6 +167,20 @@ public enum HBColor {
             dark: "FFFFFF"
         )
     }
+    
+    public static var primaryBackground: Color {
+        Color(
+            light: "#F2F2F7",
+            dark: "#191F2D"
+        )
+    }
+    
+    public static var secondaryBackground: Color {
+        Color(
+            light: "#FEFEFE",
+            dark: "#2B354C"
+        )
+    }
 
 }
 
