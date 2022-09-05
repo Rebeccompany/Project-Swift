@@ -2,6 +2,7 @@ included:
 
 excluded:
   - Bird-Modules/Tests
+  - Bird-Modules/Source/Storage/Entities
 
 only_rules:
   - anyobject_protocol

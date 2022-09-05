@@ -19,7 +19,8 @@ extension CardSnapshot {
                                         isGraduated: entity.isGraduated,
                                         easeFactor: entity.easeFactor,
                                         streak: Int(entity.streak),
-                                        interval: Int(entity.interval))
+                                        interval: Int(entity.interval),
+                                        hasBeenPresented: entity.hasBeenPresented)
         
         self.init(woodpeckerCardInfo: wpInfo,
                   userGrade: userGrade,
