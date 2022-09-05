@@ -38,9 +38,9 @@ let package = Package(
                  ]
         ),
         
-        .library(name: "GameFeature",
+        .library(name: "StudyFeature",
                  targets: [
-                    "GameFeature"
+                    "StudyFeature"
                  ]
         ),
         
@@ -138,7 +138,7 @@ let package = Package(
                 ]
         ),
             
-        .target(name: "GameFeature",
+        .target(name: "StudyFeature",
                 dependencies: [
                      "Models",
                      "HummingBird"
