@@ -50,7 +50,7 @@ struct DifficultyButtonView: View {
     }
 }
 
-struct DifficultyButtonView_Preview: PreviewProvider {
+private struct DifficultyButtonView_Preview: PreviewProvider {
     private static var content: DifficultyButtonContent {
         .init(image: "xmark", label: "Difícil", color: HBColor.hardColor)
     }

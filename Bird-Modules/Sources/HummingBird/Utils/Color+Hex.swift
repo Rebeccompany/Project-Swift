@@ -129,7 +129,7 @@ extension Color {
 }
 
 
-extension UIColor {
+private extension UIColor {
     convenience init(light: UIColor, dark: UIColor) {
         self.init { traitCollection in
             switch traitCollection.userInterfaceStyle {

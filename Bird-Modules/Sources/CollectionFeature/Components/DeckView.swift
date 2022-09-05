@@ -48,7 +48,7 @@ struct DeckView: View {
     }
 }
 
-struct DeckView_Preview: PreviewProvider {
+private struct DeckView_Preview: PreviewProvider {
     static var previews: some View {
         LazyVGrid(columns: [GridItem(.flexible(minimum: 170, maximum: 200)), GridItem(.flexible(minimum: 170, maximum: 200))], spacing: 8) {
             DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))

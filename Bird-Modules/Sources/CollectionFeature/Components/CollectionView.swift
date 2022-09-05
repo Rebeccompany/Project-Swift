@@ -31,9 +31,10 @@ struct CollectionView: View {
             
             Spacer()
             
-        }.padding()
-            .background(info.backgroundColor)
-            .cornerRadius(8)
+        }
+        .padding()
+        .background(info.backgroundColor)
+        .cornerRadius(8)
         .shadow(color: HBColor.shadowColor, radius: 3, x: 2, y: 3)
         
     }
