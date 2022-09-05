@@ -71,7 +71,7 @@ struct CardModelEntityTransformer: ModelEntityTransformer {
         card.wpInterval = Int32(model.woodpeckerCardInfo.interval)
         card.wpEaseFactor = model.woodpeckerCardInfo.easeFactor
         card.wpIsGraduated = model.woodpeckerCardInfo.isGraduated
-        
+        card.wpHasBeenPresented = model.woodpeckerCardInfo.hasBeenPresented
         return card
     }
 }

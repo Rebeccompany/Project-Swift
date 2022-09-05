@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Models
 
 public enum HBColor {
     
@@ -166,6 +167,35 @@ public enum HBColor {
             light: "000000",
             dark: "FFFFFF"
         )
+    }
+    
+    func getHBColrFromCollectionColor(_ collectionColor: CollectionColor) -> Color {
+        switch collectionColor {
+        case .red:
+            return Self.collectionRed
+        case .orange:
+            return Self.collectionOrange
+        case .yellow:
+            return Self.collectionYellow
+        case .green:
+            return Self.collectionGreen
+        case .lightBlue:
+            return Self.collectionLightBlue
+        case .darkPurple:
+            return Self.collectionDarkPurple
+        case .lightPurple:
+            return Self.collectionLightPurple
+        case .pink:
+            return Self.collectionPink
+        case .otherPink:
+            return Self.collectionOtherPink
+        case .beigeBrown:
+            return Self.collectionBeigeBrown
+        case .gray:
+            return Self.collectionGray
+        case .darkBlue:
+            return Self.collectionDarkBlue
+        }
     }
 
 }

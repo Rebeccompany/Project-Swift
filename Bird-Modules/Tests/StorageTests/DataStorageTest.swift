@@ -6,6 +6,7 @@
 //
 @testable import Storage
 import XCTest
+import Models
 
 class DataStorageTest: XCTestCase {
     
@@ -31,7 +32,7 @@ class DataStorageTest: XCTestCase {
         collectionEntity.lastEdit = Date()
         collectionEntity.createdAt = Date()
         collectionEntity.name = "Dummy Collection"
-        collectionEntity.iconPath = "chevron.down"
+        collectionEntity.color = Int16(CollectionColor.red.rawValue)
         
         try sut.save()
         
