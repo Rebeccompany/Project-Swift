@@ -121,7 +121,8 @@ let package = Package(
         
         .target(name: "CollectionFeature",
                 dependencies: [
-                    "Models"
+                    "Models",
+                    "HummingBird"
                 ]
         ),
             
