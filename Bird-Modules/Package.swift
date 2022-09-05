@@ -5,12 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "Bird-Modules",
-
+    
     platforms: [
-                .iOS(.v15),
-                .macOS(.v12)
+        .iOS(.v15),
+        .macOS(.v12)
     ],
-
+    
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
@@ -20,6 +20,36 @@ let package = Package(
             ]
         ),
         
+        .library(name: "CollectionFeature",
+                 targets: [
+                    "CollectionFeature"
+                 ]
+        ),
+        
+        .library(name: "DeckFeature",
+                 targets: [
+                    "DeckFeature"
+                 ]
+        ),
+        
+        .library(name: "EditFlashcardFeature",
+                 targets: [
+                    "EditFlashcardFeature"
+                 ]
+        ),
+        
+        .library(name: "GameFeature",
+                 targets: [
+                    "GameFeature"
+                 ]
+        ),
+        
+        .library(name: "HomePageFeature",
+                 targets: [
+                    "HomePageFeature"
+                 ]
+        ),
+
         .library(
             name: "ImportingFeature",
             targets: [
@@ -28,6 +58,26 @@ let package = Package(
         ),
         
         .library(
+            name: "Models",
+            targets: [
+                "Models"
+            ]
+        ),
+        
+        .library(
+            name: "NewCollectionFeature",
+            targets: [
+                "NewCollectionFeature"
+            ]
+        ),
+        .library(
+            name: "NewDeckFeature",
+            targets: [
+                "NewDeckFeature"
+            ]
+        ),
+
+        .library(
             name: "Woodpecker",
             targets: [
                 "Woodpecker"
@@ -35,12 +85,18 @@ let package = Package(
         ),
         
         .library(
-            name: "Models",
+            name: "Storage",
             targets: [
-                "Models"
+                "Storage"
+            ]
+        ),
+        
+        .library(
+            name: "HummingBird",
+            targets: [
+                "HummingBird"
             ]
         )
-
     ],
     
     dependencies: [
@@ -59,8 +115,40 @@ let package = Package(
         .target(
             name: "AppFeature",
             dependencies: [
-                "ImportingFeature"
+                "Storage"
             ]
+        ),
+        
+        .target(name: "CollectionFeature",
+                dependencies: [
+                    "Models",
+                    "HummingBird"
+                ]
+        ),
+            
+        .target(name: "DeckFeature",
+                dependencies: [
+                    "Models"
+                ]
+        ),
+            
+        .target(name: "EditFlashcardFeature",
+                dependencies: [
+                     "Models"
+                ]
+        ),
+            
+        .target(name: "GameFeature",
+                dependencies: [
+                     "Models",
+                     "HummingBird"
+                ]
+        ),
+            
+        .target(name: "HomePageFeature",
+                dependencies: [
+                     "Models"
+                ]
         ),
         
         .target(
@@ -71,11 +159,42 @@ let package = Package(
         ),
         
         .target(
-            name: "Models"
+                name: "Models"
+            ),
+        
+        .target(
+            name: "NewCollectionFeature",
+            dependencies: [
+                "Models"
+            ]
+        ),
+        
+        .target(
+            name: "NewDeckFeature",
+            dependencies: [
+                "Models"
+            ]
         ),
         
         .target(
             name: "Woodpecker" ,
+            dependencies: [
+                "Models"
+            ]
+        ),
+        
+        .target(
+            name: "Storage",
+            dependencies: [
+                "Models"
+            ],
+            resources: [
+                .copy("Resources/Bird.xcdatamodeld")
+            ]
+        ),
+        
+        .target(
+            name: "HummingBird",
             dependencies: [
                 "Models"
             ]
@@ -107,6 +226,14 @@ let package = Package(
         .testTarget(
             name: "CardModelTests",
             dependencies: [
+                "Models"
+            ]
+        ),
+        
+        .testTarget(
+            name: "StorageTests",
+            dependencies: [
+                "Storage",
                 "Models"
             ]
         )

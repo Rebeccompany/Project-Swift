@@ -22,6 +22,7 @@ public struct WoodpeckerCardInfo: Equatable {
     /// A boolean value that indicates if the card has ever been presented to the user.
     public var hasBeenPresented: Bool = false
     
+    #warning("atualizar modelo coreData")
     public init(step: Int = 0, isGraduated: Bool = false, easeFactor: Double = 2.5, streak: Int = 0, interval: Int = 0, hasBeenPresented: Bool = false) {
         self.step = step
         self.isGraduated = isGraduated

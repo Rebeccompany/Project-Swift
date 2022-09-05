@@ -26,7 +26,6 @@ final class DeckConverterTests: XCTestCase {
             .dummyData
             .forEach { data in
                 let result = try sut.convert(data)
-                print(result)
                 XCTAssertFalse(result.isEmpty)
             }
     }
