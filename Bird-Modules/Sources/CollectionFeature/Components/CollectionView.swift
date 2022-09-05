@@ -48,14 +48,16 @@ struct CollectionView: View {
 
 struct CollectionView_Previews: PreviewProvider {
     static var previews: some View {
-        CollectionView(info: CollectionInfo(numberOfDecks: 10, collectionName: "coleção numro e oure i moboyf hfgfiotd ygoyufguol", backgroundColor: HBColor.secondaryBackground, tagColor: HBColor.collectionDarkPurple), isSelected: false)
+        CollectionView(info: CollectionInfo(numberOfDecks: 10, collectionName: "Todos", backgroundColor: HBColor.secondaryBackground, tagColor: HBColor.collectionDarkPurple), isSelected: false)
             .frame(minHeight: 130)
             .accessibilityElement(children: /*@START_MENU_TOKEN@*/.contain/*@END_MENU_TOKEN@*/)
-            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
             .padding()
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
-            .accessibilityLabel(/*@START_MENU_TOKEN@*/"Label"/*@END_MENU_TOKEN@*/)
+            
+            
+            
+            
         
         CollectionView(info: CollectionInfo(numberOfDecks: 10, collectionName: "Todos", backgroundColor: HBColor.secondaryBackground, tagColor: HBColor.collectionDarkPurple), isSelected: true)
             .frame(minHeight: 130)
@@ -63,6 +65,6 @@ struct CollectionView_Previews: PreviewProvider {
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
             .preferredColorScheme(.dark)
-            .accessibilityLabel(/*@START_MENU_TOKEN@*/"Label"/*@END_MENU_TOKEN@*/)
+            
     }
 }

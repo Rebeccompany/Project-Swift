@@ -20,17 +20,16 @@ struct DeckView: View {
                     .background(
                         Circle()
                             .fill(.white)
-
-                    )
+                    ).font(.system(size: 20))
         
                 Spacer()
                 
-                Text("\(info.numberOfCards) cartas")
+                Text("\(info.numberOfCards) Cartões")
                     .padding(8)
                     .background(.white)
                     .cornerRadius(10)
                     .foregroundColor(info.backgroundColor)
-                    .font(.caption2.bold())
+                    .font(.system(size: 15))
                 
             }
             
@@ -38,6 +37,7 @@ struct DeckView: View {
             Text(info.deckName)
                 .foregroundColor(.white)
                 .fontWeight(.bold)
+                .minimumScaleFactor(0.6)
             
         }
             .padding()
@@ -52,28 +52,28 @@ struct DeckView_Preview: PreviewProvider {
     static var previews: some View {
         LazyVGrid(columns: [GridItem(.flexible(minimum: 170, maximum: 200)), GridItem(.flexible(minimum: 170, maximum: 200))], spacing: 8) {
             DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
-                .frame(height: 100)
+                .frame(minHeight: 100)
             DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
-                .frame(height: 100)
+                .frame(minHeight: 100)
             DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
-                .frame(height: 100)
+                .frame(minHeight: 100)
             DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
-                .frame(height: 100)
-        }.padding()
+                .frame(minHeight: 100)
+        }.accessibilityElement(children: /*@START_MENU_TOKEN@*/.contain/*@END_MENU_TOKEN@*/).environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge).padding().accessibilityLabel(/*@START_MENU_TOKEN@*/"Label"/*@END_MENU_TOKEN@*/)
             
             List {
                 DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
-                    .frame(height: 120)
+                    .frame(minHeight: 120)
                 DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
-                    .frame(height: 120)
+                    .frame(minHeight: 120)
                 DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
-                    .frame(height: 120)
+                    .frame(minHeight: 120)
                 DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
-                    .frame(height: 120)
+                    .frame(minHeight: 120)
                 DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
-                    .frame(height: 120)
+                    .frame(minHeight: 120)
                 DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
-                    .frame(height: 120)
+                    .frame(minHeight: 120)
                     
             }
             .listStyle(.plain)
