@@ -18,7 +18,7 @@ struct FlashcardDeckView: View {
                 ForEach(Array(zip(cards, cards.indices)), id: \.0.id) { card, i in
                     FlashcardView(card: card, backgroundColor: HBColor.collectionDarkPurple)
                         .offset(y: getCardOffset(index: i))
-                        .transition(.move(edge: .trailing))
+                        .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)))
                         .zIndex(Double(i))
                 }
             }
