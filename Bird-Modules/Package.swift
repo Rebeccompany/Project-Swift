@@ -84,10 +84,18 @@ let package = Package(
             ]
         ),
         
-        .library(name: "Storage",
-                 targets: [
-                    "Storage"
-                 ]
+        .library(
+            name: "Storage",
+            targets: [
+                "Storage"
+            ]
+        ),
+        
+        .library(
+            name: "HummingBird",
+            targets: [
+                "HummingBird"
+            ]
         )
     ],
     
@@ -107,14 +115,14 @@ let package = Package(
         .target(
             name: "AppFeature",
             dependencies: [
-                "ImportingFeature",
                 "Storage"
             ]
         ),
         
         .target(name: "CollectionFeature",
                 dependencies: [
-                    "Models"
+                    "Models",
+                    "HummingBird"
                 ]
         ),
             
@@ -132,7 +140,8 @@ let package = Package(
             
         .target(name: "GameFeature",
                 dependencies: [
-                     "Models"
+                     "Models",
+                     "HummingBird"
                 ]
         ),
             
@@ -181,6 +190,13 @@ let package = Package(
             ],
             resources: [
                 .copy("Resources/Bird.xcdatamodeld")
+            ]
+        ),
+        
+        .target(
+            name: "HummingBird",
+            dependencies: [
+                "Models"
             ]
         ),
         
