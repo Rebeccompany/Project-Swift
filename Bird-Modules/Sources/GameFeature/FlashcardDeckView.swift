@@ -10,34 +10,67 @@ import Models
 import HummingBird
 
 struct FlashcardDeckView: View {
-
-    var cards: (first: Card, second: Card)
+    var cards: [Card]
     
     var body: some View {
-        VStack {
-            GeometryReader { proxy in
-                ZStack(alignment: .top) {
-                    FlashcardView(card: cards.second, backgroundColor: HBColor.collectionDarkPurple)
-                        .scaleEffect(0.97)
-                    FlashcardView(card: cards.first, backgroundColor: HBColor.collectionGreen)
-                        .offset(y: proxy.size.height * 0.04)
+        GeometryReader { proxy in
+            ZStack(alignment: .top) {
+                ForEach(Array(zip(cards, cards.indices)), id: \.0.id) { card, i in
+                    FlashcardView(card: card, backgroundColor: HBColor.collectionDarkPurple)
+                        .offset(y: getCardOffset(index: i))
+                        .transition(.move(edge: .trailing))
+                        .zIndex(Double(i))
                 }
-                .padding(.bottom, proxy.size.height * 0.04)
             }
-            .padding()
-            
-            Text("oi")
+            .padding(.bottom, 10 * CGFloat(cards.count-1))
         }
-        
+    }
+    
+    private func getCardOffset(index: Int) -> CGFloat {
+        return  CGFloat(index) * 10
     }
 }
 
 struct FlashcardDeckView_Previews: PreviewProvider {
-    static var dummy: (first: Card, second: Card) {
-        (first: FlashcardView_Previews.dummy, second: FlashcardView_Previews.dummy)
+    
+    private struct Preview: View {
+        @State
+        var cards: [Card] = [FlashcardView_Previews.dummy]
+        
+        var body: some View {
+            VStack {
+                FlashcardDeckView(cards: cards)
+                    .background(Color.red)
+                    .padding()
+                
+                HStack {
+                    Button {
+                        withAnimation {
+                            cards.insert(FlashcardView_Previews.dummy, at: 0)
+                        }
+                        
+                    } label: {
+                        Text("add")
+                    }
+                    
+                    Button {
+                        withAnimation {
+                            cards.removeLast(1)
+                        }
+                        
+                    } label: {
+                        Text("remove")
+                    }
+                }
+            }
+            
+        }
     }
     
     static var previews: some View {
-        FlashcardDeckView(cards: dummy)
+        ZStack {
+            HBColor.primaryBackground.ignoresSafeArea()
+            Preview()
+        }
     }
 }

@@ -50,6 +50,7 @@ struct DifficultyButtonView: View {
     }
 }
 
+
 struct DifficultyButtonView_Preview: PreviewProvider {
     private static var content: DifficultyButtonContent {
         .init(image: "xmark", label: "Difícil", color: HBColor.hardColor)
@@ -64,10 +65,10 @@ struct DifficultyButtonView_Preview: PreviewProvider {
                 Spacer()
             }
         }
-        .padding()
-        .preferredColorScheme(.light)
-        .background(HBColor.primaryBackground)
-        .previewLayout(.sizeThatFits)
+            .preferredColorScheme(.light)
+            .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
+            .background(HBColor.primaryBackground)
+            .previewLayout(.sizeThatFits)
         
         HStack {
             ForEach(DifficultyStep.allCases) { step in
