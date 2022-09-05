@@ -167,6 +167,20 @@ public enum HBColor {
             dark: "FFFFFF"
         )
     }
+    
+    public static var selectIconBackground: Color {
+        Color(
+            light: "F4F4F4",
+            dark: "191F2D"
+        )
+    }
+    
+    public static var selectIconGridColor: Color {
+        Color(
+            light: "FFFFFF",
+            dark: "2B354C"
+        )
+    }
 
 }
 
