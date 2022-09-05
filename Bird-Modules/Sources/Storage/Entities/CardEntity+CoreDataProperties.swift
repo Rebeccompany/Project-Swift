@@ -2,13 +2,12 @@
 //  CardEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Gabriel Ferreira de Carvalho on 23/08/22.
+//  Created by Marcos Chevis on 05/09/22.
 //
 //
 
 import Foundation
 import CoreData
-
 // swiftlint:disable implicit_return
 extension CardEntity {
 
@@ -17,12 +16,14 @@ extension CardEntity {
     }
 
     @NSManaged public var back: Data?
+    @NSManaged public var color: Int16
     @NSManaged public var createdAt: Date?
     @NSManaged public var front: Data?
     @NSManaged public var id: UUID?
     @NSManaged public var lastAccess: Date?
     @NSManaged public var lastEdit: Date?
     @NSManaged public var wpEaseFactor: Double
+    @NSManaged public var wpHasBeenPresented: Bool
     @NSManaged public var wpInterval: Int32
     @NSManaged public var wpIsGraduated: Bool
     @NSManaged public var wpStep: Int32

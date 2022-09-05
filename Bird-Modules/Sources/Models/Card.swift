@@ -14,6 +14,8 @@ public struct Card: Identifiable, Equatable {
     public var front: AttributedString
     /// Information displayed on the back of the card.
     public var back: AttributedString
+    /// the color of the card
+    public var color: CollectionColor
     /// Logs of dates.
     public var datesLogs: DateLogs
     /// The id of the deck the card belongs to.
@@ -31,10 +33,11 @@ public struct Card: Identifiable, Equatable {
     /// List of the CardSnapshots of the card.
     public var history: [CardSnapshot]
     
-    public init(id: UUID, front: AttributedString, back: AttributedString, datesLogs: DateLogs, deckID: UUID, woodpeckerCardInfo: WoodpeckerCardInfo, history: [CardSnapshot]) {
+    public init(id: UUID, front: AttributedString, back: AttributedString, color: CollectionColor, datesLogs: DateLogs, deckID: UUID, woodpeckerCardInfo: WoodpeckerCardInfo, history: [CardSnapshot]) {
         self.id = id
         self.front = front
         self.back = back
+        self.color = color
         self.datesLogs = datesLogs
         self.deckID = deckID
         self.woodpeckerCardInfo = woodpeckerCardInfo

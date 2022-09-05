@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Models
 
 public enum HBColor {
     
@@ -168,19 +169,34 @@ public enum HBColor {
         )
     }
     
-    public static var selectIconBackground: Color {
-        Color(
-            light: "F4F4F4",
-            dark: "191F2D"
-        )
-    }
-    
-    public static var selectIconGridColor: Color {
-        Color(
-            light: "FFFFFF",
-            dark: "2B354C"
-            )
-        }
 
+    public static func getHBColrFromCollectionColor(_ collectionColor: CollectionColor) -> Color {
+        switch collectionColor {
+        case .red:
+            return Self.collectionRed
+        case .orange:
+            return Self.collectionOrange
+        case .yellow:
+            return Self.collectionYellow
+        case .green:
+            return Self.collectionGreen
+        case .lightBlue:
+            return Self.collectionLightBlue
+        case .darkPurple:
+            return Self.collectionDarkPurple
+        case .lightPurple:
+            return Self.collectionLightPurple
+        case .pink:
+            return Self.collectionPink
+        case .otherPink:
+            return Self.collectionOtherPink
+        case .beigeBrown:
+            return Self.collectionBeigeBrown
+        case .gray:
+            return Self.collectionGray
+        case .darkBlue:
+            return Self.collectionDarkBlue
+        }
+    }
 }
 
