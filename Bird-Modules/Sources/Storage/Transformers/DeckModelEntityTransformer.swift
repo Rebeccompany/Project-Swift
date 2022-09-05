@@ -37,6 +37,7 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
             let id = entity.id,
             let name = entity.name,
             let icon = entity.icon,
+            let color = CollectionColor(rawValue: Int(entity.color)),
             let lastAccess = entity.lastAccess,
             let createdAt = entity.createdAt,
             let lastEdit = entity.lastEdit,
@@ -51,7 +52,16 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
         let collectionsIds = collections.compactMap(\.id)
         let cardsIds = cards.compactMap(\.id)
         
-        return Deck(id: id, name: name, icon: icon, datesLogs: dateLogs, collectionsIds: collectionsIds, cardsIds: cardsIds, spacedRepetitionConfig: spacedRepetitionConfig)
+        return Deck(
+                    id: id,
+                    name: name,
+                    icon: icon,
+                    color: color,
+                    datesLogs: dateLogs,
+                    collectionsIds: collectionsIds,
+                    cardsIds: cardsIds,
+                    spacedRepetitionConfig: spacedRepetitionConfig
+        )
     }
     
     func modelToEntity(_ model: Deck, on context: NSManagedObjectContext) -> DeckEntity {

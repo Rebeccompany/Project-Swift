@@ -2,13 +2,12 @@
 //  DeckEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Gabriel Ferreira de Carvalho on 23/08/22.
+//  Created by Marcos Chevis on 05/09/22.
 //
 //
 
 import Foundation
 import CoreData
-
 // swiftlint:disable implicit_return
 extension DeckEntity {
 
@@ -16,14 +15,15 @@ extension DeckEntity {
         return NSFetchRequest<DeckEntity>(entityName: "DeckEntity")
     }
 
+    @NSManaged public var color: Int16
     @NSManaged public var createdAt: Date?
     @NSManaged public var icon: String?
     @NSManaged public var id: UUID?
     @NSManaged public var lastAccess: Date?
     @NSManaged public var lastEdit: Date?
-    @NSManaged public var name: String?
     @NSManaged public var maxLearningCards: Int32
     @NSManaged public var maxReviewingCards: Int32
+    @NSManaged public var name: String?
     @NSManaged public var cards: NSSet?
     @NSManaged public var collections: NSSet?
 

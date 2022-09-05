@@ -34,7 +34,7 @@ class CollectionModelEntityTransformeTests: XCTestCase {
         
         XCTAssertEqual(model.id, saved.id)
         XCTAssertEqual(model.name, saved.name)
-        XCTAssertEqual(model.iconPath, model.iconPath)
+        XCTAssertEqual(model.color, model.color)
         XCTAssertEqual(model.datesLogs.createdAt, saved.createdAt)
         XCTAssertEqual(model.datesLogs.lastEdit, saved.lastEdit)
         XCTAssertEqual(model.datesLogs.lastAccess, saved.lastAccess)
