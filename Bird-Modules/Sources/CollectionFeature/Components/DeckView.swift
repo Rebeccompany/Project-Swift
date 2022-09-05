@@ -59,7 +59,7 @@ struct DeckView_Preview: PreviewProvider {
                 .frame(minHeight: 100)
             DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
                 .frame(minHeight: 100)
-        }.accessibilityElement(children: /*@START_MENU_TOKEN@*/.contain/*@END_MENU_TOKEN@*/).environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge).padding().accessibilityLabel(/*@START_MENU_TOKEN@*/"Label"/*@END_MENU_TOKEN@*/)
+        }
             
             List {
                 DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))

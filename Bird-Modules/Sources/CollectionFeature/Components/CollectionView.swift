@@ -21,7 +21,6 @@ struct CollectionView: View {
                     .cornerRadius(10)
                     .foregroundColor(.white)
                     .font(.system(size: 15))
-                    .padding(.bottom)
                 
                
                  
@@ -34,14 +33,15 @@ struct CollectionView: View {
             
             Spacer()
             
-        }.padding()
-            .background(info.backgroundColor)
-            .cornerRadius(8)
-            .shadow(color: HBColor.shadowColor, radius: 3, x: 2, y: 3)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(info.tagColor, lineWidth: isSelected ? 3 : 0)
-            )
+        }
+        .padding()
+        .background(info.backgroundColor)
+        .cornerRadius(8)            
+        .shadow(color: HBColor.shadowColor, radius: 3, x: 2, y: 3)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(info.tagColor, lineWidth: isSelected ? 3 : 0)
+        )
         
     }
 }
@@ -50,21 +50,15 @@ struct CollectionView_Previews: PreviewProvider {
     static var previews: some View {
         CollectionView(info: CollectionInfo(numberOfDecks: 10, collectionName: "Todos", backgroundColor: HBColor.secondaryBackground, tagColor: HBColor.collectionDarkPurple), isSelected: false)
             .frame(minHeight: 130)
-            .accessibilityElement(children: /*@START_MENU_TOKEN@*/.contain/*@END_MENU_TOKEN@*/)
             .padding()
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
             
-            
-            
-            
-        
         CollectionView(info: CollectionInfo(numberOfDecks: 10, collectionName: "Todos", backgroundColor: HBColor.secondaryBackground, tagColor: HBColor.collectionDarkPurple), isSelected: true)
             .frame(minHeight: 130)
             .padding()
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
             .preferredColorScheme(.dark)
-            
     }
 }
