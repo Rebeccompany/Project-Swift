@@ -30,7 +30,6 @@ struct DeckView: View {
                     .cornerRadius(10)
                     .foregroundColor(info.backgroundColor)
                     .font(.system(size: 15))
-                
             }
             
             Spacer()
@@ -38,12 +37,11 @@ struct DeckView: View {
                 .foregroundColor(.white)
                 .fontWeight(.bold)
                 .minimumScaleFactor(0.6)
-            
         }
-            .padding()
-            .background(info.backgroundColor)
-            .cornerRadius(8)
-            .shadow(color: HBColor.shadowColor, radius: 3, x: 2, y: 3)
+        .padding()
+        .background(info.backgroundColor)
+        .cornerRadius(8)
+        .shadow(color: HBColor.shadowColor, radius: 3, x: 2, y: 3)
             
     }
 }
@@ -59,7 +57,7 @@ struct DeckView_Preview: PreviewProvider {
                 .frame(minHeight: 100)
             DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
                 .frame(minHeight: 100)
-        }
+        }.padding()
             
             List {
                 DeckView(info: DeckInfo(backgroundColor: HBColor.collectionOtherPink, iconName: "gamecontroller", numberOfCards: 10, deckName: "Nome do Baralho 1"))
