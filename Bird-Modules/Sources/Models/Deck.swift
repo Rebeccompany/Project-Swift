@@ -14,6 +14,8 @@ public struct Deck: Identifiable, Equatable {
     public var name: String
     /// The icon of a deck, an SFSymbol.
     public var icon: String
+    /// The color of the deck
+    public var color: CollectionColor
     /// Logs of dates.
     public var datesLogs: DateLogs
     /// A list of collection ids the deck belongs to.
@@ -23,10 +25,11 @@ public struct Deck: Identifiable, Equatable {
     /// Configurantion for Spaced repetition.
     public var spacedRepetitionConfig: SpacedRepetitionConfig
     
-    public init(id: UUID, name: String, icon: String, datesLogs: DateLogs, collectionsIds: [UUID], cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig) {
+    public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs, collectionsIds: [UUID], cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig) {
         self.id = id
         self.name = name
         self.icon = icon
+        self.color = color
         self.datesLogs = datesLogs
         self.collectionsIds = collectionsIds
         self.cardsIds = cardsIds

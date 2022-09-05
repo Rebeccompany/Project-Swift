@@ -43,13 +43,14 @@ struct CardModelEntityTransformer: ModelEntityTransformer {
         let interval = entity.wpInterval
         let step = entity.wpStep
         let streak = entity.wpStreak
-        let wpData = WoodpeckerCardInfo(step: Int(step), isGraduated: isGraduated, easeFactor: easeFactor, streak: Int(streak), interval: Int(interval))
+        let wpData = WoodpeckerCardInfo(step: Int(step), isGraduated: isGraduated, easeFactor: easeFactor, streak: Int(streak), interval: Int(interval), hasBeenPresented: entity.wpHasBeenPresented)
         let dateLog = DateLogs(lastAccess: lastAccess, lastEdit: lastEdit, createdAt: createdAt)
         let history = snapshotsEntities.compactMap(CardSnapshot.init)
         
         return Card(id: id,
                     front: AttributedString(frontNSAttributedString),
                     back: AttributedString(backNSAttributedString),
+                    color: CollectionColor(rawValue: Int(entity.color)) ?? .red,
                     datesLogs: dateLog,
                     deckID: deckId,
                     woodpeckerCardInfo: wpData,
@@ -70,7 +71,7 @@ struct CardModelEntityTransformer: ModelEntityTransformer {
         card.wpInterval = Int32(model.woodpeckerCardInfo.interval)
         card.wpEaseFactor = model.woodpeckerCardInfo.easeFactor
         card.wpIsGraduated = model.woodpeckerCardInfo.isGraduated
-        
+        card.wpHasBeenPresented = model.woodpeckerCardInfo.hasBeenPresented
         return card
     }
 }

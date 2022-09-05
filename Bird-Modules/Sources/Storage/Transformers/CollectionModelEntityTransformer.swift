@@ -24,7 +24,7 @@ struct CollectionModelEntityTransformer: ModelEntityTransformer {
         let collection = CollectionEntity(context: context)
         collection.id = model.id
         collection.name = model.name
-        collection.iconPath = model.iconPath
+        collection.color = Int16(model.color.rawValue)
         collection.lastEdit = model.datesLogs.lastEdit
         collection.createdAt = model.datesLogs.createdAt
         collection.lastAccess = model.datesLogs.lastAccess
@@ -36,7 +36,7 @@ struct CollectionModelEntityTransformer: ModelEntityTransformer {
         guard
             let id = entity.id,
             let name = entity.name,
-            let iconPath = entity.iconPath,
+            let color = CollectionColor(rawValue: Int(entity.color)),
             let lastAccess = entity.lastAccess,
             let createdAt = entity.createdAt,
             let lastEdit = entity.lastEdit,
@@ -46,6 +46,6 @@ struct CollectionModelEntityTransformer: ModelEntityTransformer {
         let decksIds = decks.compactMap(\.id)
         let dateLogs = DateLogs(lastAccess: lastAccess, lastEdit: lastEdit, createdAt: createdAt)
         
-        return DeckCollection(id: id, name: name, iconPath: iconPath, datesLogs: dateLogs, decksIds: decksIds)
+        return DeckCollection(id: id, name: name, color: color, datesLogs: dateLogs, decksIds: decksIds)
     }
 }

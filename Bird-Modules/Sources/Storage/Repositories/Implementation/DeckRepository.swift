@@ -121,6 +121,7 @@ public final class DeckRepository: DeckRepositoryProtocol {
         entity.wpEaseFactor = card.woodpeckerCardInfo.easeFactor
         entity.wpInterval = Int32(card.woodpeckerCardInfo.interval)
         entity.wpStreak = Int32(card.woodpeckerCardInfo.streak)
+        entity.wpHasBeenPresented = card.woodpeckerCardInfo.hasBeenPresented
         entity.wpIsGraduated = card.woodpeckerCardInfo.isGraduated
         entity.lastAccess = card.datesLogs.lastAccess
         entity.lastEdit = card.datesLogs.lastEdit

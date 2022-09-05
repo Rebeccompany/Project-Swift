@@ -2,7 +2,7 @@
 //  CollectionEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Gabriel Ferreira de Carvalho on 23/08/22.
+//  Created by Marcos Chevis on 05/09/22.
 //
 //
 
@@ -16,8 +16,8 @@ extension CollectionEntity {
         return NSFetchRequest<CollectionEntity>(entityName: "CollectionEntity")
     }
 
+    @NSManaged public var color: Int16
     @NSManaged public var createdAt: Date?
-    @NSManaged public var iconPath: String?
     @NSManaged public var id: UUID?
     @NSManaged public var lastAccess: Date?
     @NSManaged public var lastEdit: Date?
