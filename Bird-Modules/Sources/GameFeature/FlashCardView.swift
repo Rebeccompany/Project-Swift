@@ -12,47 +12,40 @@ import HummingBird
 struct FlashCardView: View {
     @Binding var card: Card
     @State private var isFlipped: Bool = false
-    @State private var frontDegree: Int = 0
-    @State private var backDegree: Int = 0
+    @State private var frontDegree: Double = -90
+    @State private var backDegree: Double = 0
     
     var body: some View {
         ZStack {
-            if !isFlipped {
-                cardFace(content: card.front, face: "Frente", description: "Toque para ver o verso")
-                    .padding(24)
-                    .background(HBColor.collectionDarkBlue)
-                    .cornerRadius(24)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 24)
-                            .stroke(Color.white, lineWidth: 3)
-                    )
-            } else {
-                cardFace(content: card.back, face: "Verso", description: "Toque para ver a frente")
-                    .padding(24)
-                    .background(HBColor.collectionDarkBlue)
-                    .cornerRadius(24)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 24)
-                            .stroke(Color.white, lineWidth: 3)
-                    )
-            }
+            cardFace(content: card.front, face: "Frente", description: "Toque para ver o verso")
+                .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0))
+            cardFace(content: card.back, face: "Verso", description: "Toque para ver a frente")
+                .rotation3DEffect(.degrees(backDegree), axis: (x: 0, y: 1, z: 0))
         }
         .onTapGesture(perform: flip)
-        .rotation3DEffect(.degrees(Double(frontDegree)), axis: (x: 0, y: 1, z: 0))
         
-        .rotation3DEffect(.degrees(Double(backDegree)), axis: (x: 0, y: 1, z: 0))
     }
     
     private func flip() {
-        let animationTime = 0.5
+        isFlipped.toggle()
+        let animDuration: Double = 0.25
         
-        withAnimation(Animation.easeInOut(duration: animationTime)) {
-            backDegree = (backDegree + 180) % 360
-        }
-        
-        withAnimation(Animation.easeInOut(duration: 0.0001).delay(0.28)) {
-            frontDegree = (frontDegree + 180) % 360
-            isFlipped.toggle()
+        if isFlipped {
+            withAnimation(.linear(duration: animDuration)) {
+                backDegree = 90
+            }
+            
+            withAnimation(.linear(duration: animDuration).delay(animDuration)) {
+                frontDegree = 0
+            }
+        } else {
+            withAnimation(.linear(duration: animDuration)) {
+                frontDegree = -90
+            }
+            
+            withAnimation(.linear(duration: animDuration).delay(animDuration)) {
+                backDegree = 0
+            }
         }
     }
     
@@ -81,6 +74,13 @@ struct FlashCardView: View {
                 Text(description)
             }
         }
+        .padding(24)
+        .background(HBColor.collectionDarkBlue)
+        .cornerRadius(24)
+        .overlay(
+            RoundedRectangle(cornerRadius: 24)
+                .stroke(Color.white, lineWidth: 3)
+        )
     }
 }
 
