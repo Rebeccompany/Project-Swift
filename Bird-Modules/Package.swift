@@ -141,7 +141,9 @@ let package = Package(
         .target(name: "StudyFeature",
                 dependencies: [
                      "Models",
-                     "HummingBird"
+                     "HummingBird",
+                     "Woodpecker",
+                     "Storage"
                 ]
         ),
             
@@ -227,6 +229,15 @@ let package = Package(
             name: "CardModelTests",
             dependencies: [
                 "Models"
+            ]
+        ),
+        
+        .testTarget(
+            name: "StudyFeatureTests",
+            dependencies: [
+                "StudyFeature",
+                "Models",
+                "Storage"
             ]
         ),
         

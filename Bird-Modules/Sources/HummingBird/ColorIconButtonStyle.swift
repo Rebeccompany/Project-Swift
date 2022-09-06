@@ -14,7 +14,7 @@ struct ColorIconButtonStyle: ButtonStyle {
         configuration.label
             .foregroundColor(HBColor.collectionTextColor)
             .font(.headline)
-            .background(configuration.isPressed ? HBColor.selectIconGridColor.opacity(0.5) : HBColor.selectIconBackground)
+            .background(configuration.isPressed ? .red: .red)
             .clipShape(Circle())
             .padding(5)
             .overlay(

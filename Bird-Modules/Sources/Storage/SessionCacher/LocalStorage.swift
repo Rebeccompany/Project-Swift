@@ -27,13 +27,16 @@ final public class SessionCacher {
         self.storage = storage
     }
     
-    var currentSession: Session? {
-        get {
-            storage.object(forKey: currentSessionKey) as? Session
-        }
-        set {
-            storage.set(newValue, forKey: currentSessionKey)
-        }
+    public func currentSession(for id: UUID) -> Session? {
+        storage.object(forKey: sessionKey(for: id)) as? Session
+    }
+    
+    public func setCurrentSession(session: Session) {
+        storage.set(session, forKey: sessionKey(for: session.deckId))
+    }
+    
+    private func sessionKey(for id: UUID) -> String {
+        "\(currentSessionKey).\(id.uuidString)"
     }
     
 }

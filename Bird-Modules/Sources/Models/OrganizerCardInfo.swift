@@ -23,4 +23,13 @@ public struct OrganizerCardInfo {
         self.dueDate = dueDate
         self.lastUserGrade = lastUserGrade
     }
+    
+    public init(card: Card) {
+        self.id = card.id
+        self.woodpeckerCardInfo = card.woodpeckerCardInfo
+        self.dueDate = card.dueDate
+        
+        
+        self.lastUserGrade = card.history.max(by: { $0.date > $1.date })?.userGrade
+    }
 }
