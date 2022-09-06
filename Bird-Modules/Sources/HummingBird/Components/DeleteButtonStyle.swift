@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct DeleteButtonStyle: ButtonStyle {
+public struct DeleteButtonStyle: ButtonStyle {
+    public init() {}
     
-    func makeBody(configuration: Configuration) -> some View {
+    public func makeBody(configuration: Configuration) -> some View {
         HStack {
             Spacer()
             configuration.label

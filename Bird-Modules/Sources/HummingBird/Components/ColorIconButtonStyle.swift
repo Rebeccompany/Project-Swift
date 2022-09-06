@@ -7,10 +7,14 @@
 
 import SwiftUI
 
-struct ColorIconButtonStyle: ButtonStyle {
+public struct ColorIconButtonStyle: ButtonStyle {
     var isSelected: Bool
-    func makeBody(configuration: Configuration) -> some View {
-        
+    
+    public init(isSelected: Bool) {
+        self.isSelected = isSelected
+    }
+    
+    public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .foregroundColor(HBColor.collectionTextColor)
             .font(.headline)
