@@ -15,7 +15,7 @@ public struct SpacedRepetitionConfig: Equatable {
     /// The maximum number of cards for the reviewing stage.
     public var maxReviewingCards: Int
     
-    public init(maxLearningCards: Int, maxReviewingCards: Int) {
+    public init(maxLearningCards: Int = 20, maxReviewingCards: Int = 200) {
         self.maxLearningCards = maxLearningCards
         self.maxReviewingCards = maxReviewingCards
     }

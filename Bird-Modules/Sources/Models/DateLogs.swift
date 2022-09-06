@@ -16,7 +16,7 @@ public struct DateLogs: Equatable {
     //// Date of creation of the subject.
     public let createdAt: Date
     
-    public init(lastAccess: Date, lastEdit: Date, createdAt: Date) {
+    public init(lastAccess: Date = Date(), lastEdit: Date = Date(), createdAt: Date = Date()) {
         self.lastAccess = lastAccess
         self.lastEdit = lastEdit
         self.createdAt = createdAt

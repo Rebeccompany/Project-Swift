@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  NewDeckView.swift
 //  
 //
 //  Created by Rebecca Mello on 06/09/22.
@@ -10,17 +10,11 @@ import HummingBird
 import Models
 
 struct NewDeckView: View {
-    @State var nameText: String = ""
-    var colors: [CollectionColor]
-    var icons: [IconNames]
-    var currentSelectedColor: CollectionColor? = nil
-    var currentSelectedIcon: IconNames? = nil
+    @ObservedObject
+    var viewModel: NewDeckViewModel
     
-    public init(colors: [CollectionColor], icons: [IconNames], currentSelectedColor: CollectionColor, currentSelectedIcon: IconNames) {
-        self.colors = colors
-        self.icons = icons
-        self.currentSelectedColor = currentSelectedColor
-        self.currentSelectedIcon = currentSelectedIcon
+    public init(viewModel: NewDeckViewModel) {
+        self.viewModel = viewModel
     }
     
     var body: some View {
@@ -30,7 +24,7 @@ struct NewDeckView: View {
                 .font(.callout)
                 .bold()
             
-            TextField("", text: $nameText)
+            TextField("", text: $viewModel.deckName)
                 .textFieldStyle(CollectionDeckTextFieldStyle())
                 .padding(.bottom)
             
@@ -39,11 +33,11 @@ struct NewDeckView: View {
                 .bold()
             
             IconColorGridView {
-                ForEach (colors, id: \.self) { color in
+                ForEach (viewModel.colors, id: \.self) { color in
                     Button{} label: {
                         HBColor.getHBColrFromCollectionColor(color)
                     }
-                    .buttonStyle(ColorIconButtonStyle(isSelected: currentSelectedColor == color ? true : false))
+                    .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
                     .frame(width: 45, height: 45)
                 }
             }
@@ -54,12 +48,12 @@ struct NewDeckView: View {
                 .padding(.top)
             
             IconColorGridView {
-                ForEach (icons, id: \.self) { icon in
+                ForEach (viewModel.icons, id: \.self) { icon in
                     Button{} label: {
                         Image(systemName: IconNames.getIconString(icon))
                             .frame(width: 35, height: 35)
                     }
-                    .buttonStyle(ColorIconButtonStyle(isSelected: currentSelectedIcon == icon ? true : false))
+                    .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
                     .frame(width: 45, height: 45)
                 }
             }
@@ -90,7 +84,7 @@ struct NewDeckView: View {
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            NewDeckView(colors: CollectionColor.allCases, icons: IconNames.allCases, currentSelectedColor: CollectionColor.darkBlue, currentSelectedIcon: IconNames.book)
+            NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, currentSelectedColor: CollectionColor.darkBlue, currentSelectedIcon: IconNames.book))
                 .preferredColorScheme(.dark)
         }
     }
