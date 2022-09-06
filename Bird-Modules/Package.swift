@@ -172,7 +172,8 @@ let package = Package(
         .target(
             name: "NewDeckFeature",
             dependencies: [
-                "Models"
+                "Models",
+                "HummingBird"
             ]
         ),
         
