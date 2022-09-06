@@ -16,7 +16,7 @@ struct FlashcardDeckView: View {
         GeometryReader { proxy in
             ZStack(alignment: .top) {
                 ForEach(Array(zip(cards, cards.indices)), id: \.0.id) { card, i in
-                    FlashcardView(card: card, backgroundColor: HBColor.collectionDarkPurple)
+                    FlashcardView(card: card)
                         .offset(y: getCardOffset(index: i))
                         .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)))
                         .zIndex(Double(i))
@@ -40,7 +40,6 @@ struct FlashcardDeckView_Previews: PreviewProvider {
         var body: some View {
             VStack {
                 FlashcardDeckView(cards: cards)
-                    .background(Color.red)
                     .padding()
                 
                 HStack {
@@ -60,6 +59,15 @@ struct FlashcardDeckView_Previews: PreviewProvider {
                         
                     } label: {
                         Text("remove")
+                    }
+                    
+                    Button {
+                        withAnimation {
+                            cards.shuffle()
+                        }
+                        
+                    } label: {
+                        Text("shuffle")
                     }
                 }
             }
