@@ -166,7 +166,8 @@ let package = Package(
             name: "NewCollectionFeature",
             dependencies: [
                 "Models",
-                "HummingBird"
+                "HummingBird",
+                "Storage"
             ]
         ),
         

@@ -8,46 +8,43 @@
 import SwiftUI
 import HummingBird
 import Models
+import Storage
 
 struct NewCollectionView: View {
-    
-    @State var deckName: String = ""
-    var colors: [CollectionColor]
-    var currentSelectedColor: CollectionColor? = nil
-    
-    public init(colors: [CollectionColor], currentSelectedColor: CollectionColor?) {
-        self.colors = colors
-        self.currentSelectedColor = currentSelectedColor
+
+    @ObservedObject var viewModel: NewCollectionViewModel
+
+    public init(viewModel: NewCollectionViewModel) {
+        self.viewModel = viewModel
     }
-    
+
     var body: some View {
-        
+
         VStack (alignment: .leading) {
-            
+
             Text("Nome")
                 .font(.callout)
                 .bold()
-            TextField("", text: $deckName)
+            TextField("", text: $viewModel.collectionName)
                 .textFieldStyle(CollectionDeckTextFieldStyle())
             Text("Cores")
                 .font(.callout)
                 .bold()
-            
+
             IconColorGridView {
-                ForEach(colors, id: \.self) {color in
+                ForEach(viewModel.colors, id: \.self) {color in
                     Button {
-                        
+
                     } label: {
                         HBColor.getHBColrFromCollectionColor(color)
                     }
-                    .buttonStyle(ColorIconButtonStyle(isSelected: currentSelectedColor == color ? true : false))
+                    .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
                     .frame(width: 45, height: 45)
                 }
             }
             Spacer()
         }
         .padding()
-        
         .ViewBackgroundColor(HBColor.primaryBackground)
         .navigationTitle("Criar Coleção")
         .navigationBarTitleDisplayMode(.inline)
@@ -56,16 +53,16 @@ struct NewCollectionView: View {
                 Button("Cancelar") {
                     print("cancelarr!")
                 }
-                .foregroundColor(.red)
-                
+                .foregroundColor(Color.red)
+
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("OK") {
-                    print("ok!")
+                    //viewModel.createCollection()
                 }
             }
-            
-            
+
+
         }
 
     }
@@ -77,7 +74,11 @@ struct NewCollectionView: View {
 struct NewCollectionView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            NewCollectionView(colors: CollectionColor.allCases, currentSelectedColor: CollectionColor.red)
+            NewCollectionView(
+                viewModel: .init(
+                    colors: CollectionColor.allCases,
+                    collectionRepository: CollectionRepositoryMock()
+                ))
                 .preferredColorScheme(.light)
         }
         
