@@ -14,27 +14,35 @@ import Combine
 class StudyViewModel: ObservableObject {
     private let deckRepository: DeckRepositoryProtocol
     private let sessionCacher: SessionCacher
+    private let dateHandler: DateHandlerProtocol
     private let deck: Deck
-    @Published private var cards: [Card] = []
+    @Published var cards: [Card] = []
     private var cancellables: Set<AnyCancellable> = .init()
     
-    init(deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil), sessionCacher: SessionCacher = SessionCacher(), deck: Deck) {
+    init(
+        deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil),
+        sessionCacher: SessionCacher = SessionCacher(),
+        deck: Deck,
+        dateHandler: DateHandlerProtocol = DateHandler()
+    ) {
         self.deckRepository = deckRepository
         self.sessionCacher = sessionCacher
         self.deck = deck
+        self.dateHandler = dateHandler
     }
     
     func startup() {
-        if let session = sessionCacher.currentSession(for: deck.id), isToday(date: session.date) {
+        if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
             deckRepository.fetchCardsByIds(session.cardIds)
                 .replaceError(with: [])
                 .assign(to: &$cards)
             
         } else {
             deckRepository.fetchCardsByIds(deck.cardsIds)
+                .print()
                 .map { $0.map(OrganizerCardInfo.init(card:)) }
-                .tryMap { [deck] cards in
-                    try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig)
+                .tryMap { [deck, dateHandler] cards in
+                    try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: dateHandler.today)
                 }
                 .handleEvents(receiveOutput: saveCardIdsToCache)
                 .mapError {_ in
@@ -50,7 +58,7 @@ class StudyViewModel: ObservableObject {
     }
     
     private func receiveCards(todayReviewingCards: [Card], todayLearningCards: [Card], toModify: [Card]) {
-        
+        cards = todayLearningCards + todayReviewingCards
     }
     
     private func transformIdsIntoPublishers(ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID])) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
@@ -63,18 +71,7 @@ class StudyViewModel: ObservableObject {
     }
     
     private func saveCardIdsToCache(ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) ) {
-        let session = Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: Date(), deckId: deck.id)
+        let session = Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id)
         sessionCacher.setCurrentSession(session: session)
-    }
-    
-    private func isToday(date: Date, today: Date = Date()) -> Bool {
-        var cal = Calendar(identifier: .gregorian)
-        guard let timezone = TimeZone(identifier: "UTC") else {
-            return false
-        }
-        cal.timeZone = timezone
-        
-        return cal.dateComponents([.day], from: date) == cal.dateComponents([.day], from: today)
-        
     }
 }
