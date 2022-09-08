@@ -10,6 +10,7 @@ import XCTest
 import Storage
 import Models
 import HummingBird
+import Combine
 
 class NewDeckViewModelTests: XCTestCase {
 
@@ -17,12 +18,14 @@ class NewDeckViewModelTests: XCTestCase {
     var deckRepository: DeckRepositoryMock!
     var dateHandlerMock: DateHandlerMock!
     var uuidHandler: UUIDHandlerMock!
+    var cancellables: Set<AnyCancellable>!
     
     
     override func setUp() {
         deckRepository = DeckRepositoryMock()
         dateHandlerMock = DateHandlerMock()
         uuidHandler = UUIDHandlerMock()
+        cancellables = .init()
         
         sut = NewDeckViewModel(colors: CollectionColor.allCases,
                                icons: IconNames.allCases,
@@ -31,6 +34,7 @@ class NewDeckViewModelTests: XCTestCase {
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
         )
+        sut.startUp()
     }
     
     override func tearDown() {
@@ -38,6 +42,8 @@ class NewDeckViewModelTests: XCTestCase {
         deckRepository = nil
         dateHandlerMock = nil
         uuidHandler = nil
+        cancellables.forEach({$0.cancel()})
+        cancellables = nil
     }
     
     func testCreateDeckSuccessfully() {
@@ -51,6 +57,112 @@ class NewDeckViewModelTests: XCTestCase {
         })
         
         XCTAssertTrue(containsNewDeck)
+    }
+    
+    func testCreateDeckError() {
+        sut.deckName = "Name"
+        sut.currentSelectedColor = CollectionColor.red
+        sut.currentSelectedIcon = IconNames.book
+        deckRepository.shouldThrowError = true
+        sut.createDeck()
+        
+        let containsNewDeck = deckRepository.decks.contains(where: {
+            $0.id == uuidHandler.lastCreatedID
+        })
+        
+        XCTAssertTrue(!containsNewDeck)
+    }
+    
+    func testCanSubmitBindingSuccessfully() {
+        let expectations = expectation(description: "Can submit binding")
+        sut.deckName = "Name"
+        sut.currentSelectedColor = CollectionColor.red
+        sut.currentSelectedIcon = IconNames.book
+        sut.$canSubmit.sink { canSubmit in
+            XCTAssertTrue(canSubmit)
+            expectations.fulfill()
+        }
+        .store(in: &cancellables)
+        wait(for: [expectations], timeout: 1)
+    }
+    
+    func testCanSubmitBindingErrorNoName() {
+        let expectations = expectation(description: "Can submit binding")
+        sut.currentSelectedColor = CollectionColor.red
+        sut.currentSelectedIcon = IconNames.book
+        sut.$canSubmit.sink { canSubmit in
+            XCTAssertTrue(!canSubmit)
+            expectations.fulfill()
+        }
+        .store(in: &cancellables)
+        wait(for: [expectations], timeout: 1)
+    }
+    
+    func testCanSubmitBindingErrorNoColor() {
+        let expectations = expectation(description: "Can submit binding")
+        sut.deckName = "Name"
+        sut.currentSelectedIcon = IconNames.book
+        sut.$canSubmit.sink { canSubmit in
+            XCTAssertTrue(!canSubmit)
+            expectations.fulfill()
+        }
+        .store(in: &cancellables)
+        wait(for: [expectations], timeout: 1)
+    }
+    
+    func testCanSubmitBindingErrorNoIcon() {
+        let expectations = expectation(description: "Can submit binding")
+        sut.deckName = "Name"
+        sut.currentSelectedColor = CollectionColor.red
+        sut.$canSubmit.sink { canSubmit in
+            XCTAssertTrue(!canSubmit)
+            expectations.fulfill()
+        }
+        .store(in: &cancellables)
+        wait(for: [expectations], timeout: 1)
+    }
+    
+    func testCanSubmitBindingErrorNoNameAndColor() {
+        let expectations = expectation(description: "Can submit binding")
+        sut.currentSelectedIcon = IconNames.book
+        sut.$canSubmit.sink { canSubmit in
+            XCTAssertTrue(!canSubmit)
+            expectations.fulfill()
+        }
+        .store(in: &cancellables)
+        wait(for: [expectations], timeout: 1)
+    }
+    
+    func testCanSubmitBindingErrorNoNameAndIcon() {
+        let expectations = expectation(description: "Can submit binding")
+        sut.currentSelectedColor = CollectionColor.red
+        sut.$canSubmit.sink { canSubmit in
+            XCTAssertTrue(!canSubmit)
+            expectations.fulfill()
+        }
+        .store(in: &cancellables)
+        wait(for: [expectations], timeout: 1)
+    }
+    
+    func testCanSubmitBindingErrorNoColorAndIcon() {
+        let expectations = expectation(description: "Can submit binding")
+        sut.deckName = "Name"
+        sut.$canSubmit.sink { canSubmit in
+            XCTAssertTrue(!canSubmit)
+            expectations.fulfill()
+        }
+        .store(in: &cancellables)
+        wait(for: [expectations], timeout: 1)
+    }
+    
+    func testCanSubmitBindingErrorNoNameColorAndIcon() {
+        let expectations = expectation(description: "Can submit binding")
+        sut.$canSubmit.sink { canSubmit in
+            XCTAssertTrue(!canSubmit)
+            expectations.fulfill()
+        }
+        .store(in: &cancellables)
+        wait(for: [expectations], timeout: 1)
     }
 
 }

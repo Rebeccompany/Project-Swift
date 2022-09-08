@@ -17,6 +17,7 @@ public class NewDeckViewModel: ObservableObject {
     @Published var currentSelectedColor: CollectionColor? = nil
     @Published var currentSelectedIcon: IconNames? = nil
     @Published var canSubmit: Bool
+    @Published var showingErrorAlert: Bool = false
     
     var colors: [CollectionColor]
     var icons: [IconNames]
@@ -72,7 +73,7 @@ public class NewDeckViewModel: ObservableObject {
                 cards: [])
                     
         } catch {
-            #warning("fazer o erro")
+            showingErrorAlert = true
         }
     }
 }

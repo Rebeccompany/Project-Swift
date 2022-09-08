@@ -69,6 +69,11 @@ public struct NewDeckView: View {
             }
             .onAppear(perform: viewModel.startUp)
             .padding()
+            .alert("Ocorreu um erro interno, tente novamente", isPresented: $viewModel.showingErrorAlert) {
+                Button("OK", role: .cancel) {
+                    viewModel.showingErrorAlert = false
+                }
+            }
             
             .ViewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle("Criar Baralho")

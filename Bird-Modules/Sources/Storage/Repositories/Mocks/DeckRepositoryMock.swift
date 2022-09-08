@@ -10,6 +10,9 @@
  import Combine
 
  public class DeckRepositoryMock: DeckRepositoryProtocol {
+     
+     public var shouldThrowError: Bool = false
+     
      public var deckWithCardsId: UUID = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")!
 
      public lazy var decks: [Deck] = [Deck(id: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", cardsIds: cards.map( { $0.id })),
@@ -57,6 +60,10 @@
      }
 
      public func createDeck(_ deck: Deck, cards: [Card]) throws {
+         if shouldThrowError {
+             throw RepositoryError.couldNotCreate
+         }
+         
          var deck = deck
          deck.cardsIds = cards.map(\.id)
          decks.append(deck)
@@ -66,6 +73,10 @@
      }
 
      public func deleteDeck(_ deck: Deck) throws {
+         if shouldThrowError {
+             throw RepositoryError.couldNotDelete
+         }
+         
          decks.removeAll { d in
              d.id == deck.id
          }
@@ -74,6 +85,10 @@
      }
 
      public func editDeck(_ deck: Deck) throws {
+         if shouldThrowError {
+             throw RepositoryError.couldNotEdit
+         }
+         
          if let i = decks.firstIndex(where: { d in d.id == deck.id }) {
              decks[i] = deck
          } else {
@@ -84,6 +99,10 @@
      }
 
      public func addCard(_ card: Card, to deck: Deck) throws {
+         if shouldThrowError {
+             throw RepositoryError.couldNotCreate
+         }
+         
          if let i = decks.firstIndex(where: { d in d.id == deck.id }) {
              decks[i] = deck
              subject.send(decks)
@@ -93,6 +112,10 @@
      }
 
      public func removeCard(_ card: Card, from deck: Deck) throws {
+         if shouldThrowError {
+             throw RepositoryError.couldNotDelete
+         }
+         
          cards.removeAll { $0.id == card.id }
          decks = decks.map { d in
              var d = d
@@ -116,6 +139,10 @@
      }
 
      public func deleteCard(_ card: Card) throws {
+         if shouldThrowError {
+             throw RepositoryError.couldNotDelete
+         }
+         
          cards.removeAll { $0.id == card.id }
          decks = decks.map { d in
              var d = d
@@ -125,6 +152,10 @@
      }
 
      public func editCard(_ card: Card) throws {
+         if shouldThrowError {
+             throw RepositoryError.couldNotEdit
+         }
+         
          if let i = cards.firstIndex(where: { d in d.id == card.id }) {
              cards[i] = card
          } else {
