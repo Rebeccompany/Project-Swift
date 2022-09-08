@@ -11,7 +11,6 @@ import HummingBird
 
 struct FlashcardView: View {
     var card: Card
-    var backgroundColor: Color
     @State private var isFlipped: Bool = false
     @State private var frontDegree: Double = 0
     @State private var backDegree: Double = -90
@@ -79,7 +78,7 @@ struct FlashcardView: View {
         }
         .foregroundColor(.white)
         .padding(24)
-        .background(backgroundColor)
+        .background(HBColor.getHBColrFromCollectionColor(card.color))
         .cornerRadius(24)
         .overlay(
             RoundedRectangle(cornerRadius: 24)
@@ -111,7 +110,7 @@ struct FlashcardView_Previews: PreviewProvider {
     }
     
     static var previews: some View {
-        FlashcardView(card: dummy, backgroundColor: HBColor.collectionPink)
+        FlashcardView(card: dummy)
             .frame(width: 340, height: 480)
             .padding()
             .preferredColorScheme(.dark)

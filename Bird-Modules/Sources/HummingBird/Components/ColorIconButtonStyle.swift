@@ -19,7 +19,7 @@ struct ColorIconButtonStyle: ButtonStyle {
             .padding(5)
             .overlay(
             Circle()
-                .stroke(HBColor.actionColor, lineWidth: isSelected ? 4 : 0)
+                .stroke(HBColor.actionColor, lineWidth: isSelected ? 3 : 0)
         )
     }
 }
