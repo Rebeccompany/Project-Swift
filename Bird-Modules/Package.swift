@@ -202,6 +202,10 @@ let package = Package(
             ]
         ),
         
+        .target(
+            name: "Utils"
+        ),
+        
         // MARK: Test Targets
         .testTarget(
             name: "ImportingFeatureTests",
