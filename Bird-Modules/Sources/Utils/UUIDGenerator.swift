@@ -12,6 +12,7 @@ public protocol UUIDGeneratorProtocol {
 }
 
 public struct UUIDGenerator: UUIDGeneratorProtocol {
+    public init() {}
     
     public func newId() -> UUID {
         UUID()

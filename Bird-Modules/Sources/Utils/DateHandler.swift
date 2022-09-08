@@ -10,17 +10,19 @@ import Foundation
 public protocol DateHandlerProtocol {
     var today: Date { get }
     func isToday(date: Date) -> Bool
-    func dayAfterToday(_ count) -> Date
+    func dayAfterToday(_ count: Int) -> Date
 }
 
-extension DateHandlerProtocol {
-    func dayAfterToday(_ count) -> Date {
-        let timeInterval = today.timeIntervalSince1970 + 8400
+public extension DateHandlerProtocol {
+    func dayAfterToday(_ count: Int) -> Date {
+        let timeInterval = today.timeIntervalSince1970 + Double(8400 * count)
         return Date(timeIntervalSince1970: timeInterval)
     }
 }
 
 public struct DateHandler: DateHandlerProtocol {
+    public init() {}
+    
     public var today: Date {
         Date()
     }
@@ -34,5 +36,5 @@ public struct DateHandler: DateHandlerProtocol {
         
         return cal.dateComponents([.day], from: date) == cal.dateComponents([.day], from: today)
     }
-    
+}
     

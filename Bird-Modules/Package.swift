@@ -167,7 +167,8 @@ let package = Package(
             dependencies: [
                 "Models",
                 "HummingBird",
-                "Storage"
+                "Storage",
+                "Utils"
             ]
         ),
         
@@ -249,7 +250,8 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Models",
-                "NewCollectionFeature"
+                "NewCollectionFeature",
+                "Utils"
             ]
         )
     ]

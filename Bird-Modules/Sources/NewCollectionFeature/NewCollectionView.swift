@@ -13,6 +13,7 @@ import Storage
 struct NewCollectionView: View {
 
     @ObservedObject var viewModel: NewCollectionViewModel
+    
 
     public init(viewModel: NewCollectionViewModel) {
         self.viewModel = viewModel
@@ -34,6 +35,7 @@ struct NewCollectionView: View {
             IconColorGridView {
                 ForEach(viewModel.colors, id: \.self) {color in
                     Button {
+                        viewModel.currentSelectedColor = color
 
                     } label: {
                         HBColor.getHBColrFromCollectionColor(color)
@@ -44,7 +46,11 @@ struct NewCollectionView: View {
             }
             Spacer()
         }
+        .onAppear(perform: viewModel.startUp)
         .padding()
+        .alert("Ocorreu um erro interno. Tente novamente.", isPresented: $viewModel.showingErrorAlert) {
+            Button("OK", role: .cancel) { viewModel.showingErrorAlert = false}
+                }
         .ViewBackgroundColor(HBColor.primaryBackground)
         .navigationTitle("Criar Coleção")
         .navigationBarTitleDisplayMode(.inline)
@@ -60,6 +66,7 @@ struct NewCollectionView: View {
                 Button("OK") {
                     viewModel.createCollection()
                 }
+                .disabled(!viewModel.canSubmit)
             }
 
 

@@ -6,33 +6,63 @@
 //
 
 import SwiftUI
-import HummingBird
 import Models
 import Storage
 import Combine
+import Utils
 
 class NewCollectionViewModel: ObservableObject {
-    
-    private let collectionRepository: CollectionRepositoryProtocol
     @Published var collectionName: String = ""
-    var colors: [CollectionColor]
     @Published var currentSelectedColor: CollectionColor? = nil
+    @Published var canSubmit: Bool
+    @Published var showingErrorAlert: Bool = false
     
-    init(colors: [CollectionColor], collectionRepository: CollectionRepositoryProtocol = CollectionRepository()) {
+    private let dateHandler: DateHandlerProtocol
+    private let idGenerator: UUIDGeneratorProtocol
+    private let collectionRepository: CollectionRepositoryProtocol
+    var colors: [CollectionColor]
+    
+    init(
+        colors: [CollectionColor],
+        collectionRepository: CollectionRepositoryProtocol = CollectionRepository(),
+        dateHandler: DateHandlerProtocol = DateHandler(),
+        idGenerator: UUIDGeneratorProtocol = UUIDGenerator()
+    ) {
         self.colors = colors
         self.collectionRepository = collectionRepository
+        self.dateHandler = dateHandler
+        self.idGenerator = idGenerator
+        self.canSubmit = false
+        
     }
     
+    func startUp() {
+        Publishers.CombineLatest($collectionName, $currentSelectedColor)
+            .map(canSubmitData)
+            .assign(to: &$canSubmit)
+    }
+    
+    private func canSubmitData(name: String, currentSelectedColor: CollectionColor?) -> Bool {
+        !name.isEmpty && currentSelectedColor != nil
+    }
     
     func createCollection() {
         guard let selectedColor = currentSelectedColor else {
-            #warning("error")
             return
         }
         do {
-            try collectionRepository.createCollection(DeckCollection(id: UUID(), name: collectionName, color: selectedColor, datesLogs: DateLogs(lastAccess: Date(), lastEdit: Date(), createdAt: Date()), decksIds: []))
+            try collectionRepository.createCollection(
+                DeckCollection(
+                    id: idGenerator.newId(),
+                    name: collectionName,
+                    color: selectedColor,
+                    datesLogs: DateLogs(
+                        lastAccess: dateHandler.today,
+                        lastEdit: dateHandler.today,
+                        createdAt: dateHandler.today),
+                    decksIds: []))
         } catch {
-            #warning("tratar error")
+            showingErrorAlert = true
         }
         
     }
