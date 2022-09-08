@@ -12,7 +12,7 @@ import Storage
 import Utils
 import Combine
 
-class NewDeckViewModel: ObservableObject {
+public class NewDeckViewModel: ObservableObject {
     @Published var deckName: String = ""
     @Published var currentSelectedColor: CollectionColor? = nil
     @Published var currentSelectedIcon: IconNames? = nil
@@ -26,7 +26,7 @@ class NewDeckViewModel: ObservableObject {
     private let uuidGenerator: UUIDGeneratorProtocol
     
     
-    init(
+    public init(
         colors: [CollectionColor],
          icons: [IconNames],
          deckRepository: DeckRepositoryProtocol,
@@ -58,7 +58,6 @@ class NewDeckViewModel: ObservableObject {
         guard let selectedColor = currentSelectedColor, let selectedIcon = currentSelectedIcon else {
             return
         }
-        
 
         do {
             try deckRepository.createDeck(

@@ -10,91 +10,92 @@ import HummingBird
 import Models
 import Storage
 
-struct NewDeckView: View {
+public struct NewDeckView: View {
     @ObservedObject
     var viewModel: NewDeckViewModel
+    @Environment(\.dismiss) var dismiss
     
     public init(viewModel: NewDeckViewModel) {
         self.viewModel = viewModel
     }
     
-    var body: some View {
+    public var body: some View {
         
-        VStack(alignment: .leading) {
-            Text("Nome")
-                .font(.callout)
-                .bold()
-            
-            TextField("", text: $viewModel.deckName)
-                .textFieldStyle(CollectionDeckTextFieldStyle())
-                .padding(.bottom)
-            
-            Text("Cores")
-                .font(.callout)
-                .bold()
-            
-            IconColorGridView {
-                ForEach (viewModel.colors, id: \.self) { color in
-                    Button{
-                        viewModel.currentSelectedColor = color
-                    } label: {
-                        HBColor.getHBColrFromCollectionColor(color)
-                            .frame(width: 45, height: 45)
+        NavigationView {
+            VStack(alignment: .leading) {
+                Text("Nome")
+                    .font(.callout)
+                    .bold()
+                
+                TextField("", text: $viewModel.deckName)
+                    .textFieldStyle(CollectionDeckTextFieldStyle())
+                    .padding(.bottom)
+                
+                Text("Cores")
+                    .font(.callout)
+                    .bold()
+                
+                IconColorGridView {
+                    ForEach (viewModel.colors, id: \.self) { color in
+                        Button{
+                            viewModel.currentSelectedColor = color
+                        } label: {
+                            HBColor.getHBColrFromCollectionColor(color)
+                                .frame(width: 45, height: 45)
+                        }
+                        .accessibility(label: Text(CollectionColor.getColorString(color)))
+                        .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
                     }
-                    .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
-
                 }
-            }
-            
-            Text("Ícones")
-                .font(.callout)
-                .bold()
-                .padding(.top)
-            
-            IconColorGridView {
-                ForEach (viewModel.icons, id: \.self) { icon in
-                    Button{
-                        viewModel.currentSelectedIcon = icon
-                    } label: {
-                        Image(systemName: IconNames.getIconString(icon))
-                            .frame(width: 45, height: 45)
+                
+                Text("Ícones")
+                    .font(.callout)
+                    .bold()
+                    .padding(.top)
+                
+                IconColorGridView {
+                    ForEach (viewModel.icons, id: \.self) { icon in
+                        Button{
+                            viewModel.currentSelectedIcon = icon
+                        } label: {
+                            Image(systemName: IconNames.getIconString(icon))
+                                .frame(width: 45, height: 45)
+                        }
+                        .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
+                        
                     }
-                    .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
-                    
                 }
+                Spacer()
             }
-            Spacer()
-        }
-        .onAppear(perform: viewModel.startUp)
-        .padding()
-        
-        .ViewBackgroundColor(HBColor.primaryBackground)
-        .navigationTitle("Criar Baralho")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("OK") {
-                    print("ok clicado")
-                    viewModel.createDeck()
-                }
-                .disabled(viewModel.canSubmit)
-            }
+            .onAppear(perform: viewModel.startUp)
+            .padding()
             
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancelar") {
-                    print("cancelar clicado")
+            .ViewBackgroundColor(HBColor.primaryBackground)
+            .navigationTitle("Criar Baralho")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("OK") {
+                        viewModel.createDeck()
+                    }
+                    .disabled(viewModel.canSubmit)
                 }
-                .foregroundColor(.red)
+                
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar") {
+                        dismiss()
+                    }
+                    .foregroundColor(.red)
+                }
             }
         }
+        .navigationViewStyle(.stack)
     }
 }
 
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: [UUID()]))
-                .preferredColorScheme(.dark)
-        }
+        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: [UUID()]))
+            .preferredColorScheme(.dark)
     }
 }
