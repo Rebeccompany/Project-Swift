@@ -58,7 +58,7 @@ struct NewCollectionView: View {
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("OK") {
-                    //viewModel.createCollection()
+                    viewModel.createCollection()
                 }
             }
 

@@ -10,6 +10,8 @@ import Models
 import Combine
 
 public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
+    public init() {}
+    
     public var collections: [DeckCollection] = [
         DeckCollection(id: UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!,
                        name: "Matematica Básica",

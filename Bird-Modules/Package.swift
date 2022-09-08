@@ -238,6 +238,15 @@ let package = Package(
                 "Storage",
                 "Models"
             ]
+        ),
+        
+        .testTarget(
+            name: "NewCollectionFeatureTests",
+            dependencies: [
+                "Storage",
+                "Models",
+                "NewCollectionFeature"
+            ]
         )
     ]
 )
