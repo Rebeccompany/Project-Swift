@@ -11,7 +11,7 @@ import Storage
 import Combine
 import Utils
 
-class NewCollectionViewModel: ObservableObject {
+public class NewCollectionViewModel: ObservableObject {
     @Published var collectionName: String = ""
     @Published var currentSelectedColor: CollectionColor? = nil
     @Published var canSubmit: Bool
@@ -22,7 +22,7 @@ class NewCollectionViewModel: ObservableObject {
     private let collectionRepository: CollectionRepositoryProtocol
     var colors: [CollectionColor]
     
-    init(
+    public init(
         colors: [CollectionColor],
         collectionRepository: CollectionRepositoryProtocol = CollectionRepository(),
         dateHandler: DateHandlerProtocol = DateHandler(),

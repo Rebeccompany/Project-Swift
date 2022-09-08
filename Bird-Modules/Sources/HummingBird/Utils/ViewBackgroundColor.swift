@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+// swiftlint:disable no_extension_access_modifier
 public extension View {
     @ViewBuilder func ViewBackgroundColor(_ color: Color) -> some View {
         ZStack {

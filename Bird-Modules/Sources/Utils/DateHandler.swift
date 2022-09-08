@@ -12,7 +12,7 @@ public protocol DateHandlerProtocol {
     func isToday(date: Date) -> Bool
     func dayAfterToday(_ count: Int) -> Date
 }
-
+// swiftlint:disable no_extension_access_modifier
 public extension DateHandlerProtocol {
     func dayAfterToday(_ count: Int) -> Date {
         let timeInterval = today.timeIntervalSince1970 + Double(8400 * count)

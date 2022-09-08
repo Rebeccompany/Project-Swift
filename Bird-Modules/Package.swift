@@ -115,7 +115,9 @@ let package = Package(
         .target(
             name: "AppFeature",
             dependencies: [
-                "Storage"
+                "Storage",
+                "NewCollectionFeature",
+                "Models"
             ]
         ),
         
