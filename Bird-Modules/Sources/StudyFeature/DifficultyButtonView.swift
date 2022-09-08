@@ -8,16 +8,17 @@
 import Foundation
 import SwiftUI
 import HummingBird
+import Models
 
 struct DifficultyButtonView: View {
     @Binding var isDisabled: Bool
     private let content: DifficultyButtonContent
-    private let step: DifficultyStep
-    private let action: (DifficultyStep) -> Void
+    private let userGrade: UserGrade
+    private let action: (UserGrade) -> Void
     
-    init(step: DifficultyStep, isDisabled: Binding<Bool>, action: @escaping (DifficultyStep) -> Void) {
-        self.step = step
-        self.content = step.buttonContent
+    init(userGrade: UserGrade, isDisabled: Binding<Bool>, action: @escaping (UserGrade) -> Void) {
+        self.userGrade = userGrade
+        self.content = DifficultyButtonContent.getbuttonContent(for: userGrade)
         self._isDisabled = isDisabled
         self.action = action
     }
@@ -26,7 +27,7 @@ struct DifficultyButtonView: View {
         VStack {
             Button {
                 if !isDisabled {
-                    action(step)
+                    action(userGrade)
                 }
             } label: {
                 Image(systemName: content.image)
@@ -48,6 +49,8 @@ struct DifficultyButtonView: View {
                 .padding(.top, 4)
         }
     }
+    
+    
 }
 
 
@@ -59,9 +62,9 @@ struct DifficultyButtonView_Preview: PreviewProvider {
     static var previews: some View {
         
         HStack {
-            ForEach(DifficultyStep.allCases) { step in
+            ForEach(UserGrade.allCases) { step in
                 Spacer()
-                DifficultyButtonView(step: step, isDisabled: .constant(false)) {_ in }
+                DifficultyButtonView(userGrade: step, isDisabled: .constant(false)) {_ in }
                 Spacer()
             }
         }
@@ -71,9 +74,9 @@ struct DifficultyButtonView_Preview: PreviewProvider {
             .previewLayout(.sizeThatFits)
         
         HStack {
-            ForEach(DifficultyStep.allCases) { step in
+            ForEach(UserGrade.allCases) { step in
                 Spacer()
-                DifficultyButtonView(step: step, isDisabled: .constant(false)) {_ in }
+                DifficultyButtonView(userGrade: step, isDisabled: .constant(false)) {_ in }
                 Spacer()
             }
         }
@@ -82,25 +85,25 @@ struct DifficultyButtonView_Preview: PreviewProvider {
         .background(HBColor.primaryBackground)
         .previewLayout(.sizeThatFits)
         
-        DifficultyButtonView(step: .hard, isDisabled: .constant(false)) {_ in }
+        DifficultyButtonView(userGrade: .wrong, isDisabled: .constant(false)) {_ in }
             .padding()
             .preferredColorScheme(.light)
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
         
-        DifficultyButtonView(step: .veryHard, isDisabled: .constant(false)) {_ in }
+        DifficultyButtonView(userGrade: .wrongHard, isDisabled: .constant(false)) {_ in }
             .padding()
             .preferredColorScheme(.dark)
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
         
-        DifficultyButtonView(step: .veryHard, isDisabled: .constant(true)) {_ in }
+        DifficultyButtonView(userGrade: .wrongHard, isDisabled: .constant(true)) {_ in }
             .padding()
             .preferredColorScheme(.light)
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
         
-        DifficultyButtonView(step: .veryHard, isDisabled: .constant(true)) { _ in }
+        DifficultyButtonView(userGrade: .wrongHard, isDisabled: .constant(true)) { _ in }
             .padding()
             .preferredColorScheme(.dark)
             .background(HBColor.primaryBackground)

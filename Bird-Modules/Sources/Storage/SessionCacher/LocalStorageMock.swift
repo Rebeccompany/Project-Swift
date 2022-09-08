@@ -6,20 +6,23 @@
 //
 
 import Foundation
-import Storage
 
-class LocalStorageMock: LocalStorageService {
+public class LocalStorageMock: LocalStorageService {
     var dict: [String: Any] = [:]
     
-    func object(forKey: String) -> Any? {
+    public init() {
+        
+    }
+    
+    public func object(forKey: String) -> Any? {
         dict[forKey]
     }
     
-    func string(forKey: String) -> String? {
+    public func string(forKey: String) -> String? {
         object(forKey: forKey) as? String
     }
     
-    func set(_ value: Any?, forKey: String) {
+    public func set(_ value: Any?, forKey: String) {
         dict[forKey] = value
     }
     

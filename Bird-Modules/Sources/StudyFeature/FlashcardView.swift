@@ -10,16 +10,19 @@ import Models
 import HummingBird
 
 struct FlashcardView: View {
-    var card: Card
-    @State private var isFlipped: Bool = false
+    @Binding var viewModel: CardViewModel
     @State private var frontDegree: Double = 0
     @State private var backDegree: Double = -90
     
+    init(viewModel: Binding<CardViewModel>) {
+        self._viewModel = viewModel
+    }
+    
     var body: some View {
         ZStack {
-            cardFace(content: card.back, face: "Verso", description: "Toque para ver a frente")
+            cardFace(content: viewModel.card.back, face: "Verso", description: "Toque para ver a frente")
                 .rotation3DEffect(.degrees(backDegree), axis: (x: 0, y: 1, z: 0))
-            cardFace(content: card.front, face: "Frente", description: "Toque para ver o verso")
+            cardFace(content: viewModel.card.front, face: "Frente", description: "Toque para ver o verso")
                 .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0))
         }
         .onTapGesture(perform: flip)
@@ -27,10 +30,10 @@ struct FlashcardView: View {
     }
     
     private func flip() {
-        isFlipped.toggle()
+        viewModel.isFlipped.toggle()
         let animDuration: Double = 0.25
         
-        if isFlipped {
+        if viewModel.isFlipped {
             withAnimation(.linear(duration: animDuration)) {
                 frontDegree = 90
             }
@@ -78,7 +81,7 @@ struct FlashcardView: View {
         }
         .foregroundColor(.white)
         .padding(24)
-        .background(HBColor.getHBColrFromCollectionColor(card.color))
+        .background(HBColor.getHBColrFromCollectionColor(viewModel.card.color))
         .cornerRadius(24)
         .overlay(
             RoundedRectangle(cornerRadius: 24)
@@ -110,7 +113,7 @@ struct FlashcardView_Previews: PreviewProvider {
     }
     
     static var previews: some View {
-        FlashcardView(card: dummy)
+        FlashcardView(viewModel: .constant(CardViewModel(card: dummy, isFlipped: false)))
             .frame(width: 340, height: 480)
             .padding()
             .preferredColorScheme(.dark)

@@ -15,9 +15,14 @@ class StudyViewModel: ObservableObject {
     private let deckRepository: DeckRepositoryProtocol
     private let sessionCacher: SessionCacher
     private let dateHandler: DateHandlerProtocol
-    private let deck: Deck
-    @Published var cards: [Card] = []
+    let deck: Deck
+    
+    @Published private var cards: [Card] = []
+    @Published var displayedCards: [CardViewModel] = []
+    
     private var cancellables: Set<AnyCancellable> = .init()
+    
+    @Published var shouldButtonsBeDisabled: Bool = true
     
     init(
         deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil),
@@ -32,6 +37,21 @@ class StudyViewModel: ObservableObject {
     }
     
     func startup() {
+        
+        $cards.map { cards in
+            return Array(cards.prefix(2))
+        }
+        .map { cards in
+            cards.map(CardViewModel.init)
+        }
+        .assign(to: &$displayedCards)
+        
+        $displayedCards.map { cards in
+            !(cards.last?.isFlipped ?? true)
+        }
+        .assign(to: &$shouldButtonsBeDisabled)
+        
+        
         if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
             deckRepository.fetchCardsByIds(session.cardIds)
                 .replaceError(with: [])
@@ -73,5 +93,38 @@ class StudyViewModel: ObservableObject {
     private func saveCardIdsToCache(ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) ) {
         let session = Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id)
         sessionCacher.setCurrentSession(session: session)
+    }
+    
+    func pressedButton(for userGrade: UserGrade) {
+        guard let card = cards.last else { return }
+        let cardDestiny: CardDestiny
+        
+        do {
+            #warning("number of steps tem qu ser guardado em spacedRepConfig em deck")
+            cardDestiny =  try Woodpecker.stepper(cardInfo: card.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: 3)
+        } catch {
+            print("FODEU")
+            return
+        }
+        
+        var updatedCard = card
+        
+        switch cardDestiny {
+        case .back:
+            updatedCard.woodpeckerCardInfo.step -= 1
+        case .stay:
+            print("ok")
+        case .foward:
+            updatedCard.woodpeckerCardInfo.step += 1
+        case .graduate:
+            updatedCard.woodpeckerCardInfo.step = 0
+            updatedCard.woodpeckerCardInfo.isGraduated = true
+        }
+        
+        do {
+            try deckRepository.editCard(updatedCard)
+        } catch {
+            print("FODEU2")
+        }
     }
 }

@@ -10,13 +10,13 @@ import Models
 import HummingBird
 
 struct FlashcardDeckView: View {
-    var cards: [Card]
+    @Binding var cards: [CardViewModel]
     
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .top) {
-                ForEach(Array(zip(cards, cards.indices)), id: \.0.id) { card, i in
-                    FlashcardView(card: card)
+                ForEach(Array(zip($cards, cards.indices)), id: \.0.card.id) { $card, i in
+                    FlashcardView(viewModel: $card)
                         .offset(y: getCardOffset(index: i))
                         .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)))
                         .zIndex(Double(i))
@@ -35,17 +35,17 @@ struct FlashcardDeckView_Previews: PreviewProvider {
     
     private struct Preview: View {
         @State
-        var cards: [Card] = [FlashcardView_Previews.dummy]
+        var cards: [CardViewModel] = [CardViewModel(card: FlashcardView_Previews.dummy, isFlipped: false) ]
         
         var body: some View {
             VStack {
-                FlashcardDeckView(cards: cards)
+                FlashcardDeckView(cards: $cards)
                     .padding()
                 
                 HStack {
                     Button {
                         withAnimation {
-                            cards.insert(FlashcardView_Previews.dummy, at: 0)
+                            cards.insert(CardViewModel(card: FlashcardView_Previews.dummy, isFlipped: false), at: 0)
                         }
                         
                     } label: {
