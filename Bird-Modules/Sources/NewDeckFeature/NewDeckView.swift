@@ -35,11 +35,14 @@ struct NewDeckView: View {
             
             IconColorGridView {
                 ForEach (viewModel.colors, id: \.self) { color in
-                    Button{} label: {
+                    Button{
+                        viewModel.currentSelectedColor = color
+                    } label: {
                         HBColor.getHBColrFromCollectionColor(color)
+                            .frame(width: 45, height: 45)
                     }
                     .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
-                    .frame(width: 45, height: 45)
+
                 }
             }
             
@@ -50,16 +53,19 @@ struct NewDeckView: View {
             
             IconColorGridView {
                 ForEach (viewModel.icons, id: \.self) { icon in
-                    Button{} label: {
+                    Button{
+                        viewModel.currentSelectedIcon = icon
+                    } label: {
                         Image(systemName: IconNames.getIconString(icon))
-                            .frame(width: 35, height: 35)
+                            .frame(width: 45, height: 45)
                     }
                     .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
-                    .frame(width: 45, height: 45)
+                    
                 }
             }
             Spacer()
         }
+        .onAppear(perform: viewModel.startUp)
         .padding()
         
         .ViewBackgroundColor(HBColor.primaryBackground)
@@ -71,6 +77,7 @@ struct NewDeckView: View {
                     print("ok clicado")
                     viewModel.createDeck()
                 }
+                .disabled(viewModel.canSubmit)
             }
             
             ToolbarItem(placement: .cancellationAction) {

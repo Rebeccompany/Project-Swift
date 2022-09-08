@@ -15,15 +15,29 @@ class NewDeckViewModelTests: XCTestCase {
 
     var sut: NewDeckViewModel!
     var deckRepository: DeckRepositoryMock!
-    var collectionIDs: [UUID]!
+    var dateHandlerMock: DateHandlerMock!
+    var uuidHandler: UUIDHandlerMock!
+    
     
     override func setUp() {
         deckRepository = DeckRepositoryMock()
-        sut = NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: deckRepository, collectionId: collectionIDs)
+        dateHandlerMock = DateHandlerMock()
+        uuidHandler = UUIDHandlerMock()
+        
+        sut = NewDeckViewModel(colors: CollectionColor.allCases,
+                               icons: IconNames.allCases,
+                               deckRepository: deckRepository,
+                               collectionId: [],
+                               dateHandler: dateHandlerMock,
+                               uuidGenerator: uuidHandler
+        )
     }
     
     override func tearDown() {
         sut = nil
+        deckRepository = nil
+        dateHandlerMock = nil
+        uuidHandler = nil
     }
     
     func testCreateDeckSuccessfully() {
@@ -31,6 +45,12 @@ class NewDeckViewModelTests: XCTestCase {
         sut.currentSelectedColor = CollectionColor.red
         sut.currentSelectedIcon = IconNames.book
         sut.createDeck()
+        
+        let containsNewDeck = deckRepository.decks.contains(where: {
+            $0.id == uuidHandler.lastCreatedID
+        })
+        
+        XCTAssertTrue(containsNewDeck)
     }
 
 }
