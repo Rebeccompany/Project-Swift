@@ -14,23 +14,22 @@ class NewDeckViewModel: ObservableObject {
     @Published var deckName: String = ""
     var colors: [CollectionColor]
     var icons: [IconNames]
-    var currentSelectedColor: CollectionColor? = nil
-    var currentSelectedIcon: IconNames? = nil
-    var collectionId: UUID
+    @Published var currentSelectedColor: CollectionColor? = nil
+    @Published var currentSelectedIcon: IconNames? = nil
+    var collectionId: [UUID]
     private let deckRepository: DeckRepositoryProtocol
     
-    init(colors: [CollectionColor], icons: [IconNames], currentSelectedColor: CollectionColor, currentSelectedIcon: IconNames, deckRepository: DeckRepositoryProtocol, collectionId: UUID) {
+    init(colors: [CollectionColor], icons: [IconNames], deckRepository: DeckRepositoryProtocol, collectionId: [UUID]) {
         self.colors = colors
         self.icons = icons
-        self.currentSelectedColor = currentSelectedColor
-        self.currentSelectedIcon = currentSelectedIcon
         self.collectionId = collectionId
         self.deckRepository = deckRepository
     }
     
-    func createDeck() throws {
+    func createDeck()  {
         guard let selectedColor = currentSelectedColor else {
-            throw NSError()
+            #warning("fazer o erro")
+            return
         }
         
         guard let selectedIcon = currentSelectedIcon else {

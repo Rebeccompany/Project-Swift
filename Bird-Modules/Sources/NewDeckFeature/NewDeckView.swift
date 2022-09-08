@@ -8,6 +8,7 @@
 import SwiftUI
 import HummingBird
 import Models
+import Storage
 
 struct NewDeckView: View {
     @ObservedObject
@@ -68,6 +69,7 @@ struct NewDeckView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("OK") {
                     print("ok clicado")
+                    viewModel.createDeck()
                 }
             }
             
@@ -81,10 +83,10 @@ struct NewDeckView: View {
     }
 }
 
-struct SwiftUIView_Previews: PreviewProvider {
+struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, currentSelectedColor: CollectionColor.darkBlue, currentSelectedIcon: IconNames.book))
+            NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: [UUID()]))
                 .preferredColorScheme(.dark)
         }
     }

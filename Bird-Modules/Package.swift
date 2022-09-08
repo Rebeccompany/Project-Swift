@@ -173,7 +173,8 @@ let package = Package(
             name: "NewDeckFeature",
             dependencies: [
                 "Models",
-                "HummingBird"
+                "HummingBird",
+                "Storage"
             ]
         ),
         
@@ -236,6 +237,16 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Models"
+            ]
+        ),
+        
+        .testTarget(
+            name: "NewDeckFeatureTests",
+            dependencies: [
+                "Storage",
+                "Models",
+                "NewDeckFeature",
+                "HummingBird"
             ]
         )
     ]
