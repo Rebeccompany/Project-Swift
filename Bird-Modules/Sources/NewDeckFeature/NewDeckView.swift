@@ -15,6 +15,7 @@ public struct NewDeckView: View {
     var viewModel: NewDeckViewModel
     @Environment(\.dismiss) var dismiss
     
+    
     public init(viewModel: NewDeckViewModel) {
         self.viewModel = viewModel
     }
@@ -30,6 +31,7 @@ public struct NewDeckView: View {
                 TextField("", text: $viewModel.deckName)
                     .textFieldStyle(CollectionDeckTextFieldStyle())
                     .padding(.bottom)
+                
                 
                 Text("Cores")
                     .font(.callout)
@@ -66,7 +68,18 @@ public struct NewDeckView: View {
                     }
                 }
                 Spacer()
+                
+                if (viewModel.editingDeck != nil) {
+                    Button {
+                        viewModel.deleteDeck()
+                    } label: {
+                        Text("Apagar Deck")
+                    }
+                    .buttonStyle(DeleteButtonStyle())
+                }
+                
             }
+            
             .onAppear(perform: viewModel.startUp)
             .padding()
             .alert("Ocorreu um erro interno, tente novamente", isPresented: $viewModel.showingErrorAlert) {
@@ -76,12 +89,20 @@ public struct NewDeckView: View {
             }
             
             .ViewBackgroundColor(HBColor.primaryBackground)
-            .navigationTitle("Criar Baralho")
+            
+            
+            .navigationTitle(viewModel.editingDeck != nil ? "Editar baralho" : "Criar Baralho")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
-                        viewModel.createDeck()
+                        
+                        if viewModel.editingDeck == nil {
+                            viewModel.createDeck()
+                        } else {
+                            viewModel.editDeck()
+                        }
+                        
                     }
                     .disabled(!viewModel.canSubmit)
                 }
@@ -98,7 +119,7 @@ public struct NewDeckView: View {
     }
 }
 
-private struct NewDeckView_Previews: PreviewProvider {
+struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
         NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: [UUID()]))
             .preferredColorScheme(.dark)

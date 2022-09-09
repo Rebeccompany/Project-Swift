@@ -18,6 +18,8 @@ public class NewDeckViewModel: ObservableObject {
     @Published var currentSelectedIcon: IconNames? = nil
     @Published var canSubmit: Bool
     @Published var showingErrorAlert: Bool = false
+    @Published var isEditing: Bool
+    @Published var editingDeck: Deck?
     
     var colors: [CollectionColor]
     var icons: [IconNames]
@@ -43,12 +45,23 @@ public class NewDeckViewModel: ObservableObject {
         self.dateHandler = dateHandler
         self.uuidGenerator = uuidGenerator
         self.canSubmit = false
+        self.isEditing = false
     }
     
     func startUp() {
         Publishers.CombineLatest3($deckName, $currentSelectedColor, $currentSelectedIcon)
             .map(canSubmitData)
             .assign(to: &$canSubmit)
+        
+        guard let editingDeckName = editingDeck?.name else { return }
+        deckName = editingDeckName
+        
+        guard let editingDeckColor = editingDeck?.color else { return }
+        currentSelectedColor = editingDeckColor
+        
+        #warning("pegar o icone")
+//        guard let editingDeckIcon = editingDeck?.icon else { return }
+//        currentSelectedIcon = editingDeckIcon
     }
     
     private func canSubmitData(name: String, currentSelectedColor: CollectionColor?, currentSelectedIcon: IconNames?) -> Bool {
@@ -72,6 +85,36 @@ public class NewDeckViewModel: ObservableObject {
                      spacedRepetitionConfig: SpacedRepetitionConfig()),
                 cards: [])
                     
+        } catch {
+            showingErrorAlert = true
+        }
+    }
+    
+    func editDeck() {
+        guard let selectedColor = currentSelectedColor, let selectedIcon = currentSelectedIcon, var editingDeck = editingDeck else {
+            return
+        }
+
+        do {
+            editingDeck.name = deckName
+            editingDeck.color = selectedColor
+            editingDeck.icon = selectedIcon.rawValue.description
+            editingDeck.datesLogs.lastAccess = dateHandler.today
+            editingDeck.datesLogs.lastEdit = dateHandler.today
+            try deckRepository.editDeck(editingDeck)
+                    
+        } catch {
+            showingErrorAlert = true
+        }
+    }
+    
+    func deleteDeck() {
+        guard let editingDeck = editingDeck else {
+            return
+        }
+
+        do {
+            try deckRepository.deleteDeck(editingDeck)
         } catch {
             showingErrorAlert = true
         }
