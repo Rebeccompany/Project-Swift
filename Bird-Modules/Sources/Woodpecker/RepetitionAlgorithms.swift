@@ -116,7 +116,7 @@ public struct Woodpecker {
      'WoodpeckerSm2Errors.stepNot0' if the card has a step different from 0.
      - Returns: The modified card. It might modify its Interval, isGraduated, streak, and easeFactor.
      */
-    static func wpSm2(_ card: WoodpeckerCardInfo, userGrade: UserGrade) throws -> WoodpeckerCardInfo {
+    public static func wpSm2(_ card: WoodpeckerCardInfo, userGrade: UserGrade) throws -> WoodpeckerCardInfo {
         let streak: Int = card.streak
         let easeFactor: Double = card.easeFactor
         let interval: Int = card.interval

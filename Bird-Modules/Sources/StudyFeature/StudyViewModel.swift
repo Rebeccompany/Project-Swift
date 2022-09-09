@@ -11,7 +11,7 @@ import Models
 import Woodpecker
 import Combine
 
-class StudyViewModel: ObservableObject {
+public class StudyViewModel: ObservableObject {
     private let deckRepository: DeckRepositoryProtocol
     private let sessionCacher: SessionCacher
     private let dateHandler: DateHandlerProtocol
@@ -19,12 +19,13 @@ class StudyViewModel: ObservableObject {
     
     @Published private var cards: [Card] = []
     @Published var displayedCards: [CardViewModel] = []
+    private var cardsToEdit: [Card] = []
     
     private var cancellables: Set<AnyCancellable> = .init()
     
     @Published var shouldButtonsBeDisabled: Bool = true
     
-    init(
+    public init(
         deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil),
         sessionCacher: SessionCacher = SessionCacher(),
         deck: Deck,
@@ -38,8 +39,8 @@ class StudyViewModel: ObservableObject {
     
     func startup() {
         
-        $cards.map { cards in
-            return Array(cards.prefix(2))
+        $cards.map { cards -> [Card] in
+            Array(cards.prefix(2).reversed())
         }
         .map { cards in
             cards.map(CardViewModel.init)
@@ -59,7 +60,6 @@ class StudyViewModel: ObservableObject {
             
         } else {
             deckRepository.fetchCardsByIds(deck.cardsIds)
-                .print()
                 .map { $0.map(OrganizerCardInfo.init(card:)) }
                 .tryMap { [deck, dateHandler] cards in
                     try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: dateHandler.today)
@@ -96,35 +96,70 @@ class StudyViewModel: ObservableObject {
     }
     
     func pressedButton(for userGrade: UserGrade) {
-        guard let card = cards.last else { return }
-        let cardDestiny: CardDestiny
+        guard let card = cards.first else { return }
+        var newCard = card
         
-        do {
-            #warning("number of steps tem qu ser guardado em spacedRepConfig em deck")
-            cardDestiny =  try Woodpecker.stepper(cardInfo: card.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: 3)
-        } catch {
-            print("FODEU")
-            return
+        if card.woodpeckerCardInfo.isGraduated {
+            var newInfo: WoodpeckerCardInfo = card.woodpeckerCardInfo
+            do {
+                newInfo = try Woodpecker.wpSm2(card.woodpeckerCardInfo, userGrade: userGrade)
+            } catch {
+                print("FODEU3")
+            }
+            
+            newCard.woodpeckerCardInfo = newInfo
+            
+            if cards.count >= 1 {
+                cardsToEdit.append(cards[0])
+                cards.remove(at: 0)
+            }
+            
+        } else {
+            let cardDestiny: CardDestiny
+            
+            do {
+                #warning("number of steps tem qu ser guardado em spacedRepConfig em deck")
+                cardDestiny =  try Woodpecker.stepper(cardInfo: card.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: 3)
+            } catch {
+                print("FODEU")
+                return
+            }
+            
+            switch cardDestiny {
+            case .back:
+                print("back")
+                newCard.woodpeckerCardInfo.step -= 1
+                if cards.count >= 1 {
+                    cards.remove(at: 0)
+                }
+                cards.append(newCard)
+                //move card to new position
+            case .stay:
+                print("fica")
+                if cards.count >= 1 {
+                    cards.remove(at: 0)
+                }
+                cards.append(newCard)
+                //move card to new position
+            case .foward:
+                print("frnte")
+                newCard.woodpeckerCardInfo.step += 1
+                if cards.count >= 1 {
+                    cards.remove(at: 0)
+                }
+                cards.append(newCard)
+                //move card to new position
+            case .graduate:
+                print("gradua")
+                newCard.woodpeckerCardInfo.step = 0
+                newCard.woodpeckerCardInfo.isGraduated = true
+                
+                if cards.count >= 1 {
+                    cardsToEdit.append(cards[0])
+                    cards.remove(at: 0)
+                }
+            }
         }
-        
-        var updatedCard = card
-        
-        switch cardDestiny {
-        case .back:
-            updatedCard.woodpeckerCardInfo.step -= 1
-        case .stay:
-            print("ok")
-        case .foward:
-            updatedCard.woodpeckerCardInfo.step += 1
-        case .graduate:
-            updatedCard.woodpeckerCardInfo.step = 0
-            updatedCard.woodpeckerCardInfo.isGraduated = true
-        }
-        
-        do {
-            try deckRepository.editCard(updatedCard)
-        } catch {
-            print("FODEU2")
-        }
+        print(cards.count)
     }
 }

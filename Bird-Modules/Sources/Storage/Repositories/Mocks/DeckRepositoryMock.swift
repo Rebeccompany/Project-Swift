@@ -22,18 +22,18 @@
      public lazy var subject: CurrentValueSubject<[Deck], RepositoryError> = .init(decks)
 
      public var cards: [Card] = [
-         Card(id: "1f222564-ff0d-4f2d-9598-1a0542899974", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-         Card(id: "66605408-4cd4-4ded-b23d-91db9249a946", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-         Card(id: "4f298230-4286-4a83-9f1c-53fd60533ed8", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-         Card(id: "9b06af85-e4e8-442d-be7a-40450cfd310c", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-         Card(id: "855eb618-602e-449d-83fc-5de6b8a36454", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-         Card(id: "5285798a-4107-48b3-8994-e706699a3445", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-         Card(id: "407e7694-316e-4903-9c94-b3ec0e9ab0e8", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-         Card(id: "09ae6b07-b988-442f-a059-9ea76d5c9055", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review),
-         Card(id: "d3b5ba9a-7805-480e-ad47-43b842f0472f", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review),
-         Card(id: "d9d3d4ec-9854-4e73-864b-1e68355a6973", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review),
-         Card(id: "c24affd7-376d-4614-9ad6-8a83a0f60da5", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review),
-         Card(id: "d2c951fb-36f5-49dc-84f0-353a3b3a2875", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review)
+         Card(id: "1f222564-ff0d-4f2d-9598-1a0542899974", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn, front: AttributedString(String(0)), back: AttributedString(String(0))),
+         Card(id: "66605408-4cd4-4ded-b23d-91db9249a946", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn, front: AttributedString(String(1)), back: AttributedString(String(1))),
+         Card(id: "4f298230-4286-4a83-9f1c-53fd60533ed8", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn, front: AttributedString(String(2)), back: AttributedString(String(2))),
+         Card(id: "9b06af85-e4e8-442d-be7a-40450cfd310c", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn, front: AttributedString(String(3)), back: AttributedString(String(3))),
+         Card(id: "855eb618-602e-449d-83fc-5de6b8a36454", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn, front: AttributedString(String(4)), back: AttributedString(String(4))),
+         Card(id: "5285798a-4107-48b3-8994-e706699a3445", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn, front: AttributedString(String(5)), back: AttributedString(String(5))),
+         Card(id: "407e7694-316e-4903-9c94-b3ec0e9ab0e8", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn, front: AttributedString(String(6)), back: AttributedString(String(6))),
+         Card(id: "09ae6b07-b988-442f-a059-9ea76d5c9055", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review, front: AttributedString(String(7)), back: AttributedString(String(7))),
+         Card(id: "d3b5ba9a-7805-480e-ad47-43b842f0472f", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review, front: AttributedString(String(8)), back: AttributedString(String(8))),
+         Card(id: "d9d3d4ec-9854-4e73-864b-1e68355a6973", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review, front: AttributedString(String(9)), back: AttributedString(String(9))),
+         Card(id: "c24affd7-376d-4614-9ad6-8a83a0f60da5", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review, front: AttributedString(String(10)), back: AttributedString(String(10))),
+         Card(id: "d2c951fb-36f5-49dc-84f0-353a3b3a2875", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review, front: AttributedString(String(11)), back: AttributedString(String(11)))
      ]
      
      public init() {}
@@ -157,7 +157,8 @@
  }
 
  extension Card {
-     fileprivate init(id: String, deckId: String, state: WoodpeckerState) {
+     
+     fileprivate init(id: String, deckId: String, state: WoodpeckerState, front: AttributedString, back: AttributedString) {
          let h: [CardSnapshot]
          switch state {
          case .review:
@@ -166,8 +167,8 @@
              h = []
          }
          self.init(id: UUID(uuidString: id)!,
-                   front: "",
-                   back: "",
+                   front: front,
+                   back: back,
                    color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),

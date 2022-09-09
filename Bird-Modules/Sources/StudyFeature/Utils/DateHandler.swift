@@ -14,19 +14,22 @@ public protocol DateHandlerProtocol {
     func dayAfterToday(_ count: Int) -> Date
 }
 
-public extension DateHandlerProtocol {
-    func dayAfterToday(_ count: Int) -> Date {
+extension DateHandlerProtocol {
+    public func dayAfterToday(_ count: Int) -> Date {
         let timeInterval = today.timeIntervalSince1970 + Double(8400 * count)
         return Date(timeIntervalSince1970: timeInterval)
     }
 }
 
-struct DateHandler: DateHandlerProtocol {
-    var today: Date {
+public struct DateHandler: DateHandlerProtocol {
+    public init() {
+        
+    }
+    public var today: Date {
         Date()
     }
     
-    func isToday(date: Date) -> Bool {
+    public func isToday(date: Date) -> Bool {
         var cal = Calendar(identifier: .gregorian)
         guard let timezone = TimeZone(identifier: "UTC") else {
             return false

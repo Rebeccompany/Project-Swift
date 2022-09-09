@@ -10,34 +10,46 @@ import Storage
 import Models
 import HummingBird
 
-struct StudyView: View {
+public struct StudyView: View {
     @ObservedObject var viewModel: StudyViewModel
     
-    init(viewModel: StudyViewModel) {
+    public init(viewModel: StudyViewModel) {
         self.viewModel = viewModel
     }
     
-    var body: some View {
+    public var body: some View {
         ZStack {
-            VStack {
-                FlashcardDeckView(cards: $viewModel.displayedCards)
-                    .zIndex(1)
-                    .padding(.horizontal, 48)
-                    .padding(.vertical)
-                HStack {
-                    ForEach(UserGrade.allCases) { userGrade in
-                        Spacer()
-                        DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, action: viewModel.pressedButton(for:))
-                        Spacer()
+            if !viewModel.displayedCards.isEmpty {
+                
+                VStack {
+                    FlashcardDeckView(cards: $viewModel.displayedCards)
+                        .zIndex(1)
+                        .padding(.horizontal, 48)
+                        .padding(.vertical)
+                    HStack {
+                        ForEach(UserGrade.allCases) { userGrade in
+                            Spacer()
+                            DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled) { userGrade in
+                                withAnimation {
+                                    viewModel.pressedButton(for: userGrade)
+                                }
+                            }
+                            Spacer()
+                        }
                     }
+                    .padding()
                 }
-                .padding()
+                
+                
+            } else {
+                Text("EmptyState")
             }
-            .background(HBColor.primaryBackground)
-            .navigationTitle(viewModel.deck.name)
-            .navigationBarTitleDisplayMode(.inline)
-            .onAppear(perform: viewModel.startup)
         }
+        .background(HBColor.primaryBackground)
+        .navigationTitle(viewModel.deck.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear(perform: viewModel.startup)
+        
     }
 }
 
