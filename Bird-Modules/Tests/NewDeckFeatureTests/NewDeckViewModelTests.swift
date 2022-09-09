@@ -91,7 +91,7 @@ class NewDeckViewModelTests: XCTestCase {
         sut.currentSelectedColor = CollectionColor.red
         sut.currentSelectedIcon = IconNames.book
         sut.$canSubmit.sink { canSubmit in
-            XCTAssertTrue(!canSubmit)
+            XCTAssertFalse(canSubmit)
             expectations.fulfill()
         }
         .store(in: &cancellables)

@@ -83,7 +83,7 @@ public struct NewDeckView: View {
                     Button("OK") {
                         viewModel.createDeck()
                     }
-                    .disabled(viewModel.canSubmit)
+                    .disabled(!viewModel.canSubmit)
                 }
                 
                 ToolbarItem(placement: .cancellationAction) {
@@ -98,7 +98,7 @@ public struct NewDeckView: View {
     }
 }
 
-struct NewDeckView_Previews: PreviewProvider {
+private struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
         NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: [UUID()]))
             .preferredColorScheme(.dark)

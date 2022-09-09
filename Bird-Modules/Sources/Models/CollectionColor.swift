@@ -24,29 +24,29 @@ public enum CollectionColor: Int, CaseIterable {
     public static func getColorString(_ colorName: CollectionColor) -> String {
         switch colorName {
         case .red:
-            return "vermelha"
+            return "Vermelho"
         case .orange:
-            return "laranja"
+            return "Laranja"
         case .yellow:
-            return "amarelo"
+            return "Amarelo"
         case .green:
-            return "verde"
+            return "Verde"
         case .lightBlue:
-            return "azul claro"
+            return "Azul Claro"
         case .darkPurple:
-            return "roxo escuro"
+            return "Roxo Escuro"
         case .lightPurple:
-            return "roxo claro"
+            return "Roxo Claro"
         case .pink:
-            return "rosa"
+            return "Rosa"
         case .otherPink:
-            return "salmão"
+            return "Salmão"
         case .beigeBrown:
-            return "bege"
+            return "Bege"
         case .gray:
-            return "cinza"
+            return "Cinza"
         case .darkBlue:
-            return "azul escuro"
+            return "Azul Escuro"
         }
     }
 }
