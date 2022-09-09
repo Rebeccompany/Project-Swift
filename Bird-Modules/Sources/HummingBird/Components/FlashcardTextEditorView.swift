@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FlashcardTextEditorView: View {
+public struct FlashcardTextEditorView: View {
     @Binding private var cardText: String
     var color: Color
     var side: String
@@ -19,7 +19,7 @@ struct FlashcardTextEditorView: View {
         self._cardText = cardText
     }
     
-    var body: some View {
+    public var body: some View {
         VStack(alignment: .leading) {
             Text(side)
                 .foregroundColor(.white)

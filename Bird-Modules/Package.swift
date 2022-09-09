@@ -115,7 +115,9 @@ let package = Package(
         .target(
             name: "AppFeature",
             dependencies: [
-                "Storage"
+                "Storage",
+                "NewDeckFeature",
+                "Models"
             ]
         ),
         
@@ -172,7 +174,10 @@ let package = Package(
         .target(
             name: "NewDeckFeature",
             dependencies: [
-                "Models"
+                "Models",
+                "HummingBird",
+                "Storage",
+                "Utils"
             ]
         ),
         
@@ -239,6 +244,17 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Models"
+            ]
+        ),
+        
+        .testTarget(
+            name: "NewDeckFeatureTests",
+            dependencies: [
+                "Storage",
+                "Models",
+                "NewDeckFeature",
+                "HummingBird",
+                "Utils"
             ]
         )
     ]
