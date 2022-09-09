@@ -65,7 +65,7 @@ class NewCollectionViewModelTests: XCTestCase {
             $0.id == uuidHandlerMock.lastCreatedID
         })
         
-        XCTAssertTrue(!containsNewCollection)
+        XCTAssertFalse(containsNewCollection)
     }
     
     func testCanSubmitBindingSuccessfully() {
@@ -84,7 +84,7 @@ class NewCollectionViewModelTests: XCTestCase {
         let expectation = expectation(description: "Can submit binding")
         sut.currentSelectedColor = CollectionColor.red
         sut.$canSubmit.sink { canSubmit in
-            XCTAssertTrue(!canSubmit)
+            XCTAssertFalse(canSubmit)
             expectation.fulfill()
         }
         .store(in: &cancellables)
@@ -95,7 +95,7 @@ class NewCollectionViewModelTests: XCTestCase {
         let expectation = expectation(description: "Can submit binding")
         sut.collectionName = "Name"
         sut.$canSubmit.sink { canSubmit in
-            XCTAssertTrue(!canSubmit)
+            XCTAssertFalse(canSubmit)
             expectation.fulfill()
         }
         .store(in: &cancellables)
@@ -105,7 +105,7 @@ class NewCollectionViewModelTests: XCTestCase {
     func testCanSubmitBindingErrorNoNameNoColor() {
         let expectation = expectation(description: "Can submit binding")
         sut.$canSubmit.sink { canSubmit in
-            XCTAssertTrue(!canSubmit)
+            XCTAssertFalse(canSubmit)
             expectation.fulfill()
         }
         .store(in: &cancellables)
