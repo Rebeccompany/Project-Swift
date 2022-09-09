@@ -41,7 +41,7 @@ public struct NewCollectionView: View {
                         } label: {
                             HBColor.getHBColrFromCollectionColor(color)
                         }
-//                        .accessibility(label: Text(CollectionColor.getColorString(color)))
+                        .accessibility(label: Text(CollectionColor.getColorString(color)))
                         .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
                         .frame(width: 45, height: 45)
                     }
