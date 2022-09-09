@@ -111,4 +111,39 @@ class NewCollectionViewModelTests: XCTestCase {
         .store(in: &cancellables)
         wait(for: [expectation], timeout: 1)
     }
+    
+    
+    func testEditNameCollectionSuccessfuly() {
+        sut.collectionName = "Coleção"
+        sut.currentSelectedColor = CollectionColor.red
+        sut.createCollection()
+        
+        let containsNewCollection = collectionRepository.collections.contains(where: {
+            $0.id == uuidHandlerMock.lastCreatedID
+        })
+        
+        XCTAssertTrue(containsNewCollection)
+        
+        sut.collectionName = "Editada"
+        sut.editCollection()
+        
+        #warning("checar se a collection foi editada")
+    }
+    
+    func testEditColorCollectionSuccessfuly() {
+        sut.collectionName = "Coleção"
+        sut.currentSelectedColor = CollectionColor.red
+        sut.createCollection()
+        
+        let containsNewCollection = collectionRepository.collections.contains(where: {
+            $0.id == uuidHandlerMock.lastCreatedID
+        })
+        
+        XCTAssertTrue(containsNewCollection)
+        
+        sut.currentSelectedColor = CollectionColor.gray
+//        sut.editCollection()
+#warning("checar se a collection foi editada")
+       
+    }
 }

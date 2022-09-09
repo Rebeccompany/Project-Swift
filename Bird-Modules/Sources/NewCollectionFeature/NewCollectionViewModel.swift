@@ -16,6 +16,9 @@ public class NewCollectionViewModel: ObservableObject {
     @Published var currentSelectedColor: CollectionColor? = nil
     @Published var canSubmit: Bool
     @Published var showingErrorAlert: Bool = false
+    @Published var isEditing: Bool
+    @Published var editingCollection: DeckCollection?
+    
     
     private let dateHandler: DateHandlerProtocol
     private let idGenerator: UUIDGeneratorProtocol
@@ -33,6 +36,8 @@ public class NewCollectionViewModel: ObservableObject {
         self.dateHandler = dateHandler
         self.idGenerator = idGenerator
         self.canSubmit = false
+        self.isEditing = false
+        
         
     }
     
@@ -40,6 +45,11 @@ public class NewCollectionViewModel: ObservableObject {
         Publishers.CombineLatest($collectionName, $currentSelectedColor)
             .map(canSubmitData)
             .assign(to: &$canSubmit)
+        
+        guard let editingCollectionName = editingCollection?.name else { return }
+        collectionName = editingCollectionName
+        guard let editingCollectionColor = editingCollection?.color else { return }
+        currentSelectedColor = editingCollectionColor
     }
     
     private func canSubmitData(name: String, currentSelectedColor: CollectionColor?) -> Bool {
@@ -65,6 +75,33 @@ public class NewCollectionViewModel: ObservableObject {
             showingErrorAlert = true
         }
         
+    }
+    
+    func editCollection() {
+        guard let selectedColor = currentSelectedColor,
+            var editingCollection = editingCollection
+        else {
+            return
+        }
+        do {
+            editingCollection.name = collectionName
+            editingCollection.color = selectedColor
+            editingCollection.datesLogs.lastAccess = dateHandler.today
+            editingCollection.datesLogs.lastEdit = dateHandler.today
+            try collectionRepository.editCollection(editingCollection)
+            
+        } catch {
+            showingErrorAlert = true
+        }
+    }
+    
+    func deleteCollection() {
+        do {
+            guard let editingCollection = editingCollection else { return }
+            try collectionRepository.deleteCollection(editingCollection)
+        } catch {
+            showingErrorAlert = true
+        }
     }
 }
 

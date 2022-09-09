@@ -13,7 +13,6 @@ import Storage
 public struct NewCollectionView: View {
 
     @ObservedObject var viewModel: NewCollectionViewModel
-    
 
     public init(viewModel: NewCollectionViewModel) {
         self.viewModel = viewModel
@@ -27,7 +26,7 @@ public struct NewCollectionView: View {
                 Text("Nome")
                     .font(.callout)
                     .bold()
-                TextField("", text: $viewModel.collectionName)
+               TextField("", text: $viewModel.collectionName)
                     .textFieldStyle(CollectionDeckTextFieldStyle())
                 Text("Cores")
                     .font(.callout)
@@ -46,7 +45,19 @@ public struct NewCollectionView: View {
                         .frame(width: 45, height: 45)
                     }
                 }
+               
                 Spacer()
+               
+               if (viewModel.editingCollection != nil) {
+                   Button() {
+                       viewModel.deleteCollection()
+                   } label: {
+                       Text("Apagar Coleção")
+                   }
+                   .buttonStyle(DeleteButtonStyle())
+
+               }
+               
             }
             .onAppear(perform: viewModel.startUp)
             .padding()
@@ -54,7 +65,7 @@ public struct NewCollectionView: View {
                 Button("OK", role: .cancel) { viewModel.showingErrorAlert = false}
                     }
             .ViewBackgroundColor(HBColor.primaryBackground)
-            .navigationTitle("Criar Coleção")
+            .navigationTitle(viewModel.editingCollection == nil ? "Criar Coleção" : "Editar Coleção")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -66,7 +77,12 @@ public struct NewCollectionView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
-                        viewModel.createCollection()
+                        if (viewModel.editingCollection == nil) {
+                            viewModel.createCollection()
+                        } else {
+                            viewModel.editCollection()
+                        }
+                        
                     }
                     .disabled(!viewModel.canSubmit)
                 }
@@ -78,11 +94,9 @@ public struct NewCollectionView: View {
 
     }
     
-    
-    
 }
 
-private struct NewCollectionView_Previews: PreviewProvider {
+struct NewCollectionView_Previews: PreviewProvider {
     static var previews: some View {
         
             NewCollectionView(
