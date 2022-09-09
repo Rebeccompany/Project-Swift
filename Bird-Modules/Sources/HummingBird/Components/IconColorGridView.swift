@@ -8,7 +8,12 @@
 import SwiftUI
 
 public struct IconColorGridView<Content: View> : View {
-    var elements: () -> Content
+    public var elements: () -> Content
+    
+    public init(elements: @escaping () -> Content) {
+        self.elements = elements
+    }
+    
     let columns = [
         GridItem(.fixed(50)),
         GridItem(.fixed(50)),
@@ -17,10 +22,6 @@ public struct IconColorGridView<Content: View> : View {
         GridItem(.fixed(50)),
         GridItem(.fixed(50)),
     ]
-    
-    public init(elements: @escaping () -> Content) {
-        self.elements = elements
-    }
     
     public var body: some View {
         LazyVGrid(columns: columns) {

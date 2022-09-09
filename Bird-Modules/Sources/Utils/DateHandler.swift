@@ -37,4 +37,3 @@ public struct DateHandler: DateHandlerProtocol {
         return cal.dateComponents([.day], from: date) == cal.dateComponents([.day], from: today)
     }
 }
-    
