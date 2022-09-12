@@ -8,6 +8,7 @@
 import SwiftUI
 
 public struct DeleteButtonStyle: ButtonStyle {
+    public init() {}
     
     public func makeBody(configuration: Configuration) -> some View {
         HStack {
