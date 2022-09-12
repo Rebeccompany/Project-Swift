@@ -11,7 +11,7 @@ import Models
 import HummingBird
 
 public struct StudyView: View {
-    @ObservedObject var viewModel: StudyViewModel
+    @ObservedObject private var viewModel: StudyViewModel
     
     public init(viewModel: StudyViewModel) {
         self.viewModel = viewModel

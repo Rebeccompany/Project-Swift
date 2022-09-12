@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct IconColorGridView<Content: View> : View {
+struct IconColorGridView<Content: View>: View {
     var elements: () -> Content
     let columns = [
         GridItem(.fixed(50)),
@@ -15,7 +15,7 @@ struct IconColorGridView<Content: View> : View {
         GridItem(.fixed(50)),
         GridItem(.fixed(50)),
         GridItem(.fixed(50)),
-        GridItem(.fixed(50)),
+        GridItem(.fixed(50))
     ]
     
     var body: some View {

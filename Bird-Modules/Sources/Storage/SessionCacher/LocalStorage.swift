@@ -19,7 +19,7 @@ public protocol LocalStorageService {
 extension UserDefaults: LocalStorageService {}
 
 
-final public class SessionCacher {
+public final class SessionCacher {
     private let storage: LocalStorageService
     private let currentSessionKey: String = "com.birdmodules.storage.sessioncacher.session"
     

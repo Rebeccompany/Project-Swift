@@ -30,6 +30,6 @@ public struct OrganizerCardInfo {
         self.dueDate = card.dueDate
         
         
-        self.lastUserGrade = card.history.max(by: { $0.date > $1.date })?.userGrade
+        self.lastUserGrade = card.history.max { $0.date > $1.date }?.userGrade
     }
 }

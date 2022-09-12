@@ -21,9 +21,9 @@ struct FlashcardView: View {
     var body: some View {
         ZStack {
             cardFace(content: viewModel.card.back, face: "Verso", description: "Toque para ver a frente")
-                .rotation3DEffect(.degrees(backDegree), axis: (x: 0, y: 1, z: 0))
+                .rotation3DEffect(.degrees(backDegree), axis: (x: 0, y: 1, z: 0.0001))
             cardFace(content: viewModel.card.front, face: "Frente", description: "Toque para ver o verso")
-                .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0))
+                .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0.0001))
         }
         .onTapGesture(perform: flip)
         
@@ -95,7 +95,7 @@ struct FlashcardView_Previews: PreviewProvider {
         let id = UUID()
         let deckId = UUID(uuidString: "25804f37-a401-4211-b8d1-ac2d3de53775")!
         let frontData = "Toxoplasmose: exame e seus respectivo tempo e tratamento".data(using: .utf8)!
-        let backData =  ". Sorologia (IgM,IgG) -&gt; Teste de Avidez (&lt;30% aguda, &gt;60% cronica)&nbsp;<br>. Espiramicina 3g -VO 2 cp de 500mg por 8/8h&nbsp;".data(using: .utf8)!
+        let backData = ". Sorologia (IgM,IgG) -&gt; Teste de Avidez (&lt;30% aguda, &gt;60% cronica)&nbsp;<br>. Espiramicina 3g -VO 2 cp de 500mg por 8/8h&nbsp;".data(using: .utf8)!
         
         let frontNSAttributedString = try! NSAttributedString(data: frontData, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
         let backNSAttributedString = try! NSAttributedString(data: backData, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)

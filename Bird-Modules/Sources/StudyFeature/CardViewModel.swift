@@ -22,7 +22,7 @@ struct CardViewModel: Equatable {
         self.isFlipped = false
     }
     
-    static func ==(lhs: CardViewModel, rhs: CardViewModel) -> Bool {
-        return lhs.card == rhs.card
+    static func == (lhs: CardViewModel, rhs: CardViewModel) -> Bool {
+        lhs.card == rhs.card
     }
 }
