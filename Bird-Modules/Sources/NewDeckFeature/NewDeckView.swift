@@ -15,7 +15,6 @@ public struct NewDeckView: View {
     var viewModel: NewDeckViewModel
     @Environment(\.dismiss) var dismiss
     
-    
     public init(viewModel: NewDeckViewModel) {
         self.viewModel = viewModel
     }

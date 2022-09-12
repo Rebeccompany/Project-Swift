@@ -18,7 +18,6 @@ public class NewDeckViewModel: ObservableObject {
     @Published var currentSelectedIcon: IconNames? = nil
     @Published var canSubmit: Bool
     @Published var showingErrorAlert: Bool = false
-    @Published var isEditing: Bool
     @Published var editingDeck: Deck?
     
     var colors: [CollectionColor]
@@ -32,6 +31,7 @@ public class NewDeckViewModel: ObservableObject {
     public init(
         colors: [CollectionColor],
          icons: [IconNames],
+         editingDeck: Deck? = nil,
          deckRepository: DeckRepositoryProtocol,
          collectionId: [UUID],
          dateHandler: DateHandlerProtocol = DateHandler(),
@@ -40,12 +40,22 @@ public class NewDeckViewModel: ObservableObject {
         
         self.colors = colors
         self.icons = icons
+        self.editingDeck = editingDeck
         self.collectionId = collectionId
         self.deckRepository = deckRepository
         self.dateHandler = dateHandler
         self.uuidGenerator = uuidGenerator
         self.canSubmit = false
-        self.isEditing = false
+        
+        if let editingDeck = editingDeck {
+            setupDeckContentIntoFields(editingDeck)
+        }
+    }
+    
+    private func setupDeckContentIntoFields(_ deck: Deck) {
+        deckName = deck.name
+        currentSelectedColor = deck.color
+        currentSelectedIcon = IconNames(rawValue: deck.icon)
     }
     
     func startUp() {
@@ -53,15 +63,6 @@ public class NewDeckViewModel: ObservableObject {
             .map(canSubmitData)
             .assign(to: &$canSubmit)
         
-        guard let editingDeckName = editingDeck?.name else { return }
-        deckName = editingDeckName
-        
-        guard let editingDeckColor = editingDeck?.color else { return }
-        currentSelectedColor = editingDeckColor
-        
-        #warning("pegar o icone")
-//        guard let editingDeckIcon = editingDeck?.icon else { return }
-//        currentSelectedIcon = editingDeckIcon
     }
     
     private func canSubmitData(name: String, currentSelectedColor: CollectionColor?, currentSelectedIcon: IconNames?) -> Bool {
