@@ -74,11 +74,21 @@ public class StudyViewModel: ObservableObject {
         }
     }
     private func finishFetchCards(_ completion: Subscribers.Completion<RepositoryError>) {
-        
+        switch completion {
+        case .finished:
+            print("aiai")
+        case .failure(let error):
+            print(error)
+        }
     }
     
     private func receiveCards(todayReviewingCards: [Card], todayLearningCards: [Card], toModify: [Card]) {
         cards = todayLearningCards + todayReviewingCards
+        cardsToEdit = toModify.map { card in
+            var newCard = card
+            newCard.dueDate = dateHandler.dayAfterToday(1)
+            return newCard
+        }
     }
     
     private func transformIdsIntoPublishers(ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID])) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
@@ -86,8 +96,6 @@ public class StudyViewModel: ObservableObject {
                                   deckRepository.fetchCardsByIds(ids.todayReviewingCards),
                                   deckRepository.fetchCardsByIds(ids.toModify))
         .eraseToAnyPublisher()
-        
-        
     }
     
     private func saveCardIdsToCache(ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) ) {
@@ -96,70 +104,69 @@ public class StudyViewModel: ObservableObject {
     }
     
     func pressedButton(for userGrade: UserGrade) {
-        guard let card = cards.first else { return }
-        var newCard = card
+        guard let newCard = cards.first else { return }
         
-        if card.woodpeckerCardInfo.isGraduated {
-            var newInfo: WoodpeckerCardInfo = card.woodpeckerCardInfo
-            do {
-                newInfo = try Woodpecker.wpSm2(card.woodpeckerCardInfo, userGrade: userGrade)
-            } catch {
-                print("FODEU3")
-            }
-            
-            newCard.woodpeckerCardInfo = newInfo
-            
-            if cards.count >= 1 {
-                cardsToEdit.append(cards[0])
-                cards.remove(at: 0)
-            }
-            
+        if newCard.woodpeckerCardInfo.isGraduated {
+            dealWithSm2Card(userGrade: userGrade)
         } else {
-            let cardDestiny: CardDestiny
-            
-            do {
-                #warning("number of steps tem qu ser guardado em spacedRepConfig em deck")
-                cardDestiny =  try Woodpecker.stepper(cardInfo: card.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: 3)
-            } catch {
-                print("FODEU")
-                return
-            }
+            dealWithSteppedCard(userGrade: userGrade)
+        }
+        
+        cards = cards.prefix(2) + cards.suffix(from: 2).shuffled()
+    }
+    
+    private func dealWithSm2Card(userGrade: UserGrade) {
+        var newInfo: WoodpeckerCardInfo = cards[0].woodpeckerCardInfo
+        do {
+            newInfo = try Woodpecker.wpSm2(cards[0].woodpeckerCardInfo, userGrade: userGrade)
+        } catch {
+            print("FODEU3")
+        }
+        
+        // modifica o cards[0], salva ele em cardsToEdit, depois remove da lista de cards.
+        cards[0].woodpeckerCardInfo = newInfo
+        removeCard(shouldAddToEdit: true)
+    }
+    
+    private func dealWithSteppedCard(userGrade: UserGrade) {
+        var newCard = cards[0]
+        do {
+#warning("number of steps tem qu ser guardado em spacedRepConfig em deck")
+            let cardDestiny = try Woodpecker.stepper(cardInfo: newCard.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: 3)
             
             switch cardDestiny {
             case .back:
-                print("back")
+                //update card and bumps to last position of the vector.
                 newCard.woodpeckerCardInfo.step -= 1
-                if cards.count >= 1 {
-                    cards.remove(at: 0)
-                }
+                removeCard()
                 cards.append(newCard)
-                //move card to new position
             case .stay:
-                print("fica")
-                if cards.count >= 1 {
-                    cards.remove(at: 0)
-                }
+                //update card and bumps to last position of the vector.
+                removeCard()
                 cards.append(newCard)
-                //move card to new position
             case .foward:
-                print("frnte")
+                //update card and bumps to last position of the vector.
                 newCard.woodpeckerCardInfo.step += 1
-                if cards.count >= 1 {
-                    cards.remove(at: 0)
-                }
+                removeCard()
                 cards.append(newCard)
-                //move card to new position
             case .graduate:
-                print("gradua")
-                newCard.woodpeckerCardInfo.step = 0
-                newCard.woodpeckerCardInfo.isGraduated = true
+                //update card. Save it to toEdit. Remove from cards.
+                cards[0].woodpeckerCardInfo.step = 0
+                cards[0].woodpeckerCardInfo.isGraduated = true
                 
-                if cards.count >= 1 {
-                    cardsToEdit.append(cards[0])
-                    cards.remove(at: 0)
-                }
+                removeCard(shouldAddToEdit: true)
             }
+        } catch {
+            print("FODEU")
         }
-        print(cards.count)
+    }
+    
+    private func removeCard(shouldAddToEdit: Bool = false) {
+        if cards.count >= 1 {
+            if shouldAddToEdit {
+                cardsToEdit.append(cards[0])
+            }
+            cards.remove(at: 0)
+        }
     }
 }

@@ -8,7 +8,8 @@
 import Foundation
 import Models
 
-struct CardViewModel: Equatable {
+struct CardViewModel: Equatable, Identifiable {
+    let id: UUID = UUID()
     var card: Card
     var isFlipped: Bool
     
@@ -20,9 +21,5 @@ struct CardViewModel: Equatable {
     init(card: Card) {
         self.card = card
         self.isFlipped = false
-    }
-    
-    static func == (lhs: CardViewModel, rhs: CardViewModel) -> Bool {
-        lhs.card == rhs.card
     }
 }

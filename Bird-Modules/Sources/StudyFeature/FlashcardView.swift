@@ -25,6 +25,9 @@ struct FlashcardView: View {
             cardFace(content: viewModel.card.front, face: "Frente", description: "Toque para ver o verso")
                 .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0.0001))
         }
+        .onChange(of: viewModel.isFlipped, perform: { newValue in
+            print("f")
+        })
         .onTapGesture(perform: flip)
         
     }
