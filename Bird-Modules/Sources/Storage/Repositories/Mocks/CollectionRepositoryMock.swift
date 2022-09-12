@@ -16,7 +16,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
     
     public var collections: [DeckCollection] = [
         DeckCollection(id: UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!,
-                       name: "Matematica Básica",
+                       name: "Matemática Básica",
                        color: .darkPurple,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
