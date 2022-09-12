@@ -57,24 +57,25 @@ public class NewCollectionViewModel: ObservableObject {
     }
     
     func createCollection() {
-        guard let selectedColor = currentSelectedColor else {
-            return
-        }
+        guard let selectedColor = currentSelectedColor else { return }
+        
         do {
-            try collectionRepository.createCollection(
-                DeckCollection(
-                    id: idGenerator.newId(),
-                    name: collectionName,
-                    color: selectedColor,
-                    datesLogs: DateLogs(
-                        lastAccess: dateHandler.today,
-                        lastEdit: dateHandler.today,
-                        createdAt: dateHandler.today),
-                    decksIds: []))
+            try collectionRepository.createCollection(newCollection(selectedColor: selectedColor))
         } catch {
             showingErrorAlert = true
         }
-        
+    }
+    
+    func newCollection(selectedColor: CollectionColor) -> DeckCollection {
+        return DeckCollection(
+            id: idGenerator.newId(),
+            name: collectionName,
+            color: selectedColor,
+            datesLogs: DateLogs(
+                lastAccess: dateHandler.today,
+                lastEdit: dateHandler.today,
+                createdAt: dateHandler.today),
+            decksIds: [])
     }
     
     func editCollection() {
