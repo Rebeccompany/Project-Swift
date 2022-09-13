@@ -13,75 +13,75 @@ public enum HBColor {
     
     public static var collectionRed: Color {
         Color(
-            light: "#DC443B",
-            dark: "#DC4833")
+            light: "#F44731",
+            dark: "#E54934")
     }
     
     static var collectionOrange: Color {
         Color(
-            light: "#F37012",
-            dark: "#FF934F")
+            light: "#F47225",
+            dark: "#E26F1D")
     }
     
     public static var collectionYellow: Color {
         Color(
-            light: "#F4BF00",
-            dark: "#E5A832")
+            light: "#F2A40D",
+            dark: "#E4A834")
     }
     
     public static var collectionGreen: Color {
         Color(
-            light: "#038858",
-            dark: "#63B995")
+            light: "#0F995D",
+            dark: "#16A667")
     }
     
     public static var collectionLightBlue: Color {
         Color(
-            light: "#008DC6",
-            dark: "#009DDC")
+            light: "#0B9FDA",
+            dark: "#1CA2D9")
     }
     
     public static var collectionDarkPurple: Color {
         Color(
-            light: "#6665DD",
-            dark: "#6665DD")
+            light: "#944FF6",
+            dark: "#9D57FF")
     }
     
     public static var collectionLightPurple: Color {
         Color(
-            light: "#9E74CF",
-            dark: "#B388E5")
+            light: "#B36BF0",
+            dark: "#B778ED")
     }
     
     public static var collectionPink: Color {
         Color(
-            light: "#DB5DBF",
-            dark: "#C75BAB")
+            light: "#E550B5",
+            dark: "#DB58AB")
     }
     
     public static var collectionOtherPink: Color {
         Color(
-            light: "#E7667D",
-            dark: "#C64573")
+            light: "#DA2C6A",
+            dark: "#E53977")
     }
     
     public static var collectionBeigeBrown: Color {
         Color(
-            light: "#C89085",
-            dark: "#E3B7B0")
+            light: "#9E5615",
+            dark: "#C2654E")
     }
     
     public static var collectionGray: Color {
         Color(
-            light: "#929292",
-            dark: "#8B868D"
+            light: "#8C8C8C",
+            dark: "#999999"
         )
     }
     
     public static var collectionDarkBlue: Color {
         Color(
-            light: "#254A93",
-            dark: "#354F83"
+            light: "#3D66F5",
+            dark: "#5074F7"
         )
     }
     
