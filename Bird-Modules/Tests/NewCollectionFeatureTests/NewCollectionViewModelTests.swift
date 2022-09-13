@@ -149,5 +149,42 @@ class NewCollectionViewModelTests: XCTestCase {
         XCTAssertEqual(collectionRepository.collections[0].color, CollectionColor.darkPurple)
     }
     
-    #warning("teste de delete")
+    func testDeleteCollectionSuccessfully() {
+        sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
+        let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
+        
+        let containsCollection = collectionRepository.collections.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertTrue(containsCollection)
+        
+        sut.deleteCollection()
+        
+        let deletedCollection = collectionRepository.collections.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertFalse(deletedCollection)
+    }
+    
+    func testDeleteCollectionError() {
+        sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
+        let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
+        
+        let containsCollection = collectionRepository.collections.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertTrue(containsCollection)
+        
+        collectionRepository.shouldThrowError = true
+        sut.deleteCollection()
+        
+        let deletedCollection = collectionRepository.collections.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertTrue(deletedCollection)
+    }
 }
