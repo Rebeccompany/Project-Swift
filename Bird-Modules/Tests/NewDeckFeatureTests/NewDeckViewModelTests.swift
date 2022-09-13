@@ -219,20 +219,78 @@ class NewDeckViewModelTests: XCTestCase {
         XCTAssertEqual(deckRepository.decks[0].icon, IconNames.book.rawValue)
     }
     
-    func testDeleteDeck() {
-        sut.deckName = "Name"
-        sut.currentSelectedColor = CollectionColor.red
-        sut.currentSelectedIcon = IconNames.book
-        sut.createDeck()
+    func testEditDeckError() {
+        sut = NewDeckViewModel(colors: CollectionColor.allCases,
+                               icons: IconNames.allCases,
+                               editingDeck: deckRepository.decks[0],
+                               deckRepository: deckRepository,
+                               collectionId: [],
+                               dateHandler: dateHandlerMock,
+                               uuidGenerator: uuidHandler
+                )
         
-        let initialCount = deckRepository.decks.count
+        XCTAssertEqual(deckRepository.decks[0].color, .red)
         
-        XCTAssertEqual(initialCount, 5)
+        deckRepository.shouldThrowError = true
+        sut.currentSelectedColor = CollectionColor.darkBlue
+        sut.editDeck()
         
+        XCTAssertNotEqual(deckRepository.decks[0].color, CollectionColor.darkBlue)
+    }
+    
+    func testDeleteDeckSuccessfully() {
+        sut = NewDeckViewModel(colors: CollectionColor.allCases,
+                               icons: IconNames.allCases,
+                               editingDeck: deckRepository.decks[0],
+                               deckRepository: deckRepository,
+                               collectionId: [],
+                               dateHandler: dateHandlerMock,
+                               uuidGenerator: uuidHandler
+                )
+        
+        let id = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")
+        
+        let containsDeck = deckRepository.decks.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertTrue(containsDeck)
+
         sut.deleteDeck()
-        let updatedCount = deckRepository.decks.count
+
+        let deletedDeck = deckRepository.decks.contains(where: {
+            $0.id == id
+        })
         
-        XCTAssertEqual(updatedCount, 4)
+        XCTAssertFalse(deletedDeck)
+    }
+    
+    func testDeleteDeckError() {
+        sut = NewDeckViewModel(colors: CollectionColor.allCases,
+                               icons: IconNames.allCases,
+                               editingDeck: deckRepository.decks[0],
+                               deckRepository: deckRepository,
+                               collectionId: [],
+                               dateHandler: dateHandlerMock,
+                               uuidGenerator: uuidHandler
+                )
+        
+        let id = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")
+        
+        let containsDeck = deckRepository.decks.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertTrue(containsDeck)
+
+        deckRepository.shouldThrowError = true
+        sut.deleteDeck()
+
+        let deletedDeck = deckRepository.decks.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertTrue(deletedDeck)
     }
 
 }
