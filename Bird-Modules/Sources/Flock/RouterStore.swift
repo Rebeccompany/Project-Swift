@@ -6,3 +6,24 @@
 //
 
 import Foundation
+
+public final class RouterStore<Route>: ObservableObject where Route: Hashable {
+    
+    @Published var path: [Route]
+    
+    public init() {
+        self.path = []
+    }
+    
+    public func push(route: Route) {
+        path.append(route)
+    }
+    
+    public func popLast() {
+        guard !path.isEmpty else {
+            return
+        }
+        
+        path.removeLast()
+    }
+}
