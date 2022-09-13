@@ -9,6 +9,7 @@ import Foundation
 import Models
 import Combine
 
+//swiftlint: disable private_subject
 public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
     public var shouldThrowError: Bool = false
     
@@ -29,7 +30,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
                        ]
                       ),
         
-        DeckCollection(id: UUID(uuidString:"4f298230-4286-4a83-9f1c-53fd60533ed8")!,
+        DeckCollection(id: UUID(uuidString: "4f298230-4286-4a83-9f1c-53fd60533ed8")!,
                        name: "Portugues",
                        color: .otherPink,
                        datesLogs: DateLogs(
@@ -82,7 +83,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
                         UUID(uuidString: "4e56be0a-bc7c-4497-aec9-c30482e82496")!,
                         UUID(uuidString: "3947217b-2f55-4f16-ae59-10017d291579")!
                        ]
-                      ),
+                      )
     ]
     
     public lazy var listenerSubject = CurrentValueSubject<[DeckCollection], RepositoryError>(collections)

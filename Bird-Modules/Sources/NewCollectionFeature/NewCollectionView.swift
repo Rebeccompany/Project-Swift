@@ -11,32 +11,32 @@ import Models
 import Storage
 
 public struct NewCollectionView: View {
-
-    @ObservedObject var viewModel: NewCollectionViewModel
-
+    
+    @ObservedObject private var viewModel: NewCollectionViewModel
+    
     public init(viewModel: NewCollectionViewModel) {
         self.viewModel = viewModel
     }
-
-   public var body: some View {
-
-       NavigationView {
-           VStack (alignment: .leading) {
-
+    
+    public var body: some View {
+        
+        NavigationView {
+            VStack(alignment: .leading) {
+                
                 Text("Nome")
                     .font(.callout)
                     .bold()
-               TextField("", text: $viewModel.collectionName)
+                TextField("", text: $viewModel.collectionName)
                     .textFieldStyle(CollectionDeckTextFieldStyle())
                 Text("Cores")
                     .font(.callout)
                     .bold()
-
+                
                 IconColorGridView {
                     ForEach(viewModel.colors, id: \.self) {color in
                         Button {
                             viewModel.currentSelectedColor = color
-
+                            
                         } label: {
                             HBColor.getHBColrFromCollectionColor(color)
                         }
@@ -45,25 +45,28 @@ public struct NewCollectionView: View {
                         .frame(width: 45, height: 45)
                     }
                 }
-               
+                
                 Spacer()
-               
-               if (viewModel.editingCollection != nil) {
-                   Button() {
-                       viewModel.deleteCollection()
-                   } label: {
-                       Text("Apagar Coleção")
-                   }
-                   .buttonStyle(DeleteButtonStyle())
-
-               }
-               
+                
+                if viewModel.editingCollection != nil {
+                    Button {
+                        viewModel.deleteCollection()
+                    } label: {
+                        Text("Apagar Coleção")
+                    }
+                    .buttonStyle(DeleteButtonStyle())
+                    
+                }
+                
             }
             .onAppear(perform: viewModel.startUp)
             .padding()
             .alert("Ocorreu um erro interno. Tente novamente.", isPresented: $viewModel.showingErrorAlert) {
-                Button("OK", role: .cancel) { viewModel.showingErrorAlert = false}
-                    }
+                Button("OK", role: .cancel) {
+                    viewModel.showingErrorAlert = false
+                    
+                }
+            }
             .ViewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(viewModel.editingCollection == nil ? "Criar Coleção" : "Editar Coleção")
             .navigationBarTitleDisplayMode(.inline)
@@ -73,11 +76,11 @@ public struct NewCollectionView: View {
                         print("cancelarr!")
                     }
                     .foregroundColor(Color.red)
-
+                    
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
-                        if (viewModel.editingCollection == nil) {
+                        if viewModel.editingCollection == nil {
                             viewModel.createCollection()
                         } else {
                             viewModel.editCollection()
@@ -86,12 +89,12 @@ public struct NewCollectionView: View {
                     }
                     .disabled(!viewModel.canSubmit)
                 }
-
-
+                
+                
+            }
         }
-       }
-       .navigationViewStyle(.stack)
-
+        .navigationViewStyle(.stack)
+        
     }
     
 }
@@ -99,12 +102,12 @@ public struct NewCollectionView: View {
 struct NewCollectionView_Previews: PreviewProvider {
     static var previews: some View {
         
-            NewCollectionView(
-                viewModel: .init(
-                    colors: CollectionColor.allCases,
-                    collectionRepository: CollectionRepositoryMock()
-                ))
-                .preferredColorScheme(.light)
+        NewCollectionView(
+            viewModel: .init(
+                colors: CollectionColor.allCases,
+                collectionRepository: CollectionRepositoryMock()
+            ))
+        .preferredColorScheme(.light)
         
         
         

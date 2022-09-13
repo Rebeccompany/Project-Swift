@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct IconColorGridView<Content: View> : View {
+public struct IconColorGridView<Content: View>: View {
     public var elements: () -> Content
     
     public init(elements: @escaping () -> Content) {
@@ -20,7 +20,7 @@ public struct IconColorGridView<Content: View> : View {
         GridItem(.fixed(50)),
         GridItem(.fixed(50)),
         GridItem(.fixed(50)),
-        GridItem(.fixed(50)),
+        GridItem(.fixed(50))
     ]
     
     public var body: some View {

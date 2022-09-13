@@ -20,7 +20,8 @@ struct DeckView: View {
                     .background(
                         Circle()
                             .fill(.white)
-                    ).font(.system(size: 20))
+                    )
+                    .font(.system(size: 20))
         
                 Spacer()
                 

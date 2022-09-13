@@ -24,8 +24,8 @@ let package = Package(
             name: "CollectionFeature",
             targets: [
                 "CollectionFeature"
-                ]
-            ),
+            ]
+        ),
         
         .library(
             name: "DeckFeature",

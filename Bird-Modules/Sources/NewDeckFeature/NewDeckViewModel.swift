@@ -14,8 +14,8 @@ import Combine
 
 public class NewDeckViewModel: ObservableObject {
     @Published var deckName: String = ""
-    @Published var currentSelectedColor: CollectionColor? = nil
-    @Published var currentSelectedIcon: IconNames? = nil
+    @Published var currentSelectedColor: CollectionColor?
+    @Published var currentSelectedIcon: IconNames?
     @Published var canSubmit: Bool
     @Published var showingErrorAlert: Bool = false
     @Published var editingDeck: Deck?
@@ -30,12 +30,12 @@ public class NewDeckViewModel: ObservableObject {
     
     public init(
         colors: [CollectionColor],
-         icons: [IconNames],
-         editingDeck: Deck? = nil,
-         deckRepository: DeckRepositoryProtocol,
-         collectionId: [UUID],
-         dateHandler: DateHandlerProtocol = DateHandler(),
-         uuidGenerator: UUIDGeneratorProtocol = UUIDGenerator()
+        icons: [IconNames],
+        editingDeck: Deck? = nil,
+        deckRepository: DeckRepositoryProtocol,
+        collectionId: [UUID],
+        dateHandler: DateHandlerProtocol = DateHandler(),
+        uuidGenerator: UUIDGeneratorProtocol = UUIDGenerator()
     ) {
         
         self.colors = colors
@@ -69,7 +69,7 @@ public class NewDeckViewModel: ObservableObject {
         !name.isEmpty && currentSelectedColor != nil && currentSelectedIcon != nil
     }
     
-    func createDeck()  {
+    func createDeck() {
         guard let selectedColor = currentSelectedColor, let selectedIcon = currentSelectedIcon else {
             return
         }
