@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "NewDeckFeature"
-               BuildableName = "NewDeckFeature"
-               BlueprintName = "NewDeckFeature"
+               BlueprintIdentifier = "NewCollectionFeature"
+               BuildableName = "NewCollectionFeature"
+               BlueprintName = "NewCollectionFeature"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "NewDeckFeatureTests"
-               BuildableName = "NewDeckFeatureTests"
-               BlueprintName = "NewDeckFeatureTests"
+               BlueprintIdentifier = "NewCollectionFeatureTests"
+               BuildableName = "NewCollectionFeatureTests"
+               BlueprintName = "NewCollectionFeatureTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -60,9 +60,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "NewDeckFeature"
-            BuildableName = "NewDeckFeature"
-            BlueprintName = "NewDeckFeature"
+            BlueprintIdentifier = "NewCollectionFeature"
+            BuildableName = "NewCollectionFeature"
+            BlueprintName = "NewCollectionFeature"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
