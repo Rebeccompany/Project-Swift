@@ -18,6 +18,7 @@ public class NewDeckViewModel: ObservableObject {
     @Published var currentSelectedIcon: IconNames? = nil
     @Published var canSubmit: Bool
     @Published var showingErrorAlert: Bool = false
+    @Published var editingDeck: Deck?
     
     var colors: [CollectionColor]
     var icons: [IconNames]
@@ -30,6 +31,7 @@ public class NewDeckViewModel: ObservableObject {
     public init(
         colors: [CollectionColor],
          icons: [IconNames],
+         editingDeck: Deck? = nil,
          deckRepository: DeckRepositoryProtocol,
          collectionId: [UUID],
          dateHandler: DateHandlerProtocol = DateHandler(),
@@ -38,17 +40,29 @@ public class NewDeckViewModel: ObservableObject {
         
         self.colors = colors
         self.icons = icons
+        self.editingDeck = editingDeck
         self.collectionId = collectionId
         self.deckRepository = deckRepository
         self.dateHandler = dateHandler
         self.uuidGenerator = uuidGenerator
         self.canSubmit = false
+        
+        if let editingDeck = editingDeck {
+            setupDeckContentIntoFields(editingDeck)
+        }
+    }
+    
+    private func setupDeckContentIntoFields(_ deck: Deck) {
+        deckName = deck.name
+        currentSelectedColor = deck.color
+        currentSelectedIcon = IconNames(rawValue: deck.icon)
     }
     
     func startUp() {
         Publishers.CombineLatest3($deckName, $currentSelectedColor, $currentSelectedIcon)
             .map(canSubmitData)
             .assign(to: &$canSubmit)
+        
     }
     
     private func canSubmitData(name: String, currentSelectedColor: CollectionColor?, currentSelectedIcon: IconNames?) -> Bool {
@@ -72,6 +86,36 @@ public class NewDeckViewModel: ObservableObject {
                      spacedRepetitionConfig: SpacedRepetitionConfig()),
                 cards: [])
                     
+        } catch {
+            showingErrorAlert = true
+        }
+    }
+    
+    func editDeck() {
+        guard let selectedColor = currentSelectedColor, let selectedIcon = currentSelectedIcon, var editingDeck = editingDeck else {
+            return
+        }
+
+        do {
+            editingDeck.name = deckName
+            editingDeck.color = selectedColor
+            editingDeck.icon = selectedIcon.rawValue.description
+            editingDeck.datesLogs.lastAccess = dateHandler.today
+            editingDeck.datesLogs.lastEdit = dateHandler.today
+            try deckRepository.editDeck(editingDeck)
+                    
+        } catch {
+            showingErrorAlert = true
+        }
+    }
+    
+    func deleteDeck() {
+        guard let editingDeck = editingDeck else {
+            return
+        }
+
+        do {
+            try deckRepository.deleteDeck(editingDeck)
         } catch {
             showingErrorAlert = true
         }

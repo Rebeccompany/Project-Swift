@@ -212,8 +212,8 @@
  extension Deck {
      fileprivate init(id: String, cardsIds: [UUID] = []) {
          self.init(id: UUID(uuidString: id)!,
-                   name: "Progamação Swift",
-                   icon: "chevron.down",
+                   name: "Programação Swift",
+                   icon: IconNames.pencil.rawValue,
                    color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),
