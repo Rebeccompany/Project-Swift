@@ -17,6 +17,10 @@ struct DeckView: View {
     @State
     var shouldDisplay: Bool = false
     
+    public init(viewModel: DeckViewModel) {
+        self.viewModel = viewModel
+    }
+    
     var body: some View {
         List {
             Button("Estudar Deck") {
@@ -107,20 +111,7 @@ extension EdgeInsets {
     }
 }
 
-final class DeckViewModel: ObservableObject {
-    @Published var deck: Deck
-    @Published var searchFieldContent: String
-    @Published var cards: [Card]
-    
-    private var deckRepository: DeckRepositoryProtocol
-    
-    init(deck: Deck, deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil)) {
-        self.deck = deck
-        self.searchFieldContent = ""
-        self.deckRepository = deckRepository
-        self.cards = [DeckView_Previews.dummy, DeckView_Previews.dummy, DeckView_Previews.dummy, DeckView_Previews.dummy, DeckView_Previews.dummy]
-    }
-}
+
 
 struct DeckView_Previews: PreviewProvider {
     static var dummy: Card {
