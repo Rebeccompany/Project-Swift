@@ -7,7 +7,7 @@ let package = Package(
     name: "Bird-Modules",
     
     platforms: [
-        .iOS(.v15),
+        .iOS("16.0"),
         .macOS(.v12)
     ],
     
