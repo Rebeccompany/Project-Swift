@@ -20,83 +20,83 @@ let package = Package(
             ]
         ),
         
-        .library(name: "CollectionFeature",
-                 targets: [
-                    "CollectionFeature"
-                 ]
-        ),
+            .library(name: "CollectionFeature",
+                     targets: [
+                        "CollectionFeature"
+                     ]
+                    ),
         
-        .library(name: "DeckFeature",
-                 targets: [
-                    "DeckFeature"
-                 ]
-        ),
+            .library(name: "DeckFeature",
+                     targets: [
+                        "DeckFeature"
+                     ]
+                    ),
         
-        .library(name: "EditFlashcardFeature",
-                 targets: [
-                    "EditFlashcardFeature"
-                 ]
-        ),
+            .library(name: "EditFlashcardFeature",
+                     targets: [
+                        "EditFlashcardFeature"
+                     ]
+                    ),
         
-        .library(name: "StudyFeature",
-                 targets: [
-                    "StudyFeature"
-                 ]
-        ),
+            .library(name: "StudyFeature",
+                     targets: [
+                        "StudyFeature"
+                     ]
+                    ),
         
-        .library(name: "HomePageFeature",
-                 targets: [
-                    "HomePageFeature"
-                 ]
-        ),
-
-        .library(
-            name: "ImportingFeature",
-            targets: [
-                "ImportingFeature"
-            ]
-        ),
+            .library(name: "HomePageFeature",
+                     targets: [
+                        "HomePageFeature"
+                     ]
+                    ),
         
-        .library(
-            name: "Models",
-            targets: [
-                "Models"
-            ]
-        ),
+            .library(
+                name: "ImportingFeature",
+                targets: [
+                    "ImportingFeature"
+                ]
+            ),
         
-        .library(
-            name: "NewCollectionFeature",
-            targets: [
-                "NewCollectionFeature"
-            ]
-        ),
+            .library(
+                name: "Models",
+                targets: [
+                    "Models"
+                ]
+            ),
+        
+            .library(
+                name: "NewCollectionFeature",
+                targets: [
+                    "NewCollectionFeature"
+                ]
+            ),
         .library(
             name: "NewDeckFeature",
             targets: [
                 "NewDeckFeature"
             ]
         ),
-
-        .library(
-            name: "Woodpecker",
-            targets: [
-                "Woodpecker"
-            ]
-        ),
         
-        .library(
-            name: "Storage",
-            targets: [
-                "Storage"
-            ]
-        ),
+            .library(
+                name: "Woodpecker",
+                targets: [
+                    "Woodpecker"
+                ]
+            ),
         
-        .library(
-            name: "HummingBird",
-            targets: [
-                "HummingBird"
-            ]
-        )
+            .library(
+                name: "Storage",
+                targets: [
+                    "Storage"
+                ]
+            ),
+        
+            .library(
+                name: "HummingBird",
+                targets: [
+                    "HummingBird"
+                ]
+            )
     ],
     
     dependencies: [
@@ -115,92 +115,105 @@ let package = Package(
         .target(
             name: "AppFeature",
             dependencies: [
-                "Storage"
+                "Storage",
+                "NewCollectionFeature",
+                "NewDeckFeature",
+                "Models"
             ]
         ),
         
-        .target(name: "CollectionFeature",
-                dependencies: [
-                    "Models",
-                    "HummingBird"
-                ]
-        ),
-            
-        .target(name: "DeckFeature",
-                dependencies: [
-                    "Models",
-                    "HummingBird",
-                    "Storage"
-                ]
-        ),
-            
-        .target(name: "EditFlashcardFeature",
-                dependencies: [
-                     "Models"
-                ]
-        ),
-            
-        .target(name: "StudyFeature",
-                dependencies: [
-                     "Models",
-                     "HummingBird"
-                ]
-        ),
-            
-        .target(name: "HomePageFeature",
-                dependencies: [
-                     "Models"
-                ]
-        ),
+            .target(name: "CollectionFeature",
+                    dependencies: [
+                        "Models",
+                        "HummingBird"
+                    ]
+                   ),
         
-        .target(
-            name: "ImportingFeature",
-            dependencies: [
-                "Owl"
-            ]
-        ),
+            .target(name: "DeckFeature",
+                    dependencies: [
+                        "Models",
+                        "HummingBird",
+                        "Storage"
+                    ]
+                   ),
         
-        .target(
+            .target(name: "EditFlashcardFeature",
+                    dependencies: [
+                        "Models"
+                    ]
+                   ),
+        
+            .target(name: "StudyFeature",
+                    dependencies: [
+                        "Models",
+                        "HummingBird"
+                    ]
+                   ),
+        
+            .target(name: "HomePageFeature",
+                    dependencies: [
+                        "Models"
+                    ]
+                   ),
+        
+            .target(
+                name: "ImportingFeature",
+                dependencies: [
+                    "Owl"
+                ]
+            ),
+        
+            .target(
                 name: "Models"
             ),
         
-        .target(
-            name: "NewCollectionFeature",
-            dependencies: [
-                "Models"
-            ]
-        ),
+            .target(
+                name: "NewCollectionFeature",
+                dependencies: [
+                    "Models",
+                    "HummingBird",
+                    "Storage",
+                    "Utils"
+                ]
+            ),
         
-        .target(
-            name: "NewDeckFeature",
-            dependencies: [
-                "Models"
-            ]
-        ),
+            .target(
+                name: "NewDeckFeature",
+                dependencies: [
+                    "Models",
+                    "HummingBird",
+                    "Storage",
+                    "Utils"
+                ]
+            ),
         
-        .target(
-            name: "Woodpecker" ,
-            dependencies: [
-                "Models"
-            ]
-        ),
+            .target(
+                name: "Woodpecker" ,
+                dependencies: [
+                    "Models"
+                ]
+            ),
         
-        .target(
-            name: "Storage",
-            dependencies: [
-                "Models"
-            ],
-            resources: [
-                .copy("Resources/Bird.xcdatamodeld")
-            ]
-        ),
+            .target(
+                name: "Storage",
+                dependencies: [
+                    "Models"
+                ],
+                resources: [
+                    .copy("Resources/Bird.xcdatamodeld")
+                ]
+            ),
         
-        .target(
-            name: "HummingBird",
-            dependencies: [
-                "Models"
-            ]
-        ),
+            .target(
+                name: "HummingBird",
+                dependencies: [
+                    "Models"
+                ]
+            ),
+        
+            .target(
+                name: "Utils"
+            ),
         
         // MARK: Test Targets
         .testTarget(
@@ -210,34 +223,55 @@ let package = Package(
             ]
         ),
         
-        .testTarget(
-            name: "AppFeatureTests",
-            dependencies: [
-                "AppFeature"
-            ]
-        ),
+            .testTarget(
+                name: "AppFeatureTests",
+                dependencies: [
+                    "AppFeature"
+                ]
+            ),
         
-        .testTarget(
-            name: "WoodpeckerTests",
-            dependencies: [
-                "Woodpecker",
-                "Models"
-            ]
-        ),
+            .testTarget(
+                name: "WoodpeckerTests",
+                dependencies: [
+                    "Woodpecker",
+                    "Models"
+                ]
+            ),
         
-        .testTarget(
-            name: "CardModelTests",
-            dependencies: [
-                "Models"
-            ]
-        ),
+            .testTarget(
+                name: "CardModelTests",
+                dependencies: [
+                    "Models"
+                ]
+            ),
         
-        .testTarget(
-            name: "StorageTests",
-            dependencies: [
-                "Storage",
-                "Models"
-            ]
-        )
+            .testTarget(
+                name: "StorageTests",
+                dependencies: [
+                    "Storage",
+                    "Models"
+                ]
+            ),
+        
+            .testTarget(
+                name: "NewCollectionFeatureTests",
+                dependencies: [
+                    "Storage",
+                    "Models",
+                    "NewCollectionFeature"
+                ]
+            ),
+        
+        
+            .testTarget(
+                name: "NewDeckFeatureTests",
+                dependencies: [
+                    "Storage",
+                    "Models",
+                    "NewDeckFeature",
+                    "HummingBird",
+                    "Utils"
+                ]
+            )
     ]
 )

@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct ChooseFileButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
+public struct ChooseFileButtonStyle: ButtonStyle {
+    public init() {}
+    
+    public func makeBody(configuration: Configuration) -> some View {
         HStack {
             configuration.label
                 .padding(.leading, 8)
