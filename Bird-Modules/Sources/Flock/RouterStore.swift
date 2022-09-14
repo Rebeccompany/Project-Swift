@@ -9,7 +9,7 @@ import Foundation
 
 public final class RouterStore<Route>: ObservableObject where Route: Hashable {
     
-    @Published var path: [Route]
+    @Published public var path: [Route]
     
     public init() {
         self.path = []
