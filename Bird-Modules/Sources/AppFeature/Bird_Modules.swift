@@ -12,6 +12,6 @@ public struct Bird_Modules {
 public struct TestView: View {
     public init() {}
     public var body: some View {
-        TesteView()
+        NewCollectionView(viewModel: NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: CollectionRepositoryMock()))
     }
 }

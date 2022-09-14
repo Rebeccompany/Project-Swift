@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-public struct Router<Root, Destination, Route>: View where Root: View, Destination: View, Route: Hashable {
+struct Router<Root, Destination, Route>: View where Root: View, Destination: View, Route: Hashable {
     private let root: () -> Root
     private let destination: (Route) -> Destination
     
-    @StateObject private var store = RouterStore<Route>()
+    @StateObject var store = RouterStore<Route>()
     public init(
         @ViewBuilder root: @escaping () -> Root,
         @ViewBuilder destination: @escaping (Route) -> Destination
@@ -20,15 +20,13 @@ public struct Router<Root, Destination, Route>: View where Root: View, Destinati
         self.destination = destination
     }
     
-    public var body: some View {
+    var body: some View {
         NavigationStack(path: $store.path) {
-            Group {
-                root()
-            }.navigationDestination(
-                for: Route.self,
-                destination: destination
-        )
+            root()
+                .navigationDestination(
+                    for: Route.self,
+                    destination: destination
+                )
         }
-        .environmentObject(store)
     }
 }
