@@ -8,6 +8,7 @@
 import SwiftUI
 import Models
 import CollectionFeature
+import NewCollectionFeature
 import Storage
 
 public struct ContentView: View {
@@ -25,8 +26,10 @@ public struct ContentView: View {
             CollectionsSidebar(
                 collections: viewModel.collections,
                 selection: $viewModel.sidebarSelection,
-                isCompact: horizontalSizeClass == .compact
-            ) { _ in } editAction: { _ in }
+                isCompact: horizontalSizeClass == .compact,
+                deleteAction: viewModel.deleteCollection,
+                editAction: viewModel.editCollection
+            )
                 .navigationTitle("Nome do App")
                 .toolbar {
                     ToolbarItem {
@@ -51,7 +54,15 @@ public struct ContentView: View {
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
-        
+        .sheet(isPresented: $viewModel.presentCollectionEdition) {
+            NewCollectionView(
+                viewModel: .init(
+                    colors: CollectionColor.allCases,
+                    collectionRepository: CollectionRepositoryMock.shared,
+                    editingCollection: viewModel.editingCollection
+                )
+            )
+        }
     }
 }
 
@@ -59,8 +70,8 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView(
             viewModel: ContentViewModel(
-                collectionRepository: CollectionRepositoryMock(),
-                deckRepository: DeckRepositoryMock()
+                collectionRepository: CollectionRepositoryMock.shared,
+                deckRepository: DeckRepositoryMock.shared
             )
         )
     }

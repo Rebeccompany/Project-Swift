@@ -25,7 +25,7 @@ public class NewCollectionViewModel: ObservableObject {
     
     public init(
         colors: [CollectionColor],
-        collectionRepository: CollectionRepositoryProtocol = CollectionRepository(),
+        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
         dateHandler: DateHandlerProtocol = DateHandler(),
         idGenerator: UUIDGeneratorProtocol = UUIDGenerator(),
         editingCollection: DeckCollection? = nil

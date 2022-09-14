@@ -14,14 +14,16 @@ public final class ContentViewModel: ObservableObject {
     
     @Published var collections: [DeckCollection]
     @Published var sidebarSelection: SidebarRoute? = .allDecks
+    @Published var presentCollectionEdition: Bool = false
+    @Published var editingCollection: DeckCollection? = nil
     
     private let collectionRepository: CollectionRepositoryProtocol
     private let deckRepository: DeckRepositoryProtocol
     private var cancellables: Set<AnyCancellable>
     
     public init(
-        collectionRepository: CollectionRepositoryProtocol = CollectionRepositoryMock(),
-        deckRepository: DeckRepositoryProtocol = DeckRepositoryMock()
+        collectionRepository: CollectionRepositoryProtocol = CollectionRepositoryMock.shared,
+        deckRepository: DeckRepositoryProtocol = DeckRepositoryMock.shared
     ) {
         self.collectionRepository = collectionRepository
         self.deckRepository = deckRepository
@@ -54,4 +56,23 @@ public final class ContentViewModel: ObservableObject {
     private func handleReceiveCollections(_ collections: [DeckCollection]) {
         self.collections = collections
     }
+    
+    func deleteCollection(at index: IndexSet) {
+        let collections = self.collections
+        let collectionsToDelete = index.map { i in collections[i] }
+        
+        do {
+            try collectionsToDelete.forEach { collection in
+                try collectionRepository.deleteCollection(collection)
+            }
+        } catch {
+            print("oi")
+        }
+    }
+    
+    func editCollection(_ collection: DeckCollection) {
+        editingCollection = collection
+        presentCollectionEdition = true
+    }
+    
 }

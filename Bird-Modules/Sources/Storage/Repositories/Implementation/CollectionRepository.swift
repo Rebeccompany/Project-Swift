@@ -22,6 +22,10 @@ public final class CollectionRepository: CollectionRepositoryProtocol {
         self.deckRepository = deckRepository
     }
     
+    public static let shared: CollectionRepositoryProtocol = {
+        CollectionRepository()
+    }()
+    
     public convenience init() {
         self.init(collectionRepository: Repository(transformer: CollectionModelEntityTransformer(), .shared),
                   deckRepository: Repository(transformer: DeckModelEntityTransformer(), .shared)
