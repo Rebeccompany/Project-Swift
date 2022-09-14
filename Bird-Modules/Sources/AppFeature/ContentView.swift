@@ -9,6 +9,7 @@ import SwiftUI
 import Models
 import CollectionFeature
 import Storage
+import HummingBird
 
 public struct ContentView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
@@ -42,12 +43,11 @@ public struct ContentView: View {
                 }
                 .environment(\.editMode, $editMode)
         } detail: {
-            switch viewModel.sidebarSelection ?? .allDecks {
-            case .allDecks:
-                Text(horizontalSizeClass == .compact ? "si" : "no")
-            case .decksFromCollection(let id):
-                Text("id: \(id.uuidString)")
+            List(viewModel.decks) { deck in
+                Text(deck.name)
             }
+            .scrollContentBackground(.hidden)
+            .viewBackgroundColor(HBColor.primaryBackground)
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)

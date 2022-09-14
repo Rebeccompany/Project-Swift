@@ -14,6 +14,7 @@ public final class ContentViewModel: ObservableObject {
     
     @Published var collections: [DeckCollection]
     @Published var sidebarSelection: SidebarRoute? = .allDecks
+    @Published var decks: [Deck]
     
     private let collectionRepository: CollectionRepositoryProtocol
     private let deckRepository: DeckRepositoryProtocol
@@ -27,6 +28,7 @@ public final class ContentViewModel: ObservableObject {
         self.deckRepository = deckRepository
         self.collections = []
         self.cancellables = .init()
+        self.decks = []
     }
     
     func startup() {
@@ -38,8 +40,25 @@ public final class ContentViewModel: ObservableObject {
             )
             .store(in: &cancellables)
         
+        deckRepository
+            .deckListener()
+            .replaceError(with: [])
+            .combineLatest($sidebarSelection)
+            .map(mapDecksBySidebarSelection)
+            .assign(to: &$decks)
         
-        
+    }
+    
+    private func mapDecksBySidebarSelection(decks: [Deck], sidebarSelection: SidebarRoute?) -> [Deck] {
+        switch sidebarSelection ?? .allDecks {
+            
+        case .allDecks:
+            return decks
+        case .decksFromCollection(let id):
+            return decks.filter { deck in
+                deck.collectionsIds.contains(id)
+            }
+        }
     }
     
     private func handleCollectionCompletion(_ completion: Subscribers.Completion<RepositoryError>) {

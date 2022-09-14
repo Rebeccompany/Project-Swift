@@ -20,8 +20,8 @@
         Deck(id: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", cardsIds: cards.map {
             $0.id
         }),
-        Deck(id: "a498bc3c-85a3-4784-b560-a33a272a0a92"),
-        Deck(id: "4e56be0a-bc7c-4497-aec9-c30482e82496"),
+        Deck(id: "a498bc3c-85a3-4784-b560-a33a272a0a92", colIds: [UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!]),
+        Deck(id: "4e56be0a-bc7c-4497-aec9-c30482e82496", colIds: [UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!]),
         Deck(id: "3947217b-2f55-4f16-ae59-10017d291579")
 
      ]
@@ -214,7 +214,7 @@
  }
 
  extension Deck {
-     fileprivate init(id: String, cardsIds: [UUID] = []) {
+     fileprivate init(id: String, cardsIds: [UUID] = [], colIds: [UUID] = []) {
          self.init(id: UUID(uuidString: id)!,
                    name: "Programação Swift",
                    icon: IconNames.pencil.rawValue,
@@ -222,7 +222,7 @@
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),
                                        createdAt: Date(timeIntervalSince1970: 0)),
-                   collectionsIds: [],
+                   collectionsIds: colIds,
                    cardsIds: cardsIds,
                    spacedRepetitionConfig: .init(maxLearningCards: 20,
                                                  maxReviewingCards: 200))
