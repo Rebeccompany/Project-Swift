@@ -130,7 +130,8 @@ let package = Package(
                 "NewCollectionFeature",
                 "NewDeckFeature",
                 "Models",
-                "Flock"
+                "Flock",
+                "DeckFeature"
             ]
         ),
         
@@ -300,6 +301,16 @@ let package = Package(
             dependencies: [
                 "Models",
                 "Flock"
+            ]
+        ),
+        
+        .testTarget(
+            name: "DeckFeatureTests",
+            dependencies: [
+                "DeckFeature",
+                "Storage",
+                "Models",
+                "HummingBird"
             ]
         )
     ]

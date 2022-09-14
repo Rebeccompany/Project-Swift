@@ -39,14 +39,11 @@ public class DeckViewModel: ObservableObject {
         }
     }
     
-    
     var cardsSearched: [Card] {
         if searchFieldContent.isEmpty {
             return cards
-        }
-        
-        else {
-            return cards.filter { NSAttributedString($0.front).string.contains(searchFieldContent) ||  NSAttributedString($0.back).string.contains(searchFieldContent) }
+        } else {
+            return cards.filter { NSAttributedString($0.front).string.contains(searchFieldContent) || NSAttributedString($0.back).string.contains(searchFieldContent) }
         }
     }
 }

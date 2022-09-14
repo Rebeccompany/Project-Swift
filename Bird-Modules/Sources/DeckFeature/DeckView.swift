@@ -11,18 +11,16 @@ import Models
 import HummingBird
 import Storage
 
-struct DeckView: View {
-    @ObservedObject
-    var viewModel: DeckViewModel
-    @State
-    var shouldDisplay: Bool = false
+public struct DeckView: View {
+    @ObservedObject private var viewModel: DeckViewModel
+    @State private var shouldDisplay: Bool = false
     
     
     public init(viewModel: DeckViewModel) {
         self.viewModel = viewModel
     }
     
-    var body: some View {
+    public var body: some View {
         List {
             Button("Estudar Deck") {
                 
@@ -37,18 +35,19 @@ struct DeckView: View {
                 FlashcardCell(card: card) {
                     shouldDisplay = true
                 }
-                .contextMenu{
+                .contextMenu {
                     Button {
                     #warning(": vai pra tela de edit flashcard")
-                        print("edit")
                     } label: {
-                        Label("Editar Flashcard", systemImage: "pencil")
+                        Label("Editar Flashcard",
+                              systemImage: "pencil")
                     }
+                    
                     Button(role: .destructive) {
                         viewModel.deleteFlashcard(card: card)
-                        print("delete")
                     } label: {
-                        Label("Deletar Flashcard", systemImage: "trash.fill")
+                        Label("Deletar Flashcard",
+                              systemImage: "trash.fill")
                     }
                     
                 }
@@ -160,5 +159,3 @@ struct DeckView_Previews: PreviewProvider {
         .preferredColorScheme(.dark)
     }
 }
-
-

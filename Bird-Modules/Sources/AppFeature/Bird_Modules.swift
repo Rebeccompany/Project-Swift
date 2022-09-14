@@ -1,5 +1,5 @@
 import Storage
-import NewCollectionFeature
+import DeckFeature
 import Models
 import SwiftUI
 
@@ -11,7 +11,10 @@ public struct Bird_Modules {
 }
 public struct TestView: View {
     public init() {}
+    var deckRepository = DeckRepositoryMock()
     public var body: some View {
-        NewCollectionView(viewModel: NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: CollectionRepositoryMock()))
+        NavigationView {
+            DeckView(viewModel: DeckViewModel(deck: deckRepository.decks[0], deckRepository: deckRepository))
+        }
     }
 }

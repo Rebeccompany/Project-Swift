@@ -11,8 +11,8 @@ struct Router<Root, Destination, Route>: View where Root: View, Destination: Vie
     private let root: () -> Root
     private let destination: (Route) -> Destination
     
-    @StateObject var store = RouterStore<Route>()
-    public init(
+    @StateObject private var store = RouterStore<Route>()
+    public init (
         @ViewBuilder root: @escaping () -> Root,
         @ViewBuilder destination: @escaping (Route) -> Destination
     ) {
