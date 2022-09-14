@@ -12,8 +12,8 @@ import Storage
 
 public struct NewDeckView: View {
     @ObservedObject
-    var viewModel: NewDeckViewModel
-    @Environment(\.dismiss) var dismiss
+    private var viewModel: NewDeckViewModel
+    @Environment(\.dismiss) private var dismiss
     
     public init(viewModel: NewDeckViewModel) {
         self.viewModel = viewModel
@@ -37,8 +37,8 @@ public struct NewDeckView: View {
                     .bold()
                 
                 IconColorGridView {
-                    ForEach (viewModel.colors, id: \.self) { color in
-                        Button{
+                    ForEach(viewModel.colors, id: \.self) { color in
+                        Button {
                             viewModel.currentSelectedColor = color
                         } label: {
                             HBColor.getHBColrFromCollectionColor(color)
@@ -55,8 +55,8 @@ public struct NewDeckView: View {
                     .padding(.top)
                 
                 IconColorGridView {
-                    ForEach (viewModel.icons, id: \.self) { icon in
-                        Button{
+                    ForEach(viewModel.icons, id: \.self) { icon in
+                        Button {
                             viewModel.currentSelectedIcon = icon
                         } label: {
                             Image(systemName: IconNames.getIconString(icon))
@@ -68,7 +68,7 @@ public struct NewDeckView: View {
                 }
                 Spacer()
                 
-                if (viewModel.editingDeck != nil) {
+                if viewModel.editingDeck != nil {
                     Button {
                         viewModel.deleteDeck()
                     } label: {

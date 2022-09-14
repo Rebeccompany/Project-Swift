@@ -61,7 +61,7 @@ struct DifficultyButtonView_Preview: PreviewProvider {
         HStack {
             ForEach(DifficultyStep.allCases) { step in
                 Spacer()
-                DifficultyButtonView(step: step, isDisabled: .constant(false)) {_ in }
+                DifficultyButtonView(step: step, isDisabled: .constant(false)) { _ in }
                 Spacer()
             }
         }
@@ -73,7 +73,7 @@ struct DifficultyButtonView_Preview: PreviewProvider {
         HStack {
             ForEach(DifficultyStep.allCases) { step in
                 Spacer()
-                DifficultyButtonView(step: step, isDisabled: .constant(false)) {_ in }
+                DifficultyButtonView(step: step, isDisabled: .constant(false)) { _ in }
                 Spacer()
             }
         }
@@ -82,19 +82,19 @@ struct DifficultyButtonView_Preview: PreviewProvider {
         .background(HBColor.primaryBackground)
         .previewLayout(.sizeThatFits)
         
-        DifficultyButtonView(step: .hard, isDisabled: .constant(false)) {_ in }
+        DifficultyButtonView(step: .hard, isDisabled: .constant(false)) { _ in }
             .padding()
             .preferredColorScheme(.light)
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
         
-        DifficultyButtonView(step: .veryHard, isDisabled: .constant(false)) {_ in }
+        DifficultyButtonView(step: .veryHard, isDisabled: .constant(false)) { _ in }
             .padding()
             .preferredColorScheme(.dark)
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
         
-        DifficultyButtonView(step: .veryHard, isDisabled: .constant(true)) {_ in }
+        DifficultyButtonView(step: .veryHard, isDisabled: .constant(true)) { _ in }
             .padding()
             .preferredColorScheme(.light)
             .background(HBColor.primaryBackground)
