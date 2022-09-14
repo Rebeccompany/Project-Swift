@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum CollectionColor: Int, CaseIterable {
+public enum CollectionColor: Int, CaseIterable, Hashable {
     case red
     case orange
     case yellow
