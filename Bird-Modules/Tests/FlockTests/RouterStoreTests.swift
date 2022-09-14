@@ -55,7 +55,6 @@ final class RouterStoreTests: XCTestCase {
         sut.push(route: route)
         
         XCTAssertEqual(1, sut.path.count)
-        XCTAssertEqual(route, sut.path.first)
     }
     
     func testPopRouteWithEmptyStack() {
@@ -70,16 +69,16 @@ final class RouterStoreTests: XCTestCase {
         sut.push(route: route)
         sut.push(route: cardRoute)
         
-        XCTAssertEqual([route, cardRoute], sut.path)
+        XCTAssertEqual(2, sut.path.count)
         
         sut.popLast()
         
-        XCTAssertEqual([route], sut.path)
+        XCTAssertEqual(1, sut.path.count)
     }
     
     func testPopRouteWithOneElementInStack() {
         sut.push(route: route)
-        XCTAssertEqual([route], sut.path)
+        XCTAssertEqual(1, sut.path.count)
         
         sut.popLast()
         
