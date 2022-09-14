@@ -201,8 +201,8 @@
              h = []
          }
          self.init(id: UUID(uuidString: id)!,
-                   front: "",
-                   back: "",
+                   front: "Essa é a frente das cartas",
+                   back: "Esse é o verso",
                    color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),

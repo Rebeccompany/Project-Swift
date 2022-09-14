@@ -17,6 +17,7 @@ struct DeckView: View {
     @State
     var shouldDisplay: Bool = false
     
+    
     public init(viewModel: DeckViewModel) {
         self.viewModel = viewModel
     }
@@ -32,9 +33,24 @@ struct DeckView: View {
             .listRowSeparator(.hidden)
             .padding()
             
-            ForEach(viewModel.cards) {card in
+            ForEach(viewModel.cardsSearched) {card in
                 FlashcardCell(card: card) {
                     shouldDisplay = true
+                }
+                .contextMenu{
+                    Button {
+                    #warning(": vai pra tela de edit flashcard")
+                        print("edit")
+                    } label: {
+                        Label("Editar Flashcard", systemImage: "pencil")
+                    }
+                    Button(role: .destructive) {
+                        viewModel.deleteFlashcard(card: card)
+                        print("delete")
+                    } label: {
+                        Label("Deletar Flashcard", systemImage: "trash.fill")
+                    }
+                    
                 }
                 
                 .background(
@@ -47,18 +63,19 @@ struct DeckView: View {
                 )
             }
             .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            
-            
+            .listRowSeparator(.hidden)       
         }
+        .onAppear(perform: viewModel.startup)
         .listStyle(.plain)
         .searchable(text: $viewModel.searchFieldContent)
         .navigationTitle(viewModel.deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Group {
-                    Button("Editar") {}
-                    Button {} label: {
+                    NavigationLink(destination: Text("segunda view")) {
+                        Text("Editar")
+                    }
+                    NavigationLink(destination: Text("criar flashcard modal")) {
                         Image(systemName: "plus")
                     }
                 }
@@ -68,42 +85,7 @@ struct DeckView: View {
     }
 }
 
-struct FlashcardCell: View {
-    var card: Card
-    var action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            VStack(alignment: .center) {
-                HStack {
-                    Text("Frente")
-                        .font(.system(size: 15))
-                    Spacer()
-                }
-                Spacer()
-                Text(cardText(card.front))
-                Spacer()
-            }
-            .foregroundColor(.white)
-            .padding(8)
-            .frame(minHeight: 150)
-            .background(HBColor.getHBColrFromCollectionColor(card.color))
-            .cornerRadius(8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.white, lineWidth: 3)
-            )
-        }
-    }
-    
-    private func cardText(_ content: AttributedString) -> AttributedString {
-        var content = content
-        content.swiftUI.font = .body
-        content.swiftUI.foregroundColor = .white
-        
-        return content
-    }
-}
+
 
 extension EdgeInsets {
     static var zero: EdgeInsets {
@@ -114,26 +96,6 @@ extension EdgeInsets {
 
 
 struct DeckView_Previews: PreviewProvider {
-    static var dummy: Card {
-        let deckId = UUID(uuidString: "25804f37-a401-4211-b8d1-ac2d3de53775")!
-        let frontData = "Toxoplasmose: exame e seus respectivo tempo e tratamento".data(using: .utf8)!
-        let backData =  ". Sorologia (IgM,IgG) -&gt; Teste de Avidez (&lt;30% aguda, &gt;60% cronica)&nbsp;<br>. Espiramicina 3g -VO 2 cp de 500mg por 8/8h&nbsp;".data(using: .utf8)!
-        
-        let frontNSAttributedString = try! NSAttributedString(data: frontData, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
-        let backNSAttributedString = try! NSAttributedString(data: backData, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
-        let dateLog = DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
-                               lastEdit: Date(timeIntervalSince1970: 0),
-                               createdAt: Date(timeIntervalSince1970: 0))
-        let wp = WoodpeckerCardInfo(step: 1,
-                                    isGraduated: true,
-                                    easeFactor: 2.5,
-                                    streak: 1,
-                                    interval: 1,
-                                    hasBeenPresented: true)
-        
-        return Card(id: UUID(), front: AttributedString(frontNSAttributedString), back: AttributedString(backNSAttributedString), color: .allCases.randomElement()!, datesLogs: dateLog, deckID: deckId, woodpeckerCardInfo: wp, history: [])
-    }
-    
     static var previews: some View {
         NavigationView {
             DeckView(
@@ -148,7 +110,44 @@ struct DeckView_Previews: PreviewProvider {
                             lastEdit: Date(),
                             createdAt: Date()),
                         collectionsIds: [],
-                        cardsIds: [],
+                        cardsIds: [
+                            UUID(
+                                uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974"
+                            )!,
+                            UUID(
+                                uuidString: "66605408-4cd4-4ded-b23d-91db9249a946"
+                            )!,
+                            UUID(
+                                uuidString: "4f298230-4286-4a83-9f1c-53fd60533ed8"
+                            )!,
+                            UUID(
+                                uuidString: "9b06af85-e4e8-442d-be7a-40450cfd310c"
+                            )!,
+                            UUID(
+                                uuidString: "855eb618-602e-449d-83fc-5de6b8a36454"
+                            )!,
+                            UUID(
+                                uuidString: "5285798a-4107-48b3-8994-e706699a3445"
+                            )!,
+                            UUID(
+                                uuidString: "407e7694-316e-4903-9c94-b3ec0e9ab0e8"
+                            )!,
+                            UUID(
+                                uuidString: "09ae6b07-b988-442f-a059-9ea76d5c9055"
+                            )!,
+                            UUID(
+                                uuidString: "d3b5ba9a-7805-480e-ad47-43b842f0472f"
+                            )!,
+                            UUID(
+                                uuidString: "d9d3d4ec-9854-4e73-864b-1e68355a6973"
+                            )!,
+                            UUID(
+                                uuidString: "c24affd7-376d-4614-9ad6-8a83a0f60da5"
+                            )!,
+                            UUID(
+                                uuidString: "d2c951fb-36f5-49dc-84f0-353a3b3a2875"
+                            )!
+                        ],
                         spacedRepetitionConfig: SpacedRepetitionConfig(
                             maxLearningCards: 20,
                             maxReviewingCards: 200
@@ -161,3 +160,5 @@ struct DeckView_Previews: PreviewProvider {
         .preferredColorScheme(.dark)
     }
 }
+
+

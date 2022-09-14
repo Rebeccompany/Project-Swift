@@ -8,6 +8,7 @@
 import Foundation
 import Models
 import HummingBird
+import Combine
 import Storage
 
 public class DeckViewModel: ObservableObject {
@@ -21,20 +22,31 @@ public class DeckViewModel: ObservableObject {
         self.deck = deck
         self.searchFieldContent = ""
         self.deckRepository = deckRepository
-        self.cards = [DeckView_Previews.dummy, DeckView_Previews.dummy, DeckView_Previews.dummy, DeckView_Previews.dummy, DeckView_Previews.dummy]
+        self.cards = []
     }
     
-    func searchResults(searchingText: String) -> [Card] {
-        var results: [Card] {
-            if searchingText.isEmpty {
-                return []
-            }
-            
-            else {
-                return cards.filter{$0.front.contains(searchingText)}
-            }
+    func startup() {
+        deckRepository.fetchCardsByIds(deck.cardsIds)
+            .replaceError(with: [])
+            .assign(to: &$cards)
+    }
+    
+    func deleteFlashcard(card: Card) {
+        do {
+            try deckRepository.deleteCard(card)
+        } catch {
+            print("erroooo")
+        }
+    }
+    
+    
+    var cardsSearched: [Card] {
+        if searchFieldContent.isEmpty {
+            return cards
         }
         
-        
+        else {
+            return cards.filter { NSAttributedString($0.front).string.contains(searchFieldContent) ||  NSAttributedString($0.back).string.contains(searchFieldContent) }
+        }
     }
 }
