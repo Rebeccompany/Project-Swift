@@ -49,8 +49,6 @@ struct FlashcardCell: View {
 
 struct FlashcardCell_Previews: PreviewProvider {
     static var previews: some View {
-        FlashcardCell(card: Card(id: UUID(), front: "frentee", back: "tras", color: CollectionColor.lightPurple, datesLogs: DateLogs(), deckID: UUID(), woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: true), history: [])) { 
-            EmptyView()
-        }
+        FlashcardCell(card: Card(id: UUID(), front: "frentee", back: "tras", color: CollectionColor.lightPurple, datesLogs: DateLogs(), deckID: UUID(), woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: true), history: [])) {}
     }
 }

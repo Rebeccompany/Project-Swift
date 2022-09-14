@@ -15,6 +15,7 @@ public class DeckViewModel: ObservableObject {
     @Published var deck: Deck
     @Published var searchFieldContent: String
     @Published var cards: [Card]
+    @Published var canStudy: Bool
     
     private var deckRepository: DeckRepositoryProtocol
     
@@ -23,6 +24,7 @@ public class DeckViewModel: ObservableObject {
         self.searchFieldContent = ""
         self.deckRepository = deckRepository
         self.cards = []
+        self.canStudy = true
     }
     
     func startup() {

@@ -15,17 +15,23 @@ public struct DeckView: View {
     @ObservedObject private var viewModel: DeckViewModel
     @State private var shouldDisplay: Bool = false
     
-    
     public init(viewModel: DeckViewModel) {
         self.viewModel = viewModel
     }
     
     public var body: some View {
         List {
+            if !viewModel.canStudy {
+                Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
+                    .bold()
+                    .multilineTextAlignment(.center)
+            }
+        
             Button("Estudar Deck") {
                 
             }
-            .buttonStyle(LargeButtonStyle())
+            .disabled(!viewModel.canStudy)
+            .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.canStudy))
             .listRowInsets(.zero)
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
@@ -62,8 +68,10 @@ public struct DeckView: View {
                 )
             }
             .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)       
+            .listRowSeparator(.hidden)
         }
+        
+        
         .onAppear(perform: viewModel.startup)
         .listStyle(.plain)
         .searchable(text: $viewModel.searchFieldContent)

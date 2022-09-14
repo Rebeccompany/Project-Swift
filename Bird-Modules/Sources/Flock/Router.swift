@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Router<Root, Destination, Route>: View where Root: View, Destination: View, Route: Hashable {
+public struct Router<Root, Destination, Route>: View where Root: View, Destination: View, Route: Hashable {
     private let root: () -> Root
     private let destination: (Route) -> Destination
     
@@ -20,7 +20,7 @@ struct Router<Root, Destination, Route>: View where Root: View, Destination: Vie
         self.destination = destination
     }
     
-    var body: some View {
+    public var body: some View {
         NavigationStack(path: $store.path) {
             root()
                 .navigationDestination(
