@@ -67,7 +67,7 @@ public struct NewCollectionView: View {
                     
                 }
             }
-            .ViewBackgroundColor(HBColor.primaryBackground)
+            .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(viewModel.editingCollection == nil ? "Criar Coleção" : "Editar Coleção")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
