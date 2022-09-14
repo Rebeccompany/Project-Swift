@@ -1,8 +1,15 @@
 //
-//  File.swift
+//  RouterStoreTests.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 13/09/22.
 //
 
-import Foundation
+import XCTest
+@testable import Flock
+import Models
+
+final class RouterStoreTests: XCTestCase {
+    
+    
+}
