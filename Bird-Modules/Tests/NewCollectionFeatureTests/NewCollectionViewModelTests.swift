@@ -114,36 +114,77 @@ class NewCollectionViewModelTests: XCTestCase {
     
     
     func testEditNameCollectionSuccessfuly() {
-        sut.collectionName = "Coleção"
-        sut.currentSelectedColor = CollectionColor.red
-        sut.createCollection()
+        sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
         
-        let containsNewCollection = collectionRepository.collections.contains(where: {
-            $0.id == uuidHandlerMock.lastCreatedID
-        })
+        XCTAssertEqual(collectionRepository.collections[0].name, "Matemática Básica")
         
-        XCTAssertTrue(containsNewCollection)
-        
-        sut.collectionName = "Editada"
+        sut.collectionName = "Matemática II"
         sut.editCollection()
         
-        #warning("checar se a collection foi editada")
+        XCTAssertEqual(collectionRepository.collections[0].name, "Matemática II")
     }
     
     func testEditColorCollectionSuccessfuly() {
-        sut.collectionName = "Coleção"
-        sut.currentSelectedColor = CollectionColor.red
-        sut.createCollection()
+        sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
         
-        let containsNewCollection = collectionRepository.collections.contains(where: {
-            $0.id == uuidHandlerMock.lastCreatedID
+        XCTAssertEqual(collectionRepository.collections[0].color, CollectionColor.darkPurple)
+        
+        sut.currentSelectedColor = CollectionColor.red
+        sut.editCollection()
+        
+        XCTAssertEqual(collectionRepository.collections[0].color, CollectionColor.red)
+    }
+    
+    func testEditCollectionError() {
+        sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
+        
+        XCTAssertEqual(collectionRepository.collections[0].color, CollectionColor.darkPurple)
+        
+        collectionRepository.shouldThrowError = true
+        sut.currentSelectedColor = CollectionColor.red
+        sut.editCollection()
+        
+        
+        XCTAssertNotEqual(collectionRepository.collections[0].color, CollectionColor.red)
+        XCTAssertEqual(collectionRepository.collections[0].color, CollectionColor.darkPurple)
+    }
+    
+    func testDeleteCollectionSuccessfully() {
+        sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
+        let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
+        
+        let containsCollection = collectionRepository.collections.contains(where: {
+            $0.id == id
         })
         
-        XCTAssertTrue(containsNewCollection)
+        XCTAssertTrue(containsCollection)
         
-        sut.currentSelectedColor = CollectionColor.gray
-//        sut.editCollection()
-#warning("checar se a collection foi editada")
-       
+        sut.deleteCollection()
+        
+        let deletedCollection = collectionRepository.collections.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertFalse(deletedCollection)
+    }
+    
+    func testDeleteCollectionError() {
+        sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
+        let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
+        
+        let containsCollection = collectionRepository.collections.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertTrue(containsCollection)
+        
+        collectionRepository.shouldThrowError = true
+        sut.deleteCollection()
+        
+        let deletedCollection = collectionRepository.collections.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertTrue(deletedCollection)
     }
 }

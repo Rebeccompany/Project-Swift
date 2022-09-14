@@ -92,7 +92,7 @@ struct FlashcardView_Previews: PreviewProvider {
         let id = UUID()
         let deckId = UUID(uuidString: "25804f37-a401-4211-b8d1-ac2d3de53775")!
         let frontData = "Toxoplasmose: exame e seus respectivo tempo e tratamento".data(using: .utf8)!
-        let backData =  ". Sorologia (IgM,IgG) -&gt; Teste de Avidez (&lt;30% aguda, &gt;60% cronica)&nbsp;<br>. Espiramicina 3g -VO 2 cp de 500mg por 8/8h&nbsp;".data(using: .utf8)!
+        let backData = ". Sorologia (IgM,IgG) -&gt; Teste de Avidez (&lt;30% aguda, &gt;60% cronica)&nbsp;<br>. Espiramicina 3g -VO 2 cp de 500mg por 8/8h&nbsp;".data(using: .utf8)!
         
         let frontNSAttributedString = try! NSAttributedString(data: frontData, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
         let backNSAttributedString = try! NSAttributedString(data: backData, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
@@ -103,7 +103,8 @@ struct FlashcardView_Previews: PreviewProvider {
                                     isGraduated: true,
                                     easeFactor: 2.5,
                                     streak: 1,
-                                    interval: 1, hasBeenPresented: true)
+                                    interval: 1,
+                                    hasBeenPresented: true)
         
         return Card(id: id, front: AttributedString(frontNSAttributedString), back: AttributedString(backNSAttributedString), color: .beigeBrown, datesLogs: dateLog, deckID: deckId, woodpeckerCardInfo: wp, history: [])
     }

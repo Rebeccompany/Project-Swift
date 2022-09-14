@@ -7,9 +7,8 @@
 
 import Foundation
 import SwiftUI
-import Models
 
-public enum IconNames: Int, CaseIterable {
+public enum IconNames: String, CaseIterable {
     case pencil
     case book
     case chevronDown

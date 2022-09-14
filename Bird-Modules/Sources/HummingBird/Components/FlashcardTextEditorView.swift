@@ -43,7 +43,7 @@ public struct FlashcardTextEditorView: View {
 }
 
 struct SwiftUIView_Previews: PreviewProvider {
-    static var previews: some View{
+    static var previews: some View {
         FlashcardTextEditorView(color: .blue, side: "Frente", cardText: .constant("Ola"))
             .environment(\.sizeCategory, .medium)
     }

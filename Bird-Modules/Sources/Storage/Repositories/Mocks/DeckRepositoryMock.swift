@@ -9,16 +9,20 @@
  import Models
  import Combine
 
+//swiftlint: disable private_subject
  public class DeckRepositoryMock: DeckRepositoryProtocol {
      
      public var shouldThrowError: Bool = false
      
      public var deckWithCardsId: UUID = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")!
 
-     public lazy var decks: [Deck] = [Deck(id: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", cardsIds: cards.map( { $0.id })),
-                          Deck(id: "a498bc3c-85a3-4784-b560-a33a272a0a92"),
-                          Deck(id: "4e56be0a-bc7c-4497-aec9-c30482e82496"),
-                          Deck(id: "3947217b-2f55-4f16-ae59-10017d291579")
+     public lazy var decks: [Deck] = [
+        Deck(id: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", cardsIds: cards.map {
+            $0.id
+        }),
+        Deck(id: "a498bc3c-85a3-4784-b560-a33a272a0a92"),
+        Deck(id: "4e56be0a-bc7c-4497-aec9-c30482e82496"),
+        Deck(id: "3947217b-2f55-4f16-ae59-10017d291579")
 
      ]
 
@@ -45,7 +49,7 @@
          if let deck = decks.first(where: { deck in deck.id == id }) {
              return Just(deck).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
          } else {
-             return Fail<Deck,RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
+             return Fail<Deck, RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
          }
      }
 
@@ -129,7 +133,7 @@
          if let card = cards.first(where: { card in card.id == id }) {
              return Just(card).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
          } else {
-             return Fail<Card,RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
+             return Fail<Card, RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
          }
      }
 
@@ -212,8 +216,8 @@
  extension Deck {
      fileprivate init(id: String, cardsIds: [UUID] = []) {
          self.init(id: UUID(uuidString: id)!,
-                   name: "Progamação Swift",
-                   icon: "chevron.down",
+                   name: "Programação Swift",
+                   icon: IconNames.pencil.rawValue,
                    color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),

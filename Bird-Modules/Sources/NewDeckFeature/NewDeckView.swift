@@ -12,8 +12,8 @@ import Storage
 
 public struct NewDeckView: View {
     @ObservedObject
-    var viewModel: NewDeckViewModel
-    @Environment(\.dismiss) var dismiss
+    private var viewModel: NewDeckViewModel
+    @Environment(\.dismiss) private var dismiss
     
     public init(viewModel: NewDeckViewModel) {
         self.viewModel = viewModel
@@ -31,13 +31,14 @@ public struct NewDeckView: View {
                     .textFieldStyle(CollectionDeckTextFieldStyle())
                     .padding(.bottom)
                 
+                
                 Text("Cores")
                     .font(.callout)
                     .bold()
                 
                 IconColorGridView {
-                    ForEach (viewModel.colors, id: \.self) { color in
-                        Button{
+                    ForEach(viewModel.colors, id: \.self) { color in
+                        Button {
                             viewModel.currentSelectedColor = color
                         } label: {
                             HBColor.getHBColrFromCollectionColor(color)
@@ -54,8 +55,8 @@ public struct NewDeckView: View {
                     .padding(.top)
                 
                 IconColorGridView {
-                    ForEach (viewModel.icons, id: \.self) { icon in
-                        Button{
+                    ForEach(viewModel.icons, id: \.self) { icon in
+                        Button {
                             viewModel.currentSelectedIcon = icon
                         } label: {
                             Image(systemName: IconNames.getIconString(icon))
@@ -66,7 +67,18 @@ public struct NewDeckView: View {
                     }
                 }
                 Spacer()
+                
+                if viewModel.editingDeck != nil {
+                    Button {
+                        viewModel.deleteDeck()
+                    } label: {
+                        Text("Apagar Deck")
+                    }
+                    .buttonStyle(DeleteButtonStyle())
+                }
+                
             }
+            
             .onAppear(perform: viewModel.startUp)
             .padding()
             .alert("Ocorreu um erro interno, tente novamente", isPresented: $viewModel.showingErrorAlert) {
@@ -76,12 +88,20 @@ public struct NewDeckView: View {
             }
             
             .ViewBackgroundColor(HBColor.primaryBackground)
-            .navigationTitle("Criar Baralho")
+            
+            
+            .navigationTitle(viewModel.editingDeck != nil ? "Editar baralho" : "Criar Baralho")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
-                        viewModel.createDeck()
+                        
+                        if viewModel.editingDeck == nil {
+                            viewModel.createDeck()
+                        } else {
+                            viewModel.editDeck()
+                        }
+                        
                     }
                     .disabled(!viewModel.canSubmit)
                 }
@@ -98,7 +118,7 @@ public struct NewDeckView: View {
     }
 }
 
-private struct NewDeckView_Previews: PreviewProvider {
+struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
         NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: [UUID()]))
             .preferredColorScheme(.dark)

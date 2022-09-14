@@ -13,12 +13,10 @@ import Utils
 
 public class NewCollectionViewModel: ObservableObject {
     @Published var collectionName: String = ""
-    @Published var currentSelectedColor: CollectionColor? = nil
+    @Published var currentSelectedColor: CollectionColor?
     @Published var canSubmit: Bool
     @Published var showingErrorAlert: Bool = false
-    @Published var isEditing: Bool
     @Published var editingCollection: DeckCollection?
-    
     
     private let dateHandler: DateHandlerProtocol
     private let idGenerator: UUIDGeneratorProtocol
@@ -29,27 +27,31 @@ public class NewCollectionViewModel: ObservableObject {
         colors: [CollectionColor],
         collectionRepository: CollectionRepositoryProtocol = CollectionRepository(),
         dateHandler: DateHandlerProtocol = DateHandler(),
-        idGenerator: UUIDGeneratorProtocol = UUIDGenerator()
+        idGenerator: UUIDGeneratorProtocol = UUIDGenerator(),
+        editingCollection: DeckCollection? = nil
     ) {
         self.colors = colors
         self.collectionRepository = collectionRepository
         self.dateHandler = dateHandler
         self.idGenerator = idGenerator
         self.canSubmit = false
-        self.isEditing = false
+        self.editingCollection = editingCollection
         
+        if let editingCollection = editingCollection {
+            setupCollectionContentIntoFields(collection: editingCollection)
+        }
         
+    }
+    
+    private func setupCollectionContentIntoFields(collection: DeckCollection) {
+        collectionName = collection.name
+        currentSelectedColor = collection.color
     }
     
     func startUp() {
         Publishers.CombineLatest($collectionName, $currentSelectedColor)
             .map(canSubmitData)
             .assign(to: &$canSubmit)
-        
-        guard let editingCollectionName = editingCollection?.name else { return }
-        collectionName = editingCollectionName
-        guard let editingCollectionColor = editingCollection?.color else { return }
-        currentSelectedColor = editingCollectionColor
     }
     
     private func canSubmitData(name: String, currentSelectedColor: CollectionColor?) -> Bool {
@@ -57,7 +59,8 @@ public class NewCollectionViewModel: ObservableObject {
     }
     
     func createCollection() {
-        guard let selectedColor = currentSelectedColor else { return }
+        guard let selectedColor = currentSelectedColor
+        else { return }
         
         do {
             try collectionRepository.createCollection(newCollection(selectedColor: selectedColor))
@@ -67,7 +70,7 @@ public class NewCollectionViewModel: ObservableObject {
     }
     
     func newCollection(selectedColor: CollectionColor) -> DeckCollection {
-        return DeckCollection(
+        DeckCollection(
             id: idGenerator.newId(),
             name: collectionName,
             color: selectedColor,
@@ -80,17 +83,18 @@ public class NewCollectionViewModel: ObservableObject {
     
     func editCollection() {
         guard let selectedColor = currentSelectedColor,
-            var editingCollection = editingCollection
+            let editingCollection = editingCollection
         else {
             return
         }
         do {
+            var editingCollection = editingCollection
             editingCollection.name = collectionName
             editingCollection.color = selectedColor
             editingCollection.datesLogs.lastAccess = dateHandler.today
             editingCollection.datesLogs.lastEdit = dateHandler.today
             try collectionRepository.editCollection(editingCollection)
-            
+            self.editingCollection = editingCollection
         } catch {
             showingErrorAlert = true
         }
@@ -98,12 +102,11 @@ public class NewCollectionViewModel: ObservableObject {
     
     func deleteCollection() {
         do {
-            guard let editingCollection = editingCollection else { return }
+            guard let editingCollection = editingCollection
+            else { return }
             try collectionRepository.deleteCollection(editingCollection)
         } catch {
             showingErrorAlert = true
         }
     }
 }
-
-
