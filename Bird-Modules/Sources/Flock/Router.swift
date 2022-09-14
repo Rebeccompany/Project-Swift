@@ -28,5 +28,6 @@ struct Router<Root, Destination, Route>: View where Root: View, Destination: Vie
                     destination: destination
                 )
         }
+        .environmentObject(store)
     }
 }
