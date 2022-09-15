@@ -1,5 +1,5 @@
 import Storage
-import NewCollectionFeature
+import NewFlashcardFeature
 import Models
 import SwiftUI
 
@@ -12,6 +12,6 @@ public struct Bird_Modules {
 public struct TestView: View {
     public init() {}
     public var body: some View {
-        NewCollectionView(viewModel: NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: CollectionRepositoryMock()))
+        NewFlashcardView(viewModel: NewFlashcardViewModel(colors: CollectionColor.allCases, deckRepository: DeckRepositoryMock(), collectionId: []))
     }
 }
