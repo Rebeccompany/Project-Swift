@@ -13,8 +13,8 @@ import Utils
 import Combine
 
 public class NewFlashcardViewModel: ObservableObject {
-    @Published var flashcardFront: AttributedString = ""
-    @Published var flashcardBack: AttributedString = ""
+    @Published var flashcardFront: String = ""
+    @Published var flashcardBack: String = ""
     @Published var currentSelectedColor: CollectionColor?
     @Published var canSubmit: Bool
     @Published var showingErrorAlert: Bool = false
@@ -50,41 +50,62 @@ public class NewFlashcardViewModel: ObservableObject {
     }
     
     private func setupDeckContentIntoFields(_ card: Card) {
-        flashcardFront = card.front
-        flashcardBack = card.back
+        flashcardFront = NSAttributedString(card.front).string
+        flashcardBack = NSAttributedString(card.back).string
         currentSelectedColor = card.color
     }
-
+    
     func startUp() {
         Publishers.CombineLatest3($flashcardFront, $flashcardBack, $currentSelectedColor)
             .map(canSubmitData)
             .assign(to: &$canSubmit)
-
+        
     }
     
-    private func canSubmitData(front: AttributedString, back: AttributedString, currentSelectedColor: CollectionColor?) -> Bool {
-        !front.description.isEmpty && !back.description.isEmpty && currentSelectedColor != nil
+    private func canSubmitData(front: String, back: String, currentSelectedColor: CollectionColor?) -> Bool {
+        !front.isEmpty && !back.isEmpty && currentSelectedColor != nil
     }
     
     func createFlashcard() {
         guard let selectedColor = currentSelectedColor else {
             return
         }
-
+        
         do {
             try deckRepository.addCard(
                 Card(id: uuidGenerator.newId(),
-                     front: flashcardFront,
-                     back: flashcardBack,
+                     front: AttributedString(stringLiteral: flashcardFront),
+                     back: AttributedString(stringLiteral: flashcardBack),
                      color: selectedColor,
                      datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
                      deckID: deck.id,
                      woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false),
                      history: []),
                 to: deck)
-                    
+            
         } catch {
             showingErrorAlert = true
         }
+    }
+    
+    func editFlashcard() throws {
+        guard let selectedColor = currentSelectedColor, var editingFlashcard = editingFlashcard else {
+            return
+        }
+        
+        editingFlashcard.front = AttributedString(stringLiteral: flashcardFront)
+        editingFlashcard.back = AttributedString(stringLiteral: flashcardBack)
+        editingFlashcard.color = selectedColor
+        editingFlashcard.datesLogs.lastAccess = dateHandler.today
+        editingFlashcard.datesLogs.lastEdit = dateHandler.today
+        try deckRepository.editCard(editingFlashcard)
+    }
+    
+    func deleteFlashcard() throws {
+        guard let editingFlashcard = editingFlashcard else {
+            return
+        }
+        
+        try deckRepository.deleteCard(editingFlashcard)
     }
 }

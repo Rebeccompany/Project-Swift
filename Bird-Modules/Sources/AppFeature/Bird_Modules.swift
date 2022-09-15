@@ -12,6 +12,6 @@ public struct Bird_Modules {
 public struct TestView: View {
     public init() {}
     public var body: some View {
-        NewFlashcardView(viewModel: NewFlashcardViewModel(colors: CollectionColor.allCases, deckRepository: DeckRepositoryMock(), collectionId: []))
+        NewFlashcardView(viewModel: NewFlashcardViewModel(colors: CollectionColor.allCases, deckRepository: DeckRepositoryMock(), deck: Deck(id: UUID(), name: "nome", icon: "book", color: .red, collectionsIds: [], cardsIds: [])))
     }
 }

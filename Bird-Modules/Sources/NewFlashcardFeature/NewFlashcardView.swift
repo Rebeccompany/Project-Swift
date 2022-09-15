@@ -10,9 +10,12 @@ import HummingBird
 import Models
 import Storage
 
-struct NewFlashcardView: View {
+public struct NewFlashcardView: View {
     @ObservedObject
     private var viewModel: NewFlashcardViewModel
+    @State private var showingErrorAlert: Bool = true
+    @State var selectedErrorMessage: AlertText = .delete
+    
     @Environment(\.dismiss) private var dismiss
     
     public init(viewModel: NewFlashcardViewModel) {
@@ -23,10 +26,10 @@ struct NewFlashcardView: View {
         
         NavigationView {
             
-            VStack (alignment: .leading) {
-                FlashcardTextEditorView(color: .red, side: "Frente", cardText: .constant(""))
+            VStack(alignment: .leading) {
+                FlashcardTextEditorView(color: .red, side: "Frente", cardText: $viewModel.flashcardFront)
                 
-                FlashcardTextEditorView(color: .red, side: "Verso", cardText: .constant(""))
+                FlashcardTextEditorView(color: .red, side: "Verso", cardText: $viewModel.flashcardBack)
                 
                 Text("Ícones")
                     .font(.callout)
@@ -45,14 +48,25 @@ struct NewFlashcardView: View {
                         .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
                     }
                 }
+                
+                Spacer()
+                
+                if viewModel.editingFlashcard == nil {
+                    Button {
+                        do {
+                            try viewModel.deleteFlashcard()
+                        } catch {
+                            selectedErrorMessage = .delete
+                            showingErrorAlert = true
+                        }
+                    } label: {
+                        Text("Apagar Baralho")
+                    }
+                    .buttonStyle(DeleteButtonStyle())
+                }
             }
             .onAppear(perform: viewModel.startUp)
             .padding()
-//            .alert("Ocorreu um erro interno, tente novamente", isPresented: $viewModel.showingErrorAlert) {
-//                Button("OK", role: .cancel) {
-//                    viewModel.showingErrorAlert = false
-//                }
-//            }
             
             .ViewBackgroundColor(HBColor.primaryBackground)
             
@@ -66,9 +80,13 @@ struct NewFlashcardView: View {
                         if viewModel.editingFlashcard == nil {
                             viewModel.createFlashcard()
                         } else {
-//                            viewModel.editDeck()
+                            do {
+                                try viewModel.editFlashcard()
+                            } catch {
+                                selectedErrorMessage = .edit
+                                showingErrorAlert = true
+                            }
                         }
-                        
                     }
                     .disabled(!viewModel.canSubmit)
                 }
@@ -80,9 +98,31 @@ struct NewFlashcardView: View {
                     .foregroundColor(.red)
                 }
             }
+            
+            .alert(isPresented: $showingErrorAlert) {
+                Alert(title: Text(selectedErrorMessage.texts.title),
+                      message: Text(selectedErrorMessage.texts.message),
+                      dismissButton: .default(Text("Fechar")))
+            }
         }
     }
 }
+
+enum AlertText {
+    case delete
+    case edit
+    
+    var texts: (title: String, message: String) {
+        switch self {
+        case .delete:
+            return ("Erro ao apagar flashcard", "Algo deu errado! Por favor, tente novamente.")
+        case .edit:
+            return ("Erro ao editar flashcard", "Algo deu errado! Por favor, tente novamente.")
+            
+        }
+    }
+}
+
 
 struct NewFlashcardView_Previews: PreviewProvider {
     static var previews: some View {
