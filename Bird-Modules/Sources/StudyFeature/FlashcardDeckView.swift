@@ -11,19 +11,39 @@ import HummingBird
 
 struct FlashcardDeckView: View {
     @Binding var cards: [CardViewModel]
+    let cardBaseSize: CGSize = .init(width: 11, height: 18)
+    
     
     var body: some View {
-        GeometryReader { _ in
-            ZStack(alignment: .top) {
-                ForEach(Array(zip($cards, cards.indices)), id: \.0.card.id) { $card, i in
-                    FlashcardView(viewModel: $card, index: i)
-                        .offset(y: getCardOffset(index: i))
-                        .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)))
-                        .zIndex(Double(i))
+        GeometryReader { proxy in
+            let cardSize = getCardSize(proxy.size)
+            
+            HStack {
+                Spacer()
+                ZStack {
+                    ForEach(Array(zip($cards, cards.indices)), id: \.0.card.id) { $card, i in
+                        FlashcardView(viewModel: $card, index: i)
+                            .offset(y: getCardOffset(index: i))
+                            .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)))
+                            .zIndex(Double(i))
+                    }
                 }
+                .padding(.bottom, 10 * Double(cards.count - 1))
+                .frame(width: cardSize.width, height: cardSize.height, alignment: .center)
+                Spacer()
             }
-            .padding(.bottom, 10 * Double(cards.count - 1))
+           
         }
+    }
+    
+    private func getCardSize(_ geometrySize: CGSize) -> CGSize {
+
+        var size: CGSize = .zero
+        
+        size.height = geometrySize.height
+        size.width = (cardBaseSize.width/cardBaseSize.height)*size.height
+        
+        return size
     }
     
     private func getCardOffset(index: Int) -> Double {
@@ -35,7 +55,7 @@ struct FlashcardDeckView_Previews: PreviewProvider {
     
     private struct Preview: View {
         @State
-        var cards: [CardViewModel] = [CardViewModel(card: FlashcardView_Previews.dummy, isFlipped: false) ]
+        private var cards: [CardViewModel] = [CardViewModel(card: FlashcardView_Previews.dummy, isFlipped: false) ]
         
         var body: some View {
             VStack {

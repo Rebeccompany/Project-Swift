@@ -16,17 +16,20 @@ public struct Viewzinha: View {
     public init() {}
     
     public var body: some View {
-        StudyView(
-            viewModel: StudyViewModel(
-                deckRepository: repo,
-                sessionCacher: SessionCacher(
-                    storage: LocalStorageMock()
-                ),
-                deck: repo.decks.first!,
-                dateHandler: DateHandler()
+        NavigationStack {
+            StudyView(
+                viewModel: StudyViewModel(
+                    deckRepository: repo,
+                    sessionCacher: SessionCacher(
+                        storage: LocalStorageMock()
+                    ),
+                    deck: repo.decks.first!,
+                    dateHandler: DateHandler()
+                )
             )
-        )
+        }
     }
+}
     
     
 public struct TestView: View {

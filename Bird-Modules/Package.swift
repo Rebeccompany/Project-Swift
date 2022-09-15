@@ -127,7 +127,7 @@ let package = Package(
             name: "AppFeature",
             dependencies: [
                 "Storage",
-                "StudyFeature"
+                "StudyFeature",
                 "NewCollectionFeature",
                 "NewDeckFeature",
                 "Models",

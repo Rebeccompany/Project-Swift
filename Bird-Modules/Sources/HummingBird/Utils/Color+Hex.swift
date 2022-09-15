@@ -8,7 +8,7 @@
 import SwiftUI
 
 #if os(macOS)
-//swiftlint: disable no_cgfloat2
+
 extension NSColor {
     
     convenience init(hex: String) {
@@ -78,7 +78,7 @@ extension Color {
 #endif
 
 #if os(iOS)
-//swiftlint: disable no_cgfloat
+
 extension Color {
     init?(hex: String) {
         var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)

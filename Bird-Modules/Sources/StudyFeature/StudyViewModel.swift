@@ -10,7 +10,8 @@ import Storage
 import Models
 import Woodpecker
 import Combine
-
+#warning("Salvar toEdit ao sair da tela")
+#warning("Salvar cards em sessão ao sair da tela")
 public class StudyViewModel: ObservableObject {
     private let deckRepository: DeckRepositoryProtocol
     private let sessionCacher: SessionCacher
@@ -127,6 +128,7 @@ public class StudyViewModel: ObservableObject {
     }
     
     public static func cardSorter(card0: Card, card1: Card) -> Bool {
+        #warning("todas as reviewing vao estra juntas com os steps 0")
         if card0.woodpeckerCardInfo.step == card1.woodpeckerCardInfo.step {
             return Int.random(in: 0...1) == 0
         } else {
@@ -154,7 +156,7 @@ public class StudyViewModel: ObservableObject {
         var newCard = cards[0]
         newCard.woodpeckerCardInfo.hasBeenPresented = true
         do {
-#warning("number of steps tem qu ser guardado em spacedRepConfig em deck")
+#warning("number of steps tem que ser guardado em spacedRepConfig em deck")
             let cardDestiny = try Woodpecker.stepper(cardInfo: newCard.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: 3)
             
             switch cardDestiny {

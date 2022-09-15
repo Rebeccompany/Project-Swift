@@ -10,59 +10,22 @@ import Models
 import Combine
 
 //swiftlint: disable private_subject
- public class DeckRepositoryMock: DeckRepositoryProtocol {
-     
-     public var shouldThrowError: Bool = false
-     
-     public var deckWithCardsId: UUID = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")!
-
-     public lazy var decks: [Deck] = [
+public class DeckRepositoryMock: DeckRepositoryProtocol {
+    
+    public var shouldThrowError: Bool = false
+    
+    public var deckWithCardsId: UUID = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")!
+    lazy var subject: CurrentValueSubject<[Deck], RepositoryError> = .init(decks)
+    
+    public lazy var decks: [Deck] = [
         Deck(id: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", cardsIds: cards.map {
             $0.id
         }),
         Deck(id: "a498bc3c-85a3-4784-b560-a33a272a0a92"),
         Deck(id: "4e56be0a-bc7c-4497-aec9-c30482e82496"),
         Deck(id: "3947217b-2f55-4f16-ae59-10017d291579")
+    ]
 
-extension WoodpeckerCardInfo {
-    fileprivate init(state: WoodpeckerState) {
-        let isg: Bool
-        let interval: Int
-        switch state {
-        case .review:
-            isg = true
-            interval = 1
-            
-        case .learn:
-            isg = false
-            interval = 0
-        }
-        self.init(step: 0, isGraduated: isg, easeFactor: 2.5, streak: 0, interval: interval, hasBeenPresented: isg)
-    }
-}
-
-extension Card {
-    
-    fileprivate init(id: String, deckId: String, state: WoodpeckerState, front: AttributedString, back: AttributedString) {
-        let h: [CardSnapshot]
-        switch state {
-        case .review:
-            h = [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(state: .learn), userGrade: .correct, timeSpend: 20, date: Date(timeIntervalSince1970: -8400))]
-        case .learn:
-            h = []
-        }
-        self.init(id: UUID(uuidString: id)!,
-                  front: front,
-                  back: back,
-                  color: .red,
-                  datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
-                                      lastEdit: Date(timeIntervalSince1970: 0),
-                                      createdAt: Date(timeIntervalSince1970: 0)),
-                  deckID: UUID(uuidString: deckId)!,
-                  woodpeckerCardInfo: WoodpeckerCardInfo(state: state),
-                  history: h)
-    }
-}
 
      public var cards: [Card] = [
          Card(id: "1f222564-ff0d-4f2d-9598-1a0542899974", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
@@ -226,6 +189,29 @@ extension Card {
          self.init(step: 0, isGraduated: isg, easeFactor: 2.5, streak: 0, interval: interval, hasBeenPresented: isg)
      }
  }
+
+extension Card {
+    
+    fileprivate init(id: String, deckId: String, state: WoodpeckerState, front: AttributedString, back: AttributedString) {
+        let h: [CardSnapshot]
+        switch state {
+        case .review:
+            h = [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(state: .learn), userGrade: .correct, timeSpend: 20, date: Date(timeIntervalSince1970: -8400))]
+        case .learn:
+            h = []
+        }
+        self.init(id: UUID(uuidString: id)!,
+                  front: front,
+                  back: back,
+                  color: .red,
+                  datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
+                                      lastEdit: Date(timeIntervalSince1970: 0),
+                                      createdAt: Date(timeIntervalSince1970: 0)),
+                  deckID: UUID(uuidString: deckId)!,
+                  woodpeckerCardInfo: WoodpeckerCardInfo(state: state),
+                  history: h)
+    }
+}
 
  extension Card {
      fileprivate init(id: String, deckId: String, state: WoodpeckerState) {
