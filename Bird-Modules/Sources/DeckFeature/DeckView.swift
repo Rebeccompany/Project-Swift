@@ -14,10 +14,12 @@ import Storage
 public struct DeckView: View {
     @ObservedObject private var viewModel: DeckViewModel
     @State private var shouldDisplay: Bool = false
+    @State private var showingErrorAlert: Bool = false
     
     public init(viewModel: DeckViewModel) {
         self.viewModel = viewModel
     }
+    
     
     public var body: some View {
         List {
@@ -51,7 +53,11 @@ public struct DeckView: View {
                     }
                     
                     Button(role: .destructive) {
-                        viewModel.deleteFlashcard(card: card)
+                        do {
+                            try viewModel.deleteFlashcard(card: card)
+                        } catch {
+                            showingErrorAlert = true
+                        }
                     } label: {
                         Label("Deletar Flashcard",
                               systemImage: "trash.fill")
@@ -76,6 +82,13 @@ public struct DeckView: View {
         .onAppear(perform: viewModel.startup)
         .listStyle(.plain)
         .searchable(text: $viewModel.searchFieldContent)
+        
+        
+        .alert(isPresented: $showingErrorAlert) {
+            Alert(title: Text("Erro ao apagar flashcard."),
+                  message: Text("Algo deu errado! Por favor, tente novamente."),
+                  dismissButton: .default(Text("Fechar")))
+                }
         .navigationTitle(viewModel.deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
