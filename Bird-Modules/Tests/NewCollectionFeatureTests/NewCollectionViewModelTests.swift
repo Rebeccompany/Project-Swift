@@ -43,10 +43,10 @@ class NewCollectionViewModelTests: XCTestCase {
         cancellables = nil
     }
     
-    func testCreateCollectionSuccessfully() {
+    func testCreateCollectionSuccessfully() throws {
         sut.collectionName = "Coleção"
         sut.currentSelectedColor = CollectionColor.red
-        sut.createCollection()
+        try sut.createCollection()
         
         let containsNewCollection = collectionRepository.collections.contains(where: {
             $0.id == uuidHandlerMock.lastCreatedID
@@ -55,11 +55,11 @@ class NewCollectionViewModelTests: XCTestCase {
         XCTAssertTrue(containsNewCollection)   
     }
     
-    func testCreateCollectionError() {
+    func testCreateCollectionError() throws {
         sut.collectionName = "Coleção"
         sut.currentSelectedColor = CollectionColor.red
         collectionRepository.shouldThrowError = true
-        sut.createCollection()
+        XCTAssertThrowsError(try sut.createCollection())
         
         let containsNewCollection = collectionRepository.collections.contains(where: {
             $0.id == uuidHandlerMock.lastCreatedID
@@ -113,43 +113,43 @@ class NewCollectionViewModelTests: XCTestCase {
     }
     
     
-    func testEditNameCollectionSuccessfuly() {
+    func testEditNameCollectionSuccessfuly() throws {
         sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
         
         XCTAssertEqual(collectionRepository.collections[0].name, "Matemática Básica")
         
         sut.collectionName = "Matemática II"
-        sut.editCollection()
+        try sut.editCollection()
         
         XCTAssertEqual(collectionRepository.collections[0].name, "Matemática II")
     }
     
-    func testEditColorCollectionSuccessfuly() {
+    func testEditColorCollectionSuccessfuly() throws {
         sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
         
         XCTAssertEqual(collectionRepository.collections[0].color, CollectionColor.darkPurple)
         
         sut.currentSelectedColor = CollectionColor.red
-        sut.editCollection()
+        try sut.editCollection()
         
         XCTAssertEqual(collectionRepository.collections[0].color, CollectionColor.red)
     }
     
-    func testEditCollectionError() {
+    func testEditCollectionError() throws {
         sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
         
         XCTAssertEqual(collectionRepository.collections[0].color, CollectionColor.darkPurple)
         
         collectionRepository.shouldThrowError = true
         sut.currentSelectedColor = CollectionColor.red
-        sut.editCollection()
         
+        XCTAssertThrowsError(try sut.editCollection())
         
         XCTAssertNotEqual(collectionRepository.collections[0].color, CollectionColor.red)
         XCTAssertEqual(collectionRepository.collections[0].color, CollectionColor.darkPurple)
     }
     
-    func testDeleteCollectionSuccessfully() {
+    func testDeleteCollectionSuccessfully() throws {
         sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
         let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
         
@@ -159,7 +159,7 @@ class NewCollectionViewModelTests: XCTestCase {
         
         XCTAssertTrue(containsCollection)
         
-        sut.deleteCollection()
+        try sut.deleteCollection()
         
         let deletedCollection = collectionRepository.collections.contains(where: {
             $0.id == id
@@ -168,7 +168,7 @@ class NewCollectionViewModelTests: XCTestCase {
         XCTAssertFalse(deletedCollection)
     }
     
-    func testDeleteCollectionError() {
+    func testDeleteCollectionError() throws {
         sut = NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
         let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
         
@@ -179,12 +179,14 @@ class NewCollectionViewModelTests: XCTestCase {
         XCTAssertTrue(containsCollection)
         
         collectionRepository.shouldThrowError = true
-        sut.deleteCollection()
+        
+        XCTAssertThrowsError(try sut.deleteCollection())
         
         let deletedCollection = collectionRepository.collections.contains(where: {
             $0.id == id
         })
         
         XCTAssertTrue(deletedCollection)
+        
     }
 }
