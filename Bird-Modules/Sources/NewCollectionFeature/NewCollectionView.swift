@@ -12,11 +12,14 @@ import Storage
 
 public struct NewCollectionView: View {
     
-    @Binding private var isDisplaying: Bool
     @ObservedObject private var viewModel: NewCollectionViewModel
+    private let dismiss: () -> Void
     
-    public init(isDisplaying: Binding<Bool>, viewModel: NewCollectionViewModel) {
-        self._isDisplaying = isDisplaying
+    public init(
+        viewModel: NewCollectionViewModel,
+        dismiss: @escaping () -> Void
+    ) {
+        self.dismiss = dismiss
         self.viewModel = viewModel
     }
     
@@ -24,7 +27,6 @@ public struct NewCollectionView: View {
         
         NavigationStack {
             VStack(alignment: .leading) {
-                
                 Text("Nome")
                     .font(.callout)
                     .bold()
@@ -63,7 +65,7 @@ public struct NewCollectionView: View {
             }
             .onChange(of: viewModel.canDismiss, perform: { canDismiss in
                 if canDismiss {
-                    isDisplaying = false
+                    dismiss()
                 }
             })
             .onAppear(perform: viewModel.startUp)
@@ -108,11 +110,10 @@ struct NewCollectionView_Previews: PreviewProvider {
     static var previews: some View {
         
         NewCollectionView(
-            isDisplaying: .constant(true),
             viewModel: .init(
                 colors: CollectionColor.allCases,
                 collectionRepository: CollectionRepositoryMock()
-            ))
+            )) {}
         .preferredColorScheme(.light)
         
         

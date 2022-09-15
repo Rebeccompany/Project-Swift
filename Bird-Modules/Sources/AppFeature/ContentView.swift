@@ -23,47 +23,54 @@ public struct ContentView: View {
     
     public var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
-            CollectionsSidebar(
-                collections: viewModel.collections,
-                selection: $viewModel.sidebarSelection,
-                isCompact: horizontalSizeClass == .compact,
-                deleteAction: viewModel.deleteCollection,
-                editAction: viewModel.editCollection
-            )
-                .navigationTitle("Nome do App")
-                .toolbar {
-                    ToolbarItem {
-                        EditButton()
-                    }
-                    ToolbarItem {
-                        Button {
-                            
-                        } label: {
-                            Image(systemName: "folder.badge.plus")
-                        }
-                    }
-                }
-                .environment(\.editMode, $editMode)
+            sidebar
         } detail: {
-            switch viewModel.sidebarSelection ?? .allDecks {
-            case .allDecks:
-                Text(horizontalSizeClass == .compact ? "si" : "no")
-            case .decksFromCollection(let id):
-                Text("id: \(id.uuidString)")
-            }
+            StudyRouter(
+                sidebarSelection: viewModel.sidebarSelection ?? .allDecks
+            )
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
         .sheet(isPresented: $viewModel.presentCollectionEdition) {
             NewCollectionView(
-                isDisplaying: $viewModel.presentCollectionEdition,
                 viewModel: .init(
                     colors: CollectionColor.allCases,
                     collectionRepository: CollectionRepositoryMock.shared,
                     editingCollection: viewModel.editingCollection
-                )
+                ),
+                dismiss: viewModel.endEditing
             )
         }
+    }
+    
+    @ViewBuilder
+    private var sidebar: some View {
+        CollectionsSidebar(
+            collections: viewModel.collections,
+            selection: $viewModel.sidebarSelection,
+            isCompact: horizontalSizeClass == .compact,
+            deleteAction: viewModel.deleteCollection,
+            editAction: viewModel.editCollection
+        )
+            .navigationTitle("Nome do App")
+            .toolbar {
+                ToolbarItem {
+                    EditButton()
+                }
+                ToolbarItem {
+                    Button {
+                        viewModel.createCollection()
+                    } label: {
+                        Image(systemName: "folder.badge.plus")
+                    }
+                }
+            }
+            .environment(\.editMode, $editMode)
+    }
+    
+    @ViewBuilder
+    private var detail: some View {
+        Text("oi")
     }
 }
 

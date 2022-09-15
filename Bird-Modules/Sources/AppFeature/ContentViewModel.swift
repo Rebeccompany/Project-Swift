@@ -90,4 +90,8 @@ public final class ContentViewModel: ObservableObject {
         presentCollectionEdition = true
     }
     
+    func endEditing() {
+        presentCollectionEdition = false
+    }
+    
 }
