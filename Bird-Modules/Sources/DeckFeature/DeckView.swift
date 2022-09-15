@@ -41,6 +41,7 @@ public struct DeckView: View {
                 FlashcardCell(card: card) {
                     shouldDisplay = true
                 }
+                .padding(.bottom, 8)
                 .contextMenu {
                     Button {
                     #warning(": vai pra tela de edit flashcard")
@@ -70,8 +71,8 @@ public struct DeckView: View {
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
         }
-        
-        
+        .scrollContentBackground(.hidden)
+        .ViewBackgroundColor(HBColor.primaryBackground)
         .onAppear(perform: viewModel.startup)
         .listStyle(.plain)
         .searchable(text: $viewModel.searchFieldContent)
