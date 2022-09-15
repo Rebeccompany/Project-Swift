@@ -15,8 +15,6 @@ public class NewCollectionViewModel: ObservableObject {
     @Published var collectionName: String = ""
     @Published var currentSelectedColor: CollectionColor?
     @Published var canSubmit: Bool
-    @Published var canDismiss: Bool
-    @Published var showingErrorAlert: Bool = false
     @Published var editingCollection: DeckCollection?
     
     private let dateHandler: DateHandlerProtocol
@@ -36,7 +34,6 @@ public class NewCollectionViewModel: ObservableObject {
         self.dateHandler = dateHandler
         self.idGenerator = idGenerator
         self.canSubmit = false
-        self.canDismiss = false
         self.editingCollection = editingCollection
         
         if let editingCollection = editingCollection {
@@ -60,16 +57,11 @@ public class NewCollectionViewModel: ObservableObject {
         !name.isEmpty && currentSelectedColor != nil
     }
     
-    func createCollection() {
+    func createCollection() throws {
         guard let selectedColor = currentSelectedColor
         else { return }
         
-        do {
-            try collectionRepository.createCollection(newCollection(selectedColor: selectedColor))
-            self.canDismiss = true
-        } catch {
-            showingErrorAlert = true
-        }
+        try collectionRepository.createCollection(newCollection(selectedColor: selectedColor))
     }
     
     func newCollection(selectedColor: CollectionColor) -> DeckCollection {
@@ -84,33 +76,25 @@ public class NewCollectionViewModel: ObservableObject {
             decksIds: [])
     }
     
-    func editCollection() {
+    func editCollection() throws {
         guard let selectedColor = currentSelectedColor,
-            let editingCollection = editingCollection
+            let editingCollectionUnwraped = editingCollection
         else {
             return
         }
-        do {
-            var editingCollection = editingCollection
-            editingCollection.name = collectionName
-            editingCollection.color = selectedColor
-            editingCollection.datesLogs.lastAccess = dateHandler.today
-            editingCollection.datesLogs.lastEdit = dateHandler.today
-            try collectionRepository.editCollection(editingCollection)
-            self.editingCollection = editingCollection
-            self.canDismiss = true
-        } catch {
-            showingErrorAlert = true
-        }
+        
+        var editingCollection = editingCollectionUnwraped
+        editingCollection.name = collectionName
+        editingCollection.color = selectedColor
+        editingCollection.datesLogs.lastAccess = dateHandler.today
+        editingCollection.datesLogs.lastEdit = dateHandler.today
+        try collectionRepository.editCollection(editingCollection)
+        self.editingCollection = editingCollection
     }
     
-    func deleteCollection() {
-        do {
-            guard let editingCollection = editingCollection
-            else { return }
-            try collectionRepository.deleteCollection(editingCollection)
-        } catch {
-            showingErrorAlert = true
-        }
+    func deleteCollection() throws {
+        guard let editingCollection = editingCollection
+        else { return }
+        try collectionRepository.deleteCollection(editingCollection)
     }
 }

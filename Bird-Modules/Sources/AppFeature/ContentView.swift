@@ -16,6 +16,7 @@ public struct ContentView: View {
     @State private var editMode: EditMode = .inactive
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject private var viewModel: ContentViewModel
+    @State private var presentCollectionEdition = false
     
     public init(viewModel: ContentViewModel) {
         self.viewModel = viewModel
@@ -31,14 +32,12 @@ public struct ContentView: View {
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
-        .sheet(isPresented: $viewModel.presentCollectionEdition) {
+        .sheet(isPresented: $presentCollectionEdition) {
             NewCollectionView(
                 viewModel: .init(
                     colors: CollectionColor.allCases,
-                    collectionRepository: CollectionRepositoryMock.shared,
                     editingCollection: viewModel.editingCollection
-                ),
-                dismiss: viewModel.endEditing
+                )
             )
         }
     }
@@ -48,10 +47,13 @@ public struct ContentView: View {
         CollectionsSidebar(
             collections: viewModel.collections,
             selection: $viewModel.sidebarSelection,
-            isCompact: horizontalSizeClass == .compact,
-            deleteAction: viewModel.deleteCollection,
-            editAction: viewModel.editCollection
-        )
+            isCompact: horizontalSizeClass == .compact
+        ) { i in
+            try? viewModel.deleteCollection(at: i)
+        } editAction: { collection in
+            viewModel.editCollection(collection)
+            presentCollectionEdition = true
+        }
             .navigationTitle("Nome do App")
             .toolbar {
                 ToolbarItem {
@@ -60,6 +62,7 @@ public struct ContentView: View {
                 ToolbarItem {
                     Button {
                         viewModel.createCollection()
+                        presentCollectionEdition = true
                     } label: {
                         Image(systemName: "folder.badge.plus")
                     }
