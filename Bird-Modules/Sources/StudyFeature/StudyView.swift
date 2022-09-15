@@ -48,7 +48,9 @@ public struct StudyView: View {
         .background(HBColor.primaryBackground)
         .navigationTitle(viewModel.deck.name)
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear(perform: viewModel.startup)
+        .onAppear {
+            viewModel.startup()
+        }
         
     }
 }

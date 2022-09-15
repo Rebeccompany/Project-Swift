@@ -16,7 +16,7 @@ struct FlashcardDeckView: View {
         GeometryReader { proxy in
             ZStack(alignment: .top) {
                 ForEach(Array(zip($cards, cards.indices)), id: \.0.card.id) { $card, i in
-                    FlashcardView(viewModel: $card)
+                    FlashcardView(viewModel: $card, index: i)
                         .offset(y: getCardOffset(index: i))
                         .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)))
                         .zIndex(Double(i))

@@ -11,11 +11,13 @@ import HummingBird
 
 struct FlashcardView: View {
     @Binding var viewModel: CardViewModel
+    var index: Int
     @State private var frontDegree: Double = 0
     @State private var backDegree: Double = -90
     
-    init(viewModel: Binding<CardViewModel>) {
+    init(viewModel: Binding<CardViewModel>, index: Int) {
         self._viewModel = viewModel
+        self.index = index
     }
     
     var body: some View {
@@ -25,18 +27,44 @@ struct FlashcardView: View {
             cardFace(content: viewModel.card.front, face: "Frente", description: "Toque para ver o verso")
                 .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0.0001))
         }
-        .onChange(of: viewModel.isFlipped, perform: { newValue in
-            print("f")
-        })
         .onTapGesture(perform: flip)
+        .onAppear {
+            print(index)
+        }
+        .onChange(of: viewModel.isFlipped) { newValue in
+            if index != 0 {
+                flipWithAnimation(newValue)
+            } else {
+                flipWithoutAnimation(newValue)
+            }
+        }
+        .transaction { transaction in
+            if index == 0 && !viewModel.isFlipped {
+                transaction.animation = nil
+            }
+        }
         
     }
     
     private func flip() {
-        viewModel.isFlipped.toggle()
-        let animDuration: Double = 0.25
+        if index != 0 {
+            viewModel.isFlipped.toggle()
+        }
         
-        if viewModel.isFlipped {
+    }
+    private func flipWithoutAnimation(_ newValue: Bool) {
+        if newValue {
+            frontDegree = 90
+            backDegree = 0
+        } else {
+            backDegree = -90
+            frontDegree = 0
+        }
+    }
+    
+    private func flipWithAnimation(_ newValue: Bool) {
+        let animDuration: Double = 0.25
+        if newValue {
             withAnimation(.linear(duration: animDuration)) {
                 frontDegree = 90
             }
@@ -116,7 +144,7 @@ struct FlashcardView_Previews: PreviewProvider {
     }
     
     static var previews: some View {
-        FlashcardView(viewModel: .constant(CardViewModel(card: dummy, isFlipped: false)))
+        FlashcardView(viewModel: .constant(CardViewModel(card: dummy, isFlipped: false)), index: 0)
             .frame(width: 340, height: 480)
             .padding()
             .preferredColorScheme(.dark)

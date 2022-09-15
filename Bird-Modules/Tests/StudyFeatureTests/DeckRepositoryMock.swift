@@ -13,28 +13,44 @@ import Combine
 class DeckRepositoryMock: DeckRepositoryProtocol {
     var deckWithCardsId: UUID = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")!
     
-    lazy var decks: [Deck] = [Deck(id: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", cardsIds: cards.map( { $0.id })),
-                         Deck(id: "a498bc3c-85a3-4784-b560-a33a272a0a92"),
-                         Deck(id: "4e56be0a-bc7c-4497-aec9-c30482e82496"),
-                         Deck(id: "3947217b-2f55-4f16-ae59-10017d291579")
+    lazy var decks: [Deck] = [Deck(id: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2",
+                                   cardsIds: cards.filter { $0.deckID == UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2") }.map(\.id)),
+                              Deck(id: "a498bc3c-85a3-4784-b560-a33a272a0a92",
+                                   cardsIds: cards.filter { $0.deckID == UUID(uuidString: "a498bc3c-85a3-4784-b560-a33a272a0a92") }.map(\.id)),
+                              Deck(id: "4e56be0a-bc7c-4497-aec9-c30482e82496",
+                                   cardsIds: Array(cards.filter { $0.deckID == UUID(uuidString: "4e56be0a-bc7c-4497-aec9-c30482e82496") }.map(\.id)),
+                                   spacedConfig: SpacedRepetitionConfig(maxLearningCards: 20, maxReviewingCards: 3)),
+                              Deck(id: "3947217b-2f55-4f16-ae59-10017d291579",
+                                   cardsIds: cards.filter { $0.deckID == UUID(uuidString: "3947217b-2f55-4f16-ae59-10017d291579") }.map(\.id))
                          
     ]
     
     lazy var subject: CurrentValueSubject<[Deck], RepositoryError> = .init(decks)
     
     var cards: [Card] = [
-        Card(id: "1f222564-ff0d-4f2d-9598-1a0542899974", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-        Card(id: "66605408-4cd4-4ded-b23d-91db9249a946", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-        Card(id: "4f298230-4286-4a83-9f1c-53fd60533ed8", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-        Card(id: "9b06af85-e4e8-442d-be7a-40450cfd310c", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-        Card(id: "855eb618-602e-449d-83fc-5de6b8a36454", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-        Card(id: "5285798a-4107-48b3-8994-e706699a3445", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-        Card(id: "407e7694-316e-4903-9c94-b3ec0e9ab0e8", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
-        Card(id: "09ae6b07-b988-442f-a059-9ea76d5c9055", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review),
-        Card(id: "d3b5ba9a-7805-480e-ad47-43b842f0472f", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review),
-        Card(id: "d9d3d4ec-9854-4e73-864b-1e68355a6973", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review),
-        Card(id: "c24affd7-376d-4614-9ad6-8a83a0f60da5", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review),
-        Card(id: "d2c951fb-36f5-49dc-84f0-353a3b3a2875", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review)
+        Card(id: "1f222564-ff0d-4f2d-9598-1a0542899974", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn), //0
+        Card(id: "66605408-4cd4-4ded-b23d-91db9249a946", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn), //1
+        Card(id: "4f298230-4286-4a83-9f1c-53fd60533ed8", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn), //2
+        Card(id: "9b06af85-e4e8-442d-be7a-40450cfd310c", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn), //3
+        Card(id: "855eb618-602e-449d-83fc-5de6b8a36454", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn), //4
+        Card(id: "5285798a-4107-48b3-8994-e706699a3445", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn), //5
+        Card(id: "407e7694-316e-4903-9c94-b3ec0e9ab0e8", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn), //6
+        Card(id: "09ae6b07-b988-442f-a059-9ea76d5c9055", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review), //7
+        Card(id: "d3b5ba9a-7805-480e-ad47-43b842f0472f", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review), //8
+        Card(id: "d9d3d4ec-9854-4e73-864b-1e68355a6973", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review), //9
+        Card(id: "c24affd7-376d-4614-9ad6-8a83a0f60da5", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review), //10
+        Card(id: "d2c951fb-36f5-49dc-84f0-353a3b3a2875", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review), //11
+        
+        Card(id: "021ff721-cf68-4cf4-898c-14b9eb6bb0a5", deckId: "4e56be0a-bc7c-4497-aec9-c30482e82496", state: .review), //12
+        Card(id: "aa03ffb2-ac98-4656-9400-b5b22b2058d5", deckId: "4e56be0a-bc7c-4497-aec9-c30482e82496", state: .review), //13
+        Card(id: "57d08e28-ae11-43ce-a849-6210cab6e3f0", deckId: "4e56be0a-bc7c-4497-aec9-c30482e82496", state: .review), //14
+        Card(id: "ad631ff8-b851-4870-938a-b3aea335577c", deckId: "4e56be0a-bc7c-4497-aec9-c30482e82496", state: .review), //15
+        
+        Card(id: "cd3cc305-e80e-4c84-b1e5-e27fda8a9cfe", deckId: "a498bc3c-85a3-4784-b560-a33a272a0a92", state: .review), //16
+        
+        Card(id: "5896cc41-ce48-44af-80f0-844dd24bca0b", deckId: "3947217b-2f55-4f16-ae59-10017d291579", state: .review), //17
+        Card(id: "df6dcb79-28a4-4aae-8c6e-7656e4e79d2e", deckId: "3947217b-2f55-4f16-ae59-10017d291579", state: .review) //18
+        
     ]
     
     func fetchDeckById(_ id: UUID) -> AnyPublisher<Deck, RepositoryError> {
@@ -172,7 +188,8 @@ extension Card {
 }
 
 extension Deck {
-    init(id: String, cardsIds: [UUID] = []) {
+    init(id: String, cardsIds: [UUID] = [], spacedConfig: SpacedRepetitionConfig = .init(maxLearningCards: 20,
+                                                                                         maxReviewingCards: 200)) {
         self.init(id: UUID(uuidString: id)!,
                   name: "Progamação Swift",
                   icon: "chevron.down",
@@ -182,7 +199,6 @@ extension Deck {
                                       createdAt: Date(timeIntervalSince1970: 0)),
                   collectionsIds: [],
                   cardsIds: cardsIds,
-                  spacedRepetitionConfig: .init(maxLearningCards: 20,
-                                                maxReviewingCards: 200))
+                  spacedRepetitionConfig: spacedConfig)
     }
 }

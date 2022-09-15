@@ -16,11 +16,12 @@ public class StudyViewModel: ObservableObject {
     private let sessionCacher: SessionCacher
     private let dateHandler: DateHandlerProtocol
     let deck: Deck
+    let cardSortingFunc: (Card, Card) -> Bool
     
-    @Published private var cards: [Card] = []
+    @Published var cards: [Card] = []
     @Published var displayedCards: [CardViewModel] = []
-    private var cardsToEdit: [Card] = []
-    
+    var cardsToEdit: [Card] = []
+
     private var cancellables: Set<AnyCancellable> = .init()
     
     @Published var shouldButtonsBeDisabled: Bool = true
@@ -29,12 +30,14 @@ public class StudyViewModel: ObservableObject {
         deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil),
         sessionCacher: SessionCacher = SessionCacher(),
         deck: Deck,
-        dateHandler: DateHandlerProtocol = DateHandler()
+        dateHandler: DateHandlerProtocol = DateHandler(),
+        cardSortingFunc: @escaping (Card, Card) -> Bool = StudyViewModel.cardSorter
     ) {
         self.deckRepository = deckRepository
         self.sessionCacher = sessionCacher
         self.deck = deck
         self.dateHandler = dateHandler
+        self.cardSortingFunc = cardSortingFunc
     }
     
     func startup() {
@@ -56,11 +59,16 @@ public class StudyViewModel: ObservableObject {
         if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
             deckRepository.fetchCardsByIds(session.cardIds)
                 .replaceError(with: [])
+                .map {
+                    $0.sorted(by: self.cardSortingFunc)
+                }
                 .assign(to: &$cards)
             
         } else {
             deckRepository.fetchCardsByIds(deck.cardsIds)
-                .map { $0.map(OrganizerCardInfo.init(card:)) }
+                .map {
+                    $0.map(OrganizerCardInfo.init(card:))
+                }
                 .tryMap { [deck, dateHandler] cards in
                     try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: dateHandler.today)
                 }
@@ -83,7 +91,7 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func receiveCards(todayReviewingCards: [Card], todayLearningCards: [Card], toModify: [Card]) {
-        cards = todayLearningCards + todayReviewingCards
+        cards = (todayLearningCards + todayReviewingCards).sorted(by: cardSortingFunc)
         cardsToEdit = toModify.map { card in
             var newCard = card
             newCard.dueDate = dateHandler.dayAfterToday(1)
@@ -111,8 +119,19 @@ public class StudyViewModel: ObservableObject {
         } else {
             dealWithSteppedCard(userGrade: userGrade)
         }
-        
-        cards = cards.prefix(2) + cards.suffix(from: 2).shuffled()
+        var lastCards: [Card] = []
+        if cards.count > 2 {
+            lastCards = cards.suffix(from: 2).sorted(by: cardSortingFunc)
+        }
+        cards = cards.prefix(2) + lastCards
+    }
+    
+    public static func cardSorter(card0: Card, card1: Card) -> Bool {
+        if card0.woodpeckerCardInfo.step == card1.woodpeckerCardInfo.step {
+            return Int.random(in: 0...1) == 0
+        } else {
+            return card0.woodpeckerCardInfo.step < card1.woodpeckerCardInfo.step
+        }
     }
     
     private func dealWithSm2Card(userGrade: UserGrade) {
@@ -124,12 +143,16 @@ public class StudyViewModel: ObservableObject {
         }
         
         // modifica o cards[0], salva ele em cardsToEdit, depois remove da lista de cards.
+#warning("fix timeSpent")
+        cards[0].history.append(CardSnapshot(woodpeckerCardInfo: cards[0].woodpeckerCardInfo, userGrade: userGrade, timeSpend: 0, date: dateHandler.today))
         cards[0].woodpeckerCardInfo = newInfo
+        cards[0].woodpeckerCardInfo.hasBeenPresented = true
         removeCard(shouldAddToEdit: true)
     }
     
     private func dealWithSteppedCard(userGrade: UserGrade) {
         var newCard = cards[0]
+        newCard.woodpeckerCardInfo.hasBeenPresented = true
         do {
 #warning("number of steps tem qu ser guardado em spacedRepConfig em deck")
             let cardDestiny = try Woodpecker.stepper(cardInfo: newCard.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: 3)
@@ -138,22 +161,28 @@ public class StudyViewModel: ObservableObject {
             case .back:
                 //update card and bumps to last position of the vector.
                 newCard.woodpeckerCardInfo.step -= 1
+                newCard.woodpeckerCardInfo.streak = 0
                 removeCard()
                 cards.append(newCard)
             case .stay:
                 //update card and bumps to last position of the vector.
+                newCard.woodpeckerCardInfo.streak = 0
                 removeCard()
                 cards.append(newCard)
             case .foward:
                 //update card and bumps to last position of the vector.
                 newCard.woodpeckerCardInfo.step += 1
+                newCard.woodpeckerCardInfo.streak += 1
                 removeCard()
                 cards.append(newCard)
             case .graduate:
                 //update card. Save it to toEdit. Remove from cards.
+#warning("fix timeSpent")
+                cards[0].history.append(CardSnapshot(woodpeckerCardInfo: cards[0].woodpeckerCardInfo, userGrade: userGrade, timeSpend: 0, date: dateHandler.today))
+                cards[0].woodpeckerCardInfo.streak += 1
                 cards[0].woodpeckerCardInfo.step = 0
                 cards[0].woodpeckerCardInfo.isGraduated = true
-                
+                cards[0].woodpeckerCardInfo.hasBeenPresented = true
                 removeCard(shouldAddToEdit: true)
             }
         } catch {
