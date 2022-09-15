@@ -13,6 +13,10 @@ import Combine
 public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
     public var shouldThrowError: Bool = false
     
+    public static let shared: CollectionRepositoryProtocol = {
+        CollectionRepositoryMock()
+    }()
+    
     public init() {}
     
     public var collections: [DeckCollection] = [
@@ -141,6 +145,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
         if shouldThrowError {
             throw RepositoryError.couldNotEdit
         }
+        
         guard let collectionIndex = collections.firstIndex(where: { $0.id == collection.id }) else {
             throw RepositoryError.couldNotEdit
         }
