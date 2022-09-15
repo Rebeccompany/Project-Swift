@@ -155,6 +155,16 @@ public struct Woodpecker {
         
         return result
     }
+    
+    public static func cardSorter(card0: Card, card1: Card) -> Bool {
+        if card0.woodpeckerCardInfo.step == card1.woodpeckerCardInfo.step
+            || card0.woodpeckerCardInfo.isGraduated
+            || card1.woodpeckerCardInfo.isGraduated {
+            return Int.random(in: 0...1) == 0
+        } else {
+            return card0.woodpeckerCardInfo.step < card1.woodpeckerCardInfo.step
+        }
+    }
 }
 
 // MARK: PrepareStudySession Helpers

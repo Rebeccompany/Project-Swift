@@ -216,15 +216,18 @@ extension Card {
  extension Card {
      fileprivate init(id: String, deckId: String, state: WoodpeckerState) {
          let h: [CardSnapshot]
+         var s: AttributedString = ""
          switch state {
          case .review:
              h = [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(state: .learn), userGrade: .correct, timeSpend: 20, date: Date(timeIntervalSince1970: -8400))]
+             s = "Reviewing"
          case .learn:
              h = []
+             s = "Learning"
          }
          self.init(id: UUID(uuidString: id)!,
-                   front: "",
-                   back: "",
+                   front: s,
+                   back: s,
                    color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),

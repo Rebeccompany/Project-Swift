@@ -10,8 +10,7 @@ import Storage
 import Models
 import Woodpecker
 import Combine
-#warning("Salvar toEdit ao sair da tela")
-#warning("Salvar cards em sessão ao sair da tela")
+#warning("Chamar saveChanges ao sair da tela")
 public class StudyViewModel: ObservableObject {
     private let deckRepository: DeckRepositoryProtocol
     private let sessionCacher: SessionCacher
@@ -27,18 +26,34 @@ public class StudyViewModel: ObservableObject {
     
     @Published var shouldButtonsBeDisabled: Bool = true
     
+    private var timefromLastCard: Date
+    
+    func saveChanges() {
+        do {
+            try cardsToEdit.forEach { card in
+                try deckRepository.editCard(card)
+            }
+        } catch {
+            print("FODEU4")
+        }
+        sessionCacher.setCurrentSession(session: Session(cardIds: cards.map(\.id), date: dateHandler.today, deckId: deck.id))
+        
+    }
+    
+    
     public init(
         deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil),
         sessionCacher: SessionCacher = SessionCacher(),
         deck: Deck,
         dateHandler: DateHandlerProtocol = DateHandler(),
-        cardSortingFunc: @escaping (Card, Card) -> Bool = StudyViewModel.cardSorter
+        cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter
     ) {
         self.deckRepository = deckRepository
         self.sessionCacher = sessionCacher
         self.deck = deck
         self.dateHandler = dateHandler
         self.cardSortingFunc = cardSortingFunc
+        self.timefromLastCard = dateHandler.today
     }
     
     func startup() {
@@ -124,16 +139,9 @@ public class StudyViewModel: ObservableObject {
         if cards.count > 2 {
             lastCards = cards.suffix(from: 2).sorted(by: cardSortingFunc)
         }
+        
+        timefromLastCard = dateHandler.today
         cards = cards.prefix(2) + lastCards
-    }
-    
-    public static func cardSorter(card0: Card, card1: Card) -> Bool {
-        #warning("todas as reviewing vao estra juntas com os steps 0")
-        if card0.woodpeckerCardInfo.step == card1.woodpeckerCardInfo.step {
-            return Int.random(in: 0...1) == 0
-        } else {
-            return card0.woodpeckerCardInfo.step < card1.woodpeckerCardInfo.step
-        }
     }
     
     private func dealWithSm2Card(userGrade: UserGrade) {
@@ -145,8 +153,7 @@ public class StudyViewModel: ObservableObject {
         }
         
         // modifica o cards[0], salva ele em cardsToEdit, depois remove da lista de cards.
-#warning("fix timeSpent")
-        cards[0].history.append(CardSnapshot(woodpeckerCardInfo: cards[0].woodpeckerCardInfo, userGrade: userGrade, timeSpend: 0, date: dateHandler.today))
+        cards[0].history.append(CardSnapshot(woodpeckerCardInfo: cards[0].woodpeckerCardInfo, userGrade: userGrade, timeSpend: dateHandler.today.timeIntervalSince1970 - timefromLastCard.timeIntervalSince1970, date: dateHandler.today))
         cards[0].woodpeckerCardInfo = newInfo
         cards[0].woodpeckerCardInfo.hasBeenPresented = true
         removeCard(shouldAddToEdit: true)
@@ -179,8 +186,7 @@ public class StudyViewModel: ObservableObject {
                 cards.append(newCard)
             case .graduate:
                 //update card. Save it to toEdit. Remove from cards.
-#warning("fix timeSpent")
-                cards[0].history.append(CardSnapshot(woodpeckerCardInfo: cards[0].woodpeckerCardInfo, userGrade: userGrade, timeSpend: 0, date: dateHandler.today))
+                cards[0].history.append(CardSnapshot(woodpeckerCardInfo: cards[0].woodpeckerCardInfo, userGrade: userGrade, timeSpend: dateHandler.today.timeIntervalSince1970 - timefromLastCard.timeIntervalSince1970, date: dateHandler.today))
                 cards[0].woodpeckerCardInfo.streak += 1
                 cards[0].woodpeckerCardInfo.step = 0
                 cards[0].woodpeckerCardInfo.isGraduated = true
