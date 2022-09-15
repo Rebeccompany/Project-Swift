@@ -12,15 +12,17 @@ import Storage
 
 public struct NewCollectionView: View {
     
+    @Binding private var isDisplaying: Bool
     @ObservedObject private var viewModel: NewCollectionViewModel
     
-    public init(viewModel: NewCollectionViewModel) {
+    public init(isDisplaying: Binding<Bool>, viewModel: NewCollectionViewModel) {
+        self._isDisplaying = isDisplaying
         self.viewModel = viewModel
     }
     
     public var body: some View {
         
-        NavigationView {
+        NavigationStack {
             VStack(alignment: .leading) {
                 
                 Text("Nome")
@@ -59,6 +61,11 @@ public struct NewCollectionView: View {
                 }
                 
             }
+            .onChange(of: viewModel.canDismiss, perform: { canDismiss in
+                if canDismiss {
+                    isDisplaying = false
+                }
+            })
             .onAppear(perform: viewModel.startUp)
             .padding()
             .alert("Ocorreu um erro interno. Tente novamente.", isPresented: $viewModel.showingErrorAlert) {
@@ -73,7 +80,7 @@ public struct NewCollectionView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") {
-                        print("cancelarr!")
+                        viewModel.canDismiss = true
                     }
                     .foregroundColor(Color.red)
                     
@@ -85,11 +92,9 @@ public struct NewCollectionView: View {
                         } else {
                             viewModel.editCollection()
                         }
-                        
                     }
                     .disabled(!viewModel.canSubmit)
                 }
-                
                 
             }
         }
@@ -103,6 +108,7 @@ struct NewCollectionView_Previews: PreviewProvider {
     static var previews: some View {
         
         NewCollectionView(
+            isDisplaying: .constant(true),
             viewModel: .init(
                 colors: CollectionColor.allCases,
                 collectionRepository: CollectionRepositoryMock()

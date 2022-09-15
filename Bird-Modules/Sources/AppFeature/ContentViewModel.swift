@@ -15,7 +15,7 @@ public final class ContentViewModel: ObservableObject {
     @Published var collections: [DeckCollection]
     @Published var sidebarSelection: SidebarRoute? = .allDecks
     @Published var presentCollectionEdition: Bool = false
-    @Published var editingCollection: DeckCollection? = nil
+    @Published var editingCollection: DeckCollection?
     
     private let collectionRepository: CollectionRepositoryProtocol
     private let deckRepository: DeckRepositoryProtocol
@@ -40,8 +40,18 @@ public final class ContentViewModel: ObservableObject {
             )
             .store(in: &cancellables)
         
+        $presentCollectionEdition
+            .filter { !$0 }
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: handleEndEditing)
+            .store(in: &cancellables)
         
-        
+    }
+    
+    private func handleEndEditing(_ isPresenting: Bool ) {
+        if !isPresenting {
+            self.editingCollection = nil
+        }
     }
     
     private func handleCollectionCompletion(_ completion: Subscribers.Completion<RepositoryError>) {
@@ -72,6 +82,11 @@ public final class ContentViewModel: ObservableObject {
     
     func editCollection(_ collection: DeckCollection) {
         editingCollection = collection
+        presentCollectionEdition = true
+    }
+    
+    func createCollection() {
+        editingCollection = nil
         presentCollectionEdition = true
     }
     

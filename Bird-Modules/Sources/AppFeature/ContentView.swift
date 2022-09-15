@@ -56,6 +56,7 @@ public struct ContentView: View {
         .navigationSplitViewStyle(.balanced)
         .sheet(isPresented: $viewModel.presentCollectionEdition) {
             NewCollectionView(
+                isDisplaying: $viewModel.presentCollectionEdition,
                 viewModel: .init(
                     colors: CollectionColor.allCases,
                     collectionRepository: CollectionRepositoryMock.shared,

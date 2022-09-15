@@ -15,6 +15,7 @@ public class NewCollectionViewModel: ObservableObject {
     @Published var collectionName: String = ""
     @Published var currentSelectedColor: CollectionColor?
     @Published var canSubmit: Bool
+    @Published var canDismiss: Bool
     @Published var showingErrorAlert: Bool = false
     @Published var editingCollection: DeckCollection?
     
@@ -35,6 +36,7 @@ public class NewCollectionViewModel: ObservableObject {
         self.dateHandler = dateHandler
         self.idGenerator = idGenerator
         self.canSubmit = false
+        self.canDismiss = false
         self.editingCollection = editingCollection
         
         if let editingCollection = editingCollection {
@@ -64,6 +66,7 @@ public class NewCollectionViewModel: ObservableObject {
         
         do {
             try collectionRepository.createCollection(newCollection(selectedColor: selectedColor))
+            self.canDismiss = true
         } catch {
             showingErrorAlert = true
         }
@@ -95,6 +98,7 @@ public class NewCollectionViewModel: ObservableObject {
             editingCollection.datesLogs.lastEdit = dateHandler.today
             try collectionRepository.editCollection(editingCollection)
             self.editingCollection = editingCollection
+            self.canDismiss = true
         } catch {
             showingErrorAlert = true
         }
