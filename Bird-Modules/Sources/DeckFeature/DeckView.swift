@@ -78,7 +78,7 @@ public struct DeckView: View {
             .listRowSeparator(.hidden)
         }
         .scrollContentBackground(.hidden)
-        .ViewBackgroundColor(HBColor.primaryBackground)
+        .viewBackgroundColor(HBColor.primaryBackground)
         .onAppear(perform: viewModel.startup)
         .listStyle(.plain)
         .searchable(text: $viewModel.searchFieldContent)

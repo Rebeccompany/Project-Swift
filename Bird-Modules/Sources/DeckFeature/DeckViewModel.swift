@@ -41,7 +41,7 @@ public class DeckViewModel: ObservableObject {
     private func checkIfCanStudy() throws -> Bool {
         let cardsToStudy = try Woodpecker.wpScheduler(cardsInfo: cards.map{SchedulerCardInfo.init (cardId: $0.id, woodpeckerCardInfo: $0.woodpeckerCardInfo, dueDate: $0.dueDate)}, config: deck.spacedRepetitionConfig)
         
-        if (cardsToStudy.todayCards.count > 0) {
+        if !cardsToStudy.todayCards.isEmpty {
             return true
         } else {
             return false
