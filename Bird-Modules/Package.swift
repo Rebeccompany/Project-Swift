@@ -247,7 +247,9 @@ let package = Package(
         .testTarget(
             name: "AppFeatureTests",
             dependencies: [
-                "AppFeature"
+                "AppFeature",
+                "Models",
+                "Storage"
             ]
         ),
         

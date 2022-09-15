@@ -58,12 +58,12 @@ public struct CollectionsSidebar: View {
                                 Text(collection.name)
                                 Spacer()
                                 if editMode?.wrappedValue.isEditing ?? false {
-                                    Button {
-                                        editAction(collection)
-                                    } label: {
-                                        Image(systemName: "info.circle")
-                                    }
-                                    .foregroundColor(HBColor.actionColor)
+                                    Image(systemName: "info.circle")
+                                        .foregroundColor(HBColor.actionColor)
+                                        .onTapGesture {
+                                            editAction(collection)
+                                        }
+                                        .accessibility(addTraits: .isButton)
                                 }
                             }
                         }

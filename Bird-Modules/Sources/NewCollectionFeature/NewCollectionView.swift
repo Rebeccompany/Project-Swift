@@ -13,16 +13,19 @@ import Storage
 public struct NewCollectionView: View {
     
     @ObservedObject private var viewModel: NewCollectionViewModel
+    @Environment(\.dismiss) private var dismiss
+    @State private var showingErrorAlert: Bool = false
     
-    public init(viewModel: NewCollectionViewModel) {
+    public init(
+        viewModel: NewCollectionViewModel
+    ) {
         self.viewModel = viewModel
     }
     
     public var body: some View {
         
-        NavigationView {
+        NavigationStack {
             VStack(alignment: .leading) {
-                
                 Text("Nome")
                     .font(.callout)
                     .bold()
@@ -50,7 +53,12 @@ public struct NewCollectionView: View {
                 
                 if viewModel.editingCollection != nil {
                     Button {
-                        viewModel.deleteCollection()
+                        do {
+                            try viewModel.deleteCollection()
+                            dismiss()
+                        } catch {
+                            showingErrorAlert = true
+                        }
                     } label: {
                         Text("Apagar Coleção")
                     }
@@ -61,11 +69,8 @@ public struct NewCollectionView: View {
             }
             .onAppear(perform: viewModel.startUp)
             .padding()
-            .alert("Ocorreu um erro interno. Tente novamente.", isPresented: $viewModel.showingErrorAlert) {
-                Button("OK", role: .cancel) {
-                    viewModel.showingErrorAlert = false
-                    
-                }
+            .alert("Ocorreu um erro interno. Tente novamente.", isPresented: $showingErrorAlert) {
+                Button("OK", role: .cancel) {}
             }
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(viewModel.editingCollection == nil ? "Criar Coleção" : "Editar Coleção")
@@ -73,23 +78,26 @@ public struct NewCollectionView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") {
-                        print("cancelarr!")
+                        dismiss()
                     }
                     .foregroundColor(Color.red)
                     
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
-                        if viewModel.editingCollection == nil {
-                            viewModel.createCollection()
-                        } else {
-                            viewModel.editCollection()
+                        do {
+                            if viewModel.editingCollection == nil {
+                                try viewModel.createCollection()
+                            } else {
+                                try viewModel.editCollection()
+                            }
+                            dismiss()
+                        } catch {
+                            showingErrorAlert = true
                         }
-                        
                     }
                     .disabled(!viewModel.canSubmit)
                 }
-                
                 
             }
         }

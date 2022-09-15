@@ -8,14 +8,16 @@
 import SwiftUI
 import Models
 import CollectionFeature
-import Storage
 import HummingBird
+import NewCollectionFeature
+import Storage
 
 public struct ContentView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @State private var editMode: EditMode = .inactive
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject private var viewModel: ContentViewModel
+    @State private var presentCollectionEdition = false
     
     public init(viewModel: ContentViewModel) {
         self.viewModel = viewModel
@@ -23,35 +25,56 @@ public struct ContentView: View {
     
     public var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
-            CollectionsSidebar(
-                collections: viewModel.collections,
-                selection: $viewModel.sidebarSelection,
-                isCompact: horizontalSizeClass == .compact
-            ) { _ in } editAction: { _ in }
-                .navigationTitle("Nome do App")
-                .toolbar {
-                    ToolbarItem {
-                        EditButton()
-                    }
-                    ToolbarItem {
-                        Button {
-                            
-                        } label: {
-                            Image(systemName: "folder.badge.plus")
-                        }
-                    }
-                }
-                .environment(\.editMode, $editMode)
+            sidebar
         } detail: {
-            List(viewModel.decks) { deck in
-                Text(deck.name)
-            }
-            .scrollContentBackground(.hidden)
-            .viewBackgroundColor(HBColor.primaryBackground)
+            StudyRouter(
+                sidebarSelection: viewModel.sidebarSelection ?? .allDecks
+            )
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
-        
+        .sheet(isPresented: $presentCollectionEdition) {
+            NewCollectionView(
+                viewModel: .init(
+                    colors: CollectionColor.allCases,
+                    editingCollection: viewModel.editingCollection
+                )
+            )
+        }
+    }
+    
+    @ViewBuilder
+    private var sidebar: some View {
+        CollectionsSidebar(
+            collections: viewModel.collections,
+            selection: $viewModel.sidebarSelection,
+            isCompact: horizontalSizeClass == .compact
+        ) { i in
+            try? viewModel.deleteCollection(at: i)
+        } editAction: { collection in
+            viewModel.editCollection(collection)
+            presentCollectionEdition = true
+        }
+            .navigationTitle("Nome do App")
+            .toolbar {
+                ToolbarItem {
+                    EditButton()
+                }
+                ToolbarItem {
+                    Button {
+                        viewModel.createCollection()
+                        presentCollectionEdition = true
+                    } label: {
+                        Image(systemName: "folder.badge.plus")
+                    }
+                }
+            }
+            .environment(\.editMode, $editMode)
+    }
+    
+    @ViewBuilder
+    private var detail: some View {
+        Text("oi")
     }
 }
 
@@ -59,8 +82,8 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView(
             viewModel: ContentViewModel(
-                collectionRepository: CollectionRepositoryMock(),
-                deckRepository: DeckRepositoryMock()
+                collectionRepository: CollectionRepositoryMock.shared,
+                deckRepository: DeckRepositoryMock.shared
             )
         )
     }

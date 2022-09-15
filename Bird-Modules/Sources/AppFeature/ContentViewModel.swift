@@ -15,14 +15,15 @@ public final class ContentViewModel: ObservableObject {
     @Published var collections: [DeckCollection]
     @Published var sidebarSelection: SidebarRoute? = .allDecks
     @Published var decks: [Deck]
+    @Published var editingCollection: DeckCollection?
     
     private let collectionRepository: CollectionRepositoryProtocol
     private let deckRepository: DeckRepositoryProtocol
     private var cancellables: Set<AnyCancellable>
     
     public init(
-        collectionRepository: CollectionRepositoryProtocol = CollectionRepositoryMock(),
-        deckRepository: DeckRepositoryProtocol = DeckRepositoryMock()
+        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
+        deckRepository: DeckRepositoryProtocol = DeckRepository.shared
     ) {
         self.collectionRepository = collectionRepository
         self.deckRepository = deckRepository
@@ -34,11 +35,9 @@ public final class ContentViewModel: ObservableObject {
     func startup() {
         collectionRepository
             .listener()
-            .sink(
-                receiveCompletion: handleCollectionCompletion,
-                receiveValue: handleReceiveCollections
-            )
-            .store(in: &cancellables)
+            .handleEvents(receiveCompletion: handleCollectionCompletion)
+            .replaceError(with: [])
+            .assign(to: &$collections)
         
         deckRepository
             .deckListener()
@@ -61,16 +60,36 @@ public final class ContentViewModel: ObservableObject {
         }
     }
     
+    private func handleEndEditing(_ isPresenting: Bool ) {
+        if !isPresenting {
+            self.editingCollection = nil
+        }
+    }
+    
     private func handleCollectionCompletion(_ completion: Subscribers.Completion<RepositoryError>) {
         switch completion {
         case .finished:
             print("finished")
-        case .failure(let failure):
-            fatalError(failure.localizedDescription)
+        case .failure(_):
+            print("error")
         }
     }
     
-    private func handleReceiveCollections(_ collections: [DeckCollection]) {
-        self.collections = collections
+    func deleteCollection(at index: IndexSet) throws {
+        let collections = self.collections
+        let collectionsToDelete = index.map { i in collections[i] }
+        
+        try collectionsToDelete.forEach { collection in
+            try collectionRepository.deleteCollection(collection)
+        }
     }
+    
+    func editCollection(_ collection: DeckCollection) {
+        editingCollection = collection
+    }
+    
+    func createCollection() {
+        editingCollection = nil
+    }
+    
 }
