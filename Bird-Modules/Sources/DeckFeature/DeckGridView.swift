@@ -1,5 +1,5 @@
 //
-//  DeckView.swift
+//  DeckGridView.swift
 //  
 //
 //  Created by Nathalia do Valle Papst on 15/09/22.
@@ -9,7 +9,7 @@ import SwiftUI
 import HummingBird
 import Models
 
-struct DeckView: View {
+struct DeckGridView: View {
     var decks: [Deck]
     
     var body: some View {
@@ -54,10 +54,10 @@ struct DeckView: View {
     }
 }
 
-struct DeckView_Previews: PreviewProvider {
+struct DeckGridView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            DeckView(decks: [Deck(id: UUID.init(), name: "Baralho 1", icon: "flame", color: .otherPink, collectionsIds: [], cardsIds: [])])
+            DeckGridView(decks: [Deck(id: UUID.init(), name: "Baralho 1", icon: "flame", color: .otherPink, collectionsIds: [], cardsIds: [])])
                 .previewDevice(PreviewDevice(stringLiteral: "iPhone 12"))
         }
     }
