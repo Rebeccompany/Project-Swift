@@ -13,7 +13,7 @@ struct FlashcardDeckView: View {
     @Binding var cards: [CardViewModel]
     
     var body: some View {
-        GeometryReader { proxy in
+        GeometryReader { _ in
             ZStack(alignment: .top) {
                 ForEach(Array(zip($cards, cards.indices)), id: \.0.card.id) { $card, i in
                     FlashcardView(viewModel: $card, index: i)
@@ -22,12 +22,12 @@ struct FlashcardDeckView: View {
                         .zIndex(Double(i))
                 }
             }
-            .padding(.bottom, 10 * CGFloat(cards.count-1))
+            .padding(.bottom, 10 * Double(cards.count - 1))
         }
     }
     
-    private func getCardOffset(index: Int) -> CGFloat {
-        return  CGFloat(index) * 10
+    private func getCardOffset(index: Int) -> Double {
+        Double(index) * 10
     }
 }
 

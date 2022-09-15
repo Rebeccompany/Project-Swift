@@ -14,4 +14,3 @@ struct DeckInfo {
     var numberOfCards: Int
     var deckName: String
 }
-

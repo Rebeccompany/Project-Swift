@@ -8,7 +8,7 @@
 import Foundation
 
 /// A deck of flashcards.
-public struct Deck: Identifiable, Equatable {
+public struct Deck: Identifiable, Equatable, Hashable {
     public let id: UUID
     /// The name of the deck.
     public var name: String
@@ -25,7 +25,7 @@ public struct Deck: Identifiable, Equatable {
     /// Configurantion for Spaced repetition.
     public var spacedRepetitionConfig: SpacedRepetitionConfig
     
-    public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs, collectionsIds: [UUID], cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig) {
+    public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs = DateLogs(), collectionsIds: [UUID], cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig = SpacedRepetitionConfig()) {
         self.id = id
         self.name = name
         self.icon = icon

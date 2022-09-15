@@ -9,10 +9,15 @@ import Foundation
 import Models
 import Combine
 
+//swiftlint: disable private_subject
 public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
+    public var shouldThrowError: Bool = false
+    
+    public init() {}
+    
     public var collections: [DeckCollection] = [
         DeckCollection(id: UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!,
-                       name: "Matematica Básica",
+                       name: "Matemática Básica",
                        color: .darkPurple,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
@@ -84,6 +89,9 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
     public lazy var listenerSubject = CurrentValueSubject<[DeckCollection], RepositoryError>(collections)
     
     public func addDeck(_ deck: Deck, in collection: DeckCollection) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotCreate
+        }
         guard let collectionIndex = collections.firstIndex(where: { $0.id == collection.id }) else {
             throw RepositoryError.couldNotEdit
         }
@@ -96,6 +104,9 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
     }
     
     public func removeDeck(_ deck: Deck, from collection: DeckCollection) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotDelete
+        }
         guard let collectionIndex = collections.firstIndex(where: { $0.id == collection.id }) else {
             throw RepositoryError.couldNotEdit
         }
@@ -108,18 +119,28 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
     }
     
     public func createCollection(_ collection: DeckCollection) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotCreate
+        }
+        
         collections.append(collection)
         
         listenerSubject.send(collections)
     }
     
     public func deleteCollection(_ collection: DeckCollection) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotDelete
+        }
         collections = collections.filter { $0.id != collection.id }
         
         listenerSubject.send(collections)
     }
     
     public func editCollection(_ collection: DeckCollection) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotEdit
+        }
         guard let collectionIndex = collections.firstIndex(where: { $0.id == collection.id }) else {
             throw RepositoryError.couldNotEdit
         }

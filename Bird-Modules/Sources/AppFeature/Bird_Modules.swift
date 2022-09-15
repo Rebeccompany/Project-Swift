@@ -1,5 +1,7 @@
 import Storage
 import StudyFeature
+import NewCollectionFeature
+import Models
 import SwiftUI
 
 public struct Bird_Modules {
@@ -27,4 +29,9 @@ public struct Viewzinha: View {
     }
     
     
+public struct TestView: View {
+    public init() {}
+    public var body: some View {
+        NewCollectionView(viewModel: NewCollectionViewModel(colors: CollectionColor.allCases, collectionRepository: CollectionRepositoryMock()))
+    }
 }

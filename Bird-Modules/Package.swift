@@ -7,7 +7,7 @@ let package = Package(
     name: "Bird-Modules",
     
     platforms: [
-        .iOS(.v15),
+        .iOS("16.0"),
         .macOS(.v12)
     ],
     
@@ -20,36 +20,41 @@ let package = Package(
             ]
         ),
         
-        .library(name: "CollectionFeature",
-                 targets: [
-                    "CollectionFeature"
-                 ]
+        .library(
+            name: "CollectionFeature",
+            targets: [
+                "CollectionFeature"
+            ]
         ),
         
-        .library(name: "DeckFeature",
-                 targets: [
-                    "DeckFeature"
-                 ]
+        .library(
+            name: "DeckFeature",
+            targets: [
+                "DeckFeature"
+            ]
         ),
         
-        .library(name: "EditFlashcardFeature",
-                 targets: [
-                    "EditFlashcardFeature"
-                 ]
+        .library(
+            name: "EditFlashcardFeature",
+            targets: [
+                "EditFlashcardFeature"
+            ]
         ),
         
-        .library(name: "StudyFeature",
-                 targets: [
-                    "StudyFeature"
-                 ]
+        .library(
+            name: "StudyFeature",
+            targets: [
+                "StudyFeature"
+            ]
         ),
         
-        .library(name: "HomePageFeature",
-                 targets: [
-                    "HomePageFeature"
-                 ]
+        .library(
+            name: "HomePageFeature",
+            targets: [
+                "HomePageFeature"
+            ]
         ),
-
+        
         .library(
             name: "ImportingFeature",
             targets: [
@@ -76,7 +81,7 @@ let package = Package(
                 "NewDeckFeature"
             ]
         ),
-
+        
         .library(
             name: "Woodpecker",
             targets: [
@@ -95,6 +100,12 @@ let package = Package(
             name: "HummingBird",
             targets: [
                 "HummingBird"
+            ]
+        ),
+        .library(
+            name: "Flock",
+            targets: [
+                "Flock"
             ]
         )
     ],
@@ -117,26 +128,33 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "StudyFeature"
+                "NewCollectionFeature",
+                "NewDeckFeature",
+                "Models",
+                "Flock"
             ]
         ),
         
-        .target(name: "CollectionFeature",
-                dependencies: [
-                    "Models",
-                    "HummingBird"
-                ]
+        .target(
+            name: "CollectionFeature",
+            dependencies: [
+                "Models",
+                "HummingBird"
+            ]
         ),
-            
-        .target(name: "DeckFeature",
-                dependencies: [
-                    "Models"
-                ]
+        
+        .target(
+            name: "DeckFeature",
+            dependencies: [
+                "Models"
+            ]
         ),
-            
-        .target(name: "EditFlashcardFeature",
-                dependencies: [
-                     "Models"
-                ]
+        
+        .target(
+            name: "EditFlashcardFeature",
+            dependencies: [
+                "Models"
+            ]
         ),
             
         .target(name: "StudyFeature",
@@ -147,11 +165,12 @@ let package = Package(
                      "Storage"
                 ]
         ),
-            
-        .target(name: "HomePageFeature",
-                dependencies: [
-                     "Models"
-                ]
+        
+        .target(
+            name: "HomePageFeature",
+            dependencies: [
+                "Models"
+            ]
         ),
         
         .target(
@@ -162,20 +181,26 @@ let package = Package(
         ),
         
         .target(
-                name: "Models"
-            ),
+            name: "Models"
+        ),
         
         .target(
             name: "NewCollectionFeature",
             dependencies: [
-                "Models"
+                "Models",
+                "HummingBird",
+                "Storage",
+                "Utils"
             ]
         ),
         
         .target(
             name: "NewDeckFeature",
             dependencies: [
-                "Models"
+                "Models",
+                "HummingBird",
+                "Storage",
+                "Utils"
             ]
         ),
         
@@ -201,6 +226,14 @@ let package = Package(
             dependencies: [
                 "Models"
             ]
+        ),
+        
+        .target(
+            name: "Utils"
+        ),
+        
+        .target(
+            name: "Flock"
         ),
         
         // MARK: Test Targets
@@ -247,6 +280,35 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Models"
+            ]
+        ),
+        
+        .testTarget(
+            name: "NewCollectionFeatureTests",
+            dependencies: [
+                "Storage",
+                "Models",
+                "NewCollectionFeature"
+            ]
+        ),
+        
+        
+        .testTarget(
+            name: "NewDeckFeatureTests",
+            dependencies: [
+                "Storage",
+                "Models",
+                "NewDeckFeature",
+                "HummingBird",
+                "Utils"
+            ]
+        ),
+        
+        .testTarget(
+            name: "FlockTests",
+            dependencies: [
+                "Models",
+                "Flock"
             ]
         )
     ]

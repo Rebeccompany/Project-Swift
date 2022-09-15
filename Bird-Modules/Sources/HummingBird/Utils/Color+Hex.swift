@@ -8,7 +8,7 @@
 import SwiftUI
 
 #if os(macOS)
-
+//swiftlint: disable no_cgfloat2
 extension NSColor {
     
     convenience init(hex: String) {
@@ -78,7 +78,7 @@ extension Color {
 #endif
 
 #if os(iOS)
-
+//swiftlint: disable no_cgfloat
 extension Color {
     init?(hex: String) {
         var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -93,7 +93,8 @@ extension Color {
         
         let length = hexSanitized.count
         
-        guard Scanner(string: hexSanitized).scanHexInt64(&rgb) else { return nil }
+        guard Scanner(string: hexSanitized).scanHexInt64(&rgb)
+        else { return nil }
         
         if length == 6 {
             r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
