@@ -10,7 +10,7 @@ import Storage
 import Models
 import Woodpecker
 import Combine
-#warning("Chamar saveChanges ao sair da tela")
+
 public class StudyViewModel: ObservableObject {
     private let deckRepository: DeckRepositoryProtocol
     private let sessionCacher: SessionCacher
@@ -206,4 +206,31 @@ public class StudyViewModel: ObservableObject {
             cards.remove(at: 0)
         }
     }
+    
+    @objc private func didEnterBackground() {
+        saveChanges()
+    }
+    
+#if os(iOS)
+    private func setupEnterBackground() {
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(didEnterBackground),
+                                       name: UIApplication.willTerminateNotification, object: nil)
+    }
+#else
+    private func setupEnterBackground() {
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(didEnterBackground),
+                                       name: NSApplication.willTerminateNotification, object: nil)
+    }
+#endif
+
+    
 }
+
+#if os(iOS)
+import UIKit
+#else
+import AppKit
+#endif
+
