@@ -11,6 +11,7 @@ import Storage
 import Models
 import HummingBird
 import Combine
+import Utils
 
 class NewDeckViewModelTests: XCTestCase {
 
