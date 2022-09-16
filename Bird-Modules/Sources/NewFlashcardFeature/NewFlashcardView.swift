@@ -113,7 +113,7 @@ public struct NewFlashcardView: View {
             }
             .scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
-            .ViewBackgroundColor(HBColor.primaryBackground)
+            .viewBackgroundColor(HBColor.primaryBackground)
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
