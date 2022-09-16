@@ -313,6 +313,17 @@ let package = Package(
         ),
         
         .testTarget(
+            name: "NewFlashcardFeatureTests",
+            dependencies: [
+                "Storage",
+                "Models",
+                "NewFlashcardFeature",
+                "HummingBird",
+                "Utils"
+            ]
+        ),
+        
+        .testTarget(
             name: "FlockTests",
             dependencies: [
                 "Models",
