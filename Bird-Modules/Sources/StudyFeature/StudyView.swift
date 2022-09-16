@@ -14,6 +14,7 @@ public struct StudyView: View {
     @ObservedObject private var viewModel: StudyViewModel
     @Environment(\.dismiss) var dismiss
     @State private var showingErrorAlert: Bool = false
+    @State private var selectedErrorMessage: AlertText = .deleteCard
     
     public init(viewModel: StudyViewModel) {
         self.viewModel = viewModel
@@ -56,6 +57,7 @@ public struct StudyView: View {
                                     do {
                                         try viewModel.pressedButton(for: userGrade)
                                     } catch {
+                                        selectedErrorMessage = .gradeCard
                                         showingErrorAlert = true
                                     }
                                 }
@@ -83,6 +85,7 @@ public struct StudyView: View {
                         try viewModel.saveChanges()
                         dismiss()
                     } catch {
+                        selectedErrorMessage = .saveStudy
                         showingErrorAlert = true
                     }
                 } label: {
@@ -98,6 +101,11 @@ public struct StudyView: View {
             viewModel.startup()
         }
         
+        .alert(isPresented: $showingErrorAlert) {
+            Alert(title: Text(selectedErrorMessage.texts.title),
+                  message: Text(selectedErrorMessage.texts.message),
+                  dismissButton: .default(Text("Fechar")))
+        }
         
     }
 }

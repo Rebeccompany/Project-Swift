@@ -203,17 +203,17 @@ public class StudyViewModel: ObservableObject {
         try saveChanges()
     }
     
-#if os(iOS)
+#if os(macOS)
     private func setupEnterBackground() {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(didEnterBackground),
-                                       name: UIApplication.willTerminateNotification, object: nil)
+                                       name: NSApplication.willTerminateNotification, object: nil)
     }
 #else
     private func setupEnterBackground() {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(didEnterBackground),
-                                       name: NSApplication.willTerminateNotification, object: nil)
+                                       name: UIApplication.willTerminateNotification, object: nil)
     }
 #endif
     
