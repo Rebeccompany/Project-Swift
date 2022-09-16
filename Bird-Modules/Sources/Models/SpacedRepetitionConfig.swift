@@ -14,9 +14,12 @@ public struct SpacedRepetitionConfig: Equatable, Hashable {
     public var maxLearningCards: Int
     /// The maximum number of cards for the reviewing stage.
     public var maxReviewingCards: Int
+    /// The number os steps
+    public var numberOfSteps: Int
     
-    public init(maxLearningCards: Int = 20, maxReviewingCards: Int = 200) {
+    public init(maxLearningCards: Int = 20, maxReviewingCards: Int = 200, numberOfSteps: Int = 4) {
         self.maxLearningCards = maxLearningCards
         self.maxReviewingCards = maxReviewingCards
+        self.numberOfSteps = numberOfSteps
     }
 }

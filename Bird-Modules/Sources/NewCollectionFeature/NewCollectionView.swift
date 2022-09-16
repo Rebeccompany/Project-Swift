@@ -13,16 +13,19 @@ import Storage
 public struct NewCollectionView: View {
     
     @ObservedObject private var viewModel: NewCollectionViewModel
+    @Environment(\.dismiss) private var dismiss
+    @State private var showingErrorAlert: Bool = false
     
-    public init(viewModel: NewCollectionViewModel) {
+    public init(
+        viewModel: NewCollectionViewModel
+    ) {
         self.viewModel = viewModel
     }
     
     public var body: some View {
         
-        NavigationView {
+        NavigationStack {
             VStack(alignment: .leading) {
-                
                 Text("Nome")
                     .font(.callout)
                     .bold()
@@ -33,15 +36,16 @@ public struct NewCollectionView: View {
                     .bold()
                 
                 IconColorGridView {
-                    ForEach(viewModel.colors, id: \.self) {color in
+                    ForEach(viewModel.icons, id: \.self) {icon in
                         Button {
-                            viewModel.currentSelectedColor = color
+                            viewModel.currentSelectedIcon = icon
                             
                         } label: {
-                            HBColor.getHBColrFromCollectionColor(color)
+                            Image(systemName: IconNames.getIconString(icon))
+                                .frame(width: 45, height: 45)
                         }
-                        .accessibility(label: Text(CollectionColor.getColorString(color)))
-                        .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
+                        
+                        .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
                         .frame(width: 45, height: 45)
                     }
                 }
@@ -50,7 +54,12 @@ public struct NewCollectionView: View {
                 
                 if viewModel.editingCollection != nil {
                     Button {
-                        viewModel.deleteCollection()
+                        do {
+                            try viewModel.deleteCollection()
+                            dismiss()
+                        } catch {
+                            showingErrorAlert = true
+                        }
                     } label: {
                         Text("Apagar Coleção")
                     }
@@ -61,35 +70,35 @@ public struct NewCollectionView: View {
             }
             .onAppear(perform: viewModel.startUp)
             .padding()
-            .alert("Ocorreu um erro interno. Tente novamente.", isPresented: $viewModel.showingErrorAlert) {
-                Button("OK", role: .cancel) {
-                    viewModel.showingErrorAlert = false
-                    
-                }
+            .alert("Ocorreu um erro interno. Tente novamente.", isPresented: $showingErrorAlert) {
+                Button("OK", role: .cancel) {}
             }
-            .ViewBackgroundColor(HBColor.primaryBackground)
+            .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(viewModel.editingCollection == nil ? "Criar Coleção" : "Editar Coleção")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") {
-                        print("cancelarr!")
+                        dismiss()
                     }
                     .foregroundColor(Color.red)
                     
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
-                        if viewModel.editingCollection == nil {
-                            viewModel.createCollection()
-                        } else {
-                            viewModel.editCollection()
+                        do {
+                            if viewModel.editingCollection == nil {
+                                try viewModel.createCollection()
+                            } else {
+                                try viewModel.editCollection()
+                            }
+                            dismiss()
+                        } catch {
+                            showingErrorAlert = true
                         }
-                        
                     }
                     .disabled(!viewModel.canSubmit)
                 }
-                
                 
             }
         }
@@ -104,7 +113,6 @@ struct NewCollectionView_Previews: PreviewProvider {
         
         NewCollectionView(
             viewModel: .init(
-                colors: CollectionColor.allCases,
                 collectionRepository: CollectionRepositoryMock()
             ))
         .preferredColorScheme(.light)

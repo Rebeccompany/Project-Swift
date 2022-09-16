@@ -9,10 +9,10 @@ import Foundation
 
 public final class RouterStore<Route>: ObservableObject where Route: Hashable {
     
-    @Published var path: NavigationPath
+    @Binding var path: NavigationPath
     
-    public init() {
-        self.path = NavigationPath()
+    public init(path: Binding<NavigationPath>) {
+        self._path = path
     }
     
     public func push(route: Route) {

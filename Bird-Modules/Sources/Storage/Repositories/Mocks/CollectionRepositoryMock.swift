@@ -13,12 +13,16 @@ import Combine
 public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
     public var shouldThrowError: Bool = false
     
+    public static let shared: CollectionRepositoryProtocol = {
+        CollectionRepositoryMock()
+    }()
+    
     public init() {}
     
     public var collections: [DeckCollection] = [
         DeckCollection(id: UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!,
                        name: "Matemática Básica",
-                       color: .darkPurple,
+                       icon: .book,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
                         lastEdit: Date(timeIntervalSince1970: 0),
@@ -32,7 +36,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
         
         DeckCollection(id: UUID(uuidString: "4f298230-4286-4a83-9f1c-53fd60533ed8")!,
                        name: "Portugues",
-                       color: .otherPink,
+                       icon: .book,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
                         lastEdit: Date(timeIntervalSince1970: 0),
@@ -45,7 +49,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
         
         DeckCollection(id: UUID(uuidString: "9b06af85-e4e8-442d-be7a-40450cfd310c")!,
                        name: "Programação JAVA",
-                       color: .green,
+                       icon: .book,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
                         lastEdit: Date(timeIntervalSince1970: 0),
@@ -59,7 +63,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
         
         DeckCollection(id: UUID(uuidString: "855eb618-602e-449d-83fc-5de6b8a36454")!,
                        name: "Geografia",
-                       color: .beigeBrown,
+                       icon: .book,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
                         lastEdit: Date(timeIntervalSince1970: 0),
@@ -73,7 +77,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
         
         DeckCollection(id: UUID(uuidString: "5285798a-4107-48b3-8994-e706699a3445")!,
                        name: "Bandeiras",
-                       color: .orange,
+                       icon: .book,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
                         lastEdit: Date(timeIntervalSince1970: 0),
@@ -141,6 +145,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
         if shouldThrowError {
             throw RepositoryError.couldNotEdit
         }
+        
         guard let collectionIndex = collections.firstIndex(where: { $0.id == collection.id }) else {
             throw RepositoryError.couldNotEdit
         }

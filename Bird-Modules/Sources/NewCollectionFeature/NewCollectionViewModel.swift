@@ -13,24 +13,22 @@ import Utils
 
 public class NewCollectionViewModel: ObservableObject {
     @Published var collectionName: String = ""
-    @Published var currentSelectedColor: CollectionColor?
+    @Published var currentSelectedIcon: IconNames?
     @Published var canSubmit: Bool
-    @Published var showingErrorAlert: Bool = false
     @Published var editingCollection: DeckCollection?
     
     private let dateHandler: DateHandlerProtocol
     private let idGenerator: UUIDGeneratorProtocol
     private let collectionRepository: CollectionRepositoryProtocol
-    var colors: [CollectionColor]
+    var icons: [IconNames]
     
     public init(
-        colors: [CollectionColor],
-        collectionRepository: CollectionRepositoryProtocol = CollectionRepository(),
+        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
         dateHandler: DateHandlerProtocol = DateHandler(),
         idGenerator: UUIDGeneratorProtocol = UUIDGenerator(),
         editingCollection: DeckCollection? = nil
     ) {
-        self.colors = colors
+        self.icons = IconNames.allCases
         self.collectionRepository = collectionRepository
         self.dateHandler = dateHandler
         self.idGenerator = idGenerator
@@ -45,35 +43,31 @@ public class NewCollectionViewModel: ObservableObject {
     
     private func setupCollectionContentIntoFields(collection: DeckCollection) {
         collectionName = collection.name
-        currentSelectedColor = collection.color
+        currentSelectedIcon = collection.icon
     }
     
     func startUp() {
-        Publishers.CombineLatest($collectionName, $currentSelectedColor)
+        Publishers.CombineLatest($collectionName, $currentSelectedIcon)
             .map(canSubmitData)
             .assign(to: &$canSubmit)
     }
     
-    private func canSubmitData(name: String, currentSelectedColor: CollectionColor?) -> Bool {
+    private func canSubmitData(name: String, currentSelectedColor: IconNames?) -> Bool {
         !name.isEmpty && currentSelectedColor != nil
     }
     
-    func createCollection() {
-        guard let selectedColor = currentSelectedColor
+    func createCollection() throws {
+        guard let currentSelectedIcon
         else { return }
         
-        do {
-            try collectionRepository.createCollection(newCollection(selectedColor: selectedColor))
-        } catch {
-            showingErrorAlert = true
-        }
+        try collectionRepository.createCollection(newCollection(selectedIcon: currentSelectedIcon))
     }
     
-    func newCollection(selectedColor: CollectionColor) -> DeckCollection {
+    func newCollection(selectedIcon: IconNames) -> DeckCollection {
         DeckCollection(
             id: idGenerator.newId(),
             name: collectionName,
-            color: selectedColor,
+            icon: selectedIcon,
             datesLogs: DateLogs(
                 lastAccess: dateHandler.today,
                 lastEdit: dateHandler.today,
@@ -81,32 +75,25 @@ public class NewCollectionViewModel: ObservableObject {
             decksIds: [])
     }
     
-    func editCollection() {
-        guard let selectedColor = currentSelectedColor,
-            let editingCollection = editingCollection
+    func editCollection() throws {
+        guard let currentSelectedIcon,
+            let editingCollectionUnwraped = editingCollection
         else {
             return
         }
-        do {
-            var editingCollection = editingCollection
-            editingCollection.name = collectionName
-            editingCollection.color = selectedColor
-            editingCollection.datesLogs.lastAccess = dateHandler.today
-            editingCollection.datesLogs.lastEdit = dateHandler.today
-            try collectionRepository.editCollection(editingCollection)
-            self.editingCollection = editingCollection
-        } catch {
-            showingErrorAlert = true
-        }
+        
+        var editingCollection = editingCollectionUnwraped
+        editingCollection.name = collectionName
+        editingCollection.icon = currentSelectedIcon
+        editingCollection.datesLogs.lastAccess = dateHandler.today
+        editingCollection.datesLogs.lastEdit = dateHandler.today
+        try collectionRepository.editCollection(editingCollection)
+        self.editingCollection = editingCollection
     }
     
-    func deleteCollection() {
-        do {
-            guard let editingCollection = editingCollection
-            else { return }
-            try collectionRepository.deleteCollection(editingCollection)
-        } catch {
-            showingErrorAlert = true
-        }
+    func deleteCollection() throws {
+        guard let editingCollection = editingCollection
+        else { return }
+        try collectionRepository.deleteCollection(editingCollection)
     }
 }

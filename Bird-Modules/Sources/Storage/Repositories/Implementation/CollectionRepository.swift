@@ -22,6 +22,10 @@ public final class CollectionRepository: CollectionRepositoryProtocol {
         self.deckRepository = deckRepository
     }
     
+    public static let shared: CollectionRepositoryProtocol = {
+        CollectionRepository()
+    }()
+    
     public convenience init() {
         self.init(collectionRepository: Repository(transformer: CollectionModelEntityTransformer(), .shared),
                   deckRepository: Repository(transformer: DeckModelEntityTransformer(), .shared)
@@ -55,7 +59,7 @@ public final class CollectionRepository: CollectionRepositoryProtocol {
         collectionEntity.lastEdit = collection.datesLogs.lastEdit
         collectionEntity.lastAccess = collection.datesLogs.lastAccess
         collectionEntity.name = collection.name
-        collectionEntity.color = Int16(collection.color.rawValue)
+        collectionEntity.icon = collection.icon.rawValue
         try collectionRepository.save()
     }
     
