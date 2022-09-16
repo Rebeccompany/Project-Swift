@@ -22,8 +22,8 @@ public final class ContentViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable>
     
     public init(
-        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
-        deckRepository: DeckRepositoryProtocol = DeckRepository.shared
+        collectionRepository: CollectionRepositoryProtocol = CollectionRepositoryMock.shared,
+        deckRepository: DeckRepositoryProtocol = DeckRepositoryMock.shared
     ) {
         self.collectionRepository = collectionRepository
         self.deckRepository = deckRepository

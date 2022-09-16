@@ -25,6 +25,10 @@ public struct Deck: Identifiable, Equatable, Hashable {
     /// Configurantion for Spaced repetition.
     public var spacedRepetitionConfig: SpacedRepetitionConfig
     
+    public var cardCount: Int {
+        cardsIds.count
+    }
+    
     public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs = DateLogs(), collectionsIds: [UUID], cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig = SpacedRepetitionConfig()) {
         self.id = id
         self.name = name

@@ -45,9 +45,10 @@ struct DeckCell: View {
             .padding()
                     
             Text(info.name)
+                .lineLimit(2, reservesSpace: true)
+                .multilineTextAlignment(.leading)
                 .foregroundColor(.white)
-                .padding(.leading)
-                .padding(.bottom)
+                .padding()
         }
         .viewBackgroundColor(HBColor.getHBColrFromCollectionColor(info.color))
         .cornerRadius(10)

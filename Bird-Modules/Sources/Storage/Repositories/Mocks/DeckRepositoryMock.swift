@@ -220,7 +220,7 @@
  extension Deck {
      fileprivate init(id: String, cardsIds: [UUID] = [], colIds: [UUID] = []) {
          self.init(id: UUID(uuidString: id)!,
-                   name: "Programação Swift",
+                   name: "Programação \(Bool.random() ? "" : "Swift")",
                    icon: IconNames.pencil.rawValue,
                    color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),

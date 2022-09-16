@@ -27,9 +27,7 @@ public struct ContentView: View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             sidebar
         } detail: {
-            StudyRouter(
-                sidebarSelection: viewModel.sidebarSelection ?? .allDecks
-            )
+            StudyRouter(decks: viewModel.decks)
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)

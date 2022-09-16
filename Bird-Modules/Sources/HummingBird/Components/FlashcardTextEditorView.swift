@@ -13,7 +13,6 @@ public struct FlashcardTextEditorView: View {
     var side: String
     
     init(color: Color, side: String, cardText: Binding<String>) {
-        UITextView.appearance().backgroundColor = .clear
         self.color = color
         self.side = side
         self._cardText = cardText

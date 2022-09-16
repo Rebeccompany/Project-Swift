@@ -130,6 +130,7 @@ let package = Package(
                 "CollectionFeature",
                 "NewCollectionFeature",
                 "NewDeckFeature",
+                "DeckFeature",
                 "Models",
                 "Flock"
             ]
