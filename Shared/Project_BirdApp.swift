@@ -12,7 +12,7 @@ import AppFeature
 struct Project_BirdApp: App {
     var body: some Scene {
         WindowGroup {
-            TestView()
+            ContentView(viewModel: ContentViewModel())
         }
     }
 }

@@ -135,6 +135,7 @@ let package = Package(
             name: "AppFeature",
             dependencies: [
                 "Storage",
+                "CollectionFeature",
                 "NewCollectionFeature",
                 "NewDeckFeature",
                 "Models",
@@ -264,7 +265,9 @@ let package = Package(
         .testTarget(
             name: "AppFeatureTests",
             dependencies: [
-                "AppFeature"
+                "AppFeature",
+                "Models",
+                "Storage"
             ]
         ),
         
