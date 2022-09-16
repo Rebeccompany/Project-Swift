@@ -163,8 +163,7 @@ public class StudyViewModel: ObservableObject {
         var newCard = cards[0]
         newCard.woodpeckerCardInfo.hasBeenPresented = true
         do {
-#warning("number of steps tem que ser guardado em spacedRepConfig em deck")
-            let cardDestiny = try Woodpecker.stepper(cardInfo: newCard.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: 3)
+            let cardDestiny = try Woodpecker.stepper(cardInfo: newCard.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: deck.spacedRepetitionConfig.numberOfSteps)
             
             switch cardDestiny {
             case .back:
