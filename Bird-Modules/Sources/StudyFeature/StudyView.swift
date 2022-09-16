@@ -12,7 +12,7 @@ import HummingBird
 
 public struct StudyView: View {
     @ObservedObject private var viewModel: StudyViewModel
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
     @State private var showingErrorAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     
@@ -34,7 +34,7 @@ public struct StudyView: View {
         }
         return ""
     }
-    
+    //swiftlint:disable trailing_closure
     public var body: some View {
         ZStack {
             if !viewModel.displayedCards.isEmpty {
