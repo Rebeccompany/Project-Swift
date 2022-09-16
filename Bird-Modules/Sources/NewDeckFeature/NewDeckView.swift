@@ -87,7 +87,7 @@ public struct NewDeckView: View {
                 }
             }
             
-            .viewBackgroundColor(HBColor.primaryBackground)
+            .ViewBackgroundColor(HBColor.primaryBackground)
             
             
             .navigationTitle(viewModel.editingDeck != nil ? "Editar baralho" : "Criar Baralho")

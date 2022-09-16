@@ -43,10 +43,6 @@
          Card(id: "d2c951fb-36f5-49dc-84f0-353a3b3a2875", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .review)
      ]
      
-     public static let shared: DeckRepositoryProtocol = {
-         DeckRepositoryMock()
-     }()
-     
      public init() {}
 
      public func fetchDeckById(_ id: UUID) -> AnyPublisher<Deck, RepositoryError> {

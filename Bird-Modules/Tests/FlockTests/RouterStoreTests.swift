@@ -8,21 +8,11 @@
 import XCTest
 @testable import Flock
 import Models
-import SwiftUI
 
 final class RouterStoreTests: XCTestCase {
     
     var sut: RouterStore<StudyRoute>!
-    var navigationPath: NavigationPath!
     
-    var navBinding: Binding<NavigationPath> {
-        Binding<NavigationPath> {
-            self.navigationPath
-        } set: { newValue in
-            self.navigationPath = newValue
-        }
-
-    }
     
     var route: StudyRoute {
         let dummyDeck = Deck(
@@ -52,13 +42,11 @@ final class RouterStoreTests: XCTestCase {
     }
     
     override func setUp() {
-        navigationPath = NavigationPath()
-        sut = RouterStore<StudyRoute>(path: navBinding)
+        sut = RouterStore<StudyRoute>()
     }
     
     override func tearDown() {
         sut = nil
-        navigationPath = nil
     }
     
     func testPushRoute() {

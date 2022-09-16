@@ -10,7 +10,7 @@ import SwiftUI
 
 // swiftlint:disable no_extension_access_modifier
 public extension View {
-    @ViewBuilder func viewBackgroundColor(_ color: Color) -> some View {
+    @ViewBuilder func ViewBackgroundColor(_ color: Color) -> some View {
         ZStack {
             color.ignoresSafeArea()
             self

@@ -20,10 +20,6 @@ public final class DeckRepository: DeckRepositoryProtocol {
         self.cardRepository = cardRepository
     }
     
-    public static let shared: DeckRepositoryProtocol = {
-        DeckRepository(collectionId: nil)
-    }()
-    
     public convenience init(collectionId: UUID?) {
         let deckRepository = Repository(transformer: DeckModelEntityTransformer(collectionIds: collectionId), .shared)
         let cardRepository = Repository(transformer: CardModelEntityTransformer(), .shared)

@@ -11,6 +11,8 @@
 		9D1A9FC728AEAB950065DE6E /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 9D1A9FC628AEAB950065DE6E /* AppFeature */; };
 		BA654F0628A142F500EF72C8 /* Project_BirdApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */; };
 		BA654F0728A142F500EF72C8 /* Project_BirdApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */; };
+		BA654F0828A142F500EF72C8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDF28A142F100EF72C8 /* ContentView.swift */; };
+		BA654F0928A142F500EF72C8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDF28A142F100EF72C8 /* ContentView.swift */; };
 		BA654F0A28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
 		BA654F0B28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -18,6 +20,7 @@
 /* Begin PBXFileReference section */
 		5B07663828C2792E00221DE8 /* macOS.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
 		BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project_BirdApp.swift; sourceTree = "<group>"; };
+		BA654EDF28A142F100EF72C8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BA654EE028A142F400EF72C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BA654EE528A142F400EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA654EEB28A142F500EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */,
+				BA654EDF28A142F100EF72C8 /* ContentView.swift */,
 				BA654EE028A142F400EF72C8 /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -233,6 +237,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA654F0828A142F500EF72C8 /* ContentView.swift in Sources */,
 				BA654F0628A142F500EF72C8 /* Project_BirdApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -241,6 +246,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA654F0928A142F500EF72C8 /* ContentView.swift in Sources */,
 				BA654F0728A142F500EF72C8 /* Project_BirdApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
