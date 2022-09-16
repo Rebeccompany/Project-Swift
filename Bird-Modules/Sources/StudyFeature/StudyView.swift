@@ -12,6 +12,7 @@ import HummingBird
 
 public struct StudyView: View {
     @ObservedObject private var viewModel: StudyViewModel
+    @Environment(\.dismiss) var dismiss
     
     public init(viewModel: StudyViewModel) {
         self.viewModel = viewModel
@@ -70,6 +71,19 @@ public struct StudyView: View {
         }
         .background(HBColor.primaryBackground)
         .navigationTitle(viewModel.deck.name)
+        .toolbar(content: {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(role: .destructive) {
+                    viewModel.saveChanges()
+                    dismiss()
+                } label: {
+                    Text("Sair")
+                }
+                .foregroundColor(.red)
+            
+
+            }
+        })
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             viewModel.startup()
