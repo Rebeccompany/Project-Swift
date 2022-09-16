@@ -2,12 +2,13 @@
 //  CardEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Marcos Chevis on 05/09/22.
+//  Created by Gabriel Ferreira de Carvalho on 15/09/22.
 //
 //
 
 import Foundation
 import CoreData
+
 // swiftlint:disable implicit_return
 extension CardEntity {
 

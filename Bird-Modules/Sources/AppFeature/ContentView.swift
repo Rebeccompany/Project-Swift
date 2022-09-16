@@ -35,7 +35,6 @@ public struct ContentView: View {
         .sheet(isPresented: $presentCollectionEdition) {
             NewCollectionView(
                 viewModel: .init(
-                    colors: CollectionColor.allCases,
                     editingCollection: viewModel.editingCollection
                 )
             )
