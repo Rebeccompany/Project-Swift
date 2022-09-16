@@ -2,13 +2,13 @@
 //  CardSnapshotEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Marcos Chevis on 05/09/22.
+//  Created by Marcos Chevis on 16/09/22.
 //
 //
 
 import Foundation
 import CoreData
-// swiftlint:disable implicit_return
+
 extension CardSnapshotEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CardSnapshotEntity> {
@@ -17,13 +17,13 @@ extension CardSnapshotEntity {
 
     @NSManaged public var date: Date?
     @NSManaged public var easeFactor: Double
+    @NSManaged public var hasBeenPresented: Bool
     @NSManaged public var interval: Int32
     @NSManaged public var isGraduated: Bool
     @NSManaged public var step: Int32
     @NSManaged public var streak: Int32
     @NSManaged public var timeSpend: Double
     @NSManaged public var userGrade: Int32
-    @NSManaged public var hasBeenPresented: Bool
     @NSManaged public var card: CardEntity?
 
 }

@@ -2,7 +2,7 @@
 //  CollectionEntity+CoreDataClass.swift
 //  Project-Bird
 //
-//  Created by Marcos Chevis on 05/09/22.
+//  Created by Marcos Chevis on 16/09/22.
 //
 //
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CardEntity" representedClassName="Storage.CardEntity" syncable="YES">
         <attribute name="back" optional="YES" attributeType="Binary"/>
         <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -30,8 +30,8 @@
         <relationship name="card" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CardEntity" inverseName="history" inverseEntity="CardEntity"/>
     </entity>
     <entity name="CollectionEntity" representedClassName="Storage.CollectionEntity" syncable="YES">
-        <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="icon" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="lastAccess" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="lastEdit" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -48,13 +48,8 @@
         <attribute name="maxLearningCards" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="maxReviewingCards" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="numberOfSteps" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="cards" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CardEntity" inverseName="deck" inverseEntity="CardEntity"/>
         <relationship name="collections" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CollectionEntity" inverseName="decks" inverseEntity="CollectionEntity"/>
     </entity>
-    <elements>
-        <element name="CardEntity" positionX="-27" positionY="90" width="128" height="254"/>
-        <element name="CardSnapshotEntity" positionX="-18" positionY="162" width="128" height="179"/>
-        <element name="CollectionEntity" positionX="-63" positionY="-9" width="128" height="134"/>
-        <element name="DeckEntity" positionX="-54" positionY="-9" width="128" height="194"/>
-    </elements>
 </model>

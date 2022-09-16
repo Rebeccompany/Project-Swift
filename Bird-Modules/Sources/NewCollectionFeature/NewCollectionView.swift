@@ -36,15 +36,16 @@ public struct NewCollectionView: View {
                     .bold()
                 
                 IconColorGridView {
-                    ForEach(viewModel.colors, id: \.self) {color in
+                    ForEach(viewModel.icons, id: \.self) {icon in
                         Button {
-                            viewModel.currentSelectedColor = color
+                            viewModel.currentSelectedIcon = icon
                             
                         } label: {
-                            HBColor.getHBColrFromCollectionColor(color)
+                            Image(systemName: IconNames.getIconString(icon))
+                                .frame(width: 45, height: 45)
                         }
-                        .accessibility(label: Text(CollectionColor.getColorString(color)))
-                        .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
+                        
+                        .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
                         .frame(width: 45, height: 45)
                     }
                 }
@@ -112,7 +113,6 @@ struct NewCollectionView_Previews: PreviewProvider {
         
         NewCollectionView(
             viewModel: .init(
-                colors: CollectionColor.allCases,
                 collectionRepository: CollectionRepositoryMock()
             ))
         .preferredColorScheme(.light)

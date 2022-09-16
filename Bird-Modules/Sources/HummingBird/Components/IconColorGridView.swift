@@ -15,17 +15,13 @@ public struct IconColorGridView<Content: View>: View {
     }
     
     let columns = [
-        GridItem(.fixed(50)),
-        GridItem(.fixed(50)),
-        GridItem(.fixed(50)),
-        GridItem(.fixed(50)),
-        GridItem(.fixed(50)),
-        GridItem(.fixed(50))
+        GridItem(.adaptive(minimum: 45), spacing: 24),
     ]
     
     public var body: some View {
-        LazyVGrid(columns: columns) {
+        LazyVGrid(columns: columns, spacing: 24) {
             elements()
+                .frame(width: 45, height: 45)
         }
         .padding()
         .background(HBColor.secondaryBackground)

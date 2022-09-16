@@ -229,6 +229,7 @@
                    collectionsIds: [],
                    cardsIds: cardsIds,
                    spacedRepetitionConfig: .init(maxLearningCards: 20,
-                                                 maxReviewingCards: 200))
+                                                 maxReviewingCards: 200,
+                                                 numberOfSteps: 4))
      }
  }
