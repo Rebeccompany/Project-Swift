@@ -11,10 +11,11 @@ import Models
 import Storage
 
 public struct NewFlashcardView: View {
-    @ObservedObject
-    private var viewModel: NewFlashcardViewModel
-    @State private var showingErrorAlert: Bool = true
-    @State var selectedErrorMessage: AlertText = .delete
+    @ObservedObject private var viewModel: NewFlashcardViewModel
+    @State private var showingErrorAlert: Bool = false
+    @State private var selectedErrorMessage: AlertText = .delete
+    @FocusState private var focus: NewFlashcardFocus?
+    private var okButtonState: String = ""
     
     @Environment(\.dismiss) private var dismiss
     
@@ -26,98 +27,121 @@ public struct NewFlashcardView: View {
         
         NavigationView {
             
-            VStack(alignment: .leading) {
-                FlashcardTextEditorView(color: .red, side: "Frente", cardText: $viewModel.flashcardFront)
-                
-                FlashcardTextEditorView(color: .red, side: "Verso", cardText: $viewModel.flashcardBack)
-                
-                Text("Ícones")
-                    .font(.callout)
-                    .bold()
-                    .padding(.top)
-                
-                IconColorGridView {
-                    ForEach(viewModel.colors, id: \.self) { color in
+            ScrollView {
+                VStack(alignment: .leading) {
+                    FlashcardTextEditorView(color: .red, side: "Frente", cardText: $viewModel.flashcardFront)
+                        .focused($focus, equals: NewFlashcardFocus.front)
+                        .frame(minHeight: 200)
+                    
+                    FlashcardTextEditorView(color: .red, side: "Verso", cardText: $viewModel.flashcardBack)
+                        .focused($focus, equals: NewFlashcardFocus.back)
+                        .frame(minHeight: 200)
+                    
+                    Text("Ícones")
+                        .font(.callout)
+                        .bold()
+                        .padding(.top)
+                    
+                    IconColorGridView {
+                        ForEach(viewModel.colors, id: \.self) { color in
+                            Button {
+                                viewModel.currentSelectedColor = color
+                            } label: {
+                                HBColor.getHBColrFromCollectionColor(color)
+                                    .frame(width: 45, height: 45)
+                            }
+                            .accessibility(label: Text(CollectionColor.getColorString(color)))
+                            .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    if viewModel.editingFlashcard == nil {
                         Button {
-                            viewModel.currentSelectedColor = color
-                        } label: {
-                            HBColor.getHBColrFromCollectionColor(color)
-                                .frame(width: 45, height: 45)
-                        }
-                        .accessibility(label: Text(CollectionColor.getColorString(color)))
-                        .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
-                    }
-                }
-                
-                Spacer()
-                
-                if viewModel.editingFlashcard == nil {
-                    Button {
-                        do {
-                            try viewModel.deleteFlashcard()
-                        } catch {
-                            selectedErrorMessage = .delete
-                            showingErrorAlert = true
-                        }
-                    } label: {
-                        Text("Apagar Baralho")
-                    }
-                    .buttonStyle(DeleteButtonStyle())
-                }
-            }
-            .onAppear(perform: viewModel.startUp)
-            .padding()
-            
-            .ViewBackgroundColor(HBColor.primaryBackground)
-            
-            
-            .navigationTitle(viewModel.editingFlashcard != nil ? "Editar baralho" : "Criar Baralho")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("OK") {
-                        
-                        if viewModel.editingFlashcard == nil {
-                            viewModel.createFlashcard()
-                        } else {
                             do {
-                                try viewModel.editFlashcard()
+                                try viewModel.deleteFlashcard()
                             } catch {
-                                selectedErrorMessage = .edit
+                                selectedErrorMessage = .delete
                                 showingErrorAlert = true
                             }
+                        } label: {
+                            Text("Apagar Baralho")
                         }
+                        .buttonStyle(DeleteButtonStyle())
                     }
-                    .disabled(!viewModel.canSubmit)
+        
+                }
+                .onAppear(perform: viewModel.startUp)
+                .padding()
+                
+                .navigationTitle(viewModel.editingFlashcard != nil ? "Editar baralho" : "Criar Baralho")
+                .navigationBarTitleDisplayMode(.inline)
+                
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("OK") {
+                            if viewModel.editingFlashcard == nil {
+                                viewModel.createFlashcard()
+                            } else {
+                                do {
+                                    try viewModel.editFlashcard()
+                                } catch {
+                                    selectedErrorMessage = .edit
+                                    showingErrorAlert = true
+                                }
+                            }
+                        }
+                        .disabled(!viewModel.canSubmit)
+                        .accessibilityLabel(!viewModel.canSubmit ? "OK desabilitado" : "OK")
+                    }
+                    
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancelar") {
+                            dismiss()
+                        }
+                        .foregroundColor(.red)
+                    }
                 }
                 
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") {
-                        dismiss()
+                .alert(isPresented: $showingErrorAlert) {
+                    Alert(title: Text(selectedErrorMessage.texts.title),
+                          message: Text(selectedErrorMessage.texts.message),
+                          dismissButton: .default(Text("Fechar")))
+            }
+                
+            }
+            .scrollContentBackground(.hidden)
+            .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
+            .ViewBackgroundColor(HBColor.primaryBackground)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button {
+                        if focus == .back {
+                            focus = .front
+                        }
+                    } label: {
+                        Image(systemName: "chevron.up")
+                    }.disabled(focus == .front)
+                        .accessibilityLabel(focus == .front ? "Subir foco do teclado desabilitado" : "Subir foco do teclado")
+                    
+                    
+                    Button {
+                        if focus == .front {
+                            focus = .back
+                        }
+                    } label: {
+                        Image(systemName: "chevron.down")
+                    }.disabled(focus == .back)
+                        .accessibilityLabel(focus == .back ? "Descer foco do teclado desabilitado" : "Descer foco do teclado")
+                    
+                    Button("Feito") {
+                        focus = nil
                     }
-                    .foregroundColor(.red)
+                    .accessibilityLabel(Text("Botão de feito"))
                 }
             }
-            
-            .alert(isPresented: $showingErrorAlert) {
-                Alert(title: Text(selectedErrorMessage.texts.title),
-                      message: Text(selectedErrorMessage.texts.message),
-                      dismissButton: .default(Text("Fechar")))
-            }
-        }
-    }
-}
-
-enum AlertText {
-    case delete
-    case edit
-    
-    var texts: (title: String, message: String) {
-        switch self {
-        case .delete:
-            return ("Erro ao apagar flashcard", "Algo deu errado! Por favor, tente novamente.")
-        case .edit:
-            return ("Erro ao editar flashcard", "Algo deu errado! Por favor, tente novamente.")
             
         }
     }

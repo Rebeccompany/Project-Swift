@@ -108,7 +108,6 @@ only_rules:
   - redundant_void_return
   - required_enum_case
   - return_arrow_whitespace
-  - return_value_from_void_function
   - self_in_property_initialization
   - shorthand_operator
   - sorted_first_last
@@ -126,8 +125,6 @@ only_rules:
   - trailing_comma
   - trailing_newline
   - trailing_semicolon
-  
-  - unavailable_condition
   - unavailable_function
   - unneeded_break_in_switch
   - unneeded_parentheses_in_closure_argument
@@ -150,28 +147,6 @@ analyzer_rules:
   - capture_variable
   - unused_declaration
   - unused_import
-  - typesafe_array_init
-identifier_name:
-  max_length:
-    warning: 100
-    error: 100
-  min_length:
-    warning: 2
-    error: 2
-  validates_start_with_lowercase: false
-  allowed_symbols:
-    - '_'
-  excluded:
-    - 'x'
-    - 'y'
-    - 'z'
-    - 'a'
-    - 'b'
-    - 'x1'
-    - 'x2'
-    - 'y1'
-    - 'y2'
-    - 'z2'
 deployment_target:
   macOS_deployment_target: '10.15'
   iOS_deployment_target: '13'

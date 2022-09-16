@@ -10,7 +10,7 @@ import Foundation
 public class UUIDHandlerMock: UUIDGeneratorProtocol {
     public init() {}
     
-    public var lastCreatedID: UUID? = nil
+    public var lastCreatedID: UUID?
     
     public func newId() -> UUID {
         let newID = UUID()
