@@ -20,7 +20,7 @@ struct DifficultyButtonView: View {
 #else
     private var isVOOn: Bool = UIAccessibility.isVoiceOverRunning
 #endif
-    
+
     init(userGrade: UserGrade, isDisabled: Binding<Bool>, action: @escaping (UserGrade) -> Void) {
         self.userGrade = userGrade
         self.content = DifficultyButtonContent.getbuttonContent(for: userGrade)
@@ -45,7 +45,6 @@ struct DifficultyButtonView: View {
                             .fill(HBColor.secondaryBackground)
                             .shadow(color: isDisabled ? .gray : content.color, radius: 1, x: 0, y: 2)
                     )
-//                    .accessibilityHidden(true)
             }
             .disabled(isDisabled)
             
@@ -58,7 +57,6 @@ struct DifficultyButtonView: View {
                 
         }
         .accessibilityLabel("Clicar em " + content.label.finilized)
-//        .accessibilityAddTraits(.isButton)
         
     }
     

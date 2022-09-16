@@ -41,7 +41,7 @@ struct FlashcardDeckView: View {
         var size: CGSize = .zero
         
         size.height = geometrySize.height
-        size.width = (cardBaseSize.width/cardBaseSize.height)*size.height
+        size.width = (cardBaseSize.width / cardBaseSize.height) * size.height
         
         return size
     }
