@@ -13,6 +13,7 @@ import HummingBird
 public struct StudyView: View {
     @ObservedObject private var viewModel: StudyViewModel
     @Environment(\.dismiss) var dismiss
+    @State private var showingErrorAlert: Bool = false
     
     public init(viewModel: StudyViewModel) {
         self.viewModel = viewModel
@@ -45,14 +46,18 @@ public struct StudyView: View {
                         .accessibilityAddTraits(.isButton)
                         .accessibilityLabel(generateAttributedLabel())
                         .accessibilityHidden(viewModel.cards.isEmpty)
-
-                        
+                    
+                    
                     HStack(alignment: .top) {
                         ForEach(UserGrade.allCases) { userGrade in
                             Spacer()
                             DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled) { userGrade in
                                 withAnimation {
-                                    viewModel.pressedButton(for: userGrade)
+                                    do {
+                                        try viewModel.pressedButton(for: userGrade)
+                                    } catch {
+                                        showingErrorAlert = true
+                                    }
                                 }
                             }
                             Spacer()
@@ -74,20 +79,25 @@ public struct StudyView: View {
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(role: .destructive) {
-                    viewModel.saveChanges()
-                    dismiss()
+                    do {
+                        try viewModel.saveChanges()
+                        dismiss()
+                    } catch {
+                        showingErrorAlert = true
+                    }
                 } label: {
                     Text("Sair")
                 }
                 .foregroundColor(.red)
-            
-
+                
+                
             }
         })
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             viewModel.startup()
         }
+        
         
     }
 }
@@ -131,15 +141,15 @@ struct StudyView_Previews: PreviewProvider {
             
             NavigationStack {
                 StudyView(
-                        viewModel: StudyViewModel(
-                            deckRepository: repo,
-                            sessionCacher: SessionCacher(
-                                storage: LocalStorageMock()
-                            ),
-                            deck: repo.decks.first!,
-                            dateHandler: DateHandler()
-                        )
+                    viewModel: StudyViewModel(
+                        deckRepository: repo,
+                        sessionCacher: SessionCacher(
+                            storage: LocalStorageMock()
+                        ),
+                        deck: repo.decks.first!,
+                        dateHandler: DateHandler()
                     )
+                )
             }
             .previewDevice(PreviewDevice(rawValue: "iPad Pro (12.9-inch)"))
             .previewDisplayName("iPad Pro (12.9-inch)")
