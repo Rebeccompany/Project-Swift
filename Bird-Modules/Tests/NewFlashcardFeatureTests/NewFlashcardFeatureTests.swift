@@ -35,7 +35,6 @@ class NewFlashcardFeatureTests: XCTestCase {
             dateHandler: dateHandlerMock,
             uuidGenerator: uuidHandler)
         
-        
         sut.startUp()
     }
     
@@ -68,11 +67,11 @@ class NewFlashcardFeatureTests: XCTestCase {
         deckRepository.shouldThrowError = true
         sut.createFlashcard()
         
-        let containsNewDeck = deckRepository.cards.contains(where: {
+        let containsFlashcard = deckRepository.cards.contains(where: {
             $0.id == uuidHandler.lastCreatedID
         })
         
-        XCTAssertFalse(containsNewDeck)
+        XCTAssertFalse(containsFlashcard)
     }
     
     func testCanSubmitBindingSuccessfully() {
@@ -207,8 +206,41 @@ class NewFlashcardFeatureTests: XCTestCase {
         
         deckRepository.shouldThrowError = true
         sut.currentSelectedColor = CollectionColor.darkBlue
-        try sut.editFlashcard()
+        XCTAssertThrowsError(try sut.editFlashcard())
+    }
+    
+    func testDeleteFlashcardSuccessfully() throws {
+        sut = NewFlashcardViewModel(colors: CollectionColor.allCases, editingFlashcard: deckRepository.cards[0], deckRepository: deckRepository, deck: deckRepository.decks[0])
+        
+        let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
+        
+        let containsFlashcard = deckRepository.cards.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertTrue(containsFlashcard)
 
-        XCTAssertNotEqual(deckRepository.cards[0].color, CollectionColor.darkBlue)
+        try sut.deleteFlashcard()
+
+        let deletedCard = deckRepository.decks.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertFalse(deletedCard)
+    }
+    
+    func testDeleteFlashcardError() throws {
+        sut = NewFlashcardViewModel(colors: CollectionColor.allCases, editingFlashcard: deckRepository.cards[0], deckRepository: deckRepository, deck: deckRepository.decks[0])
+        
+        let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
+        
+        let containsFlashcard = deckRepository.cards.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertTrue(containsFlashcard)
+
+        deckRepository.shouldThrowError = true
+        XCTAssertThrowsError(try sut.editFlashcard())
     }
 }
