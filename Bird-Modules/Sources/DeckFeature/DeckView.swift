@@ -10,6 +10,7 @@ import SwiftUI
 import Models
 import HummingBird
 import Storage
+import Utils
 
 public struct DeckView: View {
     @ObservedObject private var viewModel: DeckViewModel
@@ -105,16 +106,6 @@ public struct DeckView: View {
         }
     }
 }
-
-
-
-extension EdgeInsets {
-    static var zero: EdgeInsets {
-        EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-    }
-}
-
-
 
 struct DeckView_Previews: PreviewProvider {
     static var previews: some View {
