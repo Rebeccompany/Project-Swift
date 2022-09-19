@@ -8,15 +8,21 @@
 import Foundation
 
 public enum AlertText {
-    case delete
-    case edit
+    case deleteCard
+    case editCard
+    case saveStudy
+    case gradeCard
     
     public var texts: (title: String, message: String) {
         switch self {
-        case .delete:
+        case .deleteCard:
             return ("Erro ao apagar flashcard", "Algo deu errado! Por favor, tente novamente.")
-        case .edit:
+        case .editCard:
             return ("Erro ao editar flashcard", "Algo deu errado! Por favor, tente novamente.")
+        case .saveStudy:
+            return ("Erro ao salvar o progresso", "Algo deu errado! Por favor, tente novamente.")
+        case .gradeCard:
+            return ("Erro ao salvar o progresso", "Algo deu errado! Por favor, tente novamente.")
             
         }
     }

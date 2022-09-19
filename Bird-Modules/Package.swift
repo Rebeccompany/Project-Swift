@@ -135,6 +135,7 @@ let package = Package(
             name: "AppFeature",
             dependencies: [
                 "Storage",
+                "StudyFeature",
                 "CollectionFeature",
                 "NewCollectionFeature",
                 "NewDeckFeature",
@@ -165,13 +166,15 @@ let package = Package(
                 "Models"
             ]
         ),
-        
-        .target(
-            name: "StudyFeature",
-            dependencies: [
-                "Models",
-                "HummingBird"
-            ]
+            
+        .target(name: "StudyFeature",
+                dependencies: [
+                     "Models",
+                     "HummingBird",
+                     "Woodpecker",
+                     "Storage",
+                     "Utils"
+                ]
         ),
         
         .target(
@@ -283,6 +286,15 @@ let package = Package(
             name: "CardModelTests",
             dependencies: [
                 "Models"
+            ]
+        ),
+        
+        .testTarget(
+            name: "StudyFeatureTests",
+            dependencies: [
+                "StudyFeature",
+                "Models",
+                "Storage"
             ]
         ),
         
