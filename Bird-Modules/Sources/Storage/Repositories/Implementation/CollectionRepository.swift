@@ -59,7 +59,7 @@ public final class CollectionRepository: CollectionRepositoryProtocol {
         collectionEntity.lastEdit = collection.datesLogs.lastEdit
         collectionEntity.lastAccess = collection.datesLogs.lastAccess
         collectionEntity.name = collection.name
-        collectionEntity.color = Int16(collection.color.rawValue)
+        collectionEntity.icon = collection.icon.rawValue
         try collectionRepository.save()
     }
     

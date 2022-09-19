@@ -112,11 +112,15 @@
          }
          
          if let i = decks.firstIndex(where: { d in d.id == deck.id }) {
+             var deck = deck
+             deck.cardsIds.append(card.id)
              decks[i] = deck
+             cards.append(card)
              subject.send(decks)
          } else {
              throw RepositoryError.couldNotEdit
          }
+         
      }
 
      public func removeCard(_ card: Card, from deck: Deck) throws {
@@ -205,8 +209,8 @@
              h = []
          }
          self.init(id: UUID(uuidString: id)!,
-                   front: "Essa é a frente das cartas",
-                   back: "Esse é o verso",
+                   front: "Parte da frente",
+                   back: "Parte de tras",
                    color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),
@@ -229,6 +233,7 @@
                    collectionsIds: [],
                    cardsIds: cardsIds,
                    spacedRepetitionConfig: .init(maxLearningCards: 20,
-                                                 maxReviewingCards: 200))
+                                                 maxReviewingCards: 200,
+                                                 numberOfSteps: 4))
      }
  }

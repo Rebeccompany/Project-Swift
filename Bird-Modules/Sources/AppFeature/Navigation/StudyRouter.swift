@@ -36,7 +36,7 @@ struct StudyRouter: View {
 
 struct DummyDetailView: View {
     
-    @EnvironmentObject var store: RouterStore<StudyRoute>
+    @EnvironmentObject private var store: RouterStore<StudyRoute>
     var sidebarSelection: SidebarRoute
     
     var body: some View {

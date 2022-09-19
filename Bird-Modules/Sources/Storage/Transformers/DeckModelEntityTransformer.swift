@@ -47,7 +47,7 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
         
         let maxLearningCards = entity.maxLearningCards
         let maxReviewingCards = entity.maxReviewingCards
-        let spacedRepetitionConfig = SpacedRepetitionConfig(maxLearningCards: Int(maxLearningCards), maxReviewingCards: Int(maxReviewingCards))
+        let spacedRepetitionConfig = SpacedRepetitionConfig(maxLearningCards: Int(maxLearningCards), maxReviewingCards: Int(maxReviewingCards), numberOfSteps: Int(entity.numberOfSteps))
         let dateLogs = DateLogs(lastAccess: lastAccess, lastEdit: lastEdit, createdAt: createdAt)
         let collectionsIds = collections.compactMap(\.id)
         let cardsIds = cards.compactMap(\.id)
@@ -74,6 +74,7 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
         deck.name = model.name
         deck.maxLearningCards = Int32(model.spacedRepetitionConfig.maxLearningCards)
         deck.maxReviewingCards = Int32(model.spacedRepetitionConfig.maxReviewingCards)
+        deck.numberOfSteps = Int16(model.spacedRepetitionConfig.numberOfSteps)
         return deck
     }
 }
