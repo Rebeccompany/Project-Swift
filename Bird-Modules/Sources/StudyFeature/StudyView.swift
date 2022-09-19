@@ -9,6 +9,7 @@ import SwiftUI
 import Storage
 import Models
 import HummingBird
+import Utils
 
 public struct StudyView: View {
     @ObservedObject private var viewModel: StudyViewModel
@@ -27,9 +28,9 @@ public struct StudyView: View {
     private func generateAttributedLabel() -> String {
         if !viewModel.cards.isEmpty {
             if !viewModel.displayedCards[1].isFlipped {
-                return "Frente: " + toString(viewModel.displayedCards[0].card.front) + "Olha que bonito."
+                return "Frente: " + toString(viewModel.displayedCards[0].card.front)
             } else {
-                return "Verso: " + toString(viewModel.displayedCards[0].card.back) + "É o Chevis."
+                return "Verso: " + toString(viewModel.displayedCards[0].card.back)
             }
         }
         return ""
@@ -52,7 +53,7 @@ public struct StudyView: View {
                     HStack(alignment: .top) {
                         ForEach(UserGrade.allCases) { userGrade in
                             Spacer()
-                            DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled) { userGrade in
+                            DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in
                                 withAnimation {
                                     do {
                                         try viewModel.pressedButton(for: userGrade)

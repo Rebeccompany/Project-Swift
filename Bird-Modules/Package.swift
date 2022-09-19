@@ -172,7 +172,8 @@ let package = Package(
                      "Models",
                      "HummingBird",
                      "Woodpecker",
-                     "Storage"
+                     "Storage",
+                     "Utils"
                 ]
         ),
         

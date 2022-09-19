@@ -10,6 +10,7 @@ import Storage
 import Models
 import Woodpecker
 import Combine
+import Utils
 
 public class StudyViewModel: ObservableObject {
     private let deckRepository: DeckRepositoryProtocol
@@ -28,21 +29,16 @@ public class StudyViewModel: ObservableObject {
     
     private var timefromLastCard: Date
     
-    func saveChanges() throws {
-        
-        try cardsToEdit.forEach { card in
-            try deckRepository.editCard(card)
-        }
-        sessionCacher.setCurrentSession(session: Session(cardIds: cards.map(\.id), date: dateHandler.today, deckId: deck.id))
-        
-    }
-    
+    @Published var isVOOn: Bool
+    let systemObserver: SystemObserverProtocol
     
     public init(
         deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil),
         sessionCacher: SessionCacher = SessionCacher(),
         deck: Deck,
         dateHandler: DateHandlerProtocol = DateHandler(),
+        systemObserver: SystemObserverProtocol = SystemObserver(),
+        isVOOn: Bool = getIsVOOn(),
         cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter
     ) {
         self.deckRepository = deckRepository
@@ -51,9 +47,27 @@ public class StudyViewModel: ObservableObject {
         self.dateHandler = dateHandler
         self.cardSortingFunc = cardSortingFunc
         self.timefromLastCard = dateHandler.today
+        self.isVOOn = false
+        self.systemObserver = systemObserver
     }
     
     func startup() {
+        
+        systemObserver.voiceOverDidChange()
+            .assign(to: &$isVOOn)
+            
+        systemObserver.willTerminate()
+            .sink { _ in
+                print("finished")
+            } receiveValue: { _ in
+                do {
+                    try self.saveChanges()
+                } catch {
+                    print("didn't save")
+                }
+            }
+            .store(in: &cancellables)
+
         
         $cards.map { cards -> [Card] in
             Array(cards.prefix(2).reversed())
@@ -94,6 +108,16 @@ public class StudyViewModel: ObservableObject {
                 .store(in: &cancellables)
         }
     }
+    
+    func saveChanges() throws {
+        
+        try cardsToEdit.forEach { card in
+            try deckRepository.editCard(card)
+        }
+        sessionCacher.setCurrentSession(session: Session(cardIds: cards.map(\.id), date: dateHandler.today, deckId: deck.id))
+        
+    }
+    
     private func finishFetchCards(_ completion: Subscribers.Completion<RepositoryError>) {
         switch completion {
         case .finished:
@@ -198,30 +222,4 @@ public class StudyViewModel: ObservableObject {
             cards.remove(at: 0)
         }
     }
-    
-    @objc private func didEnterBackground() throws {
-        try saveChanges()
-    }
-    
-#if os(macOS)
-    private func setupEnterBackground() {
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(didEnterBackground),
-                                       name: NSApplication.willTerminateNotification, object: nil)
-    }
-#else
-    private func setupEnterBackground() {
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(didEnterBackground),
-                                       name: UIApplication.willTerminateNotification, object: nil)
-    }
-#endif
-    
-    
 }
-
-#if os(iOS)
-import UIKit
-#else
-import AppKit
-#endif

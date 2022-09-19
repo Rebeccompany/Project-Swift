@@ -19,7 +19,7 @@ public struct ColorIconButtonStyle: ButtonStyle {
         configuration.label
             .foregroundColor(HBColor.collectionTextColor)
             .font(.headline)
-            .background(configuration.isPressed ? .red: .red)
+            .background(configuration.isPressed ? HBColor.selectIconGridColor.opacity(0.5) : HBColor.selectIconBackground)
             .clipShape(Circle())
             .padding(5)
             .overlay(

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import UIKit
 
 public struct FlashcardTextEditorView: View {
     @Binding private var cardText: String
