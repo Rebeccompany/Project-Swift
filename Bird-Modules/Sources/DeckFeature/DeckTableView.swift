@@ -12,10 +12,15 @@ import HummingBird
 struct DeckTableView: View {
     var decks: [Deck]
     @Binding private var sortOrder: [KeyPathComparator<Deck>]
+    @Binding private var selection: Set<Deck.ID>
     
-    init(decks: [Deck], sortOrder: Binding<[KeyPathComparator<Deck>]>) {
+    init(decks: [Deck],
+         sortOrder: Binding<[KeyPathComparator<Deck>]>,
+         selection: Binding<Set<Deck.ID>>
+    ) {
         self.decks = decks
         self._sortOrder = sortOrder
+        self._selection = selection
     }
     
     private var sortedDecks: [Deck] {
@@ -23,7 +28,7 @@ struct DeckTableView: View {
     }
     
     var body: some View {
-        Table(sortedDecks, sortOrder: $sortOrder) {
+        Table(sortedDecks, selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Nome", value: \.name) { deck in
                 NavigationLink(value: StudyRoute.deck(deck)) {
                     HStack {
@@ -53,6 +58,6 @@ struct DeckTableView: View {
 
 struct DeckTableView_Previews: PreviewProvider {
     static var previews: some View {
-        DeckTableView(decks: [Deck(id: UUID.init(), name: "Nome do Baralho 1", icon: "flame", color: .otherPink, collectionsIds: [], cardsIds: []), Deck(id: UUID.init(), name: "Nome do Baralho 2", icon: "flame", color: .otherPink, collectionsIds: [], cardsIds: [UUID.init()])], sortOrder: .constant([.init(\.name)]))
+        DeckTableView(decks: [Deck(id: UUID.init(), name: "Nome do Baralho 1", icon: "flame", color: .otherPink, collectionsIds: [], cardsIds: []), Deck(id: UUID.init(), name: "Nome do Baralho 2", icon: "flame", color: .otherPink, collectionsIds: [], cardsIds: [UUID.init()])], sortOrder: .constant([.init(\.name)]), selection: .constant(.init()))
     }
 }

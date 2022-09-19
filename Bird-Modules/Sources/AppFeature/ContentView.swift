@@ -8,16 +8,22 @@
 import SwiftUI
 import Models
 import CollectionFeature
+import DeckFeature
 import HummingBird
+import Flock
 import NewCollectionFeature
 import Storage
 
 public struct ContentView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @State private var editMode: EditMode = .inactive
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @ObservedObject private var viewModel: ContentViewModel
     @State private var presentCollectionEdition = false
+    @State private var path: NavigationPath = .init()
+    @State private var shouldDisplayAlert = false
+    
+    @ObservedObject private var viewModel: ContentViewModel
+    
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     public init(viewModel: ContentViewModel) {
         self.viewModel = viewModel
@@ -27,7 +33,18 @@ public struct ContentView: View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             sidebar
         } detail: {
-            StudyRouter(decks: viewModel.decks)
+            Router(path: $path) {
+                DetailView(
+                    decks: viewModel.decks,
+                    searchText: $viewModel.searchText,
+                    detailType: $viewModel.detailType,
+                    sortOrder: $viewModel.sortOrder,
+                    selection: $viewModel.selection) {
+                        shouldDisplayAlert = true
+                    }
+            } destination: { (route: StudyRoute) in
+                StudyRoutes.destination(for: route)
+            }
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
@@ -38,6 +55,14 @@ public struct ContentView: View {
                     editingCollection: viewModel.editingCollection
                 )
             )
+        }
+        .alert(viewModel.selection.isEmpty ? "Nada foi selecionado" : "Você tem certeza que deseja apagar?", isPresented: $shouldDisplayAlert) {
+            Button("Apagar", role: .destructive) {
+                viewModel.deleteDecks()
+            }
+            .disabled(viewModel.selection.isEmpty)
+            
+            Button("Cancelar", role: .cancel) { }
         }
     }
     

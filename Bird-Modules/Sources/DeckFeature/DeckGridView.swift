@@ -22,8 +22,8 @@ struct DeckGridView: View {
                     }
                 }
             }
+            .padding([.horizontal, .top], 12)
         }
-        .padding(.horizontal, 12)
     }
 }
 

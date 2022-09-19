@@ -12,20 +12,43 @@ import HummingBird
 public struct DetailView: View {
     
     var decks: [Deck]
+    var deleteAction: () -> Void
     
-    @State var searchText: String = ""
-    @State private var sort: Int = 0
-    @State private var detailType: DetailDisplayType = .grid
-    @State private var sortOrder = [KeyPathComparator(\Deck.name)]
+    @Binding private var searchText: String
+    @Binding private var detailType: DetailDisplayType
+    @Binding private var sortOrder: [KeyPathComparator<Deck>]
+    @Binding private var selection: Set<Deck.ID>
     
-    public init(decks: [Deck]) {
-        self.decks = decks
+    @Environment(\.editMode) private var editMode
+    
+    public init(
+        decks: [Deck],
+        searchText: Binding<String>,
+        detailType: Binding<DetailDisplayType>,
+        sortOrder: Binding<[KeyPathComparator<Deck>]>,
+        selection: Binding<Set<Deck.ID>>,
+        deleteAction: @escaping () -> Void) {
+            self.decks = decks
+            self.deleteAction = deleteAction
+            self._searchText = searchText
+            self._detailType = detailType
+            self._sortOrder = sortOrder
+            self._selection = selection
     }
     
     public var body: some View {
         content
             .searchable(text: $searchText)
+            .toolbar(editMode?.wrappedValue.isEditing ?? false ? .visible : .hidden,
+                     for: .bottomBar)
             .toolbar {
+                ToolbarItem(placement: .bottomBar) {
+                    Button("Delete", role: .destructive) {
+                        deleteAction()
+                    }
+                    .foregroundColor(.red)
+                }
+                
                 ToolbarItem {
                     Menu {
                         Button {
@@ -33,6 +56,7 @@ public struct DetailView: View {
                         } label: {
                             Label("Ícones", systemImage: "rectangle.grid.2x2")
                         }
+                        .disabled(editMode?.wrappedValue.isEditing ?? false)
                         
                         Button {
                             detailType = .table
@@ -57,12 +81,8 @@ public struct DetailView: View {
         
                 
                 ToolbarItem {
-                    Button {
-                        print("editar")
-                    } label: {
-                        EditButton()
-                            .foregroundColor(HBColor.actionColor)
-                    }
+                    EditButton()
+                        .foregroundColor(HBColor.actionColor)
                 }
                 
                 ToolbarItem {
@@ -74,6 +94,16 @@ public struct DetailView: View {
                     }
                 }
             }
+            .onChange(of: editMode?.wrappedValue) { newValue in
+                if newValue == .active {
+                    detailType = .table
+                }
+            }
+            .onChange(of: detailType) { newValue in
+                if newValue == .grid {
+                    editMode?.wrappedValue = .inactive
+                }
+            }
     }
     
     @ViewBuilder
@@ -81,7 +111,9 @@ public struct DetailView: View {
         if detailType == .grid {
             DeckGridView(decks: decks)
         } else {
-            DeckTableView(decks: decks, sortOrder: $sortOrder)
+            DeckTableView(decks: decks,
+                          sortOrder: $sortOrder,
+                          selection: $selection)
         }
     }
 }
@@ -89,12 +121,4 @@ public struct DetailView: View {
 public enum DetailDisplayType {
     case grid
     case table
-}
-
-struct DetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            DetailView(decks: [])
-        }
-    }
 }

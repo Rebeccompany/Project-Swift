@@ -9,6 +9,7 @@ import Foundation
 import Models
 import Combine
 import Storage
+import DeckFeature
 
 public final class ContentViewModel: ObservableObject {
     
@@ -16,6 +17,12 @@ public final class ContentViewModel: ObservableObject {
     @Published var sidebarSelection: SidebarRoute? = .allDecks
     @Published var decks: [Deck]
     @Published var editingCollection: DeckCollection?
+    @Published var selection: Set<Deck.ID>
+    @Published var searchText: String
+    @Published var detailType: DetailDisplayType
+    @Published var sortOrder: [KeyPathComparator<Deck>]
+    @Published var editingDeck: Deck?
+
     
     private let collectionRepository: CollectionRepositoryProtocol
     private let deckRepository: DeckRepositoryProtocol
@@ -30,6 +37,10 @@ public final class ContentViewModel: ObservableObject {
         self.collections = []
         self.cancellables = .init()
         self.decks = []
+        self.selection = .init()
+        self.searchText = ""
+        self.detailType = .grid
+        self.sortOrder = [KeyPathComparator(\Deck.name)]
     }
     
     func startup() {
@@ -92,4 +103,16 @@ public final class ContentViewModel: ObservableObject {
         editingCollection = nil
     }
     
+    func deleteDecks() {
+        self.decks.filter { deck in
+            selection.contains(deck.id)
+        }
+        .forEach { deck in
+            try? deckRepository.deleteDeck(deck)
+        }
+    }
+    
+    func createDecks() {
+        editingDeck = nil
+    }
 }
