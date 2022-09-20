@@ -76,7 +76,7 @@ public struct NewCollectionView: View {
                 Alert(title: Text(selectedErrorMessage.texts.title),
                       message: Text(selectedErrorMessage.texts.message),
                       dismissButton: .default(Text("Fechar")))
-                }
+            }
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(viewModel.editingCollection == nil ? "Criar Coleção" : "Editar Coleção")
             .navigationBarTitleDisplayMode(.inline)

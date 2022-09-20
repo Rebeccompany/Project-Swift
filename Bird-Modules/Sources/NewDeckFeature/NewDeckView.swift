@@ -87,30 +87,28 @@ public struct NewDeckView: View {
             .padding()
             .alert(isPresented: $showingAlert) {
                 switch activeAlert {
-                    case .error:
-                        return Alert(title: Text(selectedErrorMessage.texts.title),
-                                     message: Text(selectedErrorMessage.texts.message),
-                                     dismissButton: .default(Text("Fechar")))
-                    case .confirm:
-                        return Alert(
-                            title: Text("Deseja apagar este baralho?"),
-                            message: Text("Você perderá permanentemente o conteúdo deste baralho."),
-                            primaryButton: .destructive(Text("Apagar")) {
-                                do {
-                                    try viewModel.deleteDeck()
-                                } catch {
-                                    activeAlert = .error
-                                    showingAlert = true
-                                    selectedErrorMessage = .deleteDeck
-                                    
-                                }
-                            },
-                            secondaryButton: .cancel(Text("Cancelar"))
-                        )
-                
-                    }
-                
+                case .error:
+                    return Alert(title: Text(selectedErrorMessage.texts.title),
+                                 message: Text(selectedErrorMessage.texts.message),
+                                 dismissButton: .default(Text("Fechar")))
+                case .confirm:
+                    return Alert(title: Text("Deseja apagar este baralho?"),
+                                 message: Text("Você perderá permanentemente o conteúdo deste baralho."),
+                                 primaryButton: .destructive(Text("Apagar")) {
+                                    do {
+                                        try viewModel.deleteDeck()
+                                    } catch {
+                                        activeAlert = .error
+                                        showingAlert = true
+                                        selectedErrorMessage = .deleteDeck
+                                    }
+                                 },
+                                 secondaryButton: .cancel(Text("Cancelar"))
+                    )
+                    
                 }
+                
+            }
             
             .viewBackgroundColor(HBColor.primaryBackground)
             
