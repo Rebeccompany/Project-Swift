@@ -34,6 +34,7 @@ public struct NewCollectionView: View {
                 Text("Cores")
                     .font(.callout)
                     .bold()
+                    .padding(.top)
                 
                 IconColorGridView {
                     ForEach(viewModel.colors, id: \.self) {color in
@@ -42,6 +43,7 @@ public struct NewCollectionView: View {
                             
                         } label: {
                             HBColor.getHBColrFromCollectionColor(color)
+                                .frame(width: 45, height: 45)
                         }
                         .accessibility(label: Text(CollectionColor.getColorString(color)))
                         .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))

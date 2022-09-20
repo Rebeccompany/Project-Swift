@@ -8,7 +8,7 @@
 import Foundation
 
 /// A collection of decks of flashcards
-public struct DeckCollection: Identifiable, Equatable {
+public struct DeckCollection: Identifiable, Equatable, Hashable {
     public let id: UUID
     /// The name of the collection.
     public var name: String

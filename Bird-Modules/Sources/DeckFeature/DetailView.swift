@@ -16,6 +16,7 @@ public struct DetailView: View {
     
     @Binding private var searchText: String
     @Binding private var detailType: DetailDisplayType
+    @Binding private var presentNewDeck: Bool
     @Binding private var sortOrder: [KeyPathComparator<Deck>]
     @Binding private var selection: Set<Deck.ID>
     
@@ -27,6 +28,7 @@ public struct DetailView: View {
         detailType: Binding<DetailDisplayType>,
         sortOrder: Binding<[KeyPathComparator<Deck>]>,
         selection: Binding<Set<Deck.ID>>,
+        presentNewDeck: Binding<Bool>,
         deleteAction: @escaping () -> Void) {
             self.decks = decks
             self.deleteAction = deleteAction
@@ -34,7 +36,8 @@ public struct DetailView: View {
             self._detailType = detailType
             self._sortOrder = sortOrder
             self._selection = selection
-    }
+            self._presentNewDeck = presentNewDeck
+        }
     
     public var body: some View {
         content
@@ -75,10 +78,15 @@ public struct DetailView: View {
                         }
                         
                     } label: {
-                        Image(systemName: detailType == .grid ? "rectangle.grid.2x2" : "list.bullet")
+                        Label {
+                            Text("Visualização")
+                        } icon: {
+                            Image(systemName: detailType == .grid ? "rectangle.grid.2x2" : "list.bullet")
+                        }
+                        
                     }
                 }
-        
+                
                 
                 ToolbarItem {
                     EditButton()
@@ -87,7 +95,7 @@ public struct DetailView: View {
                 
                 ToolbarItem {
                     Button {
-                        print("novo deck")
+                        presentNewDeck = true
                     } label: {
                         Image(systemName: "plus")
                             .foregroundColor(HBColor.actionColor)

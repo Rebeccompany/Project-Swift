@@ -13,20 +13,34 @@ import DeckFeature
 
 public final class ContentViewModel: ObservableObject {
     
+    //MARK: Collections
     @Published var collections: [DeckCollection]
-    @Published var sidebarSelection: SidebarRoute? = .allDecks
     @Published var decks: [Deck]
+    
+    //MARK: CRUD Published
+    @Published var editingDeck: Deck?
     @Published var editingCollection: DeckCollection?
+    
+    //MARK: View Bindings
+    @Published var sidebarSelection: SidebarRoute? = .allDecks
     @Published var selection: Set<Deck.ID>
     @Published var searchText: String
     @Published var detailType: DetailDisplayType
     @Published var sortOrder: [KeyPathComparator<Deck>]
-    @Published var editingDeck: Deck?
 
-    
+    //MARK: Repositories
     private let collectionRepository: CollectionRepositoryProtocol
     private let deckRepository: DeckRepositoryProtocol
     private var cancellables: Set<AnyCancellable>
+    
+    var detailTitle: String {
+        switch sidebarSelection ?? .allDecks {
+        case .allDecks:
+            return "Todas as coleções"
+        case .decksFromCollection(let collection):
+            return collection.name
+        }
+    }
     
     public init(
         collectionRepository: CollectionRepositoryProtocol = CollectionRepositoryMock.shared,
@@ -46,15 +60,18 @@ public final class ContentViewModel: ObservableObject {
     func startup() {
         collectionRepository
             .listener()
-            .handleEvents(receiveCompletion: handleCollectionCompletion)
+            .handleEvents(receiveCompletion: handleCompletion)
             .replaceError(with: [])
             .assign(to: &$collections)
         
         deckRepository
             .deckListener()
+            .handleEvents(receiveCompletion: handleCompletion)
             .replaceError(with: [])
             .combineLatest($sidebarSelection)
             .map(mapDecksBySidebarSelection)
+            .combineLatest($searchText)
+            .map(filterDecksBySearchText)
             .assign(to: &$decks)
         
     }
@@ -64,10 +81,18 @@ public final class ContentViewModel: ObservableObject {
             
         case .allDecks:
             return decks
-        case .decksFromCollection(let id):
+        case .decksFromCollection(let collection):
             return decks.filter { deck in
-                deck.collectionsIds.contains(id)
+                deck.collectionsIds.contains(collection.id)
             }
+        }
+    }
+            
+    private func filterDecksBySearchText(_ decks: [Deck], searchText: String) -> [Deck] {
+        if searchText.isEmpty {
+            return decks
+        } else {
+            return decks.filter { $0.name.capitalized.contains(searchText.capitalized) }
         }
     }
     
@@ -77,7 +102,7 @@ public final class ContentViewModel: ObservableObject {
         }
     }
     
-    private func handleCollectionCompletion(_ completion: Subscribers.Completion<RepositoryError>) {
+    private func handleCompletion(_ completion: Subscribers.Completion<RepositoryError>) {
         switch completion {
         case .finished:
             print("finished")

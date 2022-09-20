@@ -15,12 +15,7 @@ public struct IconColorGridView<Content: View>: View {
     }
     
     let columns = [
-        GridItem(.fixed(50)),
-        GridItem(.fixed(50)),
-        GridItem(.fixed(50)),
-        GridItem(.fixed(50)),
-        GridItem(.fixed(50)),
-        GridItem(.fixed(50))
+        GridItem(.adaptive(minimum: 50))
     ]
     
     public var body: some View {

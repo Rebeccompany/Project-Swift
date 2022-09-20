@@ -9,7 +9,6 @@ import SwiftUI
 import Models
 import HummingBird
 
-#warning("IMPLEMENTAR ICONE DA COLEÇÃO")
 public struct CollectionsSidebar: View {
     @Environment(\.editMode) private var editMode
     private var collections: [DeckCollection]
@@ -53,7 +52,7 @@ public struct CollectionsSidebar: View {
                     )
                 } else {
                     ForEach(collections) { collection in
-                        NavigationLink(value: SidebarRoute.decksFromCollection(id: collection.id)) {
+                        NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
                             HStack {
                                 Text(collection.name)
                                 Spacer()

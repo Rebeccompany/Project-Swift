@@ -9,6 +9,7 @@ import SwiftUI
 import Models
 import CollectionFeature
 import DeckFeature
+import NewDeckFeature
 import HummingBird
 import Flock
 import NewCollectionFeature
@@ -20,6 +21,7 @@ public struct ContentView: View {
     @State private var presentCollectionEdition = false
     @State private var path: NavigationPath = .init()
     @State private var shouldDisplayAlert = false
+    @State private var presentDeckEdition = false
     
     @ObservedObject private var viewModel: ContentViewModel
     
@@ -33,18 +35,7 @@ public struct ContentView: View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             sidebar
         } detail: {
-            Router(path: $path) {
-                DetailView(
-                    decks: viewModel.decks,
-                    searchText: $viewModel.searchText,
-                    detailType: $viewModel.detailType,
-                    sortOrder: $viewModel.sortOrder,
-                    selection: $viewModel.selection) {
-                        shouldDisplayAlert = true
-                    }
-            } destination: { (route: StudyRoute) in
-                StudyRoutes.destination(for: route)
-            }
+            detail
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
@@ -97,7 +88,23 @@ public struct ContentView: View {
     
     @ViewBuilder
     private var detail: some View {
-        Text("oi")
+        Router(path: $path) {
+            DetailView(
+                decks: viewModel.decks,
+                searchText: $viewModel.searchText,
+                detailType: $viewModel.detailType,
+                sortOrder: $viewModel.sortOrder,
+                selection: $viewModel.selection,
+                presentNewDeck: $presentDeckEdition) {
+                    shouldDisplayAlert = true
+                }
+                .navigationTitle(viewModel.detailTitle)
+                .sheet(isPresented: $presentDeckEdition) {
+                    NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock.shared, collectionId: []))
+                }
+        } destination: { (route: StudyRoute) in
+            StudyRoutes.destination(for: route)
+        }
     }
 }
 
