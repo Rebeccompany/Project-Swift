@@ -81,7 +81,7 @@ final class DeckViewModelTests: XCTestCase {
     
     func testCanStudyFalse() {
         let cards: [Card] = [Card(id: UUID(), front: "", back: "", color: .red, datesLogs: DateLogs(), deckID: UUID(uuidString: "5c27ad86-b84a-41cf-ab97-bb45586adfbd")!, woodpeckerCardInfo: WoodpeckerCardInfo(step: 1, isGraduated: false, easeFactor: 2.5, streak: 0, interval: 10000, hasBeenPresented: true), history: [])]
-        sut = DeckViewModel(deck: Deck(id: UUID(uuidString: "5c27ad86-b84a-41cf-ab97-bb45586adfbd")!, name: "Teste Deck", icon: "pencil", color: .red, collectionsIds: [UUID()], cardsIds: cards.map{$0.id}))
+        sut = DeckViewModel(deck: Deck(id: UUID(uuidString: "5c27ad86-b84a-41cf-ab97-bb45586adfbd")!, name: "Teste Deck", icon: "pencil", color: .red, collectionId: UUID(), cardsIds: cards.map{$0.id}))
         sut.startup()
 
         XCTAssertFalse(sut.canStudy)
