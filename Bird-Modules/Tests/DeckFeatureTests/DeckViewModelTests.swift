@@ -60,7 +60,7 @@ final class DeckViewModelTests: XCTestCase {
     }
     
     func testSearchCardBack() {
-        sut.searchFieldContent = "verso"
+        sut.searchFieldContent = "tras"
         
         let count = sut.cardsSearched.count
         
