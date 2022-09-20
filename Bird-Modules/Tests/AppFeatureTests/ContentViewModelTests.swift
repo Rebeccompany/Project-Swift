@@ -150,5 +150,46 @@ final class ContentViewModelTests: XCTestCase {
         
         XCTAssertNil(sut.editingCollection)
     }
+    
+    func testSelectedCollectionWhenSidebarIsAllDecks() {
+        sut.sidebarSelection = .allDecks
+        
+        XCTAssertNil(sut.selectedCollection)
+    }
+    
+    func testSelectedCollectionWhenSidebarIsACollection() {
+        sut.sidebarSelection = .decksFromCollection(collectionRepositoryMock.collections[0])
+        
+        XCTAssertEqual(collectionRepositoryMock.collections[0], sut.selectedCollection)
+    }
+    
+    func testEditDeckSuccessfully() {
+        let deck = deckRepositoryMock.decks[0]
+        sut.selection.insert(deck.id)
+        
+        XCTAssertEqual(sut.selection.count, 1)
+        
+        sut.editDeck()
+        
+        XCTAssertEqual(sut.editingDeck, deck)
+    }
 
+    func testEditDeckWithWrongSelection() {
+        sut.selection = .init()
+        
+        XCTAssertNil(sut.editingDeck)
+        
+        sut.editDeck()
+        
+        XCTAssertNil(sut.editingDeck)
+    }
+    
+    func testEditDeckWithWrongDeck() {
+        let deck = Deck(id: UUID.init(), name: "deck", icon: "flame", color: .beigeBrown, collectionId: UUID.init(), cardsIds: [])
+        
+        sut.selection.insert(deck.id)
+        sut.editDeck()
+        
+        XCTAssertNil(sut.editingDeck)
+    }
 }

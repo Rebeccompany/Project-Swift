@@ -11,16 +11,5 @@ import SwiftUI
 public enum IconNames: String, CaseIterable {
     case pencil
     case book
-    case chevronDown
-    
-    public static func getIconString(_ iconName: IconNames) -> String {
-        switch iconName {
-        case .pencil:
-            return "pencil"
-        case .book:
-            return "book"
-        case .chevronDown:
-            return "chevron.down"
-        }
-    }
+    case chevronDown = "chevron.down"
 }

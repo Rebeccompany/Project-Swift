@@ -60,7 +60,7 @@ public struct NewDeckView: View {
                         Button {
                             viewModel.currentSelectedIcon = icon
                         } label: {
-                            Image(systemName: IconNames.getIconString(icon))
+                            Image(systemName: icon.rawValue)
                                 .frame(width: 45, height: 45)
                         }
                         .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
@@ -128,7 +128,7 @@ public struct NewDeckView: View {
 
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
-        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: UUID()))
+        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collection: nil))
             .preferredColorScheme(.dark)
     }
 }

@@ -232,7 +232,7 @@ let package = Package(
         ),
         
         .target(
-            name: "Woodpecker" ,
+            name: "Woodpecker",
             dependencies: [
                 "Models"
             ]

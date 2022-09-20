@@ -42,7 +42,7 @@ public struct NewCollectionView: View {
                             viewModel.currentSelectedIcon = icon
                             
                         } label: {
-                            Image(systemName: IconNames.getIconString(icon))
+                            Image(systemName: icon.rawValue)
                                 .frame(width: 45, height: 45)
                         }
                         

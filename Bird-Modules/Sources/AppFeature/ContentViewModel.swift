@@ -13,22 +13,22 @@ import DeckFeature
 
 public final class ContentViewModel: ObservableObject {
     
-    //MARK: Collections
+    // MARK: Collections
     @Published var collections: [DeckCollection]
     @Published var decks: [Deck]
     
-    //MARK: CRUD Published
+    // MARK: CRUD Published
     @Published var editingDeck: Deck?
     @Published var editingCollection: DeckCollection?
     
-    //MARK: View Bindings
+    // MARK: View Bindings
     @Published var sidebarSelection: SidebarRoute? = .allDecks
     @Published var selection: Set<Deck.ID>
     @Published var searchText: String
     @Published var detailType: DetailDisplayType
     @Published var sortOrder: [KeyPathComparator<Deck>]
 
-    //MARK: Repositories
+    // MARK: Repositories
     private let collectionRepository: CollectionRepositoryProtocol
     private let deckRepository: DeckRepositoryProtocol
     private var cancellables: Set<AnyCancellable>
@@ -42,9 +42,18 @@ public final class ContentViewModel: ObservableObject {
         }
     }
     
+    var selectedCollection: DeckCollection? {
+        switch sidebarSelection ?? .allDecks {
+        case .allDecks:
+            return nil
+        case .decksFromCollection(let collection):
+            return collection
+        }
+    }
+    
     public init(
-        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
-        deckRepository: DeckRepositoryProtocol = DeckRepository.shared
+        collectionRepository: CollectionRepositoryProtocol = CollectionRepositoryMock.shared,
+        deckRepository: DeckRepositoryProtocol = DeckRepositoryMock.shared
     ) {
         self.collectionRepository = collectionRepository
         self.deckRepository = deckRepository
@@ -139,5 +148,14 @@ public final class ContentViewModel: ObservableObject {
     
     func createDecks() {
         editingDeck = nil
+    }
+    
+    func editDeck() {
+        guard
+            selection.count == 1,
+            let deck = decks.first(where: { deck in deck.id == selection.first })
+        else { return }
+        
+        editingDeck = deck
     }
 }
