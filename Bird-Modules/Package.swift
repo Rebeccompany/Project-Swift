@@ -135,11 +135,13 @@ let package = Package(
             name: "AppFeature",
             dependencies: [
                 "Storage",
+                "StudyFeature",
                 "CollectionFeature",
                 "NewCollectionFeature",
                 "NewDeckFeature",
                 "Models",
                 "Flock",
+                "DeckFeature",
                 "NewFlashcardFeature"
             ]
         ),
@@ -155,7 +157,11 @@ let package = Package(
         .target(
             name: "DeckFeature",
             dependencies: [
-                "Models"
+                "Models",
+                "HummingBird",
+                "Storage",
+                "Woodpecker",
+                "Utils"
             ]
         ),
         
@@ -165,13 +171,15 @@ let package = Package(
                 "Models"
             ]
         ),
-        
-        .target(
-            name: "StudyFeature",
-            dependencies: [
-                "Models",
-                "HummingBird"
-            ]
+            
+        .target(name: "StudyFeature",
+                dependencies: [
+                     "Models",
+                     "HummingBird",
+                     "Woodpecker",
+                     "Storage",
+                     "Utils"
+                ]
         ),
         
         .target(
@@ -287,6 +295,15 @@ let package = Package(
         ),
         
         .testTarget(
+            name: "StudyFeatureTests",
+            dependencies: [
+                "StudyFeature",
+                "Models",
+                "Storage"
+            ]
+        ),
+        
+        .testTarget(
             name: "StorageTests",
             dependencies: [
                 "Storage",
@@ -331,6 +348,18 @@ let package = Package(
             dependencies: [
                 "Models",
                 "Flock"
+            ]
+        ),
+        
+        .testTarget(
+            name: "DeckFeatureTests",
+            dependencies: [
+                "DeckFeature",
+                "Storage",
+                "Models",
+                "HummingBird",
+                "Woodpecker",
+                "Utils"
             ]
         )
     ]

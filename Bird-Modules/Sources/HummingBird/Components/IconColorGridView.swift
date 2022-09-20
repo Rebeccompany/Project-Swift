@@ -15,7 +15,7 @@ public struct IconColorGridView<Content: View>: View {
     }
     
     let columns = [
-        GridItem(.adaptive(minimum: 45), spacing: 24),
+        GridItem(.adaptive(minimum: 45), spacing: 24)
     ]
     
     public var body: some View {
