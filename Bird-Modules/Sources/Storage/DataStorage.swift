@@ -25,7 +25,7 @@ final class DataStorage {
 
     private let model: String
 
-    private var container: NSPersistentContainer
+    private var container: NSPersistentCloudKitContainer
 
     var mainContext: NSManagedObjectContext {
         container.viewContext
@@ -33,7 +33,9 @@ final class DataStorage {
 
     init(_ storeType: StoreType = .persistent) {
         self.model = "NotesModel"
-        container = NSPersistentContainer(name: model, managedObjectModel: Self.managedObjectModel) // quando se refere as coisas estaticas da classe
+        container = NSPersistentCloudKitContainer(name: model, managedObjectModel: Self.managedObjectModel) // quando se refere as coisas estaticas da classe
+        
+        container.persistentStoreDescriptions.first?.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
         
         if storeType == .inMemory { // quando recebe esse endereco, eh pra guardar em memoria
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")

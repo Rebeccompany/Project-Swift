@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="CardEntity" representedClassName="Storage.CardEntity" syncable="YES">
         <attribute name="back" optional="YES" attributeType="Binary"/>
         <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -15,7 +15,7 @@
         <attribute name="wpStep" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="wpStreak" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="deck" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DeckEntity" inverseName="cards" inverseEntity="DeckEntity"/>
-        <relationship name="history" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="CardSnapshotEntity" inverseName="card" inverseEntity="CardSnapshotEntity"/>
+        <relationship name="history" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CardSnapshotEntity" inverseName="card" inverseEntity="CardSnapshotEntity"/>
     </entity>
     <entity name="CardSnapshotEntity" representedClassName="Storage.CardSnapshotEntity" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -36,7 +36,7 @@
         <attribute name="lastAccess" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="lastEdit" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="decks" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="DeckEntity" inverseName="collection" inverseEntity="DeckEntity"/>
+        <relationship name="decks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DeckEntity" inverseName="collection" inverseEntity="DeckEntity"/>
     </entity>
     <entity name="DeckEntity" representedClassName="Storage.DeckEntity" syncable="YES">
         <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
