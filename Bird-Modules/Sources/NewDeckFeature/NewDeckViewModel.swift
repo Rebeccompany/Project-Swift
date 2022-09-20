@@ -80,7 +80,7 @@ public class NewDeckViewModel: ObservableObject {
                     icon: selectedIcon.rawValue.description,
                     color: selectedColor,
                     datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
-                    collectionsIds: collectionId,
+                    collectionId: collectionId,
                     cardsIds: [],
                     spacedRepetitionConfig: SpacedRepetitionConfig()),
             cards: [])
