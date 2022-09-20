@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import Models
 
-public protocol DeckRepositoryProtocol {
+public protocol DeckRepositoryProtocol: AnyObject {
     // Deck
     func fetchDeckById(_ id: UUID) -> AnyPublisher<Deck, RepositoryError>
     func fetchDecksByIds(_ ids: [UUID]) -> AnyPublisher<[Deck], RepositoryError>

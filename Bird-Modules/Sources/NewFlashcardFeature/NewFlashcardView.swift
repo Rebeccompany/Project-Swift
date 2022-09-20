@@ -13,7 +13,7 @@ import Storage
 public struct NewFlashcardView: View {
     @ObservedObject private var viewModel: NewFlashcardViewModel
     @State private var showingErrorAlert: Bool = false
-    @State private var selectedErrorMessage: AlertText = .delete
+    @State private var selectedErrorMessage: AlertText = .deleteCard
     @FocusState private var focus: NewFlashcardFocus?
     private var okButtonState: String = ""
     
@@ -62,7 +62,7 @@ public struct NewFlashcardView: View {
                             do {
                                 try viewModel.deleteFlashcard()
                             } catch {
-                                selectedErrorMessage = .delete
+                                selectedErrorMessage = .deleteCard
                                 showingErrorAlert = true
                             }
                         } label: {
@@ -87,7 +87,7 @@ public struct NewFlashcardView: View {
                                 do {
                                     try viewModel.editFlashcard()
                                 } catch {
-                                    selectedErrorMessage = .edit
+                                    selectedErrorMessage = .editCard
                                     showingErrorAlert = true
                                 }
                             }

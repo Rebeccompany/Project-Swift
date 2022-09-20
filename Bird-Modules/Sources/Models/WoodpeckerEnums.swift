@@ -13,6 +13,9 @@ public enum CardDestiny {
 }
 
 // Enumerates the possible grades a user can give a card.
-public enum UserGrade: Int {
+public enum UserGrade: Int, CaseIterable, Identifiable {
+    public var id: Int {
+        self.rawValue
+    }
     case wrongHard, wrong, correct, correctEasy
 }
