@@ -2,7 +2,7 @@
 //  CardEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Marcos Chevis on 16/09/22.
+//  Created by Marcos Chevis on 20/09/22.
 //
 //
 
@@ -12,7 +12,7 @@ import CoreData
 extension CardEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CardEntity> {
-        NSFetchRequest<CardEntity>(entityName: "CardEntity")
+        return NSFetchRequest<CardEntity>(entityName: "CardEntity")
     }
 
     @NSManaged public var back: Data?

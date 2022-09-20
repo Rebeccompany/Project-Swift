@@ -150,6 +150,6 @@ public struct NewFlashcardView: View {
 
 struct NewFlashcardView_Previews: PreviewProvider {
     static var previews: some View {
-        NewFlashcardView(viewModel: NewFlashcardViewModel(colors: CollectionColor.allCases, deckRepository: DeckRepositoryMock(), deck: Deck(id: UUID(), name: "asdsa", icon: "book", color: .red, collectionsIds: [], cardsIds: [])))
+        NewFlashcardView(viewModel: NewFlashcardViewModel(colors: CollectionColor.allCases, deckRepository: DeckRepositoryMock(), deck: Deck(id: UUID(), name: "asdsa", icon: "book", color: .red, collectionId: nil, cardsIds: [])))
     }
 }

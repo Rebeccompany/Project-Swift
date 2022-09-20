@@ -31,7 +31,7 @@ class NewDeckViewModelTests: XCTestCase {
         sut = NewDeckViewModel(colors: CollectionColor.allCases,
                                icons: IconNames.allCases,
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
         )
@@ -171,7 +171,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -189,7 +189,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -207,7 +207,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -225,7 +225,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -244,7 +244,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -271,7 +271,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )

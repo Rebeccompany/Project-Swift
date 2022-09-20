@@ -120,7 +120,7 @@ public struct NewDeckView: View {
 
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
-        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: [UUID()]))
+        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: UUID()))
             .preferredColorScheme(.dark)
     }
 }
