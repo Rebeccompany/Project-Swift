@@ -68,7 +68,7 @@ class CollectionRepositoryTests: XCTestCase {
         
         
         XCTAssertTrue(resultCollection.decks!.contains(deckEntity))
-        XCTAssertTrue(deckEntity.collections!.contains(resultCollection))
+        XCTAssertEqual(deckEntity.collection!, resultCollection)
     }
     
     func testRemoveDeck() throws {
@@ -89,7 +89,7 @@ class CollectionRepositoryTests: XCTestCase {
         try sut.removeDeck(deck, from: collection)
         
         XCTAssertTrue(!resultCollection.decks!.contains(deckEntity))
-        XCTAssertTrue(!deckEntity.collections!.contains(resultCollection))
+        XCTAssertEqual(deckEntity.collection, nil)
     }
     
     func testCreateCollection() throws {
