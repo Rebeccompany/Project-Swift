@@ -97,6 +97,7 @@ public struct NewDeckView: View {
                                  primaryButton: .destructive(Text("Apagar")) {
                                     do {
                                         try viewModel.deleteDeck()
+                                        dismiss()
                                     } catch {
                                         activeAlert = .error
                                         showingAlert = true

@@ -87,10 +87,11 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-import NewDeckFeature
+import NewCollectionFeature
+
 public struct TestView: View {
     public init() {}
     public var body: some View {
-        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, editingDeck: DeckRepositoryMock().decks[0], deckRepository: DeckRepositoryMock(), collectionId: [UUID()]) )
+        NewCollectionView(viewModel: NewCollectionViewModel(collectionRepository: CollectionRepositoryMock(), editingCollection: CollectionRepositoryMock().collections[0]))
     }
 }

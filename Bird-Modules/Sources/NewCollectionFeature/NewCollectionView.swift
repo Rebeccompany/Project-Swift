@@ -14,7 +14,8 @@ public struct NewCollectionView: View {
     
     @ObservedObject private var viewModel: NewCollectionViewModel
     @Environment(\.dismiss) private var dismiss
-    @State private var showingErrorAlert: Bool = false
+    @State private var showingAlert: Bool = false
+    @State private var activeAlert: ActiveAlert = .error
     @State private var selectedErrorMessage: AlertText = .deleteCollection
     
     public init(
@@ -32,7 +33,7 @@ public struct NewCollectionView: View {
                     .bold()
                 TextField("", text: $viewModel.collectionName)
                     .textFieldStyle(CollectionDeckTextFieldStyle())
-                Text("Cores")
+                Text("Ícones")
                     .font(.callout)
                     .bold()
                 
@@ -55,13 +56,8 @@ public struct NewCollectionView: View {
                 
                 if viewModel.editingCollection != nil {
                     Button {
-                        do {
-                            try viewModel.deleteCollection()
-                            dismiss()
-                        } catch {
-                            showingErrorAlert = true
-                            selectedErrorMessage = .deleteCollection
-                        }
+                        activeAlert = .confirm
+                        showingAlert = true
                     } label: {
                         Text("Apagar Coleção")
                     }
@@ -72,10 +68,28 @@ public struct NewCollectionView: View {
             }
             .onAppear(perform: viewModel.startUp)
             .padding()
-            .alert(isPresented: $showingErrorAlert) {
-                Alert(title: Text(selectedErrorMessage.texts.title),
-                      message: Text(selectedErrorMessage.texts.message),
-                      dismissButton: .default(Text("Fechar")))
+            .alert(isPresented: $showingAlert) {
+                switch activeAlert {
+                case .error:
+                    return Alert(title: Text(selectedErrorMessage.texts.title),
+                                 message: Text(selectedErrorMessage.texts.message),
+                                 dismissButton: .default(Text("Fechar")))
+                case .confirm:
+                    return Alert(title: Text("Deseja apagar esta coleção?"),
+                                 message: Text("Você perderá permanentemente o conteúdo desta coleção."),
+                                 primaryButton: .destructive(Text("Apagar")) {
+                                    do {
+                                        try viewModel.deleteCollection()
+                                        dismiss()
+                                    } catch {
+                                        activeAlert = .error
+                                        showingAlert = true
+                                        selectedErrorMessage = .deleteCollection
+                                    }
+                                 },
+                                 secondaryButton: .cancel(Text("Cancelar"))
+                    )
+                }
             }
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(viewModel.editingCollection == nil ? "Criar Coleção" : "Editar Coleção")
@@ -96,7 +110,8 @@ public struct NewCollectionView: View {
                                 try viewModel.createCollection()
                                 dismiss()
                             } catch {
-                                showingErrorAlert = true
+                                activeAlert = .error
+                                showingAlert = true
                                 selectedErrorMessage = .createCollection
                             }
                         } else {
@@ -104,7 +119,8 @@ public struct NewCollectionView: View {
                                 try viewModel.editCollection()
                                 dismiss()
                             } catch {
-                                showingErrorAlert = true
+                                activeAlert = .error
+                                showingAlert = true
                                 selectedErrorMessage = .editCollection
                             }
                         }
