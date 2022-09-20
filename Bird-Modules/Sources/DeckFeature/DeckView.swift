@@ -121,7 +121,7 @@ struct DeckView_Previews: PreviewProvider {
                             lastAccess: Date(),
                             lastEdit: Date(),
                             createdAt: Date()),
-                        collectionsIds: [],
+                        collectionId: nil,
                         cardsIds: [
                             UUID(
                                 uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974"
