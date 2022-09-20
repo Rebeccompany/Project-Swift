@@ -13,8 +13,9 @@ import Storage
 public struct NewDeckView: View {
     @ObservedObject
     private var viewModel: NewDeckViewModel
-    @State private var showingErrorAlert: Bool = false
+    @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteDeck
+    @State private var activeAlert: ActiveAlert = .error
     @Environment(\.dismiss) private var dismiss
     
     public init(viewModel: NewDeckViewModel) {
@@ -72,12 +73,8 @@ public struct NewDeckView: View {
                 
                 if viewModel.editingDeck != nil {
                     Button {
-                        do {
-                            try viewModel.deleteDeck()
-                        } catch {
-                            showingErrorAlert = true
-                            selectedErrorMessage = .deleteDeck
-                        }
+                        activeAlert = .confirm
+                        showingAlert = true
                     } label: {
                         Text("Apagar Deck")
                     }
@@ -88,10 +85,31 @@ public struct NewDeckView: View {
             
             .onAppear(perform: viewModel.startUp)
             .padding()
-            .alert(isPresented: $showingErrorAlert) {
-                Alert(title: Text(selectedErrorMessage.texts.title),
-                      message: Text(selectedErrorMessage.texts.message),
-                      dismissButton: .default(Text("Fechar")))
+            .alert(isPresented: $showingAlert) {
+                switch activeAlert {
+                    case .error:
+                        return Alert(title: Text(selectedErrorMessage.texts.title),
+                                     message: Text(selectedErrorMessage.texts.message),
+                                     dismissButton: .default(Text("Fechar")))
+                    case .confirm:
+                        return Alert(
+                            title: Text("Deseja apagar este baralho?"),
+                            message: Text("Você perderá permanentemente o conteúdo deste baralho."),
+                            primaryButton: .destructive(Text("Apagar")) {
+                                do {
+                                    try viewModel.deleteDeck()
+                                } catch {
+                                    activeAlert = .error
+                                    showingAlert = true
+                                    selectedErrorMessage = .deleteDeck
+                                    
+                                }
+                            },
+                            secondaryButton: .cancel(Text("Cancelar"))
+                        )
+                
+                    }
+                
                 }
             
             .viewBackgroundColor(HBColor.primaryBackground)
@@ -108,7 +126,8 @@ public struct NewDeckView: View {
                                 try viewModel.createDeck()
                                 dismiss()
                             } catch {
-                                showingErrorAlert = true
+                                activeAlert = .error
+                                showingAlert = true
                                 selectedErrorMessage = .createDeck
                             }
                         } else {
@@ -116,7 +135,8 @@ public struct NewDeckView: View {
                                 try viewModel.editDeck()
                                 dismiss()
                             } catch {
-                                showingErrorAlert = true
+                                activeAlert = .error
+                                showingAlert = true
                                 selectedErrorMessage = .editDeck
                             }
                         }
@@ -136,9 +156,10 @@ public struct NewDeckView: View {
     }
 }
 
+
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
-        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: [UUID()]))
+        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, editingDeck: DeckRepositoryMock().decks[0], deckRepository: DeckRepositoryMock(), collectionId: [UUID()]))
             .preferredColorScheme(.dark)
     }
 }
