@@ -86,12 +86,3 @@ struct ContentView_Previews: PreviewProvider {
         )
     }
 }
-
-import NewCollectionFeature
-
-public struct TestView: View {
-    public init() {}
-    public var body: some View {
-        NewCollectionView(viewModel: NewCollectionViewModel(collectionRepository: CollectionRepositoryMock(), editingCollection: CollectionRepositoryMock().collections[0]))
-    }
-}
