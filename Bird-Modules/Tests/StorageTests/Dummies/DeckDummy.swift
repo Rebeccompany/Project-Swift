@@ -19,7 +19,7 @@ enum DeckDummy {
                     icon: "chevron.down",
                     color: .red,
                     datesLogs: dateLog,
-                    collectionsIds: [],
+                    collectionId: nil,
                     cardsIds: [],
                     spacedRepetitionConfig: .init(maxLearningCards: 20,
                                                   maxReviewingCards: 200))
@@ -35,7 +35,7 @@ enum DeckDummy {
                     icon: "chevron.down",
                     color: .red,
                     datesLogs: dateLog,
-                    collectionsIds: [],
+                    collectionId: nil,
                     cardsIds: [],
                     spacedRepetitionConfig: .init(maxLearningCards: 20,
                                                   maxReviewingCards: 200))

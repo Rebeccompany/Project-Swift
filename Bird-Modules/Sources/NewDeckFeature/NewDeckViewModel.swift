@@ -22,7 +22,7 @@ public class NewDeckViewModel: ObservableObject {
     
     var colors: [CollectionColor]
     var icons: [IconNames]
-    var collectionId: [UUID]
+    var collectionId: UUID?
     private let deckRepository: DeckRepositoryProtocol
     private let dateHandler: DateHandlerProtocol
     private let uuidGenerator: UUIDGeneratorProtocol
@@ -33,7 +33,7 @@ public class NewDeckViewModel: ObservableObject {
         icons: [IconNames],
         editingDeck: Deck? = nil,
         deckRepository: DeckRepositoryProtocol,
-        collectionId: [UUID],
+        collectionId: UUID?,
         dateHandler: DateHandlerProtocol = DateHandler(),
         uuidGenerator: UUIDGeneratorProtocol = UUIDGenerator()
     ) {
@@ -80,7 +80,7 @@ public class NewDeckViewModel: ObservableObject {
                     icon: selectedIcon.rawValue.description,
                     color: selectedColor,
                     datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
-                    collectionsIds: collectionId,
+                    collectionId: collectionId,
                     cardsIds: [],
                     spacedRepetitionConfig: SpacedRepetitionConfig()),
             cards: [])

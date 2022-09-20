@@ -252,7 +252,7 @@ extension Card {
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),
                                        createdAt: Date(timeIntervalSince1970: 0)),
-                   collectionsIds: [],
+                   collectionId: nil,
                    cardsIds: cardsIds,
                    spacedRepetitionConfig: .init(maxLearningCards: 20,
                                                  maxReviewingCards: 200,
