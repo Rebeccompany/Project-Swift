@@ -66,7 +66,7 @@ public struct NewFlashcardView: View {
                                 showingErrorAlert = true
                             }
                         } label: {
-                            Text("Apagar Baralho")
+                            Text("Apagar Flashcard")
                         }
                         .buttonStyle(DeleteButtonStyle())
                     }
@@ -75,14 +75,20 @@ public struct NewFlashcardView: View {
                 .onAppear(perform: viewModel.startUp)
                 .padding()
                 
-                .navigationTitle(viewModel.editingFlashcard != nil ? "Editar baralho" : "Criar Baralho")
+                .navigationTitle(viewModel.editingFlashcard != nil ? "Editar Flashcard" : "Criar Flashcard")
                 .navigationBarTitleDisplayMode(.inline)
                 
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("OK") {
                             if viewModel.editingFlashcard == nil {
-                                viewModel.createFlashcard()
+                                do {
+                                    try viewModel.createFlashcard()
+                                } catch {
+                                    selectedErrorMessage = .createCard
+                                    showingErrorAlert = true
+                                }
+                                
                             } else {
                                 do {
                                     try viewModel.editFlashcard()

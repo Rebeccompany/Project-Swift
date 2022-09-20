@@ -15,6 +15,7 @@ public struct NewCollectionView: View {
     @ObservedObject private var viewModel: NewCollectionViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showingErrorAlert: Bool = false
+    @State private var selectedErrorMessage: AlertText = .deleteCollection
     
     public init(
         viewModel: NewCollectionViewModel
@@ -59,6 +60,7 @@ public struct NewCollectionView: View {
                             dismiss()
                         } catch {
                             showingErrorAlert = true
+                            selectedErrorMessage = .deleteCollection
                         }
                     } label: {
                         Text("Apagar Coleção")
@@ -70,9 +72,11 @@ public struct NewCollectionView: View {
             }
             .onAppear(perform: viewModel.startUp)
             .padding()
-            .alert("Ocorreu um erro interno. Tente novamente.", isPresented: $showingErrorAlert) {
-                Button("OK", role: .cancel) {}
-            }
+            .alert(isPresented: $showingErrorAlert) {
+                Alert(title: Text(selectedErrorMessage.texts.title),
+                      message: Text(selectedErrorMessage.texts.message),
+                      dismissButton: .default(Text("Fechar")))
+                }
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(viewModel.editingCollection == nil ? "Criar Coleção" : "Editar Coleção")
             .navigationBarTitleDisplayMode(.inline)
@@ -86,15 +90,23 @@ public struct NewCollectionView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
-                        do {
-                            if viewModel.editingCollection == nil {
+                        
+                        if viewModel.editingCollection == nil {
+                            do {
                                 try viewModel.createCollection()
-                            } else {
-                                try viewModel.editCollection()
+                                dismiss()
+                            } catch {
+                                showingErrorAlert = true
+                                selectedErrorMessage = .createCollection
                             }
-                            dismiss()
-                        } catch {
-                            showingErrorAlert = true
+                        } else {
+                            do {
+                                try viewModel.editCollection()
+                                dismiss()
+                            } catch {
+                                showingErrorAlert = true
+                                selectedErrorMessage = .editCollection
+                            }
                         }
                     }
                     .disabled(!viewModel.canSubmit)

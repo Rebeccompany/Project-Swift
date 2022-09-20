@@ -13,8 +13,9 @@ import Storage
 public struct NewDeckView: View {
     @ObservedObject
     private var viewModel: NewDeckViewModel
-    @Environment(\.dismiss) private var dismiss
     @State private var showingErrorAlert: Bool = false
+    @State private var selectedErrorMessage: AlertText = .deleteDeck
+    @Environment(\.dismiss) private var dismiss
     
     public init(viewModel: NewDeckViewModel) {
         self.viewModel = viewModel
@@ -75,6 +76,7 @@ public struct NewDeckView: View {
                             try viewModel.deleteDeck()
                         } catch {
                             showingErrorAlert = true
+                            selectedErrorMessage = .deleteDeck
                         }
                     } label: {
                         Text("Apagar Deck")
@@ -86,11 +88,11 @@ public struct NewDeckView: View {
             
             .onAppear(perform: viewModel.startUp)
             .padding()
-            .alert("Ocorreu um erro interno, tente novamente", isPresented: $showingErrorAlert) {
-                Button("OK", role: .cancel) {
-                    viewModel.showingErrorAlert = false
+            .alert(isPresented: $showingErrorAlert) {
+                Alert(title: Text(selectedErrorMessage.texts.title),
+                      message: Text(selectedErrorMessage.texts.message),
+                      dismissButton: .default(Text("Fechar")))
                 }
-            }
             
             .viewBackgroundColor(HBColor.primaryBackground)
             
@@ -100,16 +102,24 @@ public struct NewDeckView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
-                        do {
-                            if viewModel.editingDeck == nil {
+                        
+                        if viewModel.editingDeck == nil {
+                            do {
                                 try viewModel.createDeck()
-                            } else {
-                                try viewModel.editDeck()
+                                dismiss()
+                            } catch {
+                                showingErrorAlert = true
+                                selectedErrorMessage = .createDeck
                             }
-                            dismiss()
-                        } catch {
-                            showingErrorAlert = true
-                        }                   
+                        } else {
+                            do {
+                                try viewModel.editDeck()
+                                dismiss()
+                            } catch {
+                                showingErrorAlert = true
+                                selectedErrorMessage = .editDeck
+                            }
+                        }
                     }
                     .disabled(!viewModel.canSubmit)
                 }
