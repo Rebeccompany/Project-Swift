@@ -58,6 +58,6 @@ struct DeckTableView: View {
 
 struct DeckTableView_Previews: PreviewProvider {
     static var previews: some View {
-        DeckTableView(decks: [Deck(id: UUID(), name: "Nome do Baralho 1", icon: "flame", color: .otherPink, collectionsIds: [], cardsIds: []), Deck(id: UUID(), name: "Nome do Baralho 2", icon: "flame", color: .otherPink, collectionsIds: [], cardsIds: [UUID()])], sortOrder: .constant([.init(\.name)]), selection: .constant(.init()))
+        DeckTableView(decks: [Deck(id: UUID(), name: "Nome do Baralho 1", icon: "flame", color: .otherPink, collectionId: nil, cardsIds: []), Deck(id: UUID(), name: "Nome do Baralho 2", icon: "flame", color: .otherPink, collectionId: nil, cardsIds: [UUID()])], sortOrder: .constant([.init(\.name)]), selection: .constant(.init()))
     }
 }

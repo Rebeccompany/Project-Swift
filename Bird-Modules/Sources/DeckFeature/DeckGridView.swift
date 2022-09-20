@@ -30,7 +30,7 @@ struct DeckGridView: View {
 struct DeckGridView_Previews: PreviewProvider {
     static var previews: some View {
         //NavigationStack {
-            DeckGridView(decks: [Deck(id: UUID(), name: "Baralho 1", icon: "flame", color: .otherPink, collectionsIds: [], cardsIds: [])])
+        DeckGridView(decks: [Deck(id: UUID(), name: "Baralho 1", icon: "flame", color: .otherPink, collectionId: nil, cardsIds: [])])
                 .previewDevice(PreviewDevice(stringLiteral: "iPhone 12"))
         //}
     }

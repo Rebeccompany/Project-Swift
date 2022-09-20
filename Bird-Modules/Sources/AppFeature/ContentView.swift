@@ -99,7 +99,7 @@ public struct ContentView: View {
                 }
                 .navigationTitle(viewModel.detailTitle)
                 .sheet(isPresented: $presentDeckEdition) {
-                    NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock.shared, collectionId: []))
+                    NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock.shared, collectionId: nil))
                 }
         } destination: { (route: StudyRoute) in
             StudyRoutes.destination(for: route)

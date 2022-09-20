@@ -43,8 +43,8 @@ public final class ContentViewModel: ObservableObject {
     }
     
     public init(
-        collectionRepository: CollectionRepositoryProtocol = CollectionRepositoryMock.shared,
-        deckRepository: DeckRepositoryProtocol = DeckRepositoryMock.shared
+        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
+        deckRepository: DeckRepositoryProtocol = DeckRepository.shared
     ) {
         self.collectionRepository = collectionRepository
         self.deckRepository = deckRepository
@@ -83,7 +83,7 @@ public final class ContentViewModel: ObservableObject {
             return decks
         case .decksFromCollection(let collection):
             return decks.filter { deck in
-                deck.collectionsIds.contains(collection.id)
+                deck.collectionId == collection.id
             }
         }
     }
