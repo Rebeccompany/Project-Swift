@@ -22,7 +22,7 @@ public class NewDeckViewModel: ObservableObject {
     
     var colors: [CollectionColor]
     var icons: [IconNames]
-    var collectionId: [UUID]
+    var collectionId: UUID?
     private let deckRepository: DeckRepositoryProtocol
     private let dateHandler: DateHandlerProtocol
     private let uuidGenerator: UUIDGeneratorProtocol
@@ -33,7 +33,7 @@ public class NewDeckViewModel: ObservableObject {
         icons: [IconNames],
         editingDeck: Deck? = nil,
         deckRepository: DeckRepositoryProtocol,
-        collectionId: [UUID],
+        collectionId: UUID?,
         dateHandler: DateHandlerProtocol = DateHandler(),
         uuidGenerator: UUIDGeneratorProtocol = UUIDGenerator()
     ) {
@@ -69,55 +69,42 @@ public class NewDeckViewModel: ObservableObject {
         !name.isEmpty && currentSelectedColor != nil && currentSelectedIcon != nil
     }
     
-    func createDeck() {
+    func createDeck() throws {
         guard let selectedColor = currentSelectedColor, let selectedIcon = currentSelectedIcon else {
             return
         }
 
-        do {
-            try deckRepository.createDeck(
-                Deck(id: uuidGenerator.newId(),
-                     name: deckName,
-                     icon: selectedIcon.rawValue.description,
-                     color: selectedColor,
-                     datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
-                     collectionsIds: collectionId,
-                     cardsIds: [],
-                     spacedRepetitionConfig: SpacedRepetitionConfig()),
-                cards: [])
-                    
-        } catch {
-            showingErrorAlert = true
-        }
+        try deckRepository.createDeck(
+            Deck(id: uuidGenerator.newId(),
+                    name: deckName,
+                    icon: selectedIcon.rawValue.description,
+                    color: selectedColor,
+                    datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
+                    collectionId: collectionId,
+                    cardsIds: [],
+                    spacedRepetitionConfig: SpacedRepetitionConfig()),
+            cards: [])
     }
     
-    func editDeck() {
+    func editDeck() throws {
         guard let selectedColor = currentSelectedColor, let selectedIcon = currentSelectedIcon, var editingDeck = editingDeck else {
             return
         }
 
-        do {
-            editingDeck.name = deckName
-            editingDeck.color = selectedColor
-            editingDeck.icon = selectedIcon.rawValue.description
-            editingDeck.datesLogs.lastAccess = dateHandler.today
-            editingDeck.datesLogs.lastEdit = dateHandler.today
-            try deckRepository.editDeck(editingDeck)
-                    
-        } catch {
-            showingErrorAlert = true
-        }
+        editingDeck.name = deckName
+        editingDeck.color = selectedColor
+        editingDeck.icon = selectedIcon.rawValue.description
+        editingDeck.datesLogs.lastAccess = dateHandler.today
+        editingDeck.datesLogs.lastEdit = dateHandler.today
+        try deckRepository.editDeck(editingDeck)
     }
     
-    func deleteDeck() {
+    func deleteDeck() throws {
         guard let editingDeck = editingDeck else {
             return
         }
-
-        do {
-            try deckRepository.deleteDeck(editingDeck)
-        } catch {
-            showingErrorAlert = true
-        }
+        
+        try deckRepository.deleteDeck(editingDeck)
     }
+    
 }

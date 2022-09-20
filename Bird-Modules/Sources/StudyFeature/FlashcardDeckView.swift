@@ -10,20 +10,40 @@ import Models
 import HummingBird
 
 struct FlashcardDeckView: View {
-    var cards: [Card]
+    @Binding var cards: [CardViewModel]
+    let cardBaseSize: CGSize = .init(width: 11, height: 18)
+    
     
     var body: some View {
-        GeometryReader { _ in
-            ZStack(alignment: .top) {
-                ForEach(Array(zip(cards, cards.indices)), id: \.0.id) { card, i in
-                    FlashcardView(card: card)
-                        .offset(y: getCardOffset(index: i))
-                        .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)))
-                        .zIndex(Double(i))
+        GeometryReader { proxy in
+            let cardSize = getCardSize(proxy.size)
+            
+            HStack {
+                Spacer()
+                ZStack {
+                    ForEach(Array(zip($cards, cards.indices)), id: \.0.card.id) { $card, i in
+                        FlashcardView(viewModel: $card, index: i)
+                            .offset(y: getCardOffset(index: i))
+                            .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)))
+                            .zIndex(Double(i))
+                    }
                 }
+                .padding(.bottom, 10 * Double(cards.count - 1))
+                .frame(width: cardSize.width, height: cardSize.height, alignment: .center)
+                Spacer()
             }
-            .padding(.bottom, 10 * Double(cards.count - 1))
+           
         }
+    }
+    
+    private func getCardSize(_ geometrySize: CGSize) -> CGSize {
+
+        var size: CGSize = .zero
+        
+        size.height = geometrySize.height
+        size.width = (cardBaseSize.width / cardBaseSize.height) * size.height
+        
+        return size
     }
     
     private func getCardOffset(index: Int) -> Double {
@@ -35,17 +55,17 @@ struct FlashcardDeckView_Previews: PreviewProvider {
     
     private struct Preview: View {
         @State
-        private var cards: [Card] = [FlashcardView_Previews.dummy]
+        private var cards: [CardViewModel] = [CardViewModel(card: FlashcardView_Previews.dummy, isFlipped: false) ]
         
         var body: some View {
             VStack {
-                FlashcardDeckView(cards: cards)
+                FlashcardDeckView(cards: $cards)
                     .padding()
                 
                 HStack {
                     Button {
                         withAnimation {
-                            cards.insert(FlashcardView_Previews.dummy, at: 0)
+                            cards.insert(CardViewModel(card: FlashcardView_Previews.dummy, isFlipped: false), at: 0)
                         }
                         
                     } label: {

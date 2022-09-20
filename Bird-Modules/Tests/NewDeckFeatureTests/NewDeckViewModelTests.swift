@@ -11,6 +11,7 @@ import Storage
 import Models
 import HummingBird
 import Combine
+import Utils
 
 class NewDeckViewModelTests: XCTestCase {
 
@@ -30,7 +31,7 @@ class NewDeckViewModelTests: XCTestCase {
         sut = NewDeckViewModel(colors: CollectionColor.allCases,
                                icons: IconNames.allCases,
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
         )
@@ -46,11 +47,11 @@ class NewDeckViewModelTests: XCTestCase {
         cancellables = nil
     }
     
-    func testCreateDeckSuccessfully() {
+    func testCreateDeckSuccessfully() throws {
         sut.deckName = "Name"
         sut.currentSelectedColor = CollectionColor.red
         sut.currentSelectedIcon = IconNames.book
-        sut.createDeck()
+        try sut.createDeck()
         
         let containsNewDeck = deckRepository.decks.contains(where: {
             $0.id == uuidHandler.lastCreatedID
@@ -59,12 +60,12 @@ class NewDeckViewModelTests: XCTestCase {
         XCTAssertTrue(containsNewDeck)
     }
     
-    func testCreateDeckError() {
+    func testCreateDeckError() throws {
         sut.deckName = "Name"
         sut.currentSelectedColor = CollectionColor.red
         sut.currentSelectedIcon = IconNames.book
         deckRepository.shouldThrowError = true
-        sut.createDeck()
+        XCTAssertThrowsError(try sut.createDeck())
         
         let containsNewDeck = deckRepository.decks.contains(where: {
             $0.id == uuidHandler.lastCreatedID
@@ -165,12 +166,12 @@ class NewDeckViewModelTests: XCTestCase {
         wait(for: [expectations], timeout: 1)
     }
     
-    func testEditDeckName() {
+    func testEditDeckName() throws {
         sut = NewDeckViewModel(colors: CollectionColor.allCases,
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -178,17 +179,17 @@ class NewDeckViewModelTests: XCTestCase {
         XCTAssertEqual(deckRepository.decks[0].name, "Programação Swift")
 
         sut.deckName = "New name"
-        sut.editDeck()
+        try sut.editDeck()
         
         XCTAssertEqual(deckRepository.decks[0].name, "New name")
     }
     
-    func testEditDeckColor() {
+    func testEditDeckColor() throws {
         sut = NewDeckViewModel(colors: CollectionColor.allCases,
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -196,17 +197,17 @@ class NewDeckViewModelTests: XCTestCase {
         XCTAssertEqual(deckRepository.decks[0].color, .red)
 
         sut.currentSelectedColor = CollectionColor.darkBlue
-        sut.editDeck()
+        try sut.editDeck()
         
         XCTAssertEqual(deckRepository.decks[0].color, .darkBlue)
     }
     
-    func testEditDeckIcon() {
+    func testEditDeckIcon() throws {
         sut = NewDeckViewModel(colors: CollectionColor.allCases,
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -214,17 +215,17 @@ class NewDeckViewModelTests: XCTestCase {
         XCTAssertEqual(deckRepository.decks[0].icon, IconNames.pencil.rawValue)
         
         sut.currentSelectedIcon = IconNames.book
-        sut.editDeck()
+        try sut.editDeck()
         
         XCTAssertEqual(deckRepository.decks[0].icon, IconNames.book.rawValue)
     }
     
-    func testEditDeckError() {
+    func testEditDeckError() throws {
         sut = NewDeckViewModel(colors: CollectionColor.allCases,
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -233,17 +234,17 @@ class NewDeckViewModelTests: XCTestCase {
         
         deckRepository.shouldThrowError = true
         sut.currentSelectedColor = CollectionColor.darkBlue
-        sut.editDeck()
+        XCTAssertThrowsError(try sut.editDeck())
         
         XCTAssertNotEqual(deckRepository.decks[0].color, CollectionColor.darkBlue)
     }
     
-    func testDeleteDeckSuccessfully() {
+    func testDeleteDeckSuccessfully() throws {
         sut = NewDeckViewModel(colors: CollectionColor.allCases,
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -256,7 +257,7 @@ class NewDeckViewModelTests: XCTestCase {
         
         XCTAssertTrue(containsDeck)
 
-        sut.deleteDeck()
+        try sut.deleteDeck()
 
         let deletedDeck = deckRepository.decks.contains(where: {
             $0.id == id
@@ -265,12 +266,12 @@ class NewDeckViewModelTests: XCTestCase {
         XCTAssertFalse(deletedDeck)
     }
     
-    func testDeleteDeckError() {
+    func testDeleteDeckError() throws {
         sut = NewDeckViewModel(colors: CollectionColor.allCases,
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: [],
+                               collectionId: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -284,7 +285,7 @@ class NewDeckViewModelTests: XCTestCase {
         XCTAssertTrue(containsDeck)
 
         deckRepository.shouldThrowError = true
-        sut.deleteDeck()
+        XCTAssertThrowsError(try sut.deleteDeck())
 
         let deletedDeck = deckRepository.decks.contains(where: {
             $0.id == id

@@ -54,7 +54,7 @@ public struct CollectionsSidebar: View {
                     ForEach(collections) { collection in
                         NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
                             HStack {
-                                Text(collection.name)
+                                Label(collection.name, systemImage: IconNames.getIconString(collection.icon))
                                 Spacer()
                                 if editMode?.wrappedValue.isEditing ?? false {
                                     Image(systemName: "info.circle")
@@ -87,7 +87,7 @@ public struct CollectionsSidebar: View {
 struct CollectionsSidebar_Previews: PreviewProvider {
     static var previews: some View {
         NavigationSplitView {
-            CollectionsSidebar(collections: [DeckCollection(id: UUID(), name: "Coleção", color: .darkBlue, datesLogs: DateLogs(), decksIds: [])], selection: .constant(.allDecks), isCompact: false) { _ in } editAction: { _ in }
+            CollectionsSidebar(collections: [DeckCollection(id: UUID(), name: "Coleção", icon: .book, datesLogs: DateLogs(), decksIds: [])], selection: .constant(.allDecks), isCompact: false) { _ in } editAction: { _ in }
         } detail: {
             Text("Empty")
         }

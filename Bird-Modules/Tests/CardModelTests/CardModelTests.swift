@@ -20,6 +20,21 @@ class CardModelTests: XCTestCase {
     override func tearDownWithError() throws {
         sut = nil
     }
+    
+    // Testing set dueDate
+    func testSet() {
+        var card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 0), interval: 0)
+        card.dueDate = Date(timeIntervalSince1970: secondsInADay)
+        XCTAssertEqual(card.woodpeckerCardInfo.interval, 1)
+    }
+    
+    // Testing set dueDate with negative interval
+    func testSetNegative() {
+        var card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 0), interval: 0)
+        card.dueDate = Date(timeIntervalSince1970: -secondsInADay)
+        XCTAssertEqual(card.woodpeckerCardInfo.interval, 0)
+    }
+    
     // I = interval; H = Hour of last snapshot
     // Testing the dueDate for a card with interval = 0 and last snapshot at 01/01/1970 12:00
     func testI0H12() {

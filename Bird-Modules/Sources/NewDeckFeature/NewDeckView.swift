@@ -14,6 +14,7 @@ public struct NewDeckView: View {
     @ObservedObject
     private var viewModel: NewDeckViewModel
     @Environment(\.dismiss) private var dismiss
+    @State private var showingErrorAlert: Bool = false
     
     public init(viewModel: NewDeckViewModel) {
         self.viewModel = viewModel
@@ -70,7 +71,11 @@ public struct NewDeckView: View {
                 
                 if viewModel.editingDeck != nil {
                     Button {
-                        viewModel.deleteDeck()
+                        do {
+                            try viewModel.deleteDeck()
+                        } catch {
+                            showingErrorAlert = true
+                        }
                     } label: {
                         Text("Apagar Deck")
                     }
@@ -81,7 +86,7 @@ public struct NewDeckView: View {
             
             .onAppear(perform: viewModel.startUp)
             .padding()
-            .alert("Ocorreu um erro interno, tente novamente", isPresented: $viewModel.showingErrorAlert) {
+            .alert("Ocorreu um erro interno, tente novamente", isPresented: $showingErrorAlert) {
                 Button("OK", role: .cancel) {
                     viewModel.showingErrorAlert = false
                 }
@@ -95,13 +100,16 @@ public struct NewDeckView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
-                        
-                        if viewModel.editingDeck == nil {
-                            viewModel.createDeck()
-                        } else {
-                            viewModel.editDeck()
-                        }
-                        
+                        do {
+                            if viewModel.editingDeck == nil {
+                                try viewModel.createDeck()
+                            } else {
+                                try viewModel.editDeck()
+                            }
+                            dismiss()
+                        } catch {
+                            showingErrorAlert = true
+                        }                   
                     }
                     .disabled(!viewModel.canSubmit)
                 }
@@ -120,7 +128,7 @@ public struct NewDeckView: View {
 
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
-        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: [UUID()]))
+        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: UUID()))
             .preferredColorScheme(.dark)
     }
 }

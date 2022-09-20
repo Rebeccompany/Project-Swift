@@ -10,27 +10,61 @@ import Models
 import HummingBird
 
 struct FlashcardView: View {
-    var card: Card
-    @State private var isFlipped: Bool = false
+    @Binding var viewModel: CardViewModel
+    var index: Int
     @State private var frontDegree: Double = 0
     @State private var backDegree: Double = -90
     
+    init(viewModel: Binding<CardViewModel>, index: Int) {
+        self._viewModel = viewModel
+        self.index = index
+    }
+    
     var body: some View {
         ZStack {
-            cardFace(content: card.back, face: "Verso", description: "Toque para ver a frente")
-                .rotation3DEffect(.degrees(backDegree), axis: (x: 0, y: 1, z: 0))
-            cardFace(content: card.front, face: "Frente", description: "Toque para ver o verso")
-                .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0))
+            cardFace(content: viewModel.card.back, face: "Verso", description: "Toque para ver a frente")
+                .rotation3DEffect(.degrees(backDegree), axis: (x: 0, y: 1, z: 0.0001))
+            cardFace(content: viewModel.card.front, face: "Frente", description: "Toque para ver o verso")
+                .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0.0001))
         }
         .onTapGesture(perform: flip)
+        .onAppear {
+            print(index)
+        }
+        .onChange(of: viewModel.isFlipped) { newValue in
+            if index != 0 {
+                flipWithAnimation(newValue)
+            } else {
+                flipWithoutAnimation(newValue)
+            }
+        }
+        .transaction { transaction in
+            if index == 0 && !viewModel.isFlipped {
+                transaction.animation = nil
+            }
+        }
         
     }
     
     private func flip() {
-        isFlipped.toggle()
-        let animDuration: Double = 0.25
+        if index != 0 {
+            viewModel.isFlipped.toggle()
+        }
         
-        if isFlipped {
+    }
+    private func flipWithoutAnimation(_ newValue: Bool) {
+        if newValue {
+            frontDegree = 90
+            backDegree = 0
+        } else {
+            backDegree = -90
+            frontDegree = 0
+        }
+    }
+    
+    private func flipWithAnimation(_ newValue: Bool) {
+        let animDuration: Double = 0.25
+        if newValue {
             withAnimation(.linear(duration: animDuration)) {
                 frontDegree = 90
             }
@@ -78,7 +112,7 @@ struct FlashcardView: View {
         }
         .foregroundColor(.white)
         .padding(24)
-        .background(HBColor.getHBColrFromCollectionColor(card.color))
+        .background(HBColor.getHBColrFromCollectionColor(viewModel.card.color))
         .cornerRadius(24)
         .overlay(
             RoundedRectangle(cornerRadius: 24)
@@ -106,11 +140,11 @@ struct FlashcardView_Previews: PreviewProvider {
                                     interval: 1,
                                     hasBeenPresented: true)
         
-        return Card(id: id, front: AttributedString(frontNSAttributedString), back: AttributedString(backNSAttributedString), color: .beigeBrown, datesLogs: dateLog, deckID: deckId, woodpeckerCardInfo: wp, history: [])
+        return Card(id: id, front: AttributedString(frontNSAttributedString), back: AttributedString(backNSAttributedString), color: .red, datesLogs: dateLog, deckID: deckId, woodpeckerCardInfo: wp, history: [])
     }
     
     static var previews: some View {
-        FlashcardView(card: dummy)
+        FlashcardView(viewModel: .constant(CardViewModel(card: dummy, isFlipped: false)), index: 0)
             .frame(width: 340, height: 480)
             .padding()
             .preferredColorScheme(.dark)

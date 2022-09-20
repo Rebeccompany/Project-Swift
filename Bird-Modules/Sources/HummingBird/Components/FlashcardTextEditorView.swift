@@ -12,7 +12,7 @@ public struct FlashcardTextEditorView: View {
     var color: Color
     var side: String
     
-    init(color: Color, side: String, cardText: Binding<String>) {
+    public init(color: Color, side: String, cardText: Binding<String>) {
         self.color = color
         self.side = side
         self._cardText = cardText
@@ -28,6 +28,7 @@ public struct FlashcardTextEditorView: View {
             TextEditor(text: $cardText)
                 .foregroundColor(.white)
                 .padding()
+                .scrollContentBackground(.hidden)
         }
         .background(color)
         .clipShape(

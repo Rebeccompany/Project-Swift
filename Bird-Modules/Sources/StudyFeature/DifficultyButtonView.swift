@@ -8,28 +8,35 @@
 import Foundation
 import SwiftUI
 import HummingBird
+import Models
+import Utils
 
 struct DifficultyButtonView: View {
     @Binding var isDisabled: Bool
-    private let content: DifficultyButtonContent
-    private let step: DifficultyStep
-    private let action: (DifficultyStep) -> Void
-    
-    init(step: DifficultyStep, isDisabled: Binding<Bool>, action: @escaping (DifficultyStep) -> Void) {
-        self.step = step
-        self.content = step.buttonContent
+    private var content: DifficultyButtonContent
+    private let userGrade: UserGrade
+    private let action: (UserGrade) -> Void
+
+    @Binding var isVOOn: Bool
+
+
+
+    init(userGrade: UserGrade, isDisabled: Binding<Bool>, isVOOn: Binding<Bool>, action: @escaping (UserGrade) -> Void) {
+        self.userGrade = userGrade
+        self.content = DifficultyButtonContent.getbuttonContent(for: userGrade)
         self._isDisabled = isDisabled
         self.action = action
+        self._isVOOn = isVOOn
     }
     
     var body: some View {
         VStack {
             Button {
                 if !isDisabled {
-                    action(step)
+                    action(userGrade)
                 }
             } label: {
-                Image(systemName: content.image)
+                Image(systemName: !isVOOn ? content.image : "circle")
                     .font(.title)
                     .foregroundColor(isDisabled ? .gray : content.color)
                     .aspectRatio(1, contentMode: .fill)
@@ -41,15 +48,20 @@ struct DifficultyButtonView: View {
                     )
             }
             .disabled(isDisabled)
+            
             Text(content.label)
-                .font(.footnote)
+                .font(.system(size: 14))
                 .fontWeight(.medium)
                 .foregroundColor(isDisabled ? .gray : .primary)
                 .padding(.top, 4)
+                .accessibilityHidden(true)
+                
         }
+        .accessibilityLabel("Clicar em " + content.label.finilized)
+        
     }
+    
 }
-
 
 struct DifficultyButtonView_Preview: PreviewProvider {
     private static var content: DifficultyButtonContent {
@@ -59,9 +71,9 @@ struct DifficultyButtonView_Preview: PreviewProvider {
     static var previews: some View {
         
         HStack {
-            ForEach(DifficultyStep.allCases) { step in
+            ForEach(UserGrade.allCases) { step in
                 Spacer()
-                DifficultyButtonView(step: step, isDisabled: .constant(false)) { _ in }
+                DifficultyButtonView(userGrade: step, isDisabled: .constant(false), isVOOn: .constant(false)) { _ in }
                 Spacer()
             }
         }
@@ -71,9 +83,9 @@ struct DifficultyButtonView_Preview: PreviewProvider {
             .previewLayout(.sizeThatFits)
         
         HStack {
-            ForEach(DifficultyStep.allCases) { step in
+            ForEach(UserGrade.allCases) { step in
                 Spacer()
-                DifficultyButtonView(step: step, isDisabled: .constant(false)) { _ in }
+                DifficultyButtonView(userGrade: step, isDisabled: .constant(false), isVOOn: .constant(false)) { _ in }
                 Spacer()
             }
         }
@@ -82,25 +94,25 @@ struct DifficultyButtonView_Preview: PreviewProvider {
         .background(HBColor.primaryBackground)
         .previewLayout(.sizeThatFits)
         
-        DifficultyButtonView(step: .hard, isDisabled: .constant(false)) { _ in }
+        DifficultyButtonView(userGrade: .wrong, isDisabled: .constant(false), isVOOn: .constant(false)) { _ in }
             .padding()
             .preferredColorScheme(.light)
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
         
-        DifficultyButtonView(step: .veryHard, isDisabled: .constant(false)) { _ in }
+        DifficultyButtonView(userGrade: .wrongHard, isDisabled: .constant(false), isVOOn: .constant(false)) { _ in }
             .padding()
             .preferredColorScheme(.dark)
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
         
-        DifficultyButtonView(step: .veryHard, isDisabled: .constant(true)) { _ in }
+        DifficultyButtonView(userGrade: .wrongHard, isDisabled: .constant(true), isVOOn: .constant(false)) { _ in }
             .padding()
             .preferredColorScheme(.light)
             .background(HBColor.primaryBackground)
             .previewLayout(.sizeThatFits)
         
-        DifficultyButtonView(step: .veryHard, isDisabled: .constant(true)) { _ in }
+        DifficultyButtonView(userGrade: .wrongHard, isDisabled: .constant(true), isVOOn: .constant(false)) { _ in }
             .padding()
             .preferredColorScheme(.dark)
             .background(HBColor.primaryBackground)

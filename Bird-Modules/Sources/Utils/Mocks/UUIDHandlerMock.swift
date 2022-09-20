@@ -6,12 +6,13 @@
 //
 
 import Foundation
-import Utils
 
-class UUIDHandlerMock: UUIDGeneratorProtocol {
-    var lastCreatedID: UUID? = nil
+public class UUIDHandlerMock: UUIDGeneratorProtocol {
+    public init() {}
     
-    func newId() -> UUID {
+    public var lastCreatedID: UUID?
+    
+    public func newId() -> UUID {
         let newID = UUID()
         lastCreatedID = newID
         return newID

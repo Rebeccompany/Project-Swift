@@ -32,8 +32,8 @@ class DeckFileViewTests: XCTestCase {
         super.tearDown()
     }
 
-    func testViewBinding() throws {
-        viewModel.fileContent = DummyCSVData.dummyData[0]
-        XCTAssertFalse(decodeFiles.isEmpty)
-    }
+//    func testViewBinding() throws {
+//        viewModel.fileContent = DummyCSVData.dummyData[0]
+//        XCTAssertFalse(decodeFiles.isEmpty)
+//    }
 }

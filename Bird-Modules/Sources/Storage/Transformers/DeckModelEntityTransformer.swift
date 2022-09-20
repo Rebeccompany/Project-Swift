@@ -41,15 +41,15 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
             let lastAccess = entity.lastAccess,
             let createdAt = entity.createdAt,
             let lastEdit = entity.lastEdit,
-            let collections = entity.collections?.allObjects as? [CollectionEntity],
+            let collection = entity.collection,
             let cards = entity.cards?.allObjects as? [CardEntity]
         else { return nil }
         
         let maxLearningCards = entity.maxLearningCards
         let maxReviewingCards = entity.maxReviewingCards
-        let spacedRepetitionConfig = SpacedRepetitionConfig(maxLearningCards: Int(maxLearningCards), maxReviewingCards: Int(maxReviewingCards))
+        let spacedRepetitionConfig = SpacedRepetitionConfig(maxLearningCards: Int(maxLearningCards), maxReviewingCards: Int(maxReviewingCards), numberOfSteps: Int(entity.numberOfSteps))
         let dateLogs = DateLogs(lastAccess: lastAccess, lastEdit: lastEdit, createdAt: createdAt)
-        let collectionsIds = collections.compactMap(\.id)
+        let collectionIds = collection.id
         let cardsIds = cards.compactMap(\.id)
         
         return Deck(
@@ -58,7 +58,7 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
                     icon: icon,
                     color: color,
                     datesLogs: dateLogs,
-                    collectionsIds: collectionsIds,
+                    collectionId: collectionIds,
                     cardsIds: cardsIds,
                     spacedRepetitionConfig: spacedRepetitionConfig
         )
@@ -74,6 +74,7 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
         deck.name = model.name
         deck.maxLearningCards = Int32(model.spacedRepetitionConfig.maxLearningCards)
         deck.maxReviewingCards = Int32(model.spacedRepetitionConfig.maxReviewingCards)
+        deck.numberOfSteps = Int16(model.spacedRepetitionConfig.numberOfSteps)
         return deck
     }
 }

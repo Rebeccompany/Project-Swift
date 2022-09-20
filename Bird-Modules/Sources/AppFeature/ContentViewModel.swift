@@ -106,8 +106,8 @@ public final class ContentViewModel: ObservableObject {
         switch completion {
         case .finished:
             print("finished")
-        case .failure(_):
-            print("error")
+        case .failure(let error):
+            print(error)
         }
     }
     

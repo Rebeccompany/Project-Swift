@@ -1,32 +1,31 @@
 //
- //  DeckRepositoryMock.swift
- //
- //
- //  Created by Marcos Chevis on 06/09/22.
- //
+//  DeckRepositoryMock.swift
+//
+//
+//  Created by Marcos Chevis on 06/09/22.
+//
 
- import Foundation
- import Models
- import Combine
+import Foundation
+import Models
+import Combine
 
 //swiftlint: disable private_subject
- public class DeckRepositoryMock: DeckRepositoryProtocol {
-     
-     public var shouldThrowError: Bool = false
-     
-     public var deckWithCardsId: UUID = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")!
-
-     public lazy var decks: [Deck] = [
+public class DeckRepositoryMock: DeckRepositoryProtocol {
+    
+    public var shouldThrowError: Bool = false
+    
+    public var deckWithCardsId: UUID = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")!
+    lazy var subject: CurrentValueSubject<[Deck], RepositoryError> = .init(decks)
+    
+    public lazy var decks: [Deck] = [
         Deck(id: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", cardsIds: cards.map {
             $0.id
         }, bool: false),
         Deck(id: "a498bc3c-85a3-4784-b560-a33a272a0a92", colIds: [UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!], bool: false),
         Deck(id: "4e56be0a-bc7c-4497-aec9-c30482e82496", colIds: [UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!]),
         Deck(id: "3947217b-2f55-4f16-ae59-10017d291579", bool: false)
+    ]
 
-     ]
-
-     public lazy var subject: CurrentValueSubject<[Deck], RepositoryError> = .init(decks)
 
      public var cards: [Card] = [
          Card(id: "1f222564-ff0d-4f2d-9598-1a0542899974", deckId: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", state: .learn),
@@ -112,11 +111,15 @@
          }
          
          if let i = decks.firstIndex(where: { d in d.id == deck.id }) {
+             var deck = deck
+             deck.cardsIds.append(card.id)
              decks[i] = deck
+             cards.append(card)
              subject.send(decks)
          } else {
              throw RepositoryError.couldNotEdit
          }
+         
      }
 
      public func removeCard(_ card: Card, from deck: Deck) throws {
@@ -195,6 +198,29 @@
      }
  }
 
+extension Card {
+    
+    fileprivate init(id: String, deckId: String, state: WoodpeckerState, front: AttributedString, back: AttributedString) {
+        let h: [CardSnapshot]
+        switch state {
+        case .review:
+            h = [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(state: .learn), userGrade: .correct, timeSpend: 20, date: Date(timeIntervalSince1970: -8400))]
+        case .learn:
+            h = []
+        }
+        self.init(id: UUID(uuidString: id)!,
+                  front: front,
+                  back: back,
+                  color: .red,
+                  datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
+                                      lastEdit: Date(timeIntervalSince1970: 0),
+                                      createdAt: Date(timeIntervalSince1970: 0)),
+                  deckID: UUID(uuidString: deckId)!,
+                  woodpeckerCardInfo: WoodpeckerCardInfo(state: state),
+                  history: h)
+    }
+}
+
  extension Card {
      fileprivate init(id: String, deckId: String, state: WoodpeckerState) {
          let h: [CardSnapshot]
@@ -205,8 +231,8 @@
              h = []
          }
          self.init(id: UUID(uuidString: id)!,
-                   front: "",
-                   back: "",
+                   front: "Parte da frente",
+                   back: "Parte de tras",
                    color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),
@@ -226,9 +252,10 @@
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),
                                        createdAt: Date(timeIntervalSince1970: 0)),
-                   collectionsIds: colIds,
+                   collectionId: nil,
                    cardsIds: cardsIds,
                    spacedRepetitionConfig: .init(maxLearningCards: 20,
-                                                 maxReviewingCards: 200))
+                                                 maxReviewingCards: 200,
+                                                 numberOfSteps: 4))
      }
  }

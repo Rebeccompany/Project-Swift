@@ -38,7 +38,7 @@ final class DeckRepositoryTests: XCTestCase {
     }
     
     func testFetchDeckById() throws {
-        let count = try dataStorage.mainContext.count(for: DeckEntity.fetchRequest())
+        _ = try dataStorage.mainContext.count(for: DeckEntity.fetchRequest())
         try createStandardDeck()
         
         let expectation = expectation(description: "fetch a single Deck")

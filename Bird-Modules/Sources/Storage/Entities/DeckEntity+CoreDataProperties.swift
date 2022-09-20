@@ -2,13 +2,13 @@
 //  DeckEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Marcos Chevis on 05/09/22.
+//  Created by Marcos Chevis on 20/09/22.
 //
 //
 
 import Foundation
 import CoreData
-// swiftlint:disable implicit_return
+
 extension DeckEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<DeckEntity> {
@@ -24,8 +24,9 @@ extension DeckEntity {
     @NSManaged public var maxLearningCards: Int32
     @NSManaged public var maxReviewingCards: Int32
     @NSManaged public var name: String?
+    @NSManaged public var numberOfSteps: Int16
     @NSManaged public var cards: NSSet?
-    @NSManaged public var collections: NSSet?
+    @NSManaged public var collection: CollectionEntity?
 
 }
 
@@ -43,22 +44,5 @@ extension DeckEntity {
 
     @objc(removeCards:)
     @NSManaged public func removeFromCards(_ values: NSSet)
-
-}
-
-// MARK: Generated accessors for collections
-extension DeckEntity {
-
-    @objc(addCollectionsObject:)
-    @NSManaged public func addToCollections(_ value: CollectionEntity)
-
-    @objc(removeCollectionsObject:)
-    @NSManaged public func removeFromCollections(_ value: CollectionEntity)
-
-    @objc(addCollections:)
-    @NSManaged public func addToCollections(_ values: NSSet)
-
-    @objc(removeCollections:)
-    @NSManaged public func removeFromCollections(_ values: NSSet)
 
 }

@@ -12,17 +12,17 @@ public struct DeckCollection: Identifiable, Equatable, Hashable {
     public let id: UUID
     /// The name of the collection.
     public var name: String
-    /// The color of the collection
-    public var color: CollectionColor
+    /// The icon of the collection
+    public var icon: IconNames
     /// Logs of dates.
     public var datesLogs: DateLogs
     /// A list of the decks ids that belongs to the collection
     public var decksIds: [UUID]
     
-    public init(id: UUID, name: String, color: CollectionColor, datesLogs: DateLogs, decksIds: [UUID]) {
+    public init(id: UUID, name: String, icon: IconNames, datesLogs: DateLogs, decksIds: [UUID]) {
         self.id = id
         self.name = name
-        self.color = color
+        self.icon = icon
         self.datesLogs = datesLogs
         self.decksIds = decksIds
     }

@@ -2,22 +2,21 @@
 //  CollectionEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Marcos Chevis on 05/09/22.
+//  Created by Marcos Chevis on 20/09/22.
 //
 //
 
 import Foundation
 import CoreData
 
-// swiftlint:disable implicit_return
 extension CollectionEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CollectionEntity> {
         return NSFetchRequest<CollectionEntity>(entityName: "CollectionEntity")
     }
 
-    @NSManaged public var color: Int16
     @NSManaged public var createdAt: Date?
+    @NSManaged public var icon: String?
     @NSManaged public var id: UUID?
     @NSManaged public var lastAccess: Date?
     @NSManaged public var lastEdit: Date?

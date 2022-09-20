@@ -18,24 +18,20 @@ public struct Deck: Identifiable, Equatable, Hashable {
     public var color: CollectionColor
     /// Logs of dates.
     public var datesLogs: DateLogs
-    /// A list of collection ids the deck belongs to.
-    public var collectionsIds: [UUID]
+    /// The collection id the deck belongs to.
+    public var collectionId: UUID?
     /// A list of flashcard ids the deck contains
     public var cardsIds: [UUID]
     /// Configurantion for Spaced repetition.
     public var spacedRepetitionConfig: SpacedRepetitionConfig
     
-    public var cardCount: Int {
-        cardsIds.count
-    }
-    
-    public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs = DateLogs(), collectionsIds: [UUID], cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig = SpacedRepetitionConfig()) {
+    public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs = DateLogs(), collectionId: UUID?, cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig = SpacedRepetitionConfig()) {
         self.id = id
         self.name = name
         self.icon = icon
         self.color = color
         self.datesLogs = datesLogs
-        self.collectionsIds = collectionsIds
+        self.collectionId = collectionId
         self.cardsIds = cardsIds
         self.spacedRepetitionConfig = spacedRepetitionConfig
     }

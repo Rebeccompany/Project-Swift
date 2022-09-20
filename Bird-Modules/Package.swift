@@ -75,10 +75,18 @@ let package = Package(
                 "NewCollectionFeature"
             ]
         ),
+        
         .library(
             name: "NewDeckFeature",
             targets: [
                 "NewDeckFeature"
+            ]
+        ),
+        
+        .library(
+            name: "NewFlashcardFeature",
+            targets: [
+                "NewFlashcardFeature"
             ]
         ),
         
@@ -127,12 +135,15 @@ let package = Package(
             name: "AppFeature",
             dependencies: [
                 "Storage",
+                "StudyFeature",
                 "CollectionFeature",
                 "NewCollectionFeature",
                 "NewDeckFeature",
                 "DeckFeature",
                 "Models",
-                "Flock"
+                "Flock",
+                "DeckFeature",
+                "NewFlashcardFeature"
             ]
         ),
         
@@ -148,7 +159,10 @@ let package = Package(
             name: "DeckFeature",
             dependencies: [
                 "Models",
-                "HummingBird"
+                "HummingBird",
+                "Storage",
+                "Woodpecker",
+                "Utils"
             ]
         ),
         
@@ -158,13 +172,15 @@ let package = Package(
                 "Models"
             ]
         ),
-        
-        .target(
-            name: "StudyFeature",
-            dependencies: [
-                "Models",
-                "HummingBird"
-            ]
+            
+        .target(name: "StudyFeature",
+                dependencies: [
+                     "Models",
+                     "HummingBird",
+                     "Woodpecker",
+                     "Storage",
+                     "Utils"
+                ]
         ),
         
         .target(
@@ -197,6 +213,16 @@ let package = Package(
         
         .target(
             name: "NewDeckFeature",
+            dependencies: [
+                "Models",
+                "HummingBird",
+                "Storage",
+                "Utils"
+            ]
+        ),
+        
+        .target(
+            name: "NewFlashcardFeature",
             dependencies: [
                 "Models",
                 "HummingBird",
@@ -270,6 +296,15 @@ let package = Package(
         ),
         
         .testTarget(
+            name: "StudyFeatureTests",
+            dependencies: [
+                "StudyFeature",
+                "Models",
+                "Storage"
+            ]
+        ),
+        
+        .testTarget(
             name: "StorageTests",
             dependencies: [
                 "Storage",
@@ -299,10 +334,33 @@ let package = Package(
         ),
         
         .testTarget(
+            name: "NewFlashcardFeatureTests",
+            dependencies: [
+                "Storage",
+                "Models",
+                "NewFlashcardFeature",
+                "HummingBird",
+                "Utils"
+            ]
+        ),
+        
+        .testTarget(
             name: "FlockTests",
             dependencies: [
                 "Models",
                 "Flock"
+            ]
+        ),
+        
+        .testTarget(
+            name: "DeckFeatureTests",
+            dependencies: [
+                "DeckFeature",
+                "Storage",
+                "Models",
+                "HummingBird",
+                "Woodpecker",
+                "Utils"
             ]
         )
     ]

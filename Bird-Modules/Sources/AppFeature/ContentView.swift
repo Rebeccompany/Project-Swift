@@ -42,7 +42,6 @@ public struct ContentView: View {
         .sheet(isPresented: $presentCollectionEdition) {
             NewCollectionView(
                 viewModel: .init(
-                    colors: CollectionColor.allCases,
                     editingCollection: viewModel.editingCollection
                 )
             )
@@ -69,21 +68,21 @@ public struct ContentView: View {
             viewModel.editCollection(collection)
             presentCollectionEdition = true
         }
-            .navigationTitle("Nome do App")
-            .toolbar {
-                ToolbarItem {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button {
-                        viewModel.createCollection()
-                        presentCollectionEdition = true
-                    } label: {
-                        Image(systemName: "folder.badge.plus")
-                    }
+        .navigationTitle("Nome do App")
+        .toolbar {
+            ToolbarItem {
+                EditButton()
+            }
+            ToolbarItem {
+                Button {
+                    viewModel.createCollection()
+                    presentCollectionEdition = true
+                } label: {
+                    Image(systemName: "folder.badge.plus")
                 }
             }
-            .environment(\.editMode, $editMode)
+        }
+        .environment(\.editMode, $editMode)
     }
     
     @ViewBuilder
