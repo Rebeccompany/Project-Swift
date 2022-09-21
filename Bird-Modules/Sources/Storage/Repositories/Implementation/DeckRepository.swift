@@ -76,6 +76,7 @@ public final class DeckRepository: DeckRepositoryProtocol {
         entity.name = deck.name
         entity.lastAccess = deck.datesLogs.lastAccess
         entity.lastEdit = deck.datesLogs.lastEdit
+        entity.color = Int16(deck.color.rawValue)
         
         try deckRepository.save()
     }

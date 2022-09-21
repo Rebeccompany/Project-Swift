@@ -22,10 +22,11 @@ public class NewDeckViewModel: ObservableObject {
     
     var colors: [CollectionColor]
     var icons: [IconNames]
-    var collectionId: UUID?
+    var collection: DeckCollection?
     private let deckRepository: DeckRepositoryProtocol
     private let dateHandler: DateHandlerProtocol
     private let uuidGenerator: UUIDGeneratorProtocol
+    private let collectionRepository: CollectionRepositoryProtocol
     
     
     public init(
@@ -33,7 +34,8 @@ public class NewDeckViewModel: ObservableObject {
         icons: [IconNames],
         editingDeck: Deck? = nil,
         deckRepository: DeckRepositoryProtocol,
-        collectionId: UUID?,
+        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
+        collection: DeckCollection?,
         dateHandler: DateHandlerProtocol = DateHandler(),
         uuidGenerator: UUIDGeneratorProtocol = UUIDGenerator()
     ) {
@@ -41,8 +43,9 @@ public class NewDeckViewModel: ObservableObject {
         self.colors = colors
         self.icons = icons
         self.editingDeck = editingDeck
-        self.collectionId = collectionId
+        self.collection = collection
         self.deckRepository = deckRepository
+        self.collectionRepository = collectionRepository
         self.dateHandler = dateHandler
         self.uuidGenerator = uuidGenerator
         self.canSubmit = false
@@ -74,16 +77,20 @@ public class NewDeckViewModel: ObservableObject {
             return
         }
 
-        try deckRepository.createDeck(
-            Deck(id: uuidGenerator.newId(),
-                    name: deckName,
-                    icon: selectedIcon.rawValue.description,
-                    color: selectedColor,
-                    datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
-                    collectionId: collectionId,
-                    cardsIds: [],
-                    spacedRepetitionConfig: SpacedRepetitionConfig()),
-            cards: [])
+        let deck = Deck(id: uuidGenerator.newId(),
+                        name: deckName,
+                        icon: selectedIcon.rawValue.description,
+                        color: selectedColor,
+                        datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
+                        collectionId: collection?.id,
+                        cardsIds: [],
+                        spacedRepetitionConfig: SpacedRepetitionConfig())
+        
+        try deckRepository.createDeck(deck, cards: [])
+        
+        guard let collection
+        else { return }
+        try collectionRepository.addDeck(deck, in: collection)
     }
     
     func editDeck() throws {

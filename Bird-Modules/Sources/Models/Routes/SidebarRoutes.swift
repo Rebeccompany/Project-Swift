@@ -9,5 +9,5 @@ import Foundation
 
 public enum SidebarRoute: Hashable {
     case allDecks
-    case decksFromCollection(id: UUID)
+    case decksFromCollection(_ collection: DeckCollection)
 }
