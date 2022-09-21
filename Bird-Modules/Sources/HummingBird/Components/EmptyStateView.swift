@@ -7,17 +7,21 @@
 
 import SwiftUI
 
-struct EmptyStateView: View {
-    var component: String = ""
+public struct EmptyStateView: View {
+    var component: Components
     
-    var body: some View {
+    public init(component: Components) {
+        self.component = component
+    }
+    
+    public var body: some View {
         VStack {
-            if component == "coleção" {
+            if component == Components.collection {
                 HBAssets.noCollectionsEmptyState
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200)
-            } else if component == "baralho" {
+            } else if component == Components.deck {
                 HBAssets.noDecksEmptyState
                     .resizable()
                     .scaledToFit()
@@ -29,17 +33,17 @@ struct EmptyStateView: View {
                     .frame(width: 200)
             }
             
-            Text("Piu! Sem " + component + "!")
+            Text("Piu! Sem " + getComponentString(component: component) + "!")
                 .foregroundColor(HBColor.actionColor)
                 .bold()
                 .padding(.top, 10)
             
             
-            if component == "coleção" {
+            if component == Components.collection {
                 Text("Clique em + para criar uma nova coleção")
                     .foregroundColor(HBColor.collectionGray)
                     .font(.system(size: 15))
-            } else if component == "baralho" {
+            } else if component == Components.deck {
                 Text("Clique em + para criar um novo baralho")
                     .foregroundColor(HBColor.collectionGray)
                     .font(.system(size: 15))
@@ -54,6 +58,6 @@ struct EmptyStateView: View {
 
 struct EmptyStateView_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyStateView(component: getComponentString(component: .flashcard))
+        EmptyStateView(component: Components.collection)
     }
 }

@@ -24,11 +24,11 @@ public struct DeckView: View {
     
     public var body: some View {
         List {
-            if !viewModel.canStudy {
+            if !viewModel.canStudy && !viewModel.cards.isEmpty {
                 Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
                     .bold()
                     .multilineTextAlignment(.center)
-                    
+                    .listRowBackground(Color.clear)
             }
             Button("Estudar Deck") {
                 
@@ -41,7 +41,7 @@ public struct DeckView: View {
             .listRowSeparator(.hidden)
             .padding()
             
-            ForEach(viewModel.cardsSearched) {card in
+            ForEach(viewModel.cardsSearched) { card in
                 FlashcardCell(card: card) {
                     shouldDisplay = true
                 }
@@ -80,6 +80,23 @@ public struct DeckView: View {
             .listRowSeparator(.hidden)
         }
         .scrollContentBackground(.hidden)
+        .background(
+            VStack {
+                if viewModel.cards.isEmpty {
+                    VStack {
+                        EmptyStateView(component: .flashcard)
+                        Button{
+                            #warning("fazer ir pro modal de criar flashcard")
+                        } label: {
+                            Text("Criar Flashcard")
+                        }
+                        .buttonStyle(LargeButtonStyle(isDisabled: false))
+                        .padding()
+                    }
+                    
+                }
+            }
+        )
         .viewBackgroundColor(HBColor.primaryBackground)
         .onAppear(perform: viewModel.startup)
         .listStyle(.plain)
@@ -124,42 +141,42 @@ struct DeckView_Previews: PreviewProvider {
                             createdAt: Date()),
                         collectionId: nil,
                         cardsIds: [
-                            UUID(
-                                uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974"
-                            )!,
-                            UUID(
-                                uuidString: "66605408-4cd4-4ded-b23d-91db9249a946"
-                            )!,
-                            UUID(
-                                uuidString: "4f298230-4286-4a83-9f1c-53fd60533ed8"
-                            )!,
-                            UUID(
-                                uuidString: "9b06af85-e4e8-442d-be7a-40450cfd310c"
-                            )!,
-                            UUID(
-                                uuidString: "855eb618-602e-449d-83fc-5de6b8a36454"
-                            )!,
-                            UUID(
-                                uuidString: "5285798a-4107-48b3-8994-e706699a3445"
-                            )!,
-                            UUID(
-                                uuidString: "407e7694-316e-4903-9c94-b3ec0e9ab0e8"
-                            )!,
-                            UUID(
-                                uuidString: "09ae6b07-b988-442f-a059-9ea76d5c9055"
-                            )!,
-                            UUID(
-                                uuidString: "d3b5ba9a-7805-480e-ad47-43b842f0472f"
-                            )!,
-                            UUID(
-                                uuidString: "d9d3d4ec-9854-4e73-864b-1e68355a6973"
-                            )!,
-                            UUID(
-                                uuidString: "c24affd7-376d-4614-9ad6-8a83a0f60da5"
-                            )!,
-                            UUID(
-                                uuidString: "d2c951fb-36f5-49dc-84f0-353a3b3a2875"
-                            )!
+//                            UUID(
+//                                uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974"
+//                            )!,
+//                            UUID(
+//                                uuidString: "66605408-4cd4-4ded-b23d-91db9249a946"
+//                            )!,
+//                            UUID(
+//                                uuidString: "4f298230-4286-4a83-9f1c-53fd60533ed8"
+//                            )!,
+//                            UUID(
+//                                uuidString: "9b06af85-e4e8-442d-be7a-40450cfd310c"
+//                            )!,
+//                            UUID(
+//                                uuidString: "855eb618-602e-449d-83fc-5de6b8a36454"
+//                            )!,
+//                            UUID(
+//                                uuidString: "5285798a-4107-48b3-8994-e706699a3445"
+//                            )!,
+//                            UUID(
+//                                uuidString: "407e7694-316e-4903-9c94-b3ec0e9ab0e8"
+//                            )!,
+//                            UUID(
+//                                uuidString: "09ae6b07-b988-442f-a059-9ea76d5c9055"
+//                            )!,
+//                            UUID(
+//                                uuidString: "d3b5ba9a-7805-480e-ad47-43b842f0472f"
+//                            )!,
+//                            UUID(
+//                                uuidString: "d9d3d4ec-9854-4e73-864b-1e68355a6973"
+//                            )!,
+//                            UUID(
+//                                uuidString: "c24affd7-376d-4614-9ad6-8a83a0f60da5"
+//                            )!,
+//                            UUID(
+//                                uuidString: "d2c951fb-36f5-49dc-84f0-353a3b3a2875"
+//                            )!
                         ],
                         spacedRepetitionConfig: SpacedRepetitionConfig(
                             maxLearningCards: 20,
