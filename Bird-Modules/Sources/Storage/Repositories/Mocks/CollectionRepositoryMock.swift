@@ -22,7 +22,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
     public var collections: [DeckCollection] = [
         DeckCollection(id: UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!,
                        name: "Matemática Básica",
-                       icon: .book,
+                       icon: .atom,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
                         lastEdit: Date(timeIntervalSince1970: 0),
@@ -36,7 +36,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
         
         DeckCollection(id: UUID(uuidString: "4f298230-4286-4a83-9f1c-53fd60533ed8")!,
                        name: "Portugues",
-                       icon: .book,
+                       icon: .atom,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
                         lastEdit: Date(timeIntervalSince1970: 0),
@@ -49,7 +49,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
         
         DeckCollection(id: UUID(uuidString: "9b06af85-e4e8-442d-be7a-40450cfd310c")!,
                        name: "Programação JAVA",
-                       icon: .book,
+                       icon: .atom,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
                         lastEdit: Date(timeIntervalSince1970: 0),
@@ -63,7 +63,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
         
         DeckCollection(id: UUID(uuidString: "855eb618-602e-449d-83fc-5de6b8a36454")!,
                        name: "Geografia",
-                       icon: .book,
+                       icon: .atom,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
                         lastEdit: Date(timeIntervalSince1970: 0),
@@ -77,7 +77,7 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
         
         DeckCollection(id: UUID(uuidString: "5285798a-4107-48b3-8994-e706699a3445")!,
                        name: "Bandeiras",
-                       icon: .book,
+                       icon: .atom,
                        datesLogs: DateLogs(
                         lastAccess: Date(timeIntervalSince1970: 0),
                         lastEdit: Date(timeIntervalSince1970: 0),

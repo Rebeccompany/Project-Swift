@@ -52,9 +52,9 @@ public struct CollectionsSidebar: View {
                     )
                 } else {
                     ForEach(collections) { collection in
-                        NavigationLink(value: SidebarRoute.decksFromCollection(id: collection.id)) {
+                        NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
                             HStack {
-                                Label(collection.name, systemImage: IconNames.getIconString(collection.icon))
+                                Label(collection.name, systemImage: collection.icon.rawValue)
                                 Spacer()
                                 if editMode?.wrappedValue.isEditing ?? false {
                                     Image(systemName: "info.circle")
@@ -69,6 +69,14 @@ public struct CollectionsSidebar: View {
                         .listRowBackground(
                             isCompact ? HBColor.secondaryBackground : nil
                         )
+                        .contextMenu {
+                            Button {
+                                
+                            } label: {
+                                Label("Editar", systemImage: "pencil")
+                            }
+
+                        }
                     }
                     .onDelete(perform: deleteAction)
                 }
@@ -87,7 +95,7 @@ public struct CollectionsSidebar: View {
 struct CollectionsSidebar_Previews: PreviewProvider {
     static var previews: some View {
         NavigationSplitView {
-            CollectionsSidebar(collections: [DeckCollection(id: UUID(), name: "Coleção", icon: .book, datesLogs: DateLogs(), decksIds: [])], selection: .constant(.allDecks), isCompact: false) { _ in } editAction: { _ in }
+            CollectionsSidebar(collections: [DeckCollection(id: UUID(), name: "Coleção", icon: .atom, datesLogs: DateLogs(), decksIds: [])], selection: .constant(.allDecks), isCompact: false) { _ in } editAction: { _ in }
         } detail: {
             Text("Empty")
         }

@@ -24,7 +24,7 @@ public struct NewDeckView: View {
     
     public var body: some View {
         
-        NavigationView {
+        NavigationStack {
             VStack(alignment: .leading) {
                 Text("Nome")
                     .font(.callout)
@@ -62,7 +62,7 @@ public struct NewDeckView: View {
                         Button {
                             viewModel.currentSelectedIcon = icon
                         } label: {
-                            Image(systemName: IconNames.getIconString(icon))
+                            Image(systemName: icon.rawValue)
                                 .frame(width: 45, height: 45)
                         }
                         .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
@@ -82,8 +82,6 @@ public struct NewDeckView: View {
                 }
                 
             }
-            
-            .onAppear(perform: viewModel.startUp)
             .padding()
             .alert(isPresented: $showingAlert) {
                 switch activeAlert {
@@ -110,10 +108,7 @@ public struct NewDeckView: View {
                 }
                 
             }
-            
             .viewBackgroundColor(HBColor.primaryBackground)
-            
-            
             .navigationTitle(viewModel.editingDeck != nil ? "Editar baralho" : "Criar Baralho")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -150,6 +145,7 @@ public struct NewDeckView: View {
                     .foregroundColor(.red)
                 }
             }
+            .onAppear(perform: viewModel.startUp)
         }
         .navigationViewStyle(.stack)
     }
@@ -158,7 +154,7 @@ public struct NewDeckView: View {
 
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
-        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collectionId: UUID()))
+        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collection: nil))
             .preferredColorScheme(.dark)
     }
 }

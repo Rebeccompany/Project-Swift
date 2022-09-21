@@ -20,18 +20,21 @@ class NewDeckViewModelTests: XCTestCase {
     var dateHandlerMock: DateHandlerMock!
     var uuidHandler: UUIDHandlerMock!
     var cancellables: Set<AnyCancellable>!
+    var collectionRepository: CollectionRepositoryMock!
     
     
     override func setUp() {
         deckRepository = DeckRepositoryMock()
         dateHandlerMock = DateHandlerMock()
+        collectionRepository = CollectionRepositoryMock()
         uuidHandler = UUIDHandlerMock()
         cancellables = .init()
         
         sut = NewDeckViewModel(colors: CollectionColor.allCases,
                                icons: IconNames.allCases,
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collectionRepository: collectionRepository,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
         )
@@ -41,6 +44,7 @@ class NewDeckViewModelTests: XCTestCase {
     override func tearDown() {
         sut = nil
         deckRepository = nil
+        collectionRepository = nil
         dateHandlerMock = nil
         uuidHandler = nil
         cancellables.forEach({$0.cancel()})
@@ -50,7 +54,7 @@ class NewDeckViewModelTests: XCTestCase {
     func testCreateDeckSuccessfully() throws {
         sut.deckName = "Name"
         sut.currentSelectedColor = CollectionColor.red
-        sut.currentSelectedIcon = IconNames.book
+        sut.currentSelectedIcon = IconNames.atom
         try sut.createDeck()
         
         let containsNewDeck = deckRepository.decks.contains(where: {
@@ -60,10 +64,28 @@ class NewDeckViewModelTests: XCTestCase {
         XCTAssertTrue(containsNewDeck)
     }
     
+    func testCreateDeckWithCollectionSucessfully() throws {
+        sut.deckName = "Name"
+        sut.currentSelectedColor = CollectionColor.beigeBrown
+        sut.currentSelectedIcon = IconNames.brain
+        sut.collection = collectionRepository.collections[0]
+        try sut.createDeck()
+        
+        let collectionsContainsNewDeck = collectionRepository.collections[0].decksIds.contains(uuidHandler.lastCreatedID!)
+        
+        let newDeck = deckRepository.decks.first(where: {
+            $0.id == uuidHandler.lastCreatedID
+        })
+        
+        XCTAssertNotNil(newDeck)
+        XCTAssertTrue(collectionsContainsNewDeck)
+        XCTAssertEqual(newDeck?.collectionId, collectionRepository.collections[0].id)
+    }
+    
     func testCreateDeckError() throws {
         sut.deckName = "Name"
         sut.currentSelectedColor = CollectionColor.red
-        sut.currentSelectedIcon = IconNames.book
+        sut.currentSelectedIcon = IconNames.atom
         deckRepository.shouldThrowError = true
         XCTAssertThrowsError(try sut.createDeck())
         
@@ -78,7 +100,7 @@ class NewDeckViewModelTests: XCTestCase {
         let expectations = expectation(description: "Can submit binding")
         sut.deckName = "Name"
         sut.currentSelectedColor = CollectionColor.red
-        sut.currentSelectedIcon = IconNames.book
+        sut.currentSelectedIcon = IconNames.atom
         sut.$canSubmit.sink { canSubmit in
             XCTAssertTrue(canSubmit)
             expectations.fulfill()
@@ -90,7 +112,7 @@ class NewDeckViewModelTests: XCTestCase {
     func testCanSubmitBindingErrorNoName() {
         let expectations = expectation(description: "Can submit binding")
         sut.currentSelectedColor = CollectionColor.red
-        sut.currentSelectedIcon = IconNames.book
+        sut.currentSelectedIcon = IconNames.atom
         sut.$canSubmit.sink { canSubmit in
             XCTAssertFalse(canSubmit)
             expectations.fulfill()
@@ -102,7 +124,7 @@ class NewDeckViewModelTests: XCTestCase {
     func testCanSubmitBindingErrorNoColor() {
         let expectations = expectation(description: "Can submit binding")
         sut.deckName = "Name"
-        sut.currentSelectedIcon = IconNames.book
+        sut.currentSelectedIcon = IconNames.atom
         sut.$canSubmit.sink { canSubmit in
             XCTAssertTrue(!canSubmit)
             expectations.fulfill()
@@ -125,7 +147,7 @@ class NewDeckViewModelTests: XCTestCase {
     
     func testCanSubmitBindingErrorNoNameAndColor() {
         let expectations = expectation(description: "Can submit binding")
-        sut.currentSelectedIcon = IconNames.book
+        sut.currentSelectedIcon = IconNames.atom
         sut.$canSubmit.sink { canSubmit in
             XCTAssertTrue(!canSubmit)
             expectations.fulfill()
@@ -171,7 +193,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -189,7 +211,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -207,17 +229,17 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
         
-        XCTAssertEqual(deckRepository.decks[0].icon, IconNames.pencil.rawValue)
+        XCTAssertEqual(deckRepository.decks[0].icon, IconNames.atom.rawValue)
         
-        sut.currentSelectedIcon = IconNames.book
+        sut.currentSelectedIcon = IconNames.books
         try sut.editDeck()
         
-        XCTAssertEqual(deckRepository.decks[0].icon, IconNames.book.rawValue)
+        XCTAssertEqual(deckRepository.decks[0].icon, IconNames.books.rawValue)
     }
     
     func testEditDeckError() throws {
@@ -225,7 +247,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -244,7 +266,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -271,7 +293,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )

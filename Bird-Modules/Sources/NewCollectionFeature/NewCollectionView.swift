@@ -36,6 +36,7 @@ public struct NewCollectionView: View {
                 Text("Ícones")
                     .font(.callout)
                     .bold()
+                    .padding(.top)
                 
                 IconColorGridView {
                     ForEach(viewModel.icons, id: \.self) {icon in
@@ -43,7 +44,7 @@ public struct NewCollectionView: View {
                             viewModel.currentSelectedIcon = icon
                             
                         } label: {
-                            Image(systemName: IconNames.getIconString(icon))
+                            Image(systemName: icon.rawValue)
                                 .frame(width: 45, height: 45)
                         }
                         

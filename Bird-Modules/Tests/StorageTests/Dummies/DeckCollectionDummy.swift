@@ -11,7 +11,7 @@ enum DeckCollectionDummy {
     static var dummy: DeckCollection {
         DeckCollection(id: UUID(uuidString: "1ce212cd-7b81-4cbb-88ba-f57ca6161986")!,
                        name: "Coding",
-                       icon: .book,
+                       icon: .atom,
                        datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                            lastEdit: Date(timeIntervalSince1970: 0),
                                            createdAt: Date(timeIntervalSince1970: 0)),
@@ -25,7 +25,7 @@ enum DeckCollectionDummy {
         
         return DeckCollection(id: id,
                               name: ["Programação Kotlin", "Programação JS", "Programação Go", "Programação Rust"].randomElement()!,
-                              icon: .book,
+                              icon: .atom,
                               datesLogs: dateLog,
                               decksIds: [])
     }

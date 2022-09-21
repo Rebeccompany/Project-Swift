@@ -44,7 +44,7 @@ class NewCollectionViewModelTests: XCTestCase {
     
     func testCreateCollectionSuccessfully() throws {
         sut.collectionName = "Coleção"
-        sut.currentSelectedIcon = IconNames.book
+        sut.currentSelectedIcon = IconNames.atom
         try sut.createCollection()
         
         let containsNewCollection = collectionRepository.collections.contains(where: {
@@ -56,7 +56,7 @@ class NewCollectionViewModelTests: XCTestCase {
     
     func testCreateCollectionError() throws {
         sut.collectionName = "Coleção"
-        sut.currentSelectedIcon = IconNames.book
+        sut.currentSelectedIcon = IconNames.atom
         collectionRepository.shouldThrowError = true
         XCTAssertThrowsError(try sut.createCollection())
         
@@ -70,7 +70,7 @@ class NewCollectionViewModelTests: XCTestCase {
     func testCanSubmitBindingSuccessfully() {
         let expectation = expectation(description: "Can submit binding")
         sut.collectionName = "Name"
-        sut.currentSelectedIcon = IconNames.book
+        sut.currentSelectedIcon = IconNames.atom
         sut.$canSubmit.sink { canSubmit in
             XCTAssertTrue(canSubmit)
             expectation.fulfill()
@@ -81,7 +81,7 @@ class NewCollectionViewModelTests: XCTestCase {
     
     func testCanSubmitBindingErrorNoName() {
         let expectation = expectation(description: "Can submit binding")
-        sut.currentSelectedIcon = IconNames.book
+        sut.currentSelectedIcon = IconNames.atom
         sut.$canSubmit.sink { canSubmit in
             XCTAssertFalse(canSubmit)
             expectation.fulfill()
@@ -126,26 +126,26 @@ class NewCollectionViewModelTests: XCTestCase {
     func testEditColorCollectionSuccessfuly() throws {
         sut = NewCollectionViewModel(collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
         
-        XCTAssertEqual(collectionRepository.collections[0].icon, IconNames.book)
+        XCTAssertEqual(collectionRepository.collections[0].icon, IconNames.atom)
         
-        sut.currentSelectedIcon = IconNames.pencil
+        sut.currentSelectedIcon = IconNames.books
         try sut.editCollection()
         
-        XCTAssertEqual(collectionRepository.collections[0].icon, IconNames.pencil)
+        XCTAssertEqual(collectionRepository.collections[0].icon, IconNames.books)
     }
     
     func testEditCollectionError() throws {
         sut = NewCollectionViewModel(collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
         
-        XCTAssertEqual(collectionRepository.collections[0].icon, .book)
+        XCTAssertEqual(collectionRepository.collections[0].icon, .atom)
         
         collectionRepository.shouldThrowError = true
-        sut.currentSelectedIcon = .pencil
+        sut.currentSelectedIcon = .books
         
         XCTAssertThrowsError(try sut.editCollection())
         
-        XCTAssertNotEqual(collectionRepository.collections[0].icon, .pencil)
-        XCTAssertEqual(collectionRepository.collections[0].icon, .book)
+        XCTAssertNotEqual(collectionRepository.collections[0].icon, .books)
+        XCTAssertEqual(collectionRepository.collections[0].icon, .atom)
     }
     
     func testDeleteCollectionSuccessfully() throws {
