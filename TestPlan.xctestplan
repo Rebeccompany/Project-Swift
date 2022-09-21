@@ -1,0 +1,95 @@
+{
+  "configurations" : [
+    {
+      "id" : "C851DCF6-DCF4-4CC4-BE99-E90DA7A7CF62",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "AppFeatureTests",
+        "name" : "AppFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "CardModelTests",
+        "name" : "CardModelTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "DeckFeatureTests",
+        "name" : "DeckFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "FlockTests",
+        "name" : "FlockTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "ImportingFeatureTests",
+        "name" : "ImportingFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "NewCollectionFeatureTests",
+        "name" : "NewCollectionFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "NewDeckFeatureTests",
+        "name" : "NewDeckFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "NewFlashcardFeatureTests",
+        "name" : "NewFlashcardFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "StorageTests",
+        "name" : "StorageTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "StudyFeatureTests",
+        "name" : "StudyFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "WoodpeckerTests",
+        "name" : "WoodpeckerTests"
+      }
+    }
+  ],
+  "version" : 1
+}

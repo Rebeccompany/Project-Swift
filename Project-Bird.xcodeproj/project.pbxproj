@@ -22,6 +22,7 @@
 		BA654EE528A142F400EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA654EEB28A142F500EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA654F1C28A14BF400EF72C8 /* Bird-Modules */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "Bird-Modules"; sourceTree = "<group>"; };
+		BAD48B7828DB7B8300DF074A /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestPlan.xctestplan; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +67,7 @@
 		BA654EDD28A142F100EF72C8 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				BAD48B7828DB7B8300DF074A /* TestPlan.xctestplan */,
 				BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */,
 				BA654EE028A142F400EF72C8 /* Assets.xcassets */,
 			);
