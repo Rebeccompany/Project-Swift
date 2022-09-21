@@ -1,0 +1,30 @@
+---
+format_version: '11'
+default_step_lib_source: 'https://github.com/bitrise-io/bitrise-steplib.git'
+project_type: ios
+workflows:
+  BuildTestDevelopPR:
+    steps:
+    - xcode-test@4:
+        inputs:
+        - test_plan: TestPlan
+        - destination: 'platform=iOS Simulator,name=iPhone 12,OS=latest'
+meta:
+  bitrise.io:
+    stack: osx-xcode-14.0.x
+    machine_type_id: g2.4core
+app:
+  envs:
+  - opts:
+      is_expand: false
+    BITRISE_PROJECT_PATH: Project-Bird.xcodeproj
+  - opts:
+      is_expand: false
+    BITRISE_SCHEME: Project-Bird (iOS)
+  - opts:
+      is_expand: false
+    BITRISE_DISTRIBUTION_METHOD: development
+trigger_map:
+- pull_request_source_branch: '*'
+  workflow: BuildTestDevelopPR
+  pull_request_target_branch: develop
