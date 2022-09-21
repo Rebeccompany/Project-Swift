@@ -47,6 +47,8 @@ public class NewFlashcardViewModel: ObservableObject {
         if let editingFlashcard = editingFlashcard {
             setupDeckContentIntoFields(editingFlashcard)
         }
+        
+        startUp()
     }
     
     private func setupDeckContentIntoFields(_ card: Card) {
@@ -55,11 +57,16 @@ public class NewFlashcardViewModel: ObservableObject {
         currentSelectedColor = card.color
     }
     
+    private var cancellables = Set<AnyCancellable>()
+    
+    func breakproint() {
+        flashcardFront = "oi"
+    }
+    
     func startUp() {
         Publishers.CombineLatest3($flashcardFront, $flashcardBack, $currentSelectedColor)
             .map(canSubmitData)
             .assign(to: &$canSubmit)
-        
     }
     
     private func canSubmitData(front: String, back: String, currentSelectedColor: CollectionColor?) -> Bool {

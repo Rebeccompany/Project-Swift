@@ -9,21 +9,26 @@ import Foundation
 import SwiftUI
 import Models
 import HummingBird
+import NewFlashcardFeature
+import StudyFeature
 import Storage
+import Flock
 import Utils
 
 public struct DeckView: View {
     @ObservedObject private var viewModel: DeckViewModel
     @State private var shouldDisplay: Bool = false
+    @State private var shouldDisplayNewFlashcard: Bool = false
+    @State private var shouldDisplayStudyView: Bool = false
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
-    @State var deletedCard: Card?
+    @State private var deletedCard: Card?
+    @State private var selection: Int?
     
     public init(viewModel: DeckViewModel) {
         self.viewModel = viewModel
     }
-    
     
     public var body: some View {
         List {
@@ -34,7 +39,7 @@ public struct DeckView: View {
             }
         
             Button("Estudar Deck") {
-                
+                shouldDisplayStudyView = true
             }
             .disabled(!viewModel.canStudy)
             .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.canStudy))
@@ -50,7 +55,8 @@ public struct DeckView: View {
                 .padding(.bottom, 8)
                 .contextMenu {
                     Button {
-                    #warning(": vai pra tela de edit flashcard")
+                        viewModel.editFlashcard(card)
+                        shouldDisplayNewFlashcard = true
                     } label: {
                         Label("Editar Flashcard",
                               systemImage: "pencil")
@@ -113,16 +119,33 @@ public struct DeckView: View {
         .navigationTitle(viewModel.deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Group {
-                    NavigationLink(destination: Text("segunda view")) {
-                        Text("Editar")
-                    }
-                    NavigationLink(destination: Text("criar flashcard modal")) {
-                        Image(systemName: "plus")
-                    }
+                Button {
+                    viewModel.createFlashcard()
+                    shouldDisplayNewFlashcard = true
+                } label: {
+                    Image(systemName: "plus")
                 }
                 .foregroundColor(HBColor.actionColor)
             }
+        }
+        .sheet(isPresented: $shouldDisplayNewFlashcard) {
+            #warning("Passar o deck não da tão certo já que ele n está atualizan do corretamente")
+            NewFlashcardView(
+                viewModel: NewFlashcardViewModel(
+                    colors: CollectionColor.allCases,
+                    editingFlashcard: viewModel.editingFlashcard,
+                    deckRepository: DeckRepository.shared,
+                    deck: viewModel.deck,
+                    dateHandler: DateHandler(),
+                    uuidGenerator: UUIDGenerator())
+            )
+        }
+        .fullScreenCover(isPresented: $shouldDisplayStudyView) {
+            StudyView(
+                viewModel: StudyViewModel(
+                    deck: viewModel.deck
+                )
+            )
         }
     }
 }

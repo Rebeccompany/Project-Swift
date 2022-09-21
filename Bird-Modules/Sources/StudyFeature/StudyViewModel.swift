@@ -33,7 +33,7 @@ public class StudyViewModel: ObservableObject {
     let systemObserver: SystemObserverProtocol
     
     public init(
-        deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil),
+        deckRepository: DeckRepositoryProtocol = DeckRepository.shared,
         sessionCacher: SessionCacher = SessionCacher(),
         deck: Deck,
         dateHandler: DateHandlerProtocol = DateHandler(),

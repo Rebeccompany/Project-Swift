@@ -25,9 +25,10 @@ public struct StudyView: View {
         NSAttributedString(attributed).string
     }
     
+    #warning("Bug de Index out Range")
     private func generateAttributedLabel() -> String {
         if !viewModel.cards.isEmpty {
-            if !viewModel.displayedCards[1].isFlipped {
+            if viewModel.displayedCards.count > 1 && !viewModel.displayedCards[1].isFlipped {
                 return "Frente: " + toString(viewModel.displayedCards[0].card.front)
             } else {
                 return "Verso: " + toString(viewModel.displayedCards[0].card.back)
