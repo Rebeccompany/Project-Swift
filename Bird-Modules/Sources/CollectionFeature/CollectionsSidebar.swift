@@ -71,9 +71,16 @@ public struct CollectionsSidebar: View {
                         )
                         .contextMenu {
                             Button {
-                                
+                                editAction(collection)
                             } label: {
                                 Label("Editar", systemImage: "pencil")
+                            }
+                            
+                            Button(role: .destructive) {
+                            #warning( "delete action")
+                                //deleteAction(collection)
+                            } label: {
+                                Label("Deletar", systemImage: "trash")
                             }
 
                         }

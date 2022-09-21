@@ -27,7 +27,6 @@ public struct NewFlashcardView: View {
     public var body: some View {
         
         NavigationView {
-            
             ScrollView {
                 VStack(alignment: .leading) {
                     FlashcardTextEditorView(color: .red, side: "Frente", cardText: $viewModel.flashcardFront)

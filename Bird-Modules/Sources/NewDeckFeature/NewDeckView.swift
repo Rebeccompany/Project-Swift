@@ -17,6 +17,7 @@ public struct NewDeckView: View {
     @State private var selectedErrorMessage: AlertText = .deleteDeck
     @State private var activeAlert: ActiveAlert = .error
     @Environment(\.dismiss) private var dismiss
+    @FocusState private var selectedField: Int?
     
     public init(viewModel: NewDeckViewModel) {
         self.viewModel = viewModel
@@ -24,94 +25,105 @@ public struct NewDeckView: View {
     
     public var body: some View {
         
-        NavigationStack {
-            VStack(alignment: .leading) {
-                Text("Nome")
-                    .font(.callout)
-                    .bold()
-                
-                TextField("", text: $viewModel.deckName)
-                    .textFieldStyle(CollectionDeckTextFieldStyle())
-                    .padding(.bottom)
-                
-                
-                Text("Cores")
-                    .font(.callout)
-                    .bold()
-                
-                IconColorGridView {
-                    ForEach(viewModel.colors, id: \.self) { color in
-                        Button {
-                            viewModel.currentSelectedColor = color
-                        } label: {
-                            HBColor.getHBColrFromCollectionColor(color)
-                                .frame(width: 45, height: 45)
-                        }
-                        .accessibility(label: Text(CollectionColor.getColorString(color)))
-                        .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
-                    }
-                }
-                
-                Text("Ícones")
-                    .font(.callout)
-                    .bold()
-                    .padding(.top)
-                
-                IconColorGridView {
-                    ForEach(viewModel.icons, id: \.self) { icon in
-                        Button {
-                            viewModel.currentSelectedIcon = icon
-                        } label: {
-                            Image(systemName: icon.rawValue)
-                                .frame(width: 45, height: 45)
-                        }
-                        .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    Text("Nome")
+                        .font(.callout)
+                        .bold()
+                    
+                    TextField("", text: $viewModel.deckName)
+                        .textFieldStyle(CollectionDeckTextFieldStyle())
+                        .padding(.bottom)
+                        .focused($selectedField, equals: 0)
                         
+                    
+                    Text("Cores")
+                        .font(.callout)
+                        .bold()
+                    
+                    IconColorGridView {
+                        ForEach(viewModel.colors, id: \.self) { color in
+                            Button {
+                                viewModel.currentSelectedColor = color
+                            } label: {
+                                HBColor.getHBColrFromCollectionColor(color)
+                                    .frame(width: 45, height: 45)
+                            }
+                            .accessibility(label: Text(CollectionColor.getColorString(color)))
+                            .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
+                        }
                     }
-                }
-                Spacer()
-                
-                if viewModel.editingDeck != nil {
-                    Button {
-                        activeAlert = .confirm
-                        showingAlert = true
-                    } label: {
-                        Text("Apagar Deck")
+                    
+                    Text("Ícones")
+                        .font(.callout)
+                        .bold()
+                        .padding(.top)
+                    
+                    IconColorGridView {
+                        ForEach(viewModel.icons, id: \.self) { icon in
+                            Button {
+                                viewModel.currentSelectedIcon = icon
+                            } label: {
+                                Image(systemName: icon.rawValue)
+                                    .frame(width: 45, height: 45)
+                            }
+                            .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
+                            
+                        }
                     }
-                    .buttonStyle(DeleteButtonStyle())
-                }
-                
-            }
-            .padding()
-            .alert(isPresented: $showingAlert) {
-                switch activeAlert {
-                case .error:
-                    return Alert(title: Text(selectedErrorMessage.texts.title),
-                                 message: Text(selectedErrorMessage.texts.message),
-                                 dismissButton: .default(Text("Fechar")))
-                case .confirm:
-                    return Alert(title: Text("Deseja apagar este baralho?"),
-                                 message: Text("Você perderá permanentemente o conteúdo deste baralho."),
-                                 primaryButton: .destructive(Text("Apagar")) {
-                                    do {
-                                        try viewModel.deleteDeck()
-                                        dismiss()
-                                    } catch {
-                                        activeAlert = .error
-                                        showingAlert = true
-                                        selectedErrorMessage = .deleteDeck
-                                    }
-                                 },
-                                 secondaryButton: .cancel(Text("Cancelar"))
-                    )
+                    Spacer()
+                    
+                    if viewModel.editingDeck != nil {
+                        Button {
+                            activeAlert = .confirm
+                            showingAlert = true
+                        } label: {
+                            Text("Apagar Deck")
+                        }
+                        .buttonStyle(DeleteButtonStyle())
+                    }
                     
                 }
+                .padding()
+                .alert(isPresented: $showingAlert) {
+                    switch activeAlert {
+                    case .error:
+                        return Alert(title: Text(selectedErrorMessage.texts.title),
+                                     message: Text(selectedErrorMessage.texts.message),
+                                     dismissButton: .default(Text("Fechar")))
+                    case .confirm:
+                        return Alert(title: Text("Deseja apagar este baralho?"),
+                                     message: Text("Você perderá permanentemente o conteúdo deste baralho."),
+                                     primaryButton: .destructive(Text("Apagar")) {
+                                        do {
+                                            try viewModel.deleteDeck()
+                                            dismiss()
+                                        } catch {
+                                            activeAlert = .error
+                                            showingAlert = true
+                                            selectedErrorMessage = .deleteDeck
+                                        }
+                                     },
+                                     secondaryButton: .cancel(Text("Cancelar"))
+                        )
+                        
+                    }
+                    
+                }
+                .navigationTitle(viewModel.editingDeck != nil ? "Editar baralho" : "Criar Baralho")
+                .navigationBarTitleDisplayMode(.inline)
                 
             }
-            .viewBackgroundColor(HBColor.primaryBackground)
-            .navigationTitle(viewModel.editingDeck != nil ? "Editar baralho" : "Criar Baralho")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    
+                    Button("Feito") {
+                        selectedField = nil
+                    }
+                    .accessibilityLabel(Text("Botão de feito"))
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
                         
@@ -145,9 +157,12 @@ public struct NewDeckView: View {
                     .foregroundColor(.red)
                 }
             }
-            .onAppear(perform: viewModel.startUp)
+        .onAppear(perform: viewModel.startUp)
+            .scrollContentBackground(.hidden)
+            .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
+            .viewBackgroundColor(HBColor.primaryBackground)
         }
-        .navigationViewStyle(.stack)
+        
     }
 }
 
