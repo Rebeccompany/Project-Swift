@@ -13,45 +13,40 @@ struct DeckCell: View {
     var info: DeckCellInfo
     
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Image(systemName: info.icon)
-                    .font(.system(size: 17))
-                    .frame(width: 34, height: 34)
-                    .foregroundColor(HBColor.getHBColrFromCollectionColor(info.color))
-                    .background(
-                        Circle()
-                            .foregroundColor(.white)
-                    )
-                
-                Spacer()
-                
-                HStack {
-                    Text("\(info.numberOfCards)")
-                        .font(.system(size: 12))
-                        .foregroundColor(HBColor.getHBColrFromCollectionColor(info.color))
-                        .fontWeight(.bold)
-                        .padding(.trailing, -7)
-                    Image(systemName: "rectangle.portrait.on.rectangle.portrait.fill")
-                        .font(.system(size: 12))
-                        .foregroundColor(HBColor.getHBColrFromCollectionColor(info.color))
-                }
-                .padding(3)
-                .background(
-                    RoundedRectangle(cornerRadius: 5)
+        VStack {
+            ZStack(alignment: .top) {
+                rectangle
+                    .scaleEffect(0.88)
+                    .offset(y: -24)
+                rectangle
+                    .scaleEffect(0.94)
+                    .offset(y: -12)
+                ZStack {
+                    rectangle
+                    Image(systemName: info.icon)
+                        .font(.system(size: 48))
                         .foregroundColor(.white)
-                )
+                }
             }
-            .padding()
+            .padding(.bottom, 4)
                     
             Text(info.name)
-                .lineLimit(2, reservesSpace: true)
-                .multilineTextAlignment(.leading)
-                .foregroundColor(.white)
-                .padding()
+                .lineLimit(2)
+            Text("\(info.numberOfCards) cartas")
+                .foregroundColor(.secondary)
         }
-        .viewBackgroundColor(HBColor.getHBColrFromCollectionColor(info.color))
-        .cornerRadius(10)
+    }
+    
+    
+    @ViewBuilder
+    var rectangle: some View {
+        RoundedRectangle(cornerRadius: 8)
+            .fill(HBColor.getHBColrFromCollectionColor(info.color))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.white, lineWidth: 3)
+            }
+            .frame(height: 116)
     }
 }
 
@@ -60,5 +55,6 @@ struct DeckCell_Previews: PreviewProvider {
         DeckCell(info: DeckCellInfo(icon: "flame", numberOfCards: 10, name: "Nome do Baralho 1", color: .otherPink))
             .frame(width: 180, height: 100)
             .previewLayout(.sizeThatFits)
+            .viewBackgroundColor(Color.blue)
     }
 }
