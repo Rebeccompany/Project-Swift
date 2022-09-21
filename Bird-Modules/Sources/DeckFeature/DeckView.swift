@@ -28,11 +28,12 @@ public struct DeckView: View {
                 Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
                     .bold()
                     .multilineTextAlignment(.center)
+                    
             }
-        
             Button("Estudar Deck") {
                 
             }
+            
             .disabled(!viewModel.canStudy)
             .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.canStudy))
             .listRowInsets(.zero)
