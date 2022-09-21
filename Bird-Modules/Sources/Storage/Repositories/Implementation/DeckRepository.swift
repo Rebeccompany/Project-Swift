@@ -20,7 +20,7 @@ public final class DeckRepository: DeckRepositoryProtocol {
         self.cardRepository = cardRepository
     }
     
-    public static var shared: DeckRepositoryProtocol = {
+    public static let shared: DeckRepositoryProtocol = {
         DeckRepository(collectionId: nil)
     }()
     
