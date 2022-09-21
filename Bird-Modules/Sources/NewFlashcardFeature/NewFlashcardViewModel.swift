@@ -66,26 +66,21 @@ public class NewFlashcardViewModel: ObservableObject {
         !front.isEmpty && !back.isEmpty && currentSelectedColor != nil
     }
     
-    func createFlashcard() {
+    func createFlashcard() throws {
         guard let selectedColor = currentSelectedColor else {
             return
         }
         
-        do {
-            try deckRepository.addCard(
-                Card(id: uuidGenerator.newId(),
-                     front: AttributedString(stringLiteral: flashcardFront),
-                     back: AttributedString(stringLiteral: flashcardBack),
-                     color: selectedColor,
-                     datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
-                     deckID: deck.id,
-                     woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false),
-                     history: []),
-                to: deck)
-            
-        } catch {
-            showingErrorAlert = true
-        }
+        try deckRepository.addCard(
+            Card(id: uuidGenerator.newId(),
+                 front: AttributedString(stringLiteral: flashcardFront),
+                 back: AttributedString(stringLiteral: flashcardBack),
+                 color: selectedColor,
+                 datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
+                 deckID: deck.id,
+                 woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false),
+                 history: []),
+            to: deck)
     }
     
     func editFlashcard() throws {
