@@ -32,7 +32,7 @@ class DataStorageTest: XCTestCase {
         collectionEntity.lastEdit = Date()
         collectionEntity.createdAt = Date()
         collectionEntity.name = "Dummy Collection"
-        collectionEntity.icon = IconNames.book.rawValue
+        collectionEntity.icon = IconNames.atom.rawValue
         
         try sut.save()
         
