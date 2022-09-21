@@ -127,6 +127,8 @@ public final class ContentViewModel: ObservableObject {
         try collectionsToDelete.forEach { collection in
             try collectionRepository.deleteCollection(collection)
         }
+        
+        editingCollection = nil
     }
     
     func editCollection(_ collection: DeckCollection) {
@@ -137,13 +139,16 @@ public final class ContentViewModel: ObservableObject {
         editingCollection = nil
     }
     
-    func deleteDecks() {
-        self.decks.filter { deck in
+    func deleteDecks() throws {
+        try self.decks.filter { deck in
             selection.contains(deck.id)
         }
         .forEach { deck in
-            try? deckRepository.deleteDeck(deck)
+            try deckRepository.deleteDeck(deck)
         }
+        
+        selection = Set()
+        editingDeck = nil
     }
     
     func createDecks() {
@@ -157,5 +162,22 @@ public final class ContentViewModel: ObservableObject {
         else { return }
         
         editingDeck = deck
+    }
+    
+    func didDeckPresentationStatusChanged(_ status: Bool) {
+        guard status == false else {
+            return
+        }
+        
+        editingDeck = nil
+        selection = Set()
+    }
+    
+    func didCollectionPresentationStatusChanged(_ status: Bool) {
+        guard status == false else {
+            return
+        }
+        
+        editingCollection = nil
     }
 }

@@ -39,33 +39,16 @@ public struct ContentView: View {
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
-        .sheet(isPresented: $presentCollectionEdition) {
-            NewCollectionView(
-                viewModel: .init(
-                    editingCollection: viewModel.editingCollection
-                )
-            )
-        }
         .alert(viewModel.selection.isEmpty ? "Nada foi selecionado" : "Você tem certeza que deseja apagar?", isPresented: $shouldDisplayAlert) {
             Button("Apagar", role: .destructive) {
-                viewModel.deleteDecks()
+                try? viewModel.deleteDecks()
             }
             .disabled(viewModel.selection.isEmpty)
             
             Button("Cancelar", role: .cancel) { }
         }
-        .sheet(isPresented: $presentDeckEdition) {
-            NewDeckView(
-                viewModel: NewDeckViewModel(
-                    colors: CollectionColor.allCases,
-                    icons: IconNames.allCases,
-                    editingDeck: viewModel.editingDeck,
-                    deckRepository: DeckRepositoryMock.shared,
-                    collectionRepository: CollectionRepositoryMock.shared,
-                    collection: viewModel.selectedCollection
-                )
-            )
-        }
+        .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
+        .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
     }
     
     @ViewBuilder
@@ -95,6 +78,13 @@ public struct ContentView: View {
             }
         }
         .environment(\.editMode, $editMode)
+        .sheet(isPresented: $presentCollectionEdition) {
+            NewCollectionView(
+                viewModel: .init(
+                    editingCollection: viewModel.editingCollection
+                )
+            )
+        }
     }
     
     @ViewBuilder
@@ -111,16 +101,17 @@ public struct ContentView: View {
                     presentDeckEdition = true
                 } deleteAction: {
                     shouldDisplayAlert = true
-                }
-                .navigationTitle(viewModel.detailTitle)
-                .sheet(isPresented: $presentDeckEdition) {
-                    NewDeckView(viewModel: NewDeckViewModel(
-                        colors: CollectionColor.allCases,
-                        icons: IconNames.allCases,
-                        deckRepository: DeckRepositoryMock.shared,
-                        collectionRepository: CollectionRepositoryMock.shared,
-                        collection: viewModel.selectedCollection))
-                }
+            }
+            .navigationTitle(viewModel.detailTitle)
+            .sheet(isPresented: $presentDeckEdition) {
+                NewDeckView(viewModel: NewDeckViewModel(
+                    colors: CollectionColor.allCases,
+                    icons: IconNames.allCases,
+                    editingDeck: viewModel.editingDeck,
+                    deckRepository: DeckRepositoryMock.shared,
+                    collectionRepository: CollectionRepositoryMock.shared,
+                    collection: viewModel.selectedCollection))
+            }
         } destination: { (route: StudyRoute) in
             StudyRoutes.destination(for: route)
         }

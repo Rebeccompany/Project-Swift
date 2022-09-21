@@ -11,6 +11,8 @@ import Models
 
 struct DeckGridView: View {
     var decks: [Deck]
+    var editAction: (Deck) -> Void
+    var deleteAction: (Deck) -> Void
     
     var body: some View {
         ScrollView {
@@ -19,6 +21,19 @@ struct DeckGridView: View {
                     NavigationLink(value: StudyRoute.deck(deck)) {
                         DeckCell(info: DeckCellInfo(deck: deck))
                             .frame(minHeight: 100)
+                            .contextMenu {
+                                Button {
+                                    editAction(deck)
+                                } label: {
+                                    Label("Editar", systemImage: "pencil")
+                                }
+                                
+                                Button(role: .destructive) {
+                                    deleteAction(deck)
+                                } label: {
+                                    Label("Deletar", systemImage: "trash")
+                                }
+                            }
                     }
                 }
             }
@@ -30,8 +45,8 @@ struct DeckGridView: View {
 struct DeckGridView_Previews: PreviewProvider {
     static var previews: some View {
         //NavigationStack {
-        DeckGridView(decks: [Deck(id: UUID(), name: "Baralho 1", icon: "flame", color: .otherPink, collectionId: nil, cardsIds: [])])
-                .previewDevice(PreviewDevice(stringLiteral: "iPhone 12"))
+        DeckGridView(decks: [Deck(id: UUID(), name: "Baralho 1", icon: "flame", color: .otherPink, collectionId: nil, cardsIds: [])]) {_ in } deleteAction: { _ in }
+            .previewDevice(PreviewDevice(stringLiteral: "iPhone 12"))
         //}
     }
 }

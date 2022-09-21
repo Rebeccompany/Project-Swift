@@ -131,7 +131,13 @@ public struct DetailView: View {
     @ViewBuilder
     private var content: some View {
         if detailType == .grid {
-            DeckGridView(decks: decks)
+            DeckGridView(decks: decks) { deck in
+                selection = Set([deck.id])
+                editAction()
+            } deleteAction: { deck in
+                selection = Set([deck.id])
+                deleteAction()
+            }
         } else {
             DeckTableView(decks: decks,
                           sortOrder: $sortOrder,

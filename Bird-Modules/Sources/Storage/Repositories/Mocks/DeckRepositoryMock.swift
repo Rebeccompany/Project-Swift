@@ -247,7 +247,7 @@ extension Card {
      fileprivate init(id: String, cardsIds: [UUID] = [], colIds: [UUID] = [], bool: Bool = true) {
          self.init(id: UUID(uuidString: id)!,
                    name: "Programação \(bool ? "" : "Swift")",
-                   icon: IconNames.pencil.rawValue,
+                   icon: IconNames.atom.rawValue,
                    color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),

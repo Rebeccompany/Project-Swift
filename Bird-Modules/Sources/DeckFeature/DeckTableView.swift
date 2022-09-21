@@ -41,6 +41,7 @@ struct DeckTableView: View {
                             )
                             .padding(.trailing, 8)
                         Text(deck.name)
+                            .foregroundColor(.primary)
                     }
                     .padding(.leading, 4)
                 }

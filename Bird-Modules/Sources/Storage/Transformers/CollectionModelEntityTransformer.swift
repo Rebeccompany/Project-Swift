@@ -36,7 +36,7 @@ struct CollectionModelEntityTransformer: ModelEntityTransformer {
         guard
             let id = entity.id,
             let name = entity.name,
-            let icon = IconNames(rawValue: entity.icon ?? IconNames.book.rawValue),
+            let icon = IconNames(rawValue: entity.icon ?? IconNames.atom.rawValue),
             let lastAccess = entity.lastAccess,
             let createdAt = entity.createdAt,
             let lastEdit = entity.lastEdit,
