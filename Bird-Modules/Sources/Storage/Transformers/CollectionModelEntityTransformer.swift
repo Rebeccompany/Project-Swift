@@ -40,7 +40,7 @@ struct CollectionModelEntityTransformer: ModelEntityTransformer {
             let lastAccess = entity.lastAccess,
             let createdAt = entity.createdAt,
             let lastEdit = entity.lastEdit,
-            let decks = entity.decks?.array as? [DeckEntity]
+            let decks = entity.decks?.allObjects as? [DeckEntity]
         else { return nil }
         
         let decksIds = decks.compactMap(\.id)
