@@ -37,8 +37,11 @@ struct DeckTableView: View {
                             .background(
                                 Circle()
                                     .fill(HBColor.getHBColrFromCollectionColor(deck.color).opacity(0.2))
-                                    .frame(width: 30, height: 30)
+                                
+                                    .frame(width: 35, height: 35)
+                                    
                             )
+                            .frame(width: 35, height: 35)
                             .padding(.trailing, 8)
                         Text(deck.name)
                             .foregroundColor(.primary)

@@ -108,8 +108,8 @@ public struct ContentView: View {
                     colors: CollectionColor.allCases,
                     icons: IconNames.allCases,
                     editingDeck: viewModel.editingDeck,
-                    deckRepository: DeckRepositoryMock.shared,
-                    collectionRepository: CollectionRepositoryMock.shared,
+                    deckRepository: DeckRepository.shared,
+                    collectionRepository: CollectionRepository.shared,
                     collection: viewModel.selectedCollection))
             }
         } destination: { (route: StudyRoute) in

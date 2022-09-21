@@ -52,8 +52,8 @@ public final class ContentViewModel: ObservableObject {
     }
     
     public init(
-        collectionRepository: CollectionRepositoryProtocol = CollectionRepositoryMock.shared,
-        deckRepository: DeckRepositoryProtocol = DeckRepositoryMock.shared
+        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
+        deckRepository: DeckRepositoryProtocol = DeckRepository.shared
     ) {
         self.collectionRepository = collectionRepository
         self.deckRepository = deckRepository
@@ -87,7 +87,6 @@ public final class ContentViewModel: ObservableObject {
     
     private func mapDecksBySidebarSelection(decks: [Deck], sidebarSelection: SidebarRoute?) -> [Deck] {
         switch sidebarSelection ?? .allDecks {
-            
         case .allDecks:
             return decks
         case .decksFromCollection(let collection):
