@@ -43,6 +43,7 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
             let lastEdit = entity.lastEdit,
             let cards = entity.cards?.allObjects as? [CardEntity]
         else { return nil }
+        let collection = entity.collection
         
         let maxLearningCards = entity.maxLearningCards
         let maxReviewingCards = entity.maxReviewingCards
