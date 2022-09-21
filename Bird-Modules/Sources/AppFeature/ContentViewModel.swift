@@ -36,7 +36,7 @@ public final class ContentViewModel: ObservableObject {
     var detailTitle: String {
         switch sidebarSelection ?? .allDecks {
         case .allDecks:
-            return "Todas as coleções"
+            return "Todos os Baralhos"
         case .decksFromCollection(let collection):
             return collection.name
         }

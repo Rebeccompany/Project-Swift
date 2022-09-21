@@ -39,6 +39,23 @@ struct DeckGridView: View {
             }
             .padding([.horizontal, .top], 12)
         }
+        .background(
+            VStack {
+                if decks.isEmpty {
+                    VStack {
+                        EmptyStateView(component: .deck)
+                        Button{
+                            #warning("fazer ir pro modal de criar baralho")
+                        } label: {
+                            Text("Criar Baralho")
+                        }
+                        .buttonStyle(LargeButtonStyle(isDisabled: false))
+                        .padding()
+                    }
+                    
+                }
+            }
+        )
     }
 }
 

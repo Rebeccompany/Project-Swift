@@ -41,51 +41,57 @@ public struct CollectionsSidebar: View {
             )
             
             Section {
-                if collections.isEmpty {
-                    VStack {
-                        Text("Não existem coleções criadas no momento")
-                            .font(.callout)
-                            .foregroundColor(.secondary)
+                ForEach(collections) { collection in
+                    NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
+                        HStack {
+                            Label(collection.name, systemImage: collection.icon.rawValue)
+                            Spacer()
+                            if editMode?.wrappedValue.isEditing ?? false {
+                                Image(systemName: "info.circle")
+                                    .foregroundColor(HBColor.actionColor)
+                                    .onTapGesture {
+                                        editAction(collection)
+                                    }
+                                    .accessibility(addTraits: .isButton)
+                            }
+                        }
                     }
                     .listRowBackground(
                         isCompact ? HBColor.secondaryBackground : nil
                     )
-                } else {
-                    ForEach(collections) { collection in
-                        NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
-                            HStack {
-                                Label(collection.name, systemImage: collection.icon.rawValue)
-                                Spacer()
-                                if editMode?.wrappedValue.isEditing ?? false {
-                                    Image(systemName: "info.circle")
-                                        .foregroundColor(HBColor.actionColor)
-                                        .onTapGesture {
-                                            editAction(collection)
-                                        }
-                                        .accessibility(addTraits: .isButton)
-                                }
-                            }
+                    .contextMenu {
+                        Button {
+                            
+                        } label: {
+                            Label("Editar", systemImage: "pencil")
                         }
-                        .listRowBackground(
-                            isCompact ? HBColor.secondaryBackground : nil
-                        )
-                        .contextMenu {
-                            Button {
-                                
-                            } label: {
-                                Label("Editar", systemImage: "pencil")
-                            }
-
-                        }
+                        
                     }
-                    .onDelete(perform: deleteAction)
                 }
+                .onDelete(perform: deleteAction)
                 
             } header: {
                 Text("Coleções")
             }
         }
         .scrollContentBackground(.hidden)
+        .background(
+            VStack {
+                if collections.isEmpty {
+                    VStack {
+                        EmptyStateView(component: .collection)
+                        Button{
+#warning("fazer ir pro modal de criar colecao")
+                        } label: {
+                            Text("Criar Coleção")
+                        }
+                        .buttonStyle(LargeButtonStyle(isDisabled: false))
+                        .padding()
+                    }
+                    
+                }
+            }
+        )
         .viewBackgroundColor(HBColor.primaryBackground)
         
     }
@@ -99,6 +105,6 @@ struct CollectionsSidebar_Previews: PreviewProvider {
         } detail: {
             Text("Empty")
         }
-
+        
     }
 }

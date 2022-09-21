@@ -21,16 +21,19 @@ public struct EmptyStateView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200)
+                    .accessibilityLabel(Text("Sem Coleção"))
             } else if component == Components.deck {
                 HBAssets.noDecksEmptyState
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200)
+                    .accessibilityLabel(Text("Sem Baralho"))
             } else {
                 HBAssets.noFlashcardsEmptyState
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200)
+                    .accessibilityLabel(Text("Sem Flashcards"))
             }
             
             Text("Piu! Sem " + getComponentString(component: component) + "!")
