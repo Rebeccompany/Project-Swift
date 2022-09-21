@@ -8,7 +8,7 @@ let package = Package(
     
     platforms: [
         .iOS("16.0"),
-        .macOS(.v12)
+        .macOS("13.0")
     ],
     
     products: [
@@ -142,7 +142,6 @@ let package = Package(
                 "DeckFeature",
                 "Models",
                 "Flock",
-                "DeckFeature",
                 "NewFlashcardFeature"
             ]
         ),
