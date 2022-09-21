@@ -12,7 +12,8 @@ import HummingBird
 public struct DetailView: View {
     
     var decks: [Deck]
-    var deleteAction: () -> Void
+    private var deleteAction: () -> Void
+    private var editAction: () -> Void
     
     @Binding private var searchText: String
     @Binding private var detailType: DetailDisplayType
@@ -29,9 +30,11 @@ public struct DetailView: View {
         sortOrder: Binding<[KeyPathComparator<Deck>]>,
         selection: Binding<Set<Deck.ID>>,
         presentNewDeck: Binding<Bool>,
+        editAction: @escaping () -> Void,
         deleteAction: @escaping () -> Void) {
             self.decks = decks
             self.deleteAction = deleteAction
+            self.editAction = editAction
             self._searchText = searchText
             self._detailType = detailType
             self._sortOrder = sortOrder
@@ -46,11 +49,22 @@ public struct DetailView: View {
                      for: .bottomBar)
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
-                    Button("Delete", role: .destructive) {
+                    Button {
+                        editAction()
+                    } label: {
+                        Text("Editar")
+                    }
+                    .disabled(selection.count != 1)
+
+                }
+                
+                ToolbarItem(placement: .bottomBar) {
+                    Button("Deletar", role: .destructive) {
                         deleteAction()
                     }
                     .foregroundColor(.red)
                 }
+                
                 
                 ToolbarItem {
                     Menu {

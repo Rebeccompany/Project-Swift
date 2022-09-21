@@ -54,6 +54,18 @@ public struct ContentView: View {
             
             Button("Cancelar", role: .cancel) { }
         }
+        .sheet(isPresented: $presentDeckEdition) {
+            NewDeckView(
+                viewModel: NewDeckViewModel(
+                    colors: CollectionColor.allCases,
+                    icons: IconNames.allCases,
+                    editingDeck: viewModel.editingDeck,
+                    deckRepository: DeckRepositoryMock.shared,
+                    collectionRepository: CollectionRepositoryMock.shared,
+                    collection: viewModel.selectedCollection
+                )
+            )
+        }
     }
     
     @ViewBuilder
@@ -95,11 +107,19 @@ public struct ContentView: View {
                 sortOrder: $viewModel.sortOrder,
                 selection: $viewModel.selection,
                 presentNewDeck: $presentDeckEdition) {
+                    viewModel.editDeck()
+                    presentDeckEdition = true
+                } deleteAction: {
                     shouldDisplayAlert = true
                 }
                 .navigationTitle(viewModel.detailTitle)
                 .sheet(isPresented: $presentDeckEdition) {
-                    NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock.shared, collectionId: nil))
+                    NewDeckView(viewModel: NewDeckViewModel(
+                        colors: CollectionColor.allCases,
+                        icons: IconNames.allCases,
+                        deckRepository: DeckRepositoryMock.shared,
+                        collectionRepository: CollectionRepositoryMock.shared,
+                        collection: viewModel.selectedCollection))
                 }
         } destination: { (route: StudyRoute) in
             StudyRoutes.destination(for: route)

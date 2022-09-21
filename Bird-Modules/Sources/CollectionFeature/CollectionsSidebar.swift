@@ -54,7 +54,7 @@ public struct CollectionsSidebar: View {
                     ForEach(collections) { collection in
                         NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
                             HStack {
-                                Label(collection.name, systemImage: IconNames.getIconString(collection.icon))
+                                Label(collection.name, systemImage: collection.icon.rawValue)
                                 Spacer()
                                 if editMode?.wrappedValue.isEditing ?? false {
                                     Image(systemName: "info.circle")
@@ -69,6 +69,14 @@ public struct CollectionsSidebar: View {
                         .listRowBackground(
                             isCompact ? HBColor.secondaryBackground : nil
                         )
+                        .contextMenu {
+                            Button {
+                                
+                            } label: {
+                                Label("Editar", systemImage: "pencil")
+                            }
+
+                        }
                     }
                     .onDelete(perform: deleteAction)
                 }

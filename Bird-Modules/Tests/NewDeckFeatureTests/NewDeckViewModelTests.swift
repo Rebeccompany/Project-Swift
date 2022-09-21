@@ -20,18 +20,21 @@ class NewDeckViewModelTests: XCTestCase {
     var dateHandlerMock: DateHandlerMock!
     var uuidHandler: UUIDHandlerMock!
     var cancellables: Set<AnyCancellable>!
+    var collectionRepository: CollectionRepositoryMock!
     
     
     override func setUp() {
         deckRepository = DeckRepositoryMock()
         dateHandlerMock = DateHandlerMock()
+        collectionRepository = CollectionRepositoryMock()
         uuidHandler = UUIDHandlerMock()
         cancellables = .init()
         
         sut = NewDeckViewModel(colors: CollectionColor.allCases,
                                icons: IconNames.allCases,
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collectionRepository: collectionRepository,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
         )
@@ -41,6 +44,7 @@ class NewDeckViewModelTests: XCTestCase {
     override func tearDown() {
         sut = nil
         deckRepository = nil
+        collectionRepository = nil
         dateHandlerMock = nil
         uuidHandler = nil
         cancellables.forEach({$0.cancel()})
@@ -58,6 +62,24 @@ class NewDeckViewModelTests: XCTestCase {
         })
         
         XCTAssertTrue(containsNewDeck)
+    }
+    
+    func testCreateDeckWithCollectionSucessfully() throws {
+        sut.deckName = "Name"
+        sut.currentSelectedColor = CollectionColor.beigeBrown
+        sut.currentSelectedIcon = IconNames.chevronDown
+        sut.collection = collectionRepository.collections[0]
+        try sut.createDeck()
+        
+        let collectionsContainsNewDeck = collectionRepository.collections[0].decksIds.contains(uuidHandler.lastCreatedID!)
+        
+        let newDeck = deckRepository.decks.first(where: {
+            $0.id == uuidHandler.lastCreatedID
+        })
+        
+        XCTAssertNotNil(newDeck)
+        XCTAssertTrue(collectionsContainsNewDeck)
+        XCTAssertEqual(newDeck?.collectionId, collectionRepository.collections[0].id)
     }
     
     func testCreateDeckError() throws {
@@ -171,7 +193,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -189,7 +211,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -207,7 +229,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -225,7 +247,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -244,7 +266,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
@@ -271,7 +293,7 @@ class NewDeckViewModelTests: XCTestCase {
                                icons: IconNames.allCases,
                                editingDeck: deckRepository.decks[0],
                                deckRepository: deckRepository,
-                               collectionId: nil,
+                               collection: nil,
                                dateHandler: dateHandlerMock,
                                uuidGenerator: uuidHandler
                 )
