@@ -35,7 +35,7 @@ struct CardModelEntityTransformer: ModelEntityTransformer {
             let lastAccess = entity.lastAccess,
             let lastEdit = entity.lastEdit,
             let deckId = entity.deck?.id,
-            let snapshotsEntities = entity.history?.array as? [CardSnapshotEntity]
+            let snapshotsEntities = entity.history?.allObjects as? [CardSnapshotEntity]
         else { return nil }
         
         let easeFactor = entity.wpEaseFactor

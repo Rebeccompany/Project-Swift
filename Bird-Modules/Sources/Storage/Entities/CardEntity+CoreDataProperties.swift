@@ -12,7 +12,7 @@ import CoreData
 extension CardEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CardEntity> {
-        return NSFetchRequest<CardEntity>(entityName: "CardEntity")
+        NSFetchRequest<CardEntity>(entityName: "CardEntity")
     }
 
     @NSManaged public var back: Data?
@@ -29,30 +29,12 @@ extension CardEntity {
     @NSManaged public var wpStep: Int32
     @NSManaged public var wpStreak: Int32
     @NSManaged public var deck: DeckEntity?
-    @NSManaged public var history: NSOrderedSet?
+    @NSManaged public var history: NSSet?
 
 }
 
 // MARK: Generated accessors for history
 extension CardEntity {
-
-    @objc(insertObject:inHistoryAtIndex:)
-    @NSManaged public func insertIntoHistory(_ value: CardSnapshotEntity, at idx: Int)
-
-    @objc(removeObjectFromHistoryAtIndex:)
-    @NSManaged public func removeFromHistory(at idx: Int)
-
-    @objc(insertHistory:atIndexes:)
-    @NSManaged public func insertIntoHistory(_ values: [CardSnapshotEntity], at indexes: NSIndexSet)
-
-    @objc(removeHistoryAtIndexes:)
-    @NSManaged public func removeFromHistory(at indexes: NSIndexSet)
-
-    @objc(replaceObjectInHistoryAtIndex:withObject:)
-    @NSManaged public func replaceHistory(at idx: Int, with value: CardSnapshotEntity)
-
-    @objc(replaceHistoryAtIndexes:withHistory:)
-    @NSManaged public func replaceHistory(at indexes: NSIndexSet, with values: [CardSnapshotEntity])
 
     @objc(addHistoryObject:)
     @NSManaged public func addToHistory(_ value: CardSnapshotEntity)
@@ -61,9 +43,9 @@ extension CardEntity {
     @NSManaged public func removeFromHistory(_ value: CardSnapshotEntity)
 
     @objc(addHistory:)
-    @NSManaged public func addToHistory(_ values: NSOrderedSet)
+    @NSManaged public func addToHistory(_ values: NSSet)
 
     @objc(removeHistory:)
-    @NSManaged public func removeFromHistory(_ values: NSOrderedSet)
+    @NSManaged public func removeFromHistory(_ values: NSSet)
 
 }
