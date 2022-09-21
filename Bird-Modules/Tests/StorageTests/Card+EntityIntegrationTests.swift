@@ -57,7 +57,7 @@ class CardModelEntityTransformerTests: XCTestCase {
         XCTAssertEqual(model.woodpeckerCardInfo.step, Int(entity.wpStep))
         XCTAssertEqual(model.woodpeckerCardInfo.streak, Int(entity.wpStreak))
         XCTAssertEqual(entity.deck, nil)
-        XCTAssertEqual(entity.history?.array.isEmpty, true)
+        XCTAssertEqual(entity.history?.allObjects.isEmpty, true)
         
         let frontNS = try! NSAttributedString(data: entity.front!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
         let backNS = try! NSAttributedString(data: entity.back!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
@@ -76,7 +76,7 @@ class CardModelEntityTransformerTests: XCTestCase {
         XCTAssertEqual(model.woodpeckerCardInfo.step, Int(entity.wpStep))
         XCTAssertEqual(model.woodpeckerCardInfo.streak, Int(entity.wpStreak))
         XCTAssertEqual(entity.deck!.id, model.deckID)
-        XCTAssertEqual(entity.history?.array.isEmpty, true)
+        XCTAssertEqual(entity.history?.allObjects.isEmpty, true)
         
         let frontNS = try! NSAttributedString(data: entity.front!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
         let backNS = try! NSAttributedString(data: entity.back!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)

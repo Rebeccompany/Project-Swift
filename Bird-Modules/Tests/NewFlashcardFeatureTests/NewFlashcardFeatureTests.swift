@@ -47,11 +47,11 @@ class NewFlashcardFeatureTests: XCTestCase {
         cancellables = nil
     }
     
-    func testCreateFlashcardSuccessfully() {
+    func testCreateFlashcardSuccessfully() throws {
         sut.flashcardFront = "Frente do card"
         sut.flashcardBack = "Verso do flashard"
         sut.currentSelectedColor = CollectionColor.red
-        sut.createFlashcard()
+        try sut.createFlashcard()
         
         let containsFlashcard = deckRepository.cards.contains(where: {
             $0.id == uuidHandler.lastCreatedID
@@ -60,12 +60,12 @@ class NewFlashcardFeatureTests: XCTestCase {
         XCTAssertTrue(containsFlashcard)
     }
     
-    func testCreateFlashcardError() {
+    func testCreateFlashcardError() throws {
         sut.flashcardFront = "frente"
         sut.flashcardBack = "tras"
         sut.currentSelectedColor = CollectionColor.red
         deckRepository.shouldThrowError = true
-        sut.createFlashcard()
+        XCTAssertThrowsError(try sut.createFlashcard())
         
         let containsFlashcard = deckRepository.cards.contains(where: {
             $0.id == uuidHandler.lastCreatedID

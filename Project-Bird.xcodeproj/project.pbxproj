@@ -22,6 +22,7 @@
 		BA654EE528A142F400EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA654EEB28A142F500EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA654F1C28A14BF400EF72C8 /* Bird-Modules */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "Bird-Modules"; sourceTree = "<group>"; };
+		BAD48B7828DB7B8300DF074A /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestPlan.xctestplan; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +56,8 @@
 		BA654ED828A142F100EF72C8 = {
 			isa = PBXGroup;
 			children = (
+				BA7D7D4128DA4B6F0059878C /* Project-Bird--iOS--Info.plist */,
+				BA7D7D4028DA4AEC0059878C /* Project-Bird (iOS).entitlements */,
 				BA654F1C28A14BF400EF72C8 /* Bird-Modules */,
 				5B07663728C2789F00221DE8 /* macOS */,
 				BA654EDD28A142F100EF72C8 /* Shared */,
@@ -66,6 +69,7 @@
 		BA654EDD28A142F100EF72C8 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				BAD48B7828DB7B8300DF074A /* TestPlan.xctestplan */,
 				BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */,
 				BA654EE028A142F400EF72C8 /* Assets.xcassets */,
 			);
@@ -368,11 +372,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Project-Bird (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8JPPDHN68R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Project-Bird--iOS--Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Spixii;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -384,7 +391,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.chevis.Project-Bird";
+				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.Spixii;
 				PRODUCT_NAME = "Project-Bird";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -398,11 +405,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Project-Bird (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8JPPDHN68R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Project-Bird--iOS--Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Spixii;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -414,7 +424,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.chevis.Project-Bird";
+				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.Spixii;
 				PRODUCT_NAME = "Project-Bird";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -435,10 +445,11 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = QRB568C47A;
+				DEVELOPMENT_TEAM = 8JPPDHN68R;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Spixii;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -446,7 +457,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.chevis.Project-Bird";
+				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.Spixii;
 				PRODUCT_NAME = "Project-Bird";
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -465,10 +476,11 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = QRB568C47A;
+				DEVELOPMENT_TEAM = 8JPPDHN68R;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Spixii;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -476,7 +488,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.chevis.Project-Bird";
+				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.Spixii;
 				PRODUCT_NAME = "Project-Bird";
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;

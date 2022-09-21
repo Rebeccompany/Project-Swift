@@ -12,7 +12,7 @@ import CoreData
 extension DeckEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<DeckEntity> {
-        return NSFetchRequest<DeckEntity>(entityName: "DeckEntity")
+        NSFetchRequest<DeckEntity>(entityName: "DeckEntity")
     }
 
     @NSManaged public var color: Int16
