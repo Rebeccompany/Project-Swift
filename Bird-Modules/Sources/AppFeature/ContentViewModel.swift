@@ -139,12 +139,19 @@ public final class ContentViewModel: ObservableObject {
     }
     
     func deleteDecks() throws {
-        try self.decks.filter { deck in
+        
+        let decksToBeDeleted = self.decks.filter { deck in
             selection.contains(deck.id)
         }
-        .forEach { deck in
-            try deckRepository.deleteDeck(deck)
+        
+        guard !decksToBeDeleted.isEmpty else {
+            throw RepositoryError.couldNotDelete
         }
+        
+        try decksToBeDeleted
+            .forEach { deck in
+                try deckRepository.deleteDeck(deck)
+            }
         
         selection = Set()
         editingDeck = nil
