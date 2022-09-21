@@ -13,6 +13,7 @@
   },
   "testTargets" : [
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Bird-Modules",
         "identifier" : "AppFeatureTests",
@@ -20,6 +21,7 @@
       }
     },
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Bird-Modules",
         "identifier" : "CardModelTests",
@@ -27,6 +29,7 @@
       }
     },
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Bird-Modules",
         "identifier" : "DeckFeatureTests",
@@ -34,6 +37,7 @@
       }
     },
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Bird-Modules",
         "identifier" : "FlockTests",
@@ -49,6 +53,7 @@
       }
     },
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Bird-Modules",
         "identifier" : "NewCollectionFeatureTests",
@@ -56,6 +61,7 @@
       }
     },
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Bird-Modules",
         "identifier" : "NewDeckFeatureTests",
@@ -63,6 +69,7 @@
       }
     },
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Bird-Modules",
         "identifier" : "NewFlashcardFeatureTests",
@@ -70,6 +77,7 @@
       }
     },
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Bird-Modules",
         "identifier" : "StorageTests",
@@ -77,6 +85,7 @@
       }
     },
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Bird-Modules",
         "identifier" : "StudyFeatureTests",
@@ -84,6 +93,7 @@
       }
     },
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Bird-Modules",
         "identifier" : "WoodpeckerTests",
