@@ -59,11 +59,39 @@ public struct CollectionsSidebar: View {
                     .listRowBackground(
                         isCompact ? HBColor.secondaryBackground : nil
                     )
-                    .contextMenu {
-                        Button {
+                    
+                    ForEach(collections) { collection in
+                        NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
+                            HStack {
+                                Label(collection.name, systemImage: collection.icon.rawValue)
+                                Spacer()
+                                if editMode?.wrappedValue.isEditing ?? false {
+                                    Image(systemName: "info.circle")
+                                        .foregroundColor(HBColor.actionColor)
+                                        .onTapGesture {
+                                            editAction(collection)
+                                        }
+                                        .accessibility(addTraits: .isButton)
+                                }
+                            }
+                        }
+                        .listRowBackground(
+                            isCompact ? HBColor.secondaryBackground : nil
+                        )
+                        .contextMenu {
+                            Button {
+                                editAction(collection)
+                            } label: {
+                                Label("Editar", systemImage: "pencil")
+                            }
                             
-                        } label: {
-                            Label("Editar", systemImage: "pencil")
+                            Button(role: .destructive) {
+#warning( "delete action")
+                                //deleteAction(collection)
+                            } label: {
+                                Label("Deletar", systemImage: "trash")
+                            }
+                            
                         }
                         
                     }

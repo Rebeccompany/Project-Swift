@@ -44,7 +44,6 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
             let cards = entity.cards?.allObjects as? [CardEntity]
         else { return nil }
         
-        let collection = entity.collection
         let maxLearningCards = entity.maxLearningCards
         let maxReviewingCards = entity.maxReviewingCards
         let spacedRepetitionConfig = SpacedRepetitionConfig(maxLearningCards: Int(maxLearningCards), maxReviewingCards: Int(maxReviewingCards), numberOfSteps: Int(entity.numberOfSteps))

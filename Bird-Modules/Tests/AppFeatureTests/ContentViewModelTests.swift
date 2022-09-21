@@ -11,10 +11,7 @@ import Models
 import Storage
 import Combine
 
-//TODO: Deck listener React to sidebar
-//TODO: Update Deck
 //TODO: Delete Deck
-//TODO: Create Deck
 
 final class ContentViewModelTests: XCTestCase {
     
@@ -191,5 +188,65 @@ final class ContentViewModelTests: XCTestCase {
         sut.editDeck()
         
         XCTAssertNil(sut.editingDeck)
+    }
+    
+    func testDeckStatusPresentationTrue() {
+        sut.editingDeck = deckRepositoryMock.decks[0]
+        sut.selection.insert(sut.editingDeck!.id)
+        
+        sut .didDeckPresentationStatusChanged(true)
+        
+        XCTAssertEqual(sut.editingDeck, deckRepositoryMock.decks.first)
+        XCTAssertEqual(sut.selection.first, deckRepositoryMock.decks.first?.id)
+    }
+    
+    func testDeckPresentationFalse() {
+        sut.editingDeck = deckRepositoryMock.decks[0]
+        sut.selection.insert(sut.editingDeck!.id)
+        
+        sut.didDeckPresentationStatusChanged(false)
+        
+        XCTAssertNil(sut.editingDeck)
+        XCTAssertTrue(sut.selection.isEmpty)
+    }
+    
+    func testCollectionStatusPresentationTrue() {
+        sut.editingCollection = collectionRepositoryMock.collections.first
+        
+        sut.didCollectionPresentationStatusChanged(true)
+        
+        XCTAssertEqual(sut.editingCollection, collectionRepositoryMock.collections.first)
+    }
+    
+    func testCollectionStatusPresentationFalse() {
+        sut.editingCollection = collectionRepositoryMock.collections.first
+        
+        sut.didCollectionPresentationStatusChanged(false)
+        
+        XCTAssertNil(sut.editingCollection)
+    }
+    
+    func testCreateDeck() {
+        sut.editingDeck = deckRepositoryMock.decks[0]
+        
+        sut.createDecks()
+        
+        XCTAssertNil(sut.editingDeck)
+    }
+    
+    func testDeleteDeckSuccessifully() throws {
+        sut.selection = Set(Array(deckRepositoryMock.decks[0...2]).map(\.id))
+        XCTAssertEqual(4, deckRepositoryMock.decks.count)
+        
+        try sut.deleteDecks()
+        
+        XCTAssertEqual(1, deckRepositoryMock.decks.count)
+    }
+    
+    func testDeleteDeckFailed() throws {
+        
+        sut.selection.insert(UUID())
+        
+        XCTAssertThrowsError(try sut.deleteDecks())
     }
 }

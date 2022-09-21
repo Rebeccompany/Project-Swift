@@ -12,8 +12,9 @@ import Storage
 
 public struct NewFlashcardView: View {
     @ObservedObject private var viewModel: NewFlashcardViewModel
-    @State private var showingErrorAlert: Bool = false
+    @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
+    @State private var activeAlert: ActiveAlert = .error
     @FocusState private var focus: NewFlashcardFocus?
     private var okButtonState: String = ""
     
@@ -26,7 +27,6 @@ public struct NewFlashcardView: View {
     public var body: some View {
         
         NavigationView {
-            
             ScrollView {
                 VStack(alignment: .leading) {
                     FlashcardTextEditorView(color: .red, side: "Frente", cardText: $viewModel.flashcardFront)
@@ -37,7 +37,7 @@ public struct NewFlashcardView: View {
                         .focused($focus, equals: NewFlashcardFocus.back)
                         .frame(minHeight: 200)
                     
-                    Text("Ícones")
+                    Text("Cores")
                         .font(.callout)
                         .bold()
                         .padding(.top)
@@ -57,16 +57,12 @@ public struct NewFlashcardView: View {
                     
                     Spacer()
                     
-                    if viewModel.editingFlashcard == nil {
+                    if viewModel.editingFlashcard != nil {
                         Button {
-                            do {
-                                try viewModel.deleteFlashcard()
-                            } catch {
-                                selectedErrorMessage = .deleteCard
-                                showingErrorAlert = true
-                            }
+                            activeAlert = .confirm
+                            showingAlert = true
                         } label: {
-                            Text("Apagar Baralho")
+                            Text("Apagar Flashcard")
                         }
                         .buttonStyle(DeleteButtonStyle())
                     }
@@ -75,20 +71,28 @@ public struct NewFlashcardView: View {
                 .onAppear(perform: viewModel.startUp)
                 .padding()
                 
-                .navigationTitle(viewModel.editingFlashcard != nil ? "Editar baralho" : "Criar Baralho")
+                .navigationTitle(viewModel.editingFlashcard != nil ? "Editar Flashcard" : "Criar Flashcard")
                 .navigationBarTitleDisplayMode(.inline)
                 
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("OK") {
                             if viewModel.editingFlashcard == nil {
-                                viewModel.createFlashcard()
+                                do {
+                                    try viewModel.createFlashcard()
+                                    dismiss()
+                                } catch {
+                                    selectedErrorMessage = .createCard
+                                    showingAlert = true
+                                }
+                                
                             } else {
                                 do {
                                     try viewModel.editFlashcard()
+                                    dismiss()
                                 } catch {
                                     selectedErrorMessage = .editCard
-                                    showingErrorAlert = true
+                                    showingAlert = true
                                 }
                             }
                         }
@@ -104,10 +108,29 @@ public struct NewFlashcardView: View {
                     }
                 }
                 
-                .alert(isPresented: $showingErrorAlert) {
-                    Alert(title: Text(selectedErrorMessage.texts.title),
-                          message: Text(selectedErrorMessage.texts.message),
-                          dismissButton: .default(Text("Fechar")))
+                .alert(isPresented: $showingAlert) {
+                    switch activeAlert {
+                    case .error:
+                        return Alert(title: Text(selectedErrorMessage.texts.title),
+                                     message: Text(selectedErrorMessage.texts.message),
+                                     dismissButton: .default(Text("Fechar")))
+                    case .confirm:
+                        return Alert(title: Text("Deseja apagar este flashcard?"),
+                                     message: Text("Você perderá permanentemente o conteúdo deste flashcard."),
+                                     primaryButton: .destructive(Text("Apagar")) {
+                                        do {
+                                            try viewModel.deleteFlashcard()
+                                            dismiss()
+                                        } catch {
+                                            activeAlert = .error
+                                            showingAlert = true
+                                            selectedErrorMessage = .deleteCard
+                                        }
+                                     },
+                                     secondaryButton: .cancel(Text("Cancelar"))
+                        )
+                    }
+                    
             }
                 
             }

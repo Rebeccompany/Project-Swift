@@ -16,7 +16,7 @@ struct DeckGridView: View {
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24)], spacing: 24) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
                 ForEach(decks) { deck in
                     NavigationLink(value: StudyRoute.deck(deck)) {
                         DeckCell(info: DeckCellInfo(deck: deck))
@@ -37,7 +37,8 @@ struct DeckGridView: View {
                     }
                 }
             }
-            .padding([.horizontal, .top], 12)
+            .padding([.horizontal], 12)
+            .padding(.top, 24)
         }
         .background(
             VStack {
@@ -62,7 +63,7 @@ struct DeckGridView: View {
 struct DeckGridView_Previews: PreviewProvider {
     static var previews: some View {
         //NavigationStack {
-        DeckGridView(decks: [Deck(id: UUID(), name: "Baralho 1", icon: "flame", color: .otherPink, collectionId: nil, cardsIds: [])]) {_ in } deleteAction: { _ in }
+        DeckGridView(decks: [Deck(id: UUID(), name: "Baralho 1", icon: "flame", color: .otherPink, collectionId: nil, cardsIds: [])]) { _ in } deleteAction: { _ in }
             .previewDevice(PreviewDevice(stringLiteral: "iPhone 12"))
         //}
     }

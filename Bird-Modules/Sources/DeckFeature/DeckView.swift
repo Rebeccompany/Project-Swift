@@ -15,7 +15,10 @@ import Utils
 public struct DeckView: View {
     @ObservedObject private var viewModel: DeckViewModel
     @State private var shouldDisplay: Bool = false
-    @State private var showingErrorAlert: Bool = false
+    @State private var showingAlert: Bool = false
+    @State private var selectedErrorMessage: AlertText = .deleteCard
+    @State private var activeAlert: ActiveAlert = .error
+    @State var deletedCard: Card?
     
     public init(viewModel: DeckViewModel) {
         self.viewModel = viewModel
@@ -55,11 +58,9 @@ public struct DeckView: View {
                     }
                     
                     Button(role: .destructive) {
-                        do {
-                            try viewModel.deleteFlashcard(card: card)
-                        } catch {
-                            showingErrorAlert = true
-                        }
+                        deletedCard = card
+                        activeAlert = .confirm
+                        showingAlert = true
                     } label: {
                         Label("Deletar Flashcard",
                               systemImage: "trash.fill")
@@ -103,10 +104,29 @@ public struct DeckView: View {
         .searchable(text: $viewModel.searchFieldContent)
         
         
-        .alert(isPresented: $showingErrorAlert) {
-            Alert(title: Text("Erro ao apagar flashcard."),
-                  message: Text("Algo deu errado! Por favor, tente novamente."),
-                  dismissButton: .default(Text("Fechar")))
+        .alert(isPresented: $showingAlert) {
+            switch activeAlert {
+            case .error:
+                return Alert(title: Text("Erro ao apagar flashcard."),
+                             message: Text("Algo deu errado! Por favor, tente novamente."),
+                             dismissButton: .default(Text("Fechar")))
+            case .confirm:
+                return Alert(title: Text("Deseja apagar este flashcard?"),
+                             message: Text("Você perderá permanentemente o conteúdo deste flashcard."),
+                             primaryButton: .destructive(Text("Apagar")) {
+                                do {
+                                    guard let deletedCard else { return }
+                                    try viewModel.deleteFlashcard(card: deletedCard)
+                                    self.deletedCard = nil
+                                } catch {
+                                    activeAlert = .error
+                                    showingAlert = true
+                                    selectedErrorMessage = .deleteCard
+                                }
+                             },
+                             secondaryButton: .cancel(Text("Cancelar"))
+                )
+            }
                 }
         .navigationTitle(viewModel.deck.name)
         .toolbar {
