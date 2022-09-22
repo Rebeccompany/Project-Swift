@@ -132,6 +132,7 @@ public final class DeckRepository: DeckRepositoryProtocol {
         
         entity.front = frontData
         entity.back = backData
+        entity.color = Int16(card.color.rawValue)
         entity.wpStep = Int32(card.woodpeckerCardInfo.step)
         entity.wpEaseFactor = card.woodpeckerCardInfo.easeFactor
         entity.wpInterval = Int32(card.woodpeckerCardInfo.interval)
