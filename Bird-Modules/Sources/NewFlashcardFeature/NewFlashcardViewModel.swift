@@ -69,11 +69,16 @@ public class NewFlashcardViewModel: ObservableObject {
         flashcardFront = "oi"
     }
     
-    #warning("Leak de mémoria por auto referencia")
-    func startUp() {
+    private var canSubmitPublisher: AnyPublisher<Bool, Never> {
         Publishers.CombineLatest3($flashcardFront, $flashcardBack, $currentSelectedColor)
-            .handleEvents(receiveCompletion: {c in print(c)}, receiveCancel: { print("Cancel") })
-            .map { front, back, currentSelectedColor in !front.isEmpty && !back.isEmpty && currentSelectedColor != nil }
+            .map { front, back, currentSelectedColor in
+                !front.isEmpty && !back.isEmpty && currentSelectedColor != nil
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    func startUp() {
+        canSubmitPublisher
             .assign(to: &$canSubmit)
     }
     

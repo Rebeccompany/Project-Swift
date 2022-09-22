@@ -46,16 +46,17 @@ public class NewCollectionViewModel: ObservableObject {
         currentSelectedIcon = collection.icon
     }
     
-#warning("Leak de mémoria por auto referencia")
-    func startUp() {
+    private var canSubmitPublisher: AnyPublisher<Bool, Never> {
         Publishers.CombineLatest($collectionName, $currentSelectedIcon)
-            .map(canSubmitData)
+            .map { name, currentSelectedIcon in !name.isEmpty && currentSelectedIcon != nil }
+            .eraseToAnyPublisher()
+    }
+    
+    func startUp() {
+        canSubmitPublisher
             .assign(to: &$canSubmit)
     }
     
-    private func canSubmitData(name: String, currentSelectedColor: IconNames?) -> Bool {
-        !name.isEmpty && currentSelectedColor != nil
-    }
     
     func createCollection() throws {
         guard let currentSelectedIcon
