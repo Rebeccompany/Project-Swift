@@ -30,7 +30,7 @@ public struct NewFlashcardView: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     FlashcardTextEditorView(
-                        color: HBColor.getHBColrFromCollectionColor(viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
+                        color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                         side: "Frente",
                         cardText: $viewModel.flashcardFront
                     )
@@ -38,7 +38,7 @@ public struct NewFlashcardView: View {
                     .frame(minHeight: 200)
                     
                     FlashcardTextEditorView(
-                        color: HBColor.getHBColrFromCollectionColor(viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
+                        color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                         side: "Verso",
                         cardText: $viewModel.flashcardBack
                     )
@@ -55,7 +55,7 @@ public struct NewFlashcardView: View {
                             Button {
                                 viewModel.currentSelectedColor = color
                             } label: {
-                                HBColor.getHBColrFromCollectionColor(color)
+                                HBColor.color(for: color)
                                     .frame(width: 45, height: 45)
                             }
                             .accessibility(label: Text(CollectionColor.getColorString(color)))
