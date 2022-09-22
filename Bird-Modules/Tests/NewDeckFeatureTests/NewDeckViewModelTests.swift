@@ -73,6 +73,7 @@ class NewDeckViewModelTests: XCTestCase {
         
         let collectionsContainsNewDeck = collectionRepository.collections[0].decksIds.contains(uuidHandler.lastCreatedID!)
         
+        print(deckRepository.decks)
         let newDeck = deckRepository.decks.first(where: {
             $0.id == uuidHandler.lastCreatedID
         })

@@ -82,6 +82,7 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
          self.cards += cards
          
          subject.send(decks)
+         cardSubject.send(cards)
      }
 
      public func deleteDeck(_ deck: Deck) throws {
@@ -121,6 +122,7 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
              decks[i] = deck
              cards.append(card)
              subject.send(decks)
+             cardSubject.send(cards)
          } else {
              throw RepositoryError.couldNotEdit
          }
@@ -139,6 +141,7 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
              return d
          }
          subject.send(decks)
+         cardSubject.send(cards)
      }
 
      public func fetchCardById(_ id: UUID) -> AnyPublisher<Card, RepositoryError> {
@@ -165,6 +168,8 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
              d.cardsIds = d.cardsIds.filter { id in id != card.id }
              return d
          }
+         
+         cardSubject.send(cards)
      }
 
      public func editCard(_ card: Card) throws {
@@ -177,6 +182,9 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
          } else {
              throw RepositoryError.couldNotEdit
          }
+         
+         
+         cardSubject.send(cards)
      }
 
 

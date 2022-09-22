@@ -194,7 +194,7 @@ final class DeckRepositoryTests: XCTestCase {
         var correctCards = createMultipleCardsSorted(into: decks.first!)
         try saveMultipleCards(correctCards, into: decks.first!)
         
-        var otherCards = createMultipleCardsSorted(ids: [UUID(), UUID(), UUID()] , into: decks.last!)
+        let otherCards = createMultipleCardsSorted(ids: [UUID(), UUID(), UUID()] , into: decks.last!)
         try saveMultipleCards(otherCards, into: decks.last!)
         
         var listenerCallsCount = 0
