@@ -41,7 +41,7 @@ struct DeckCell: View {
     @ViewBuilder
     var rectangle: some View {
         RoundedRectangle(cornerRadius: 8)
-            .fill(HBColor.getHBColrFromCollectionColor(info.color))
+            .fill(HBColor.color(for: info.color))
             .overlay {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(Color.white, lineWidth: 3)

@@ -153,8 +153,11 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Storage",
+                "Flock",
                 "Woodpecker",
-                "Utils"
+                "Utils",
+                "NewFlashcardFeature",
+                "StudyFeature"
             ]
         ),
         

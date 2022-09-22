@@ -12,7 +12,6 @@ import CoreData
 import SwiftUI
 
 struct CardModelEntityTransformer: ModelEntityTransformer {
-    //private let deckId
     
     func requestForAll() -> NSFetchRequest<CardEntity> {
         let request = CardEntity.fetchRequest()

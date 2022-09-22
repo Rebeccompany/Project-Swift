@@ -8,6 +8,7 @@
 import SwiftUI
 import Models
 import DeckFeature
+import Storage
 import Flock
 
 struct StudyRoutes {
@@ -15,7 +16,7 @@ struct StudyRoutes {
     static func destination(for route: StudyRoute) -> some View {
         switch route {
         case .deck(let deck):
-            Text("deck \(deck.name)")
+            DeckView(viewModel: DeckViewModel(deck: deck, deckRepository: DeckRepository.shared))
         case .card(let card):
             Text("card \(card.id.uuidString)")
         }
