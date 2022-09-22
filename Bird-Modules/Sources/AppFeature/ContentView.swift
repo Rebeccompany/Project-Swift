@@ -100,6 +100,7 @@ public struct ContentView: View {
                     viewModel.editDeck()
                     presentDeckEdition = true
                 } deleteAction: {
+                    print(viewModel.selection)
                     shouldDisplayAlert = true
             }
             .navigationTitle(viewModel.detailTitle)
