@@ -64,6 +64,7 @@ struct CardModelEntityTransformer: ModelEntityTransformer {
         card.createdAt = model.datesLogs.createdAt
         card.lastEdit = model.datesLogs.lastEdit
         card.lastAccess = model.datesLogs.lastAccess
+        card.color = Int16(model.color.rawValue)
         card.id = model.id
         card.wpStep = Int32(model.woodpeckerCardInfo.step)
         card.wpStreak = Int32(model.woodpeckerCardInfo.streak)
