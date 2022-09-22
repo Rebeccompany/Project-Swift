@@ -47,7 +47,7 @@ public struct NewDeckView: View {
                             Button {
                                 viewModel.currentSelectedColor = color
                             } label: {
-                                HBColor.getHBColrFromCollectionColor(color)
+                                HBColor.color(for: color)
                                     .frame(width: 45, height: 45)
                             }
                             .accessibility(label: Text(CollectionColor.getColorString(color)))

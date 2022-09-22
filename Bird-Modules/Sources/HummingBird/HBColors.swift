@@ -184,7 +184,7 @@ public enum HBColor {
     }
     
 
-    public static func getHBColrFromCollectionColor(_ collectionColor: CollectionColor) -> Color {
+    public static func color(for collectionColor: CollectionColor) -> Color {
         switch collectionColor {
         case .red:
             return Self.collectionRed
