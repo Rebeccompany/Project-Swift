@@ -20,6 +20,12 @@ struct EndOfStudyView: View {
                 .multilineTextAlignment(.center)
                 .padding()
             
+            HBAssets.endOfStudy
+                .resizable()
+                .scaledToFit()
+                .frame(width: 300, height: 300)
+                .accessibilityLabel(Text("Arara está comemorando com você"))
+            
             Text("Parabéns, você cumpriu sua meta de estudos diária desse baralho! Volte em breve para continuar seus estudos!")
                 .foregroundColor(HBColor.collectionGray)
                 .font(.system(size: 16))
