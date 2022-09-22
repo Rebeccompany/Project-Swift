@@ -37,7 +37,7 @@ public class DeckViewModel: ObservableObject {
         deckRepository
             .cardListener(forId: deck.id)
             .replaceError(with: [])
-            .map { cards in cards.sorted {c1, c2 in c1.datesLogs.createdAt > c2.datesLogs.createdAt } }
+            .map { cards in cards.sorted { c1, c2 in c1.datesLogs.createdAt > c2.datesLogs.createdAt } }
             .eraseToAnyPublisher()
     }
     
