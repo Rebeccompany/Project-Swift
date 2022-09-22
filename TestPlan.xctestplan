@@ -99,6 +99,13 @@
         "identifier" : "WoodpeckerTests",
         "name" : "WoodpeckerTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Project-Bird.xcodeproj",
+        "identifier" : "5B9440BF28DBF2D50060EB4F",
+        "name" : "Project-BirdUITests"
+      }
     }
   ],
   "version" : 1
