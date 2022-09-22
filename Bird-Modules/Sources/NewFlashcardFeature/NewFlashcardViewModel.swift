@@ -47,8 +47,14 @@ public class NewFlashcardViewModel: ObservableObject {
         if let editingFlashcard = editingFlashcard {
             setupDeckContentIntoFields(editingFlashcard)
         }
-        
+
         startUp()
+        
+        print("NewFlashcard init: \(ObjectIdentifier(self).debugDescription)")
+    }
+    
+    deinit {
+        print("NewFlascard deinit: \(ObjectIdentifier(self).debugDescription)")
     }
     
     private func setupDeckContentIntoFields(_ card: Card) {
@@ -63,9 +69,11 @@ public class NewFlashcardViewModel: ObservableObject {
         flashcardFront = "oi"
     }
     
+    #warning("Leak de mémoria por auto referencia")
     func startUp() {
         Publishers.CombineLatest3($flashcardFront, $flashcardBack, $currentSelectedColor)
-            .map(canSubmitData)
+            .handleEvents(receiveCompletion: {c in print(c)}, receiveCancel: { print("Cancel") })
+            .map { front, back, currentSelectedColor in !front.isEmpty && !back.isEmpty && currentSelectedColor != nil }
             .assign(to: &$canSubmit)
     }
     

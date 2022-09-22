@@ -46,6 +46,7 @@ public class NewCollectionViewModel: ObservableObject {
         currentSelectedIcon = collection.icon
     }
     
+#warning("Leak de mémoria por auto referencia")
     func startUp() {
         Publishers.CombineLatest($collectionName, $currentSelectedIcon)
             .map(canSubmitData)

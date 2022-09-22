@@ -61,6 +61,7 @@ public class NewDeckViewModel: ObservableObject {
         currentSelectedIcon = IconNames(rawValue: deck.icon)
     }
     
+    #warning("Leak de mémoria por auto referencia")
     func startUp() {
         Publishers.CombineLatest3($deckName, $currentSelectedColor, $currentSelectedIcon)
             .map(canSubmitData)

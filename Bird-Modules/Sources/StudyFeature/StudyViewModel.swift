@@ -51,6 +51,7 @@ public class StudyViewModel: ObservableObject {
         self.systemObserver = systemObserver
     }
     
+    #warning("Leak de mémoria por auto referencia")
     func startup() {
         
         systemObserver.voiceOverDidChange()

@@ -66,6 +66,7 @@ public final class ContentViewModel: ObservableObject {
         self.sortOrder = [KeyPathComparator(\Deck.name)]
     }
     
+    #warning("Leak de mémoria por auto referencia")
     func startup() {
         collectionRepository
             .listener()
