@@ -40,7 +40,7 @@ final class DeckViewModelTests: XCTestCase {
         
         sut.$cards
             .sink {[unowned self] cards in
-                XCTAssertEqual(cards, self.deckRepository.cards)
+                XCTAssertEqual(cards, self.deckRepository.cards.sorted {c1, c2 in c1.datesLogs.createdAt > c2.datesLogs.createdAt})
                 cardExpectation.fulfill()
             }
             .store(in: &cancellables)

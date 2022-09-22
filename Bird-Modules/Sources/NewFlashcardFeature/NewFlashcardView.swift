@@ -11,7 +11,7 @@ import Models
 import Storage
 
 public struct NewFlashcardView: View {
-    @ObservedObject private var viewModel: NewFlashcardViewModel
+    @StateObject private var viewModel: NewFlashcardViewModel
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
@@ -20,8 +20,8 @@ public struct NewFlashcardView: View {
     
     @Environment(\.dismiss) private var dismiss
     
-    public init(viewModel: NewFlashcardViewModel) {
-        self.viewModel = viewModel
+    public init(viewModel: @autoclosure @escaping () -> NewFlashcardViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel())
     }
     
     public var body: some View {
