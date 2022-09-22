@@ -24,7 +24,6 @@ public struct DeckView: View {
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
     @State private var deletedCard: Card?
-    @State private var selection: Int?
     
     public init(viewModel: DeckViewModel) {
         self.viewModel = viewModel

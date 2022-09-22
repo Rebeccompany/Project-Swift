@@ -82,7 +82,7 @@ public class StudyViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    private func freshCardsPublishers(cardIds: [UUID]) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
+    private func newSessionCardsPublisher(cardIds: [UUID]) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
         deckRepository.fetchCardsByIds(cardIds)
             .map {
                 $0.map(OrganizerCardInfo.init(card:))
@@ -110,14 +110,8 @@ public class StudyViewModel: ObservableObject {
             .assign(to: &$isVOOn)
             
         systemObserver.willTerminate()
-            .sink { _ in
-                print("finished")
-            } receiveValue: {[weak self] _ in
-                do {
-                    try self?.saveChanges()
-                } catch {
-                    print("didn't save")
-                }
+            .sink {[weak self] _ in
+                try? self?.saveChanges()
             }
             .store(in: &cancellables)
 
@@ -134,7 +128,7 @@ public class StudyViewModel: ObservableObject {
                 .assign(to: &$cards)
             
         } else {
-            freshCardsPublishers(cardIds: deck.cardsIds)
+            newSessionCardsPublisher(cardIds: deck.cardsIds)
                 .sink { [weak self] in
                     self?.finishFetchCards($0)
                 } receiveValue: {[weak self] cards in

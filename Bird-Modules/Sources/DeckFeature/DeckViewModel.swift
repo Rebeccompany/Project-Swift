@@ -29,11 +29,6 @@ public class DeckViewModel: ObservableObject {
         self.searchFieldContent = ""
         self.deckRepository = deckRepository
         self.cards = []
-        print("init: \(ObjectIdentifier(self).debugDescription)")
-    }
-    
-    deinit {
-        print("deinit: \(ObjectIdentifier(self).debugDescription)")
     }
     
     func startup() {

@@ -25,10 +25,12 @@ public final class SessionCacher {
     private let encoder: JSONEncoder
     private let currentSessionKey: String = "com.birdmodules.storage.sessioncacher.session"
     
-    public init(storage: LocalStorageService = UserDefaults.standard) {
+    public init(storage: LocalStorageService = UserDefaults.standard,
+                encoder: JSONEncoder = JSONEncoder(),
+                decoder: JSONDecoder = JSONDecoder()) {
         self.storage = storage
-        self.encoder = JSONEncoder()
-        self.decoder = JSONDecoder()
+        self.encoder = encoder
+        self.decoder = decoder
     }
     
     public func currentSession(for id: UUID) -> Session? {

@@ -30,9 +30,7 @@ public struct NewFlashcardView: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     FlashcardTextEditorView(
-                        color: viewModel.currentSelectedColor != nil ?
-                        HBColor.getHBColrFromCollectionColor(viewModel.currentSelectedColor ?? CollectionColor.darkBlue)
-                        : HBColor.collectionPink,
+                        color: HBColor.getHBColrFromCollectionColor(viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                         side: "Frente",
                         cardText: $viewModel.flashcardFront
                     )
@@ -40,9 +38,7 @@ public struct NewFlashcardView: View {
                     .frame(minHeight: 200)
                     
                     FlashcardTextEditorView(
-                        color: viewModel.currentSelectedColor != nil ?
-                        HBColor.getHBColrFromCollectionColor(viewModel.currentSelectedColor ?? CollectionColor.darkBlue)
-                        : HBColor.collectionPink,
+                        color: HBColor.getHBColrFromCollectionColor(viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                         side: "Verso",
                         cardText: $viewModel.flashcardBack
                     )
@@ -57,7 +53,6 @@ public struct NewFlashcardView: View {
                     IconColorGridView {
                         ForEach(viewModel.colors, id: \.self) { color in
                             Button {
-                                viewModel.breakproint()
                                 viewModel.currentSelectedColor = color
                             } label: {
                                 HBColor.getHBColrFromCollectionColor(color)
@@ -89,6 +84,7 @@ public struct NewFlashcardView: View {
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(viewModel.editingFlashcard != nil ? "Editar Flashcard" : "Criar Flashcard")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear(perform: viewModel.startUp)
             .alert(isPresented: $showingAlert) {
                 switch activeAlert {
                 case .error:

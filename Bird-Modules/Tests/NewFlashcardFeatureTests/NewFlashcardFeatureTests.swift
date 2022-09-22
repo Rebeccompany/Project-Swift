@@ -35,6 +35,7 @@ class NewFlashcardFeatureTests: XCTestCase {
             dateHandler: dateHandlerMock,
             uuidGenerator: uuidHandler)
     
+        sut.startUp()
     }
     
     override func tearDown() {

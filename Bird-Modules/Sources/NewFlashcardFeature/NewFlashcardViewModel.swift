@@ -47,26 +47,12 @@ public class NewFlashcardViewModel: ObservableObject {
         if let editingFlashcard = editingFlashcard {
             setupDeckContentIntoFields(editingFlashcard)
         }
-
-        startUp()
-        
-        print("NewFlashcard init: \(ObjectIdentifier(self).debugDescription)")
-    }
-    
-    deinit {
-        print("NewFlascard deinit: \(ObjectIdentifier(self).debugDescription)")
     }
     
     private func setupDeckContentIntoFields(_ card: Card) {
         flashcardFront = NSAttributedString(card.front).string
         flashcardBack = NSAttributedString(card.back).string
         currentSelectedColor = card.color
-    }
-    
-    private var cancellables = Set<AnyCancellable>()
-    
-    func breakproint() {
-        flashcardFront = "oi"
     }
     
     private var canSubmitPublisher: AnyPublisher<Bool, Never> {
@@ -80,10 +66,6 @@ public class NewFlashcardViewModel: ObservableObject {
     func startUp() {
         canSubmitPublisher
             .assign(to: &$canSubmit)
-    }
-    
-    private func canSubmitData(front: String, back: String, currentSelectedColor: CollectionColor?) -> Bool {
-        !front.isEmpty && !back.isEmpty && currentSelectedColor != nil
     }
     
     func createFlashcard() throws {
