@@ -36,7 +36,6 @@ public class DeckViewModel: ObservableObject {
         print("deinit: \(ObjectIdentifier(self).debugDescription)")
     }
     
-    #warning("Escutar mudanças em um Deck")
     func startup() {
         deckRepository.fetchCardsByIds(deck.cardsIds)
             .replaceError(with: [])

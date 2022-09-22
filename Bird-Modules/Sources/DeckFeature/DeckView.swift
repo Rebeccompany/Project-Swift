@@ -129,7 +129,6 @@ public struct DeckView: View {
             }
         }
         .sheet(isPresented: $shouldDisplayNewFlashcard) {
-            #warning("Passar o deck não da tão certo já que ele n está atualizan do corretamente")
             NewFlashcardView(
                 viewModel: NewFlashcardViewModel(
                     colors: CollectionColor.allCases,

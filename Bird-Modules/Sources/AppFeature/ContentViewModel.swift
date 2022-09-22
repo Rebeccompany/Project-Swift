@@ -11,6 +11,7 @@ import Combine
 import Storage
 import DeckFeature
 
+//swiftlint:disable trailing_closure
 public final class ContentViewModel: ObservableObject {
     
     // MARK: Collections

@@ -12,6 +12,7 @@ import Woodpecker
 import Combine
 import Utils
 
+//swiftlint:disable trailing_closure
 public class StudyViewModel: ObservableObject {
     private let deckRepository: DeckRepositoryProtocol
     private let sessionCacher: SessionCacher
@@ -89,7 +90,7 @@ public class StudyViewModel: ObservableObject {
             .tryMap { [deck, dateHandler] cards in
                 try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: dateHandler.today)
             }
-            .handleEvents(receiveOutput: {[weak self] in self?.saveCardIdsToCache(ids: $0)} )
+            .handleEvents(receiveOutput: { [weak self] in self?.saveCardIdsToCache(ids: $0) })
             .mapError { _ in
                 RepositoryError.internalError
             }
