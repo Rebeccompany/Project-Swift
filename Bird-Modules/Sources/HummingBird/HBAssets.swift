@@ -22,4 +22,8 @@ public enum HBAssets {
     public static var noFlashcardsEmptyState: Image {
         Image("noFlashcards", bundle: .module)
     }
+    
+    public static var endOfStudy: Image {
+        Image("endOfStudy", bundle: .module)
+    }
 }
