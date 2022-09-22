@@ -12,13 +12,13 @@ import HummingBird
 import Utils
 
 public struct StudyView: View {
-    @ObservedObject private var viewModel: StudyViewModel
+    @StateObject private var viewModel: StudyViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showingErrorAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     
-    public init(viewModel: StudyViewModel) {
-        self.viewModel = viewModel
+    public init(viewModel: @autoclosure @escaping () -> StudyViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel())
     }
     
     private func toString(_ attributed: AttributedString) -> String {
@@ -137,7 +137,7 @@ struct StudyView_Previews: PreviewProvider {
                         sessionCacher: SessionCacher(
                             storage: LocalStorageMock()
                         ),
-                        deck: repo.decks[3],
+                        deck: repo.decks.first!,
                         dateHandler: DateHandler()
                     )
                 )
