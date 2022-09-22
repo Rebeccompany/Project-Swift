@@ -79,10 +79,18 @@ public struct StudyView: View {
                 
                 
             } else {
-                Text("EmptyState")
+                EndOfStudyView {
+                    do {
+                        try viewModel.saveChanges()
+                        dismiss()
+                    } catch {
+                        selectedErrorMessage = .saveStudy
+                        showingErrorAlert = true
+                    }
+                }
             }
         }
-        .background(HBColor.primaryBackground)
+        .viewBackgroundColor(HBColor.primaryBackground)
         .navigationTitle(viewModel.deck.name)
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -129,7 +137,7 @@ struct StudyView_Previews: PreviewProvider {
                         sessionCacher: SessionCacher(
                             storage: LocalStorageMock()
                         ),
-                        deck: repo.decks.first!,
+                        deck: repo.decks[3],
                         dateHandler: DateHandler()
                     )
                 )

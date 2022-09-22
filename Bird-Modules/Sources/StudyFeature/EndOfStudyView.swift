@@ -12,6 +12,9 @@ import HummingBird
 import Utils
 
 struct EndOfStudyView: View {
+    @Environment(\.dismiss) private var dismiss
+    var action: () -> Void
+    
     var body: some View {
         VStack {
             Text("Atividade diária concluída!")
@@ -32,8 +35,8 @@ struct EndOfStudyView: View {
                 .multilineTextAlignment(.center)
                 .padding()
             
-            Button{
-                #warning("ir pra tela do baralho")
+            Button {
+                dismiss()
             } label: {
                 Text("Voltar para o Baralho")
             }
@@ -46,6 +49,8 @@ struct EndOfStudyView: View {
 
 struct EndOfStudyView_Previews: PreviewProvider {
     static var previews: some View {
-        EndOfStudyView()
+        EndOfStudyView {
+            
+        }
     }
 }
