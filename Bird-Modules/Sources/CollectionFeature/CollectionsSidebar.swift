@@ -17,6 +17,7 @@ public struct CollectionsSidebar: View {
     private let deleteAction: (IndexSet) -> Void
     private let editAction: (DeckCollection) -> Void
     
+    
     public init(
         collections: [DeckCollection],
         selection: Binding<SidebarRoute?>,
@@ -72,13 +73,13 @@ public struct CollectionsSidebar: View {
                 if collections.isEmpty {
                     VStack {
                         EmptyStateView(component: .collection)
-                        Button {
-#warning("fazer ir pro modal de criar colecao")
-                        } label: {
-                            Text("Criar Coleção")
-                        }
-                        .buttonStyle(LargeButtonStyle(isDisabled: false))
-                        .padding()
+//                        Button {
+//#warning("fazer ir pro modal de criar colecao")
+//                        } label: {
+//                            Text("Criar Coleção")
+//                        }
+//                        .buttonStyle(LargeButtonStyle(isDisabled: false))
+//                        .padding()
                     }
                     
                 }
