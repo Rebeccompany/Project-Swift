@@ -37,19 +37,21 @@ public class DeckViewModel: ObservableObject {
         deckRepository
             .cardListener(forId: deck.id)
             .replaceError(with: [])
-            .map { cards in cards.sorted { c1, c2 in c1.datesLogs.createdAt > c2.datesLogs.createdAt } }
+            .map {
+                cards in cards.sorted { c1, c2 in c1.datesLogs.createdAt > c2.datesLogs.createdAt }
+            }
             .eraseToAnyPublisher()
     }
     
     private var deckListener: AnyPublisher<Deck, RepositoryError> {
         deckRepository
             .cardListener(forId: deck.id)
-            .flatMap {[weak self] cards in
-                guard let self = self, let card = cards.first else {
+            .flatMap {[weak self, deck] _ in
+                guard let self = self else {
                     return Fail<Deck, RepositoryError>(error: .errorOnListening).eraseToAnyPublisher()
                 }
                 
-                return self.deckRepository.fetchDeckById(card.deckID)
+                return self.deckRepository.fetchDeckById(deck.id)
             }
             .eraseToAnyPublisher()
     }
