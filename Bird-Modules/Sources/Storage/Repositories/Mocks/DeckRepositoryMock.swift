@@ -233,7 +233,7 @@ extension Card {
          self.init(id: UUID(uuidString: id)!,
                    front: "Parte da frente",
                    back: "Parte de tras",
-                   color: .pink,
+                   color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),
                                        createdAt: Date(timeIntervalSince1970: 0)),
