@@ -31,15 +31,16 @@ public struct DeckView: View {
     
     public var body: some View {
         List {
-            if !viewModel.canStudy {
+            if !viewModel.canStudy && !viewModel.cards.isEmpty {
                 Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
                     .bold()
                     .multilineTextAlignment(.center)
+                    .listRowBackground(Color.clear)
             }
-        
             Button("Estudar Deck") {
                 shouldDisplayStudyView = true
             }
+            
             .disabled(!viewModel.canStudy)
             .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.canStudy))
             .listRowInsets(.zero)
@@ -47,7 +48,7 @@ public struct DeckView: View {
             .listRowSeparator(.hidden)
             .padding()
             
-            ForEach(viewModel.cardsSearched) {card in
+            ForEach(viewModel.cardsSearched) { card in
                 FlashcardCell(card: card) {
                     shouldDisplay = true
                 }
@@ -85,6 +86,23 @@ public struct DeckView: View {
             .listRowSeparator(.hidden)
         }
         .scrollContentBackground(.hidden)
+        .background(
+            VStack {
+                if viewModel.cards.isEmpty {
+                    VStack {
+                        EmptyStateView(component: .flashcard)
+                        Button {
+                            #warning("fazer ir pro modal de criar flashcard")
+                        } label: {
+                            Text("Criar Flashcard")
+                        }
+                        .buttonStyle(LargeButtonStyle(isDisabled: false))
+                        .padding()
+                    }
+                    
+                }
+            }
+        )
         .viewBackgroundColor(HBColor.primaryBackground)
         .onAppear(perform: viewModel.startup)
         .listStyle(.plain)
