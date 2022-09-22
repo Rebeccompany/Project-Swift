@@ -111,7 +111,7 @@ struct FlashcardView: View {
         }
         .foregroundColor(.white)
         .padding(24)
-        .background(HBColor.getHBColrFromCollectionColor(viewModel.card.color))
+        .background(HBColor.color(for: viewModel.card.color))
         .cornerRadius(24)
         .overlay(
             RoundedRectangle(cornerRadius: 24)

@@ -33,10 +33,10 @@ struct DeckTableView: View {
                 NavigationLink(value: StudyRoute.deck(deck)) {
                     HStack {
                         Image(systemName: deck.icon)
-                            .foregroundColor(HBColor.getHBColrFromCollectionColor(deck.color))
+                            .foregroundColor(HBColor.color(for: deck.color))
                             .background(
                                 Circle()
-                                    .fill(HBColor.getHBColrFromCollectionColor(deck.color).opacity(0.2))
+                                    .fill(HBColor.color(for: deck.color).opacity(0.2))
                                 
                                     .frame(width: 35, height: 35)
                                     

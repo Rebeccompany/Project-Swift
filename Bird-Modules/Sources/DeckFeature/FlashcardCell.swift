@@ -29,7 +29,7 @@ struct FlashcardCell: View {
             .foregroundColor(.white)
             .padding(8)
             .frame(minHeight: 150)
-            .background(HBColor.getHBColrFromCollectionColor(card.color))
+            .background(HBColor.color(for: card.color))
             .cornerRadius(8)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
