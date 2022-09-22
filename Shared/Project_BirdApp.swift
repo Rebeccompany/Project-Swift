@@ -10,9 +10,11 @@ import AppFeature
 
 @main
 struct Project_BirdApp: App {
+    @StateObject private var viewModel = ContentViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView(viewModel: ContentViewModel())
+            ContentView(viewModel: viewModel)
         }
     }
 }

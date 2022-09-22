@@ -12,12 +12,14 @@ import HummingBird
 struct FlashcardView: View {
     @Binding var viewModel: CardViewModel
     var index: Int
+    var cardCount: Int
     @State private var frontDegree: Double = 0
     @State private var backDegree: Double = -90
     
-    init(viewModel: Binding<CardViewModel>, index: Int) {
+    init(viewModel: Binding<CardViewModel>, index: Int, cardCount: Int) {
         self._viewModel = viewModel
         self.index = index
+        self.cardCount = cardCount
     }
     
     var body: some View {
@@ -32,14 +34,10 @@ struct FlashcardView: View {
             print(index)
         }
         .onChange(of: viewModel.isFlipped) { newValue in
-            if index != 0 {
                 flipWithAnimation(newValue)
-            } else {
-                flipWithoutAnimation(newValue)
-            }
         }
         .transaction { transaction in
-            if index == 0 && !viewModel.isFlipped {
+            if index == 0 && !viewModel.isFlipped && cardCount > 1 {
                 transaction.animation = nil
             }
         }
@@ -47,7 +45,8 @@ struct FlashcardView: View {
     }
     
     private func flip() {
-        if index != 0 {
+        
+        if index != 0 || cardCount <= 1 {
             viewModel.isFlipped.toggle()
         }
         
@@ -112,7 +111,7 @@ struct FlashcardView: View {
         }
         .foregroundColor(.white)
         .padding(24)
-        .background(HBColor.getHBColrFromCollectionColor(viewModel.card.color))
+        .background(HBColor.color(for: viewModel.card.color))
         .cornerRadius(24)
         .overlay(
             RoundedRectangle(cornerRadius: 24)
@@ -144,7 +143,7 @@ struct FlashcardView_Previews: PreviewProvider {
     }
     
     static var previews: some View {
-        FlashcardView(viewModel: .constant(CardViewModel(card: dummy, isFlipped: false)), index: 0)
+        FlashcardView(viewModel: .constant(CardViewModel(card: dummy, isFlipped: false)), index: 0, cardCount: 2)
             .frame(width: 340, height: 480)
             .padding()
             .preferredColorScheme(.dark)

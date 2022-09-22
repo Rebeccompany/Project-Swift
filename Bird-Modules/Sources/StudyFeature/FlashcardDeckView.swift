@@ -22,7 +22,7 @@ struct FlashcardDeckView: View {
                 Spacer()
                 ZStack {
                     ForEach(Array(zip($cards, cards.indices)), id: \.0.card.id) { $card, i in
-                        FlashcardView(viewModel: $card, index: i)
+                        FlashcardView(viewModel: $card, index: i, cardCount: cards.count)
                             .offset(y: getCardOffset(index: i))
                             .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)))
                             .zIndex(Double(i))

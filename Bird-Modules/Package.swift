@@ -49,13 +49,6 @@ let package = Package(
         ),
         
         .library(
-            name: "HomePageFeature",
-            targets: [
-                "HomePageFeature"
-            ]
-        ),
-        
-        .library(
             name: "ImportingFeature",
             targets: [
                 "ImportingFeature"
@@ -160,8 +153,11 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Storage",
+                "Flock",
                 "Woodpecker",
-                "Utils"
+                "Utils",
+                "NewFlashcardFeature",
+                "StudyFeature"
             ]
         ),
         
@@ -180,13 +176,6 @@ let package = Package(
                      "Storage",
                      "Utils"
                 ]
-        ),
-        
-        .target(
-            name: "HomePageFeature",
-            dependencies: [
-                "Models"
-            ]
         ),
         
         .target(

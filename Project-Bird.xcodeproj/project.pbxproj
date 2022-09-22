@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5B07663A28C2797700221DE8 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 5B07663928C2797700221DE8 /* AppFeature */; };
+		5B9440C328DBF2D60060EB4F /* Project_BirdUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9440C228DBF2D60060EB4F /* Project_BirdUITests.swift */; };
+		5B9440C528DBF2D60060EB4F /* Project_BirdUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9440C428DBF2D60060EB4F /* Project_BirdUITestsLaunchTests.swift */; };
 		9D1A9FC728AEAB950065DE6E /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 9D1A9FC628AEAB950065DE6E /* AppFeature */; };
 		BA654F0628A142F500EF72C8 /* Project_BirdApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */; };
 		BA654F0728A142F500EF72C8 /* Project_BirdApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */; };
@@ -15,8 +17,21 @@
 		BA654F0B28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		5B9440C628DBF2D60060EB4F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BA654ED928A142F100EF72C8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BA654EE428A142F400EF72C8;
+			remoteInfo = "Project-Bird (iOS)";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		5B07663828C2792E00221DE8 /* macOS.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
+		5B9440C028DBF2D50060EB4F /* Project-BirdUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Project-BirdUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B9440C228DBF2D60060EB4F /* Project_BirdUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project_BirdUITests.swift; sourceTree = "<group>"; };
+		5B9440C428DBF2D60060EB4F /* Project_BirdUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project_BirdUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project_BirdApp.swift; sourceTree = "<group>"; };
 		BA654EE028A142F400EF72C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BA654EE528A142F400EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -26,6 +41,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5B9440BD28DBF2D50060EB4F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BA654EE228A142F400EF72C8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -53,12 +75,22 @@
 			path = macOS;
 			sourceTree = "<group>";
 		};
+		5B9440C128DBF2D60060EB4F /* Project-BirdUITests */ = {
+			isa = PBXGroup;
+			children = (
+				5B9440C228DBF2D60060EB4F /* Project_BirdUITests.swift */,
+				5B9440C428DBF2D60060EB4F /* Project_BirdUITestsLaunchTests.swift */,
+			);
+			path = "Project-BirdUITests";
+			sourceTree = "<group>";
+		};
 		BA654ED828A142F100EF72C8 = {
 			isa = PBXGroup;
 			children = (
 				BA654F1C28A14BF400EF72C8 /* Bird-Modules */,
 				5B07663728C2789F00221DE8 /* macOS */,
 				BA654EDD28A142F100EF72C8 /* Shared */,
+				5B9440C128DBF2D60060EB4F /* Project-BirdUITests */,
 				BA654EE628A142F400EF72C8 /* Products */,
 				BA654F1D28A14C7C00EF72C8 /* Frameworks */,
 			);
@@ -79,6 +111,7 @@
 			children = (
 				BA654EE528A142F400EF72C8 /* Project-Bird.app */,
 				BA654EEB28A142F500EF72C8 /* Project-Bird.app */,
+				5B9440C028DBF2D50060EB4F /* Project-BirdUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -93,6 +126,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5B9440BF28DBF2D50060EB4F /* Project-BirdUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5B9440CA28DBF2D60060EB4F /* Build configuration list for PBXNativeTarget "Project-BirdUITests" */;
+			buildPhases = (
+				5B9440BC28DBF2D50060EB4F /* Sources */,
+				5B9440BD28DBF2D50060EB4F /* Frameworks */,
+				5B9440BE28DBF2D50060EB4F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5B9440C728DBF2D60060EB4F /* PBXTargetDependency */,
+			);
+			name = "Project-BirdUITests";
+			productName = "Project-BirdUITests";
+			productReference = 5B9440C028DBF2D50060EB4F /* Project-BirdUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		BA654EE428A142F400EF72C8 /* Project-Bird (iOS) */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BA654F0E28A142F500EF72C8 /* Build configuration list for PBXNativeTarget "Project-Bird (iOS)" */;
@@ -142,9 +193,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1340;
+				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1400;
 				TargetAttributes = {
+					5B9440BF28DBF2D50060EB4F = {
+						CreatedOnToolsVersion = 14.0;
+						TestTargetID = BA654EE428A142F400EF72C8;
+					};
 					BA654EE428A142F400EF72C8 = {
 						CreatedOnToolsVersion = 13.4.1;
 					};
@@ -169,11 +224,19 @@
 			targets = (
 				BA654EE428A142F400EF72C8 /* Project-Bird (iOS) */,
 				BA654EEA28A142F500EF72C8 /* Project-Bird (macOS) */,
+				5B9440BF28DBF2D50060EB4F /* Project-BirdUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5B9440BE28DBF2D50060EB4F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BA654EE328A142F400EF72C8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -233,6 +296,15 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5B9440BC28DBF2D50060EB4F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5B9440C328DBF2D60060EB4F /* Project_BirdUITests.swift in Sources */,
+				5B9440C528DBF2D60060EB4F /* Project_BirdUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BA654EE128A142F400EF72C8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -251,7 +323,56 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		5B9440C728DBF2D60060EB4F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BA654EE428A142F400EF72C8 /* Project-Bird (iOS) */;
+			targetProxy = 5B9440C628DBF2D60060EB4F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		5B9440C828DBF2D60060EB4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8JPPDHN68R;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.SpixiiUITexts;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Project-Bird (iOS)";
+			};
+			name = Debug;
+		};
+		5B9440C928DBF2D60060EB4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8JPPDHN68R;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.SpixiiUITexts;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Project-Bird (iOS)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		BA654F0C28A142F500EF72C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -439,6 +560,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -470,6 +592,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -497,6 +620,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5B9440CA28DBF2D60060EB4F /* Build configuration list for PBXNativeTarget "Project-BirdUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5B9440C828DBF2D60060EB4F /* Debug */,
+				5B9440C928DBF2D60060EB4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		BA654EDC28A142F100EF72C8 /* Build configuration list for PBXProject "Project-Bird" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

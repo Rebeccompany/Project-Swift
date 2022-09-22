@@ -61,15 +61,18 @@ public class NewDeckViewModel: ObservableObject {
         currentSelectedIcon = IconNames(rawValue: deck.icon)
     }
     
-    func startUp() {
+    private var canSubmitPublisher: AnyPublisher<Bool, Never> {
         Publishers.CombineLatest3($deckName, $currentSelectedColor, $currentSelectedIcon)
-            .map(canSubmitData)
-            .assign(to: &$canSubmit)
-        
+            .map { name, currentSelectedColor, currentSelectedIcon in
+                !name.isEmpty && currentSelectedColor != nil && currentSelectedIcon != nil
+            }
+            .eraseToAnyPublisher()
     }
     
-    private func canSubmitData(name: String, currentSelectedColor: CollectionColor?, currentSelectedIcon: IconNames?) -> Bool {
-        !name.isEmpty && currentSelectedColor != nil && currentSelectedIcon != nil
+    func startUp() {
+        canSubmitPublisher
+            .assign(to: &$canSubmit)
+        
     }
     
     func createDeck() throws {
