@@ -17,7 +17,6 @@ import Utils
 
 public struct DeckView: View {
     @ObservedObject private var viewModel: DeckViewModel
-    @State private var shouldDisplay: Bool = false
     @State private var shouldDisplayNewFlashcard: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
     @State private var showingAlert: Bool = false
@@ -47,9 +46,10 @@ public struct DeckView: View {
             .listRowSeparator(.hidden)
             .padding()
             
-            ForEach(viewModel.cardsSearched) {card in
+            ForEach(viewModel.cardsSearched) { card in
                 FlashcardCell(card: card) {
-                    shouldDisplay = true
+                    viewModel.editFlashcard(card)
+                    shouldDisplayNewFlashcard = true
                 }
                 .padding(.bottom, 8)
                 .contextMenu {
@@ -71,15 +71,6 @@ public struct DeckView: View {
                     }
                     
                 }
-                
-                .background(
-                    NavigationLink {
-                        FlashcardCell(card: card) {}
-                            .padding()
-                    } label: {
-                        EmptyView()
-                    }
-                )
             }
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
