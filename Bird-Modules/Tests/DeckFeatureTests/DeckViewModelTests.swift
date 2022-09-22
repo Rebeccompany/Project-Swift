@@ -1,0 +1,133 @@
+//
+//  DeckViewModelTests.swift
+//  
+//
+//  Created by Caroline Taus on 14/09/22.
+//
+
+import XCTest
+@testable import DeckFeature
+import Storage
+import Models
+import HummingBird
+import Combine
+
+final class DeckViewModelTests: XCTestCase {
+    
+    var sut: DeckViewModel!
+    var deckRepository: DeckRepositoryMock!
+    var cancellables: Set<AnyCancellable>!
+    
+    override func setUp() {
+        deckRepository = DeckRepositoryMock()
+        sut = DeckViewModel(deck: deckRepository.decks[0], deckRepository: deckRepository)
+        cancellables = .init()
+        sut.startup()
+    }
+    
+    override func tearDown() {
+        sut = nil
+        deckRepository = nil
+        cancellables.forEach({$0.cancel()})
+        cancellables = nil
+    }
+    
+    func testStartup() throws {
+        let cardExpectation = expectation(description: "card reacting to Repository Action")
+        let deckExpectation = expectation(description: "deck reacting to Repository Action")
+        
+        try deckRepository.addCard(Card(id: UUID(), front: AttributedString(), back: AttributedString(), color: .red, datesLogs: DateLogs(), deckID: deckRepository.decks.first!.id, woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), history: []), to: deckRepository.decks.first!)
+        
+        sut.$cards
+            .sink {[unowned self] cards in
+                XCTAssertEqual(cards, self.deckRepository.cards.sorted {c1, c2 in c1.datesLogs.createdAt > c2.datesLogs.createdAt})
+                cardExpectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        sut.$deck
+            .sink {[unowned self] deck in
+                XCTAssertEqual(deck.cardsIds, self.deckRepository.cards.map(\.id))
+                deckExpectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [cardExpectation, deckExpectation], timeout: 1)
+    }
+
+    func testDeleteFlashcard() throws {
+        
+        let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
+        
+        let containsCard = deckRepository.cards.contains(where: {
+            $0.id == id
+        })
+        
+        XCTAssertTrue(containsCard)
+
+        try sut.deleteFlashcard(card: deckRepository.cards[0])
+
+        let deletedDeck = deckRepository.cards.contains(where: {
+            $0.id == id
+        })
+
+        XCTAssertFalse(deletedDeck)
+    }
+    
+    func testSearchCardFront() {
+        sut.searchFieldContent = "frente"
+        
+        let count = sut.cardsSearched.count
+        
+        XCTAssertEqual(count, deckRepository.cards.count)
+    }
+    
+    func testSearchCardBack() {
+        sut.searchFieldContent = "tras"
+        
+        let count = sut.cardsSearched.count
+        
+        XCTAssertEqual(count, deckRepository.cards.count)
+    }
+    
+    func testSearchNoResults() {
+        sut.searchFieldContent = "teste"
+        
+        let count = sut.cardsSearched.count
+        
+        XCTAssertEqual(count, 0)
+    }
+    
+    func testCanStudyTrue() {
+        XCTAssertTrue(sut.canStudy)
+    }
+    
+    func testCanStudyFalse() {
+        let cards: [Card] = [
+            Card(id: UUID(),
+                 front: "",
+                 back: "",
+                 color: .red,
+                 datesLogs: DateLogs(),
+                 deckID: UUID(uuidString: "5c27ad86-b84a-41cf-ab97-bb45586adfbd")!,
+                 woodpeckerCardInfo: WoodpeckerCardInfo(step: 1,
+                                                        isGraduated: false,
+                                                        easeFactor: 2.5,
+                                                        streak: 0,
+                                                        interval: 10000,
+                                                        hasBeenPresented: true),
+                 history: [])]
+        
+        sut = DeckViewModel(deck: Deck(id: UUID(uuidString: "5c27ad86-b84a-41cf-ab97-bb45586adfbd")!,
+                                       name: "Teste Deck",
+                                       icon: "pencil",
+                                       color: .red,
+                                       collectionId: UUID(),
+                                       cardsIds: cards.map{$0.id}),
+                            deckRepository: deckRepository)
+        sut.startup()
+
+        XCTAssertFalse(sut.canStudy)
+    }
+
+}
