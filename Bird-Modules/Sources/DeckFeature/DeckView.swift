@@ -16,7 +16,7 @@ import Flock
 import Utils
 
 public struct DeckView: View {
-    @ObservedObject private var viewModel: DeckViewModel
+    @StateObject private var viewModel: DeckViewModel
     @State private var shouldDisplay: Bool = false
     @State private var shouldDisplayNewFlashcard: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
@@ -25,8 +25,8 @@ public struct DeckView: View {
     @State private var activeAlert: ActiveAlert = .error
     @State private var deletedCard: Card?
     
-    public init(viewModel: DeckViewModel) {
-        self.viewModel = viewModel
+    public init(viewModel: @autoclosure @escaping () -> DeckViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel())
     }
     
     public var body: some View {
