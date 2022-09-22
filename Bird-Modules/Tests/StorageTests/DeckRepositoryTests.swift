@@ -187,6 +187,51 @@ final class DeckRepositoryTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
+    func testCardListenerForDeck() throws {
+        let decks = createMultipleDecks()
+        try saveMultipleDecks(decks)
+        
+        var correctCards = createMultipleCardsSorted(into: decks.first!)
+        try saveMultipleCards(correctCards, into: decks.first!)
+        
+        var otherCards = createMultipleCardsSorted(ids: [UUID(), UUID(), UUID()] , into: decks.last!)
+        try saveMultipleCards(otherCards, into: decks.last!)
+        
+        var listenerCallsCount = 0
+        let listenerExpectedCount = 1
+        
+        let expectation = expectation(description: "listen to cards of first deck")
+        
+        sut.cardListener(forId: decks.first!.id)
+            .sink {
+                XCTAssertEqual($0, .finished)
+            } receiveValue: {[unowned self] cards in
+                XCTAssertEqual(cards.count, correctCards.count)
+                
+                zip(
+                    cards.sorted { d1, d2 in d1.id.uuidString < d2.id.uuidString },
+                    correctCards.sorted { d1, d2 in d1.id.uuidString < d2.id.uuidString }
+                )
+                    .forEach { c1, c2 in self.assertCard(card1: c1, card2: c2) }
+                
+                if listenerCallsCount == listenerExpectedCount {
+                    expectation.fulfill()
+                } else {
+                    listenerCallsCount += 1
+                }
+            }
+            .store(in: &cancellables)
+        
+        let wrongCard = CardDummy.newDummyCard(UUID(), into: decks.last!)
+        try sut.addCard(wrongCard, to: decks.last!)
+        
+        let correctCard = CardDummy.newDummyCard(UUID(), into: decks.first!)
+        correctCards.append(correctCard)
+        try sut.addCard(correctCard, to: decks.first!)
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
     func testCreateDeckWithoutCards() throws {
         let dummy = DeckDummy.dummy
         let count = try dataStorage.mainContext.count(for: DeckEntity.fetchRequest())
