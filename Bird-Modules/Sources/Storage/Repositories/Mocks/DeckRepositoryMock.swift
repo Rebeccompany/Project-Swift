@@ -16,6 +16,7 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
     
     public var deckWithCardsId: UUID = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")!
     lazy var subject: CurrentValueSubject<[Deck], RepositoryError> = .init(decks)
+    lazy var cardSubject: CurrentValueSubject<[Card], RepositoryError> = .init(cards)
     
     public lazy var decks: [Deck] = [
         Deck(id: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", cardsIds: cards.map {
@@ -65,6 +66,10 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
      public func deckListener() -> AnyPublisher<[Deck], RepositoryError> {
          subject.eraseToAnyPublisher()
      }
+    
+    public func cardListener(forId deckId: UUID) -> AnyPublisher<[Card], RepositoryError> {
+        cardSubject.map{ $0.filter {card in card.deckID == deckId} }.eraseToAnyPublisher()
+    }
 
      public func createDeck(_ deck: Deck, cards: [Card]) throws {
          if shouldThrowError {

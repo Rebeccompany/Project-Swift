@@ -47,6 +47,16 @@ public final class DeckRepository: DeckRepositoryProtocol {
         }
     }
     
+    public func cardListener(forId deckId: UUID) -> AnyPublisher<[Card], RepositoryError> {
+        do {
+            let predicate = NSPredicate(format: "deck.id == %@", deckId as NSUUID)
+            let listener = try cardRepository.listener(for: predicate)
+            return listener
+        } catch {
+            return Fail<[Card], RepositoryError>(error: .errorOnListening).eraseToAnyPublisher()
+        }
+    }
+    
     public func createDeck(_ deck: Deck, cards: [Card]) throws {
         let deckEntity = try deckRepository.create(deck)
         
