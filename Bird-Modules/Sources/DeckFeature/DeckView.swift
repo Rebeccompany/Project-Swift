@@ -17,7 +17,6 @@ import Utils
 
 public struct DeckView: View {
     @StateObject private var viewModel: DeckViewModel
-    @State private var shouldDisplay: Bool = false
     @State private var shouldDisplayNewFlashcard: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
     @State private var showingAlert: Bool = false
@@ -31,15 +30,16 @@ public struct DeckView: View {
     
     public var body: some View {
         List {
-            if !viewModel.canStudy {
+            if !viewModel.canStudy && !viewModel.cards.isEmpty {
                 Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
                     .bold()
                     .multilineTextAlignment(.center)
+                    .listRowBackground(Color.clear)
             }
-        
             Button("Estudar Deck") {
                 shouldDisplayStudyView = true
             }
+            
             .disabled(!viewModel.canStudy)
             .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.canStudy))
             .listRowInsets(.zero)
@@ -47,9 +47,10 @@ public struct DeckView: View {
             .listRowSeparator(.hidden)
             .padding()
             
-            ForEach(viewModel.cardsSearched) {card in
+            ForEach(viewModel.cardsSearched) { card in
                 FlashcardCell(card: card) {
-                    shouldDisplay = true
+                    viewModel.editFlashcard(card)
+                    shouldDisplayNewFlashcard = true
                 }
                 .padding(.bottom, 8)
                 .contextMenu {
@@ -71,20 +72,28 @@ public struct DeckView: View {
                     }
                     
                 }
-                
-                .background(
-                    NavigationLink {
-                        FlashcardCell(card: card) {}
-                            .padding()
-                    } label: {
-                        EmptyView()
-                    }
-                )
             }
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
         }
         .scrollContentBackground(.hidden)
+        .background(
+            VStack {
+                if viewModel.cards.isEmpty {
+                    VStack {
+                        EmptyStateView(component: .flashcard)
+                        Button {
+                            #warning("fazer ir pro modal de criar flashcard")
+                        } label: {
+                            Text("Criar Flashcard")
+                        }
+                        .buttonStyle(LargeButtonStyle(isDisabled: false))
+                        .padding()
+                    }
+                    
+                }
+            }
+        )
         .viewBackgroundColor(HBColor.primaryBackground)
         .onAppear(perform: viewModel.startup)
         .listStyle(.plain)

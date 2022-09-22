@@ -27,10 +27,15 @@ public struct StudyView: View {
     
     private func generateAttributedLabel() -> String {
         if !viewModel.cards.isEmpty {
-            if viewModel.displayedCards.count > 1 && !viewModel.displayedCards[1].isFlipped {
-                return "Frente: " + toString(viewModel.displayedCards[0].card.front)
+            let card = viewModel.displayedCards[0].card
+            guard let isFlipped = viewModel.displayedCards.last?.isFlipped else {
+                return ""
+            }
+            
+            if !isFlipped {
+                return "Frente: " + toString(card.front)
             } else {
-                return "Verso: " + toString(viewModel.displayedCards[0].card.back)
+                return "Verso: " + toString(card.back)
             }
         }
         return ""
@@ -74,10 +79,18 @@ public struct StudyView: View {
                 
                 
             } else {
-                Text("EmptyState")
+                EndOfStudyView {
+                    do {
+                        try viewModel.saveChanges()
+                        dismiss()
+                    } catch {
+                        selectedErrorMessage = .saveStudy
+                        showingErrorAlert = true
+                    }
+                }
             }
         }
-        .background(HBColor.primaryBackground)
+        .viewBackgroundColor(HBColor.primaryBackground)
         .navigationTitle(viewModel.deck.name)
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -124,7 +137,7 @@ struct StudyView_Previews: PreviewProvider {
                         sessionCacher: SessionCacher(
                             storage: LocalStorageMock()
                         ),
-                        deck: repo.decks.first!,
+                        deck: repo.decks[3],
                         dateHandler: DateHandler()
                     )
                 )
