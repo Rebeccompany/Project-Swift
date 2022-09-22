@@ -55,15 +55,17 @@ public class NewFlashcardViewModel: ObservableObject {
         currentSelectedColor = card.color
     }
     
-    func startUp() {
+    private var canSubmitPublisher: AnyPublisher<Bool, Never> {
         Publishers.CombineLatest3($flashcardFront, $flashcardBack, $currentSelectedColor)
-            .map(canSubmitData)
-            .assign(to: &$canSubmit)
-        
+            .map { front, back, currentSelectedColor in
+                !front.isEmpty && !back.isEmpty && currentSelectedColor != nil
+            }
+            .eraseToAnyPublisher()
     }
     
-    private func canSubmitData(front: String, back: String, currentSelectedColor: CollectionColor?) -> Bool {
-        !front.isEmpty && !back.isEmpty && currentSelectedColor != nil
+    func startUp() {
+        canSubmitPublisher
+            .assign(to: &$canSubmit)
     }
     
     func createFlashcard() throws {

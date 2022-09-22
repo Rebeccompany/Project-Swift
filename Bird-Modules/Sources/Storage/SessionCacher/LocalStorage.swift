@@ -21,18 +21,32 @@ extension UserDefaults: LocalStorageService {}
 
 public final class SessionCacher {
     private let storage: LocalStorageService
+    private let decoder: JSONDecoder
+    private let encoder: JSONEncoder
     private let currentSessionKey: String = "com.birdmodules.storage.sessioncacher.session"
     
-    public init(storage: LocalStorageService = UserDefaults.standard) {
+    public init(storage: LocalStorageService = UserDefaults.standard,
+                encoder: JSONEncoder = JSONEncoder(),
+                decoder: JSONDecoder = JSONDecoder()) {
         self.storage = storage
+        self.encoder = encoder
+        self.decoder = decoder
     }
     
     public func currentSession(for id: UUID) -> Session? {
-        storage.object(forKey: sessionKey(for: id)) as? Session
+        guard
+            let sessionData = storage.object(forKey: sessionKey(for: id)) as? Data,
+            let session = try? decoder.decode(Session.self, from: sessionData)
+        else {
+            return nil
+        }
+        
+        return session
     }
     
     public func setCurrentSession(session: Session) {
-        storage.set(session, forKey: sessionKey(for: session.deckId))
+        let data = try? encoder.encode(session)
+        storage.set(data, forKey: sessionKey(for: session.deckId))
     }
     
     private func sessionKey(for id: UUID) -> String {

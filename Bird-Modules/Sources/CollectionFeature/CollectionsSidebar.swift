@@ -77,7 +77,6 @@ public struct CollectionsSidebar: View {
                             }
                             
                             Button(role: .destructive) {
-                            #warning( "delete action")
                                 //deleteAction(collection)
                             } label: {
                                 Label("Deletar", systemImage: "trash")

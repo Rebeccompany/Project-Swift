@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Session: Equatable {
+public struct Session: Equatable, Codable {
 
     public var cardIds: [UUID]
     public var date: Date

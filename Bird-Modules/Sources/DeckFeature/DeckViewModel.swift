@@ -16,6 +16,7 @@ public class DeckViewModel: ObservableObject {
     @Published var deck: Deck
     @Published var searchFieldContent: String
     @Published var cards: [Card]
+    @Published var editingFlashcard: Card?
     
     private var deckRepository: DeckRepositoryProtocol
     var canStudy: Bool {
@@ -28,7 +29,6 @@ public class DeckViewModel: ObservableObject {
         self.searchFieldContent = ""
         self.deckRepository = deckRepository
         self.cards = []
-        
     }
     
     func startup() {
@@ -59,5 +59,13 @@ public class DeckViewModel: ObservableObject {
         } else {
             return cards.filter { NSAttributedString($0.front).string.contains(searchFieldContent) || NSAttributedString($0.back).string.contains(searchFieldContent) }
         }
+    }
+    
+    func editFlashcard(_ card: Card) {
+        editingFlashcard = card
+    }
+    
+    func createFlashcard() {
+        editingFlashcard = nil
     }
 }

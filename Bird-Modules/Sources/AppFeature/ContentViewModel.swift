@@ -11,6 +11,7 @@ import Combine
 import Storage
 import DeckFeature
 
+//swiftlint:disable trailing_closure
 public final class ContentViewModel: ObservableObject {
     
     // MARK: Collections
@@ -66,21 +67,36 @@ public final class ContentViewModel: ObservableObject {
         self.sortOrder = [KeyPathComparator(\Deck.name)]
     }
     
-    func startup() {
+    private var collectionListener: AnyPublisher<[DeckCollection], Never> {
         collectionRepository
             .listener()
-            .handleEvents(receiveCompletion: handleCompletion)
+            .handleEvents(receiveCompletion: { [weak self] completion in self?.handleCompletion(completion) })
             .replaceError(with: [])
-            .assign(to: &$collections)
-        
+            .eraseToAnyPublisher()
+    }
+    
+    private var deckListener: AnyPublisher<[Deck], Never> {
         deckRepository
             .deckListener()
-            .handleEvents(receiveCompletion: handleCompletion)
+            .handleEvents(receiveCompletion: { [weak self] completion in self?.handleCompletion(completion) })
             .replaceError(with: [])
             .combineLatest($sidebarSelection)
-            .map(mapDecksBySidebarSelection)
+            .compactMap { [weak self] decks, selection in
+                self?.mapDecksBySidebarSelection(decks: decks, sidebarSelection: selection)
+            }
             .combineLatest($searchText)
-            .map(filterDecksBySearchText)
+            .compactMap { [weak self] decks, searchText in
+                self?.filterDecksBySearchText(decks, searchText: searchText)
+            }
+            .replaceNil(with: [])
+            .eraseToAnyPublisher()
+    }
+    
+    func startup() {
+        collectionListener
+            .assign(to: &$collections)
+        
+        deckListener
             .assign(to: &$decks)
         
     }

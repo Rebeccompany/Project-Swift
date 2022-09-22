@@ -12,6 +12,7 @@ import Woodpecker
 import Combine
 import Utils
 
+//swiftlint:disable trailing_closure
 public class StudyViewModel: ObservableObject {
     private let deckRepository: DeckRepositoryProtocol
     private let sessionCacher: SessionCacher
@@ -33,7 +34,7 @@ public class StudyViewModel: ObservableObject {
     let systemObserver: SystemObserverProtocol
     
     public init(
-        deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil),
+        deckRepository: DeckRepositoryProtocol = DeckRepository.shared,
         sessionCacher: SessionCacher = SessionCacher(),
         deck: Deck,
         dateHandler: DateHandlerProtocol = DateHandler(),
@@ -51,60 +52,88 @@ public class StudyViewModel: ObservableObject {
         self.systemObserver = systemObserver
     }
     
-    func startup() {
-        
-        systemObserver.voiceOverDidChange()
-            .assign(to: &$isVOOn)
-            
-        systemObserver.willTerminate()
-            .sink { _ in
-                print("finished")
-            } receiveValue: { _ in
-                do {
-                    try self.saveChanges()
-                } catch {
-                    print("didn't save")
-                }
-            }
-            .store(in: &cancellables)
-
-        
+    private var displayedCardsPublisher: AnyPublisher<[CardViewModel], Never> {
         $cards.map { cards -> [Card] in
             Array(cards.prefix(2).reversed())
         }
         .map { cards in
             cards.map(CardViewModel.init)
         }
-        .assign(to: &$displayedCards)
-        
+        .eraseToAnyPublisher()
+    }
+    
+    private var shouldButtonsBeDisabledPublisher: AnyPublisher<Bool, Never> {
         $displayedCards.map { cards in
             !(cards.last?.isFlipped ?? true)
         }
-        .assign(to: &$shouldButtonsBeDisabled)
+        .eraseToAnyPublisher()
+    }
+    
+    private func sessionPublisher(cardIds: [UUID]) -> AnyPublisher<[Card], Never> {
+        deckRepository
+            .fetchCardsByIds(cardIds)
+            .replaceError(with: [])
+            .compactMap { [weak self] cards in
+                guard let self = self else {
+                    return nil
+                }
+                return cards.sorted(by: self.cardSortingFunc)
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    private func newSessionCardsPublisher(cardIds: [UUID]) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
+        deckRepository.fetchCardsByIds(cardIds)
+            .map {
+                $0.map(OrganizerCardInfo.init(card:))
+            }
+            .tryMap { [deck, dateHandler] cards in
+                try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: dateHandler.today)
+            }
+            .handleEvents(receiveOutput: { [weak self] in self?.saveCardIdsToCache(ids: $0) })
+            .mapError { _ in
+                RepositoryError.internalError
+            }
+            .flatMap { [weak self] in
+                guard let self = self else {
+                    return Fail<([Card], [Card], [Card]), RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
+                }
+                
+                return self.transformIdsIntoPublishers(ids: $0)
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    func startup() {
+        
+        systemObserver.voiceOverDidChange()
+            .assign(to: &$isVOOn)
+            
+        systemObserver.willTerminate()
+            .sink {[weak self] _ in
+                try? self?.saveChanges()
+            }
+            .store(in: &cancellables)
+
+        
+        displayedCardsPublisher
+            .assign(to: &$displayedCards)
+        
+        shouldButtonsBeDisabledPublisher
+            .assign(to: &$shouldButtonsBeDisabled)
         
         
         if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
-            deckRepository.fetchCardsByIds(session.cardIds)
-                .replaceError(with: [])
-                .map {
-                    $0.sorted(by: self.cardSortingFunc)
-                }
+            sessionPublisher(cardIds: session.cardIds)
                 .assign(to: &$cards)
             
         } else {
-            deckRepository.fetchCardsByIds(deck.cardsIds)
-                .map {
-                    $0.map(OrganizerCardInfo.init(card:))
+            newSessionCardsPublisher(cardIds: deck.cardsIds)
+                .sink { [weak self] in
+                    self?.finishFetchCards($0)
+                } receiveValue: {[weak self] cards in
+                    self?.receiveCards(todayReviewingCards: cards.0, todayLearningCards: cards.1, toModify: cards.2)
                 }
-                .tryMap { [deck, dateHandler] cards in
-                    try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: dateHandler.today)
-                }
-                .handleEvents(receiveOutput: saveCardIdsToCache)
-                .mapError {_ in
-                    RepositoryError.internalError
-                }
-                .flatMap(transformIdsIntoPublishers)
-                .sink(receiveCompletion: finishFetchCards, receiveValue: receiveCards)
                 .store(in: &cancellables)
         }
     }

@@ -29,13 +29,21 @@ public struct NewFlashcardView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading) {
-                    FlashcardTextEditorView(color: .red, side: "Frente", cardText: $viewModel.flashcardFront)
-                        .focused($focus, equals: NewFlashcardFocus.front)
-                        .frame(minHeight: 200)
+                    FlashcardTextEditorView(
+                        color: HBColor.getHBColrFromCollectionColor(viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
+                        side: "Frente",
+                        cardText: $viewModel.flashcardFront
+                    )
+                    .focused($focus, equals: NewFlashcardFocus.front)
+                    .frame(minHeight: 200)
                     
-                    FlashcardTextEditorView(color: .red, side: "Verso", cardText: $viewModel.flashcardBack)
-                        .focused($focus, equals: NewFlashcardFocus.back)
-                        .frame(minHeight: 200)
+                    FlashcardTextEditorView(
+                        color: HBColor.getHBColrFromCollectionColor(viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
+                        side: "Verso",
+                        cardText: $viewModel.flashcardBack
+                    )
+                    .focused($focus, equals: NewFlashcardFocus.back)
+                    .frame(minHeight: 200)
                     
                     Text("Cores")
                         .font(.callout)
@@ -68,75 +76,38 @@ public struct NewFlashcardView: View {
                     }
         
                 }
-                .onAppear(perform: viewModel.startUp)
                 .padding()
-                
-                .navigationTitle(viewModel.editingFlashcard != nil ? "Editar Flashcard" : "Criar Flashcard")
-                .navigationBarTitleDisplayMode(.inline)
-                
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("OK") {
-                            if viewModel.editingFlashcard == nil {
-                                do {
-                                    try viewModel.createFlashcard()
-                                    dismiss()
-                                } catch {
-                                    selectedErrorMessage = .createCard
-                                    showingAlert = true
-                                }
-                                
-                            } else {
-                                do {
-                                    try viewModel.editFlashcard()
-                                    dismiss()
-                                } catch {
-                                    selectedErrorMessage = .editCard
-                                    showingAlert = true
-                                }
-                            }
-                        }
-                        .disabled(!viewModel.canSubmit)
-                        .accessibilityLabel(!viewModel.canSubmit ? "OK desabilitado" : "OK")
-                    }
-                    
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancelar") {
-                            dismiss()
-                        }
-                        .foregroundColor(.red)
-                    }
-                }
-                
-                .alert(isPresented: $showingAlert) {
-                    switch activeAlert {
-                    case .error:
-                        return Alert(title: Text(selectedErrorMessage.texts.title),
-                                     message: Text(selectedErrorMessage.texts.message),
-                                     dismissButton: .default(Text("Fechar")))
-                    case .confirm:
-                        return Alert(title: Text("Deseja apagar este flashcard?"),
-                                     message: Text("Você perderá permanentemente o conteúdo deste flashcard."),
-                                     primaryButton: .destructive(Text("Apagar")) {
-                                        do {
-                                            try viewModel.deleteFlashcard()
-                                            dismiss()
-                                        } catch {
-                                            activeAlert = .error
-                                            showingAlert = true
-                                            selectedErrorMessage = .deleteCard
-                                        }
-                                     },
-                                     secondaryButton: .cancel(Text("Cancelar"))
-                        )
-                    }
-                    
-            }
                 
             }
             .scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
             .viewBackgroundColor(HBColor.primaryBackground)
+            .navigationTitle(viewModel.editingFlashcard != nil ? "Editar Flashcard" : "Criar Flashcard")
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear(perform: viewModel.startUp)
+            .alert(isPresented: $showingAlert) {
+                switch activeAlert {
+                case .error:
+                    return Alert(title: Text(selectedErrorMessage.texts.title),
+                                 message: Text(selectedErrorMessage.texts.message),
+                                 dismissButton: .default(Text("Fechar")))
+                case .confirm:
+                    return Alert(title: Text("Deseja apagar este flashcard?"),
+                                 message: Text("Você perderá permanentemente o conteúdo deste flashcard."),
+                                 primaryButton: .destructive(Text("Apagar")) {
+                                    do {
+                                        try viewModel.deleteFlashcard()
+                                        dismiss()
+                                    } catch {
+                                        activeAlert = .error
+                                        showingAlert = true
+                                        selectedErrorMessage = .deleteCard
+                                    }
+                                 },
+                                 secondaryButton: .cancel(Text("Cancelar"))
+                    )
+                }
+            }
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
@@ -148,8 +119,8 @@ public struct NewFlashcardView: View {
                         Image(systemName: "chevron.up")
                     }.disabled(focus == .front)
                         .accessibilityLabel(focus == .front ? "Subir foco do teclado desabilitado" : "Subir foco do teclado")
-                    
-                    
+
+
                     Button {
                         if focus == .front {
                             focus = .back
@@ -158,11 +129,42 @@ public struct NewFlashcardView: View {
                         Image(systemName: "chevron.down")
                     }.disabled(focus == .back)
                         .accessibilityLabel(focus == .back ? "Descer foco do teclado desabilitado" : "Descer foco do teclado")
-                    
+
                     Button("Feito") {
                         focus = nil
                     }
                     .accessibilityLabel(Text("Botão de feito"))
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("OK") {
+                        if viewModel.editingFlashcard == nil {
+                            do {
+                                try viewModel.createFlashcard()
+                                dismiss()
+                            } catch {
+                                selectedErrorMessage = .createCard
+                                showingAlert = true
+                            }
+                            
+                        } else {
+                            do {
+                                try viewModel.editFlashcard()
+                                dismiss()
+                            } catch {
+                                selectedErrorMessage = .editCard
+                                showingAlert = true
+                            }
+                        }
+                    }
+                    .disabled(!viewModel.canSubmit)
+                    .accessibilityLabel(!viewModel.canSubmit ? "OK desabilitado" : "OK")
+                }
+                
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar") {
+                        dismiss()
+                    }
+                    .foregroundColor(.red)
                 }
             }
             
