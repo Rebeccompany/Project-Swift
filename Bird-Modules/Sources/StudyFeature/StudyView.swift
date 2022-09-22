@@ -42,83 +42,85 @@ public struct StudyView: View {
     }
     //swiftlint:disable trailing_closure
     public var body: some View {
-        ZStack {
-            if !viewModel.displayedCards.isEmpty {
-                
-                VStack {
-                    FlashcardDeckView(cards: $viewModel.displayedCards)
-                        .zIndex(1)
-                        .padding(.vertical)
-                        .accessibilityElement(children: .ignore)
-                        .accessibilityAddTraits(.isButton)
-                        .accessibilityLabel(generateAttributedLabel())
-                        .accessibilityHidden(viewModel.cards.isEmpty)
+        NavigationStack {
+            ZStack {
+                if !viewModel.displayedCards.isEmpty {
                     
-                    
-                    HStack(alignment: .top) {
-                        ForEach(UserGrade.allCases) { userGrade in
-                            Spacer()
-                            DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in
-                                withAnimation {
-                                    do {
-                                        try viewModel.pressedButton(for: userGrade)
-                                    } catch {
-                                        selectedErrorMessage = .gradeCard
-                                        showingErrorAlert = true
+                    VStack {
+                        FlashcardDeckView(cards: $viewModel.displayedCards)
+                            .zIndex(1)
+                            .padding(.vertical)
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityAddTraits(.isButton)
+                            .accessibilityLabel(generateAttributedLabel())
+                            .accessibilityHidden(viewModel.cards.isEmpty)
+                        
+                        
+                        HStack(alignment: .top) {
+                            ForEach(UserGrade.allCases) { userGrade in
+                                Spacer()
+                                DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in
+                                    withAnimation {
+                                        do {
+                                            try viewModel.pressedButton(for: userGrade)
+                                        } catch {
+                                            selectedErrorMessage = .gradeCard
+                                            showingErrorAlert = true
+                                        }
                                     }
                                 }
+                                Spacer()
                             }
-                            Spacer()
+                        }
+                        .padding()
+                        .accessibilityElement(children: .contain)
+                        .accessibilityHint("Escolha nível de dificuldade")
+                        .accessibilityLabel("Quatro Botões.")
+                    }
+                    
+                    
+                } else {
+                    EndOfStudyView {
+                        do {
+                            try viewModel.saveChanges()
+                            dismiss()
+                        } catch {
+                            selectedErrorMessage = .saveStudy
+                            showingErrorAlert = true
                         }
                     }
-                    .padding()
-                    .accessibilityElement(children: .contain)
-                    .accessibilityHint("Escolha nível de dificuldade")
-                    .accessibilityLabel("Quatro Botões.")
-                }
-                
-                
-            } else {
-                EndOfStudyView {
-                    do {
-                        try viewModel.saveChanges()
-                        dismiss()
-                    } catch {
-                        selectedErrorMessage = .saveStudy
-                        showingErrorAlert = true
-                    }
                 }
             }
-        }
-        .viewBackgroundColor(HBColor.primaryBackground)
-        .navigationTitle(viewModel.deck.name)
-        .toolbar(content: {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(role: .destructive) {
-                    do {
-                        try viewModel.saveChanges()
-                        dismiss()
-                    } catch {
-                        selectedErrorMessage = .saveStudy
-                        showingErrorAlert = true
+            .viewBackgroundColor(HBColor.primaryBackground)
+            .navigationTitle(viewModel.deck.name)
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(role: .destructive) {
+                        do {
+                            try viewModel.saveChanges()
+                            dismiss()
+                        } catch {
+                            selectedErrorMessage = .saveStudy
+                            showingErrorAlert = true
+                        }
+                    } label: {
+                        Text("Sair")
                     }
-                } label: {
-                    Text("Sair")
+                    .foregroundColor(.red)
+                    
+                    
                 }
-                .foregroundColor(.red)
-                
-                
+            })
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                viewModel.startup()
             }
-        })
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            viewModel.startup()
+            
+            .alert(isPresented: $showingErrorAlert) {
+                Alert(title: Text(selectedErrorMessage.texts.title),
+                      message: Text(selectedErrorMessage.texts.message),
+                      dismissButton: .default(Text("Fechar")))
         }
-        
-        .alert(isPresented: $showingErrorAlert) {
-            Alert(title: Text(selectedErrorMessage.texts.title),
-                  message: Text(selectedErrorMessage.texts.message),
-                  dismissButton: .default(Text("Fechar")))
         }
         
     }

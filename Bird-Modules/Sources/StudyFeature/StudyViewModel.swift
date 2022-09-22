@@ -70,8 +70,7 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func sessionPublisher(cardIds: [UUID]) -> AnyPublisher<[Card], Never> {
-        deckRepository
-            .fetchCardsByIds(cardIds)
+        fetchCardsPublisher(for: cardIds)
             .replaceError(with: [])
             .compactMap { [weak self] cards in
                 guard let self = self else {
@@ -83,7 +82,8 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func newSessionCardsPublisher(cardIds: [UUID]) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
-        deckRepository.fetchCardsByIds(cardIds)
+        print(cardIds)
+        return deckRepository.fetchCardsByIds(cardIds)
             .map {
                 $0.map(OrganizerCardInfo.init(card:))
             }
@@ -105,7 +105,7 @@ public class StudyViewModel: ObservableObject {
     }
     
     func startup() {
-        
+        print(deck.cardsIds)
         systemObserver.voiceOverDidChange()
             .assign(to: &$isVOOn)
             
@@ -166,10 +166,20 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func transformIdsIntoPublishers(ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID])) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
-        Publishers.CombineLatest3(deckRepository.fetchCardsByIds(ids.todayLearningCards),
-                                  deckRepository.fetchCardsByIds(ids.todayReviewingCards),
-                                  deckRepository.fetchCardsByIds(ids.toModify))
+        
+        
+        Publishers.CombineLatest3(fetchCardsPublisher(for: ids.todayLearningCards),
+                                  fetchCardsPublisher(for: ids.todayReviewingCards),
+                                  fetchCardsPublisher(for: ids.toModify))
         .eraseToAnyPublisher()
+    }
+    
+    private func fetchCardsPublisher(for ids: [UUID]) -> AnyPublisher<[Card], RepositoryError> {
+        if ids.isEmpty {
+            return Just<[Card]>([]).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
+        } else {
+            return deckRepository.fetchCardsByIds(ids)
+        }
     }
     
     private func saveCardIdsToCache(ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) ) {
