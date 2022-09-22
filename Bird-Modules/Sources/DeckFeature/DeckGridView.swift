@@ -45,7 +45,7 @@ struct DeckGridView: View {
                 if decks.isEmpty {
                     VStack {
                         EmptyStateView(component: .deck)
-                        Button{
+                        Button {
                             #warning("fazer ir pro modal de criar baralho")
                         } label: {
                             Text("Criar Baralho")

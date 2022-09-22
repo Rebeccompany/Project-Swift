@@ -91,7 +91,7 @@ public struct DeckView: View {
                 if viewModel.cards.isEmpty {
                     VStack {
                         EmptyStateView(component: .flashcard)
-                        Button{
+                        Button {
                             #warning("fazer ir pro modal de criar flashcard")
                         } label: {
                             Text("Criar Flashcard")

@@ -107,7 +107,7 @@ public struct CollectionsSidebar: View {
                 if collections.isEmpty {
                     VStack {
                         EmptyStateView(component: .collection)
-                        Button{
+                        Button {
 #warning("fazer ir pro modal de criar colecao")
                         } label: {
                             Text("Criar Coleção")

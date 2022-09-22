@@ -12,13 +12,12 @@ public enum Components {
 }
 
 public func getComponentString(component: Components) -> String {
-    switch component{
-        case .collection:
-            return "coleção"
-        case .deck:
-            return "baralho"
-        case .flashcard:
-            return "flashcard"
+    switch component {
+    case .collection:
+        return "coleção"
+    case .deck:
+        return "baralho"
+    case .flashcard:
+        return "flashcard"
     }
 }
-
