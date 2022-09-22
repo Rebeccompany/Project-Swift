@@ -16,6 +16,7 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
     
     public var deckWithCardsId: UUID = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")!
     lazy var subject: CurrentValueSubject<[Deck], RepositoryError> = .init(decks)
+    lazy var cardSubject: CurrentValueSubject<[Card], RepositoryError> = .init(cards)
     
     public lazy var decks: [Deck] = [
         Deck(id: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2", cardsIds: cards.map {
@@ -65,6 +66,10 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
      public func deckListener() -> AnyPublisher<[Deck], RepositoryError> {
          subject.eraseToAnyPublisher()
      }
+    
+    public func cardListener(forId deckId: UUID) -> AnyPublisher<[Card], RepositoryError> {
+        cardSubject.map{ $0.filter {card in card.deckID == deckId} }.eraseToAnyPublisher()
+    }
 
      public func createDeck(_ deck: Deck, cards: [Card]) throws {
          if shouldThrowError {
@@ -77,6 +82,7 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
          self.cards += cards
          
          subject.send(decks)
+         cardSubject.send(cards)
      }
 
      public func deleteDeck(_ deck: Deck) throws {
@@ -116,6 +122,7 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
              decks[i] = deck
              cards.append(card)
              subject.send(decks)
+             cardSubject.send(cards)
          } else {
              throw RepositoryError.couldNotEdit
          }
@@ -134,6 +141,7 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
              return d
          }
          subject.send(decks)
+         cardSubject.send(cards)
      }
 
      public func fetchCardById(_ id: UUID) -> AnyPublisher<Card, RepositoryError> {
@@ -160,6 +168,8 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
              d.cardsIds = d.cardsIds.filter { id in id != card.id }
              return d
          }
+         
+         cardSubject.send(cards)
      }
 
      public func editCard(_ card: Card) throws {
@@ -172,6 +182,9 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
          } else {
              throw RepositoryError.couldNotEdit
          }
+         
+         
+         cardSubject.send(cards)
      }
 
 

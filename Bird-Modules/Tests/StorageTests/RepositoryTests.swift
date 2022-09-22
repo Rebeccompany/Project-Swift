@@ -156,6 +156,65 @@ class RepositoryTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
+    func testListenerWithCustomPredicate() throws {
+        let ids = UUIDDummy
+            .dummy
+            .enumerated()
+            .filter { index, _ in index % 2 == 0 }
+            .map(\.element)
+        
+        var collections = ids
+            .map(DeckCollectionDummy.newDummyDeck(with:))
+        
+        let expectedDeckName = "Programação Rust"
+        
+        collections.append(DeckCollection(
+            id: UUID(),
+            name: expectedDeckName,
+            icon: .atom,
+            datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
+                                lastEdit: Date(timeIntervalSince1970: 0),
+                                createdAt: Date(timeIntervalSince1970: 0)),
+            decksIds: []))
+        
+        try collections.forEach { try sut.create($0) }
+        
+        var expectedDeckCollections = collections.filter { $0.name == expectedDeckName }
+        let predicated = NSPredicate(format: "name == %@", expectedDeckName)
+        
+        let expectation = expectation(description: "Listener Receive Correct information")
+        
+        let listenOccurrencesExpectation = 1
+        var listenOccurences = 0
+        
+        try sut.listener(for: predicated)
+            .sink {
+                XCTAssertEqual($0, .finished)
+            } receiveValue: { collections in
+                XCTAssertEqual(collections.count, expectedDeckCollections.count)
+                
+                collections.forEach { collection in
+                    let doesContainCollection = expectedDeckCollections.contains(collection)
+                    XCTAssertTrue(doesContainCollection)
+                }
+                
+                if listenOccurrencesExpectation == listenOccurences {
+                    expectation.fulfill()
+                }
+                listenOccurences += 1
+            }
+            .store(in: &cancellables)
+        
+        var newDummy = DeckCollectionDummy.dummy
+        newDummy.name = expectedDeckName
+        expectedDeckCollections.append(newDummy)
+        
+        try sut.create(DeckCollection(id: UUID(), name: "ignorar", icon: .abc, datesLogs: DateLogs(), decksIds: []))
+        try sut.create(newDummy)
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
     func testFetchById() throws {
         let expectation = expectation(description: "Wait for fetching single element")
         

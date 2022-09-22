@@ -23,6 +23,8 @@ public protocol DeckRepositoryProtocol: AnyObject {
     func removeCard(_ card: Card, from deck: Deck) throws
     
     // Card
+    func cardListener(forId deckId: UUID) -> AnyPublisher<[Card], RepositoryError>
+    
     func fetchCardById(_ id: UUID) -> AnyPublisher<Card, RepositoryError>
     func fetchCardsByIds(_ ids: [UUID]) -> AnyPublisher<[Card], RepositoryError>
     

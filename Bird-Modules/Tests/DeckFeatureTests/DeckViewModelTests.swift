@@ -31,6 +31,29 @@ final class DeckViewModelTests: XCTestCase {
         cancellables.forEach({$0.cancel()})
         cancellables = nil
     }
+    
+    func testStartup() throws {
+        let cardExpectation = expectation(description: "card reacting to Repository Action")
+        let deckExpectation = expectation(description: "deck reacting to Repository Action")
+        
+        try deckRepository.addCard(Card(id: UUID(), front: AttributedString(), back: AttributedString(), color: .red, datesLogs: DateLogs(), deckID: deckRepository.decks.first!.id, woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), history: []), to: deckRepository.decks.first!)
+        
+        sut.$cards
+            .sink {[unowned self] cards in
+                XCTAssertEqual(cards, self.deckRepository.cards)
+                cardExpectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        sut.$deck
+            .sink {[unowned self] deck in
+                XCTAssertEqual(deck.cardsIds, self.deckRepository.cards.map(\.id))
+                deckExpectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [cardExpectation, deckExpectation], timeout: 1)
+    }
 
     func testDeleteFlashcard() throws {
         

@@ -19,6 +19,8 @@ public class DeckViewModel: ObservableObject {
     @Published var editingFlashcard: Card?
     
     private var deckRepository: DeckRepositoryProtocol
+    private var cancellables = Set<AnyCancellable>()
+    
     var canStudy: Bool {
         let canStudy = try? checkIfCanStudy()
         return canStudy ?? false
@@ -31,11 +33,37 @@ public class DeckViewModel: ObservableObject {
         self.cards = []
     }
     
-    func startup() {
-        deckRepository.fetchCardsByIds(deck.cardsIds)
+    private var cardListener: AnyPublisher<[Card], Never> {
+        deckRepository
+            .cardListener(forId: deck.id)
             .replaceError(with: [])
+            .eraseToAnyPublisher()
+    }
+    
+    private var deckListener: AnyPublisher<Deck, RepositoryError> {
+        deckRepository
+            .cardListener(forId: deck.id)
+            .flatMap {[weak self] cards in
+                guard let self = self, let card = cards.first else {
+                    return Fail<Deck, RepositoryError>(error: .errorOnListening).eraseToAnyPublisher()
+                }
+                
+                return self.deckRepository.fetchDeckById(card.deckID)
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    func startup() {
+        cardListener
             .assign(to: &$cards)
         
+        deckListener
+            .sink { _ in
+                
+            } receiveValue: {[weak self] deck in
+                self?.deck = deck
+            }
+            .store(in: &cancellables)
     }
     
     private func checkIfCanStudy() throws -> Bool {

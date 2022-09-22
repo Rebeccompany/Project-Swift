@@ -40,8 +40,10 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
         singleRequest(listenerRequest)
     }
     
-    func listener() throws -> AnyPublisher<[Model], RepositoryError> {
+    func listener(for predicate: NSPredicate? = nil) throws -> AnyPublisher<[Model], RepositoryError> {
         do {
+            let predicate = predicate ?? transformer.listenerRequest().predicate
+            listenerRequest.predicate = predicate
             try requestController.performFetch()
             
             guard let objects = requestController.fetchedObjects else {
