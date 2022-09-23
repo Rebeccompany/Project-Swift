@@ -11,16 +11,15 @@ import Models
 import Storage
 
 public struct NewDeckView: View {
-    @ObservedObject
-    private var viewModel: NewDeckViewModel
+    @StateObject private var viewModel: NewDeckViewModel
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteDeck
     @State private var activeAlert: ActiveAlert = .error
     @Environment(\.dismiss) private var dismiss
     @FocusState private var selectedField: Int?
     
-    public init(viewModel: NewDeckViewModel) {
-        self.viewModel = viewModel
+    public init(viewModel: @autoclosure @escaping () -> NewDeckViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel())
     }
     
     public var body: some View {
