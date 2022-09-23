@@ -82,7 +82,6 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func newSessionCardsPublisher(cardIds: [UUID]) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
-        print(cardIds)
         return deckRepository.fetchCardsByIds(cardIds)
             .map {
                 $0.map(OrganizerCardInfo.init(card:))
@@ -105,7 +104,6 @@ public class StudyViewModel: ObservableObject {
     }
     
     func startup() {
-        print(deck.cardsIds)
         systemObserver.voiceOverDidChange()
             .assign(to: &$isVOOn)
             
