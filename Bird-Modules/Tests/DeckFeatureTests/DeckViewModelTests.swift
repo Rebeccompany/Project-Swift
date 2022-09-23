@@ -11,6 +11,7 @@ import Storage
 import Models
 import HummingBird
 import Combine
+import Utils
 
 final class DeckViewModelTests: XCTestCase {
     
@@ -20,7 +21,7 @@ final class DeckViewModelTests: XCTestCase {
     
     override func setUp() {
         deckRepository = DeckRepositoryMock()
-        sut = DeckViewModel(deck: deckRepository.decks[0], deckRepository: deckRepository)
+        sut = DeckViewModel(deck: deckRepository.decks[0], deckRepository: deckRepository, dateHandler: DateHandlerMock(), sessionCacher: SessionCacher(storage: LocalStorageMock(), encoder: JSONEncoder(), decoder: JSONDecoder()))
         cancellables = .init()
         sut.startup()
     }
@@ -124,7 +125,8 @@ final class DeckViewModelTests: XCTestCase {
                                        color: .red,
                                        collectionId: UUID(),
                                        cardsIds: cards.map{$0.id}),
-                            deckRepository: deckRepository)
+                            deckRepository: deckRepository,
+        sessionCacher: SessionCacher(storage: LocalStorageMock(), encoder: JSONEncoder(), decoder: JSONDecoder()))
         sut.startup()
 
         XCTAssertFalse(sut.canStudy)
