@@ -105,10 +105,8 @@ public struct DeckView: View {
                 VStack {
                     EmptyStateView(component: .flashcard)
                     Button {
-                        print("oi")
                         viewModel.createFlashcard()
                         shouldDisplayNewFlashcard = true
-                        #warning("fazer ir pro modal de criar flashcard")
                     } label: {
                         Text("Criar Flashcard")
                     }
