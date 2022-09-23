@@ -250,7 +250,7 @@ class StudyViewModelTests: XCTestCase {
         
         
         
-        XCTAssertEqual(modCard?.woodpeckerCardInfo, WoodpeckerCardInfo(step: 0, isGraduated: true, easeFactor: 2.5, streak: 1, interval: 0, hasBeenPresented: true))
+        XCTAssertEqual(modCard?.woodpeckerCardInfo, WoodpeckerCardInfo(step: 0, isGraduated: true, easeFactor: 2.5, streak: 1, interval: 1, hasBeenPresented: true))
         XCTAssertEqual(modCard?.history.count, 1)
         XCTAssertFalse(sut.cards.contains(where: { $0.id == oldCard.id }))
         XCTAssertTrue(sut.cardsToEdit.contains(where: { $0.id == oldCard.id }))
@@ -324,5 +324,32 @@ class StudyViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isVOOn)
         systemObserver.voiceOverDidChangeSubject.send(true)
         XCTAssertTrue(sut.isVOOn)
+    }
+    
+    func testSaveEditedCards() throws {
+        let expectation = expectation(description: "receive card for id")
+        sut = .init(deckRepository: deckRepository,
+                    sessionCacher: sessionCacher,
+                    deck: deckRepository.decks[1],
+                    dateHandler: dateHandler)
+        
+        sut.startup()
+        let card = sut.cards.first!
+        XCTAssertEqual(card.woodpeckerCardInfo.interval, 0)
+        try sut.pressedButton(for: .correctEasy)
+        try sut.saveChanges()
+      
+        deckRepository.fetchCardById(deckRepository.decks[1].cardsIds.first!)
+            .assertNoFailure()
+            .sink { receivedCard in
+                XCTAssertEqual(receivedCard.woodpeckerCardInfo.interval, 1)
+                expectation.fulfill()
+                
+            }
+            .store(in: &cancellables)
+        
+        
+        
+        wait(for: [expectation], timeout: 1)
     }
 }
