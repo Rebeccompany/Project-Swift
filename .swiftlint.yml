@@ -151,6 +151,9 @@ deployment_target:
   tvOS_deployment_target: '13'
   watchOS_deployment_target: '6'
 custom_rules:
+  no_print:
+    regex: 'print'
+    message: 'Dont use print on final version'
   no_nsrect:
     regex: '\bNSRect\b'
     match_kinds: typeidentifier
