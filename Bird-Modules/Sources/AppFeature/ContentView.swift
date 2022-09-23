@@ -17,10 +17,7 @@ import Storage
 public struct ContentView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @State private var editMode: EditMode = .inactive
-    @State private var presentCollectionEdition = false
     @State private var path: NavigationPath = .init()
-    @State private var shouldDisplayAlert = false
-    @State private var presentDeckEdition = false
     
     @ObservedObject private var viewModel: ContentViewModel
     
@@ -38,79 +35,23 @@ public struct ContentView: View {
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
-        .alert(viewModel.selection.isEmpty ? "Nada foi selecionado" : "Você tem certeza que deseja apagar?", isPresented: $shouldDisplayAlert) {
-            Button("Apagar", role: .destructive) {
-                try? viewModel.deleteDecks()
-            }
-            .disabled(viewModel.selection.isEmpty)
-            
-            Button("Cancelar", role: .cancel) { }
-        }
-        .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
-        .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
     }
     
     @ViewBuilder
     private var sidebar: some View {
         CollectionsSidebar(
-            collections: viewModel.collections,
             selection: $viewModel.sidebarSelection,
             isCompact: horizontalSizeClass == .compact
-        ) { i in
-            try? viewModel.deleteCollection(at: i)
-        } editAction: { collection in
-            viewModel.editCollection(collection)
-            presentCollectionEdition = true
-        }
-        .navigationTitle("Nome do App")
-        .toolbar {
-            ToolbarItem {
-                EditButton()
-            }
-            ToolbarItem {
-                Button {
-                    viewModel.createCollection()
-                    presentCollectionEdition = true
-                } label: {
-                    Image(systemName: "folder.badge.plus")
-                }
-            }
-        }
+        )
+        .environmentObject(viewModel)
         .environment(\.editMode, $editMode)
-        .sheet(isPresented: $presentCollectionEdition) {
-            NewCollectionView(
-                viewModel: .init(
-                    editingCollection: viewModel.editingCollection
-                )
-            )
-        }
     }
     
     @ViewBuilder
     private var detail: some View {
         Router(path: $path) {
-            DetailView(
-                decks: viewModel.decks,
-                searchText: $viewModel.searchText,
-                detailType: $viewModel.detailType,
-                sortOrder: $viewModel.sortOrder,
-                selection: $viewModel.selection,
-                presentNewDeck: $presentDeckEdition) {
-                    viewModel.editDeck()
-                    presentDeckEdition = true
-                } deleteAction: {
-                    shouldDisplayAlert = true
-            }
-            .navigationTitle(viewModel.detailTitle)
-            .sheet(isPresented: $presentDeckEdition) {
-                NewDeckView(viewModel: NewDeckViewModel(
-                    colors: CollectionColor.allCases,
-                    icons: IconNames.allCases,
-                    editingDeck: viewModel.editingDeck,
-                    deckRepository: DeckRepository.shared,
-                    collectionRepository: CollectionRepository.shared,
-                    collection: viewModel.selectedCollection))
-            }
+            DetailView()
+            .environmentObject(viewModel)
         } destination: { (route: StudyRoute) in
             StudyRoutes.destination(for: route)
         }

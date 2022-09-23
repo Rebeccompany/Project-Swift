@@ -28,6 +28,15 @@ struct DeckTableView: View {
     }
     
     var body: some View {
+        if decks.isEmpty {
+            EmptyStateView(component: .deck)
+        } else {
+            table
+        }
+    }
+    
+    @ViewBuilder
+    private var table: some View {
         Table(sortedDecks, selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Nome", value: \.name) { deck in
                 NavigationLink(value: StudyRoute.deck(deck)) {
@@ -56,6 +65,7 @@ struct DeckTableView: View {
                 Text(deck.datesLogs.lastAccess, style: .date)
             }
         }
+        .scrollContentBackground(.hidden)
         .animation(.linear, value: sortOrder)
     }
 }

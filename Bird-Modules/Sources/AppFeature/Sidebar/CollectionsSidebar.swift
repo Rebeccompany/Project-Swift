@@ -7,32 +7,22 @@
 
 import SwiftUI
 import Models
+import NewCollectionFeature
 import HummingBird
 
-public struct CollectionsSidebar: View {
+struct CollectionsSidebar: View {
     @Environment(\.editMode) private var editMode
-    private var collections: [DeckCollection]
+    @EnvironmentObject var viewModel: ContentViewModel
     @Binding private var selection: SidebarRoute?
+    @State private var presentCollectionEdition = false
     private var isCompact: Bool
-    private let deleteAction: (IndexSet) -> Void
-    private let editAction: (DeckCollection) -> Void
     
-    
-    public init(
-        collections: [DeckCollection],
-        selection: Binding<SidebarRoute?>,
-        isCompact: Bool,
-        deleteAction: @escaping (IndexSet) -> Void,
-        editAction: @escaping (DeckCollection) -> Void
-    ) {
-        self.collections = collections
+    init(selection: Binding<SidebarRoute?>, isCompact: Bool) {
         self._selection = selection
         self.isCompact = isCompact
-        self.deleteAction = deleteAction
-        self.editAction = editAction
     }
     
-    public var body: some View {
+    var body: some View {
         List(selection: $selection) {
             NavigationLink(value: SidebarRoute.allDecks) {
                 Label("Todos os baralhos", systemImage: "square.stack")
@@ -42,7 +32,7 @@ public struct CollectionsSidebar: View {
             )
             
             Section {
-                ForEach(collections) { collection in
+                ForEach(viewModel.collections) { collection in
                     NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
                         HStack {
                             Label(collection.name, systemImage: collection.icon.rawValue)
@@ -51,7 +41,8 @@ public struct CollectionsSidebar: View {
                                 Image(systemName: "info.circle")
                                     .foregroundColor(HBColor.actionColor)
                                     .onTapGesture {
-                                        editAction(collection)
+                                        viewModel.editCollection(collection)
+                                        presentCollectionEdition = true
                                     }
                                     .accessibility(addTraits: .isButton)
                             }
@@ -61,16 +52,17 @@ public struct CollectionsSidebar: View {
                         isCompact ? HBColor.secondaryBackground : nil
                     )
                 }
-                .onDelete(perform: deleteAction)
+                .onDelete { try? viewModel.deleteCollection(at: $0) }
                 
             } header: {
                 Text("Coleções")
             }
         }
+        .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
         .scrollContentBackground(.hidden)
         .background(
             VStack {
-                if collections.isEmpty {
+                if viewModel.collections.isEmpty {
                     VStack {
                         EmptyStateView(component: .collection)
 //                        Button {
@@ -86,18 +78,29 @@ public struct CollectionsSidebar: View {
             }
         )
         .viewBackgroundColor(HBColor.primaryBackground)
+        .navigationTitle("Nome do App")
+        .toolbar {
+            ToolbarItem {
+                EditButton()
+            }
+            ToolbarItem {
+                Button {
+                    viewModel.createCollection()
+                    presentCollectionEdition = true
+                } label: {
+                    Image(systemName: "folder.badge.plus")
+                }
+            }
+        }
+        .sheet(isPresented: $presentCollectionEdition) {
+            NewCollectionView(
+                viewModel: .init(
+                    editingCollection: viewModel.editingCollection
+                )
+            )
+        }
         
     }
     
 }
 
-struct CollectionsSidebar_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationSplitView {
-            CollectionsSidebar(collections: [DeckCollection(id: UUID(), name: "Coleção", icon: .atom, datesLogs: DateLogs(), decksIds: [])], selection: .constant(.allDecks), isCompact: false) { _ in } editAction: { _ in }
-        } detail: {
-            Text("Empty")
-        }
-        
-    }
-}
