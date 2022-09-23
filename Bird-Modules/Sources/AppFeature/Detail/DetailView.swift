@@ -104,11 +104,6 @@ struct DetailView: View {
                     viewModel.detailType = .table
                 }
             }
-            .onChange(of: viewModel.detailType) { newValue in
-                if newValue == .grid {
-                    editMode?.wrappedValue = .inactive
-                }
-            }
             .alert(viewModel.selection.isEmpty ? "Nada foi selecionado" : "Você tem certeza que deseja apagar?", isPresented: $shouldDisplayAlert) {
                 Button("Apagar", role: .destructive) {
                     try? viewModel.deleteDecks()
@@ -149,16 +144,13 @@ struct DetailView: View {
     private var content: some View {
         if viewModel.detailType == .grid {
             DeckGridView(decks: viewModel.decks) { deck in
-//                selection = Set([deck.id])
-//                editAction()
+                viewModel.updateEditingDeck(with: deck)
+                presentDeckEdition = true
             } deleteAction: { deck in
-//                selection = Set([deck.id])
-//                deleteAction()
+                try? viewModel.deleteDeck(deck)
             }
         } else {
-            DeckTableView(decks: viewModel.decks,
-                          sortOrder: $viewModel.sortOrder,
-                          selection: $viewModel.selection)
+            DeckTableView()
             
         }
     }

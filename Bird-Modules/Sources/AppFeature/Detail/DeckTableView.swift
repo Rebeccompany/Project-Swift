@@ -10,25 +10,14 @@ import Models
 import HummingBird
 
 struct DeckTableView: View {
-    var decks: [Deck]
-    @Binding private var sortOrder: [KeyPathComparator<Deck>]
-    @Binding private var selection: Set<Deck.ID>
-    
-    init(decks: [Deck],
-         sortOrder: Binding<[KeyPathComparator<Deck>]>,
-         selection: Binding<Set<Deck.ID>>
-    ) {
-        self.decks = decks
-        self._sortOrder = sortOrder
-        self._selection = selection
-    }
+    @EnvironmentObject private var viewModel: ContentViewModel
     
     private var sortedDecks: [Deck] {
-        decks.sorted(using: sortOrder)
+        viewModel.decks.sorted(using: viewModel.sortOrder)
     }
     
     var body: some View {
-        if decks.isEmpty {
+        if viewModel.decks.isEmpty {
             EmptyStateView(component: .deck)
         } else {
             table
@@ -37,7 +26,7 @@ struct DeckTableView: View {
     
     @ViewBuilder
     private var table: some View {
-        Table(sortedDecks, selection: $selection, sortOrder: $sortOrder) {
+        Table(sortedDecks, selection: $viewModel.selection, sortOrder: $viewModel.sortOrder) {
             TableColumn("Nome", value: \.name) { deck in
                 NavigationLink(value: StudyRoute.deck(deck)) {
                     HStack {
@@ -65,12 +54,6 @@ struct DeckTableView: View {
                 Text(deck.datesLogs.lastAccess, style: .date)
             }
         }
-        .animation(.linear, value: sortOrder)
-    }
-}
-
-struct DeckTableView_Previews: PreviewProvider {
-    static var previews: some View {
-        DeckTableView(decks: [Deck(id: UUID(), name: "Nome do Baralho 1", icon: "flame", color: .otherPink, collectionId: nil, cardsIds: []), Deck(id: UUID(), name: "Nome do Baralho 2", icon: "flame", color: .otherPink, collectionId: nil, cardsIds: [UUID()])], sortOrder: .constant([.init(\.name)]), selection: .constant(.init()))
+        .animation(.linear, value: viewModel.sortOrder)
     }
 }
