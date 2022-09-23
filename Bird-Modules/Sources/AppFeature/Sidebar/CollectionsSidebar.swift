@@ -23,43 +23,6 @@ struct CollectionsSidebar: View {
     }
     
     var body: some View {
-        
-        Group {
-            if viewModel.collections.isEmpty {
-                emptyState
-            } else {
-                list
-            }
-        }
-        .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
-        .scrollContentBackground(.hidden)
-        .viewBackgroundColor(HBColor.primaryBackground)
-        .navigationTitle("Spixii")
-        .toolbar {
-            ToolbarItem {
-                EditButton()
-            }
-            ToolbarItem {
-                Button {
-                    viewModel.createCollection()
-                    presentCollectionEdition = true
-                } label: {
-                    Image(systemName: "folder.badge.plus")
-                }
-            }
-        }
-        .sheet(isPresented: $presentCollectionEdition) {
-            NewCollectionView(
-                viewModel: .init(
-                    editingCollection: viewModel.editingCollection
-                )
-            )
-        }
-        
-    }
-    
-    @ViewBuilder
-    private var list: some View {
         List(selection: $selection) {
             NavigationLink(value: SidebarRoute.allDecks) {
                 Label("Todos os baralhos", systemImage: "square.stack")
@@ -109,21 +72,48 @@ struct CollectionsSidebar: View {
                 Text("Coleções")
             }
         }
-    }
-    
-    @ViewBuilder
-    private var emptyState: some View {
-        VStack {
-            EmptyStateView(component: .collection)
-            Button {
-                viewModel.createCollection()
-                presentCollectionEdition = true
-            } label: {
-                Text("Criar Coleção")
+        .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
+        .scrollContentBackground(.hidden)
+        .background(
+            VStack {
+                if viewModel.collections.isEmpty {
+                    VStack {
+                        EmptyStateView(component: .collection)
+//                        Button {
+//#warning("fazer ir pro modal de criar colecao")
+//                        } label: {
+//                            Text("Criar Coleção")
+//                        }
+//                        .buttonStyle(LargeButtonStyle(isDisabled: false))
+//                        .padding()
+                    }
+                    
+                }
             }
-            .buttonStyle(LargeButtonStyle(isDisabled: false))
-            .padding()
+        )
+        .viewBackgroundColor(HBColor.primaryBackground)
+        .navigationTitle("Nome do App")
+        .toolbar {
+            ToolbarItem {
+                EditButton()
+            }
+            ToolbarItem {
+                Button {
+                    viewModel.createCollection()
+                    presentCollectionEdition = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .sheet(isPresented: $presentCollectionEdition) {
+            NewCollectionView(
+                viewModel: .init(
+                    editingCollection: viewModel.editingCollection
+                )
+            )
         }
         
     }
+    
 }
