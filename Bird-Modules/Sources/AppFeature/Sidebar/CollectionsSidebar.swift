@@ -88,6 +88,20 @@ struct CollectionsSidebar: View {
                     .listRowBackground(
                         isCompact ? HBColor.secondaryBackground : nil
                     )
+                    .contextMenu {
+                        Button {
+                            viewModel.editCollection(collection)
+                            presentCollectionEdition = true
+                        } label: {
+                            Label("Editar", systemImage: "pencil")
+                        }
+                        
+                        Button(role: .destructive) {
+                            try? viewModel.deleteCollection(collection)
+                        } label: {
+                            Label("Deletar", systemImage: "trash")
+                        }
+                    }
                 }
                 .onDelete { try? viewModel.deleteCollection(at: $0) }
                 
