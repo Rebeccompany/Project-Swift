@@ -19,7 +19,13 @@ struct DetailView: View {
     @State private var shouldDisplayAlert = false
     
     var body: some View {
-        content
+        Group {
+            if viewModel.decks.isEmpty {
+                emptyState
+            } else {
+                content
+            }
+        }
             .searchable(text: $viewModel.searchText)
             .toolbar(editMode?.wrappedValue.isEditing ?? false ? .visible : .hidden,
                      for: .bottomBar)
@@ -122,6 +128,21 @@ struct DetailView: View {
                     collectionRepository: CollectionRepository.shared,
                     collection: viewModel.selectedCollection))
             }
+    }
+    
+    @ViewBuilder
+    private var emptyState: some View {
+        VStack {
+            EmptyStateView(component: .deck)
+            Button {
+                presentDeckEdition = true
+            } label: {
+                Text("Criar Baralho")
+            }
+            .buttonStyle(LargeButtonStyle(isDisabled: false))
+            .padding()
+        }
+        
     }
     
     @ViewBuilder

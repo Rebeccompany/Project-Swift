@@ -29,74 +29,13 @@ public struct DeckView: View {
     }
     
     public var body: some View {
-        List {
-            if !viewModel.canStudy && !viewModel.cards.isEmpty {
-                Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
-                    .bold()
-                    .multilineTextAlignment(.center)
-                    .listRowBackground(Color.clear)
+        Group {
+            if viewModel.cards.isEmpty {
+                emptyState
+            } else {
+                list
             }
-            Button("Estudar Deck") {
-                shouldDisplayStudyView = true
-            }
-            
-            .disabled(!viewModel.canStudy)
-            .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.canStudy))
-            .listRowInsets(.zero)
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            .padding()
-            
-            ForEach(viewModel.cardsSearched) { card in
-                FlashcardCell(card: card) {
-                    viewModel.editFlashcard(card)
-                    shouldDisplayNewFlashcard = true
-                }
-                .padding(.bottom, 8)
-                .contextMenu {
-                    Button {
-                        viewModel.editFlashcard(card)
-                        shouldDisplayNewFlashcard = true
-                    } label: {
-                        Label("Editar Flashcard",
-                              systemImage: "pencil")
-                    }
-                    
-                    Button(role: .destructive) {
-                        deletedCard = card
-                        activeAlert = .confirm
-                        showingAlert = true
-                    } label: {
-                        Label("Deletar Flashcard",
-                              systemImage: "trash.fill")
-                    }
-                    
-                }
-            }
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
         }
-        .scrollContentBackground(.hidden)
-        .background(
-            VStack {
-                if viewModel.cards.isEmpty {
-                    VStack {
-                        EmptyStateView(component: .flashcard)
-//                        Button {
-//                            print("oi")
-//                            viewModel.createFlashcard()
-//                            shouldDisplayNewFlashcard = true
-//                            #warning("fazer ir pro modal de criar flashcard")
-//                        } label: {
-//                            Text("Criar Flashcard")
-//                        }
-//                        .buttonStyle(LargeButtonStyle(isDisabled: false))
-//                        .padding()
-                    }
-                    
-                }
-            }
-        )
         .viewBackgroundColor(HBColor.primaryBackground)
         .onAppear(perform: viewModel.startup)
         .listStyle(.plain)
@@ -157,6 +96,78 @@ public struct DeckView: View {
                 )
             )
         }
+    }
+    
+    @ViewBuilder
+    private var emptyState: some View {
+        VStack {
+            if viewModel.cards.isEmpty {
+                VStack {
+                    EmptyStateView(component: .flashcard)
+                    Button {
+                        viewModel.createFlashcard()
+                        shouldDisplayNewFlashcard = true
+                    } label: {
+                        Text("Criar Flashcard")
+                    }
+                    .buttonStyle(LargeButtonStyle(isDisabled: false))
+                    .padding()
+                }
+                
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var list: some View {
+        List {
+            if !viewModel.canStudy && !viewModel.cards.isEmpty {
+                Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
+                    .bold()
+                    .multilineTextAlignment(.center)
+                    .listRowBackground(Color.clear)
+            }
+            Button("Estudar Deck") {
+                shouldDisplayStudyView = true
+            }
+            
+            .disabled(!viewModel.canStudy)
+            .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.canStudy))
+            .listRowInsets(.zero)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .padding()
+            
+            ForEach(viewModel.cardsSearched) { card in
+                FlashcardCell(card: card) {
+                    viewModel.editFlashcard(card)
+                    shouldDisplayNewFlashcard = true
+                }
+                .padding(.bottom, 8)
+                .contextMenu {
+                    Button {
+                        viewModel.editFlashcard(card)
+                        shouldDisplayNewFlashcard = true
+                    } label: {
+                        Label("Editar Flashcard",
+                              systemImage: "pencil")
+                    }
+                    
+                    Button(role: .destructive) {
+                        deletedCard = card
+                        activeAlert = .confirm
+                        showingAlert = true
+                    } label: {
+                        Label("Deletar Flashcard",
+                              systemImage: "trash.fill")
+                    }
+                    
+                }
+            }
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+        }
+        .scrollContentBackground(.hidden)
     }
 }
 
