@@ -140,7 +140,7 @@ public final class ContentViewModel: ObservableObject {
         let collectionsToDelete = index.map { i in collections[i] }
         
         try collectionsToDelete.forEach { collection in
-            try collectionRepository.deleteCollection(collection)
+            try deleteCollection(collection)
         }
         
         editingCollection = nil
@@ -148,6 +148,10 @@ public final class ContentViewModel: ObservableObject {
     
     func editCollection(_ collection: DeckCollection) {
         editingCollection = collection
+    }
+    
+    func deleteCollection(_ collection: DeckCollection) throws {
+        try collectionRepository.deleteCollection(collection)
     }
     
     func createCollection() {

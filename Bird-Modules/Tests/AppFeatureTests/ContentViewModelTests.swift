@@ -121,6 +121,16 @@ final class ContentViewModelTests: XCTestCase {
         XCTAssertEqual(collectionRepositoryMock.collections[0].name, sut.detailTitle)
     }
     
+    func testDeleteSingleCollectionSuccessifully() throws {
+        
+        let collectionToBeDeleted = collectionRepositoryMock.collections[0]
+        try sut.deleteCollection(collectionToBeDeleted)
+        
+        let doesContainCollection = collectionRepositoryMock.collections.contains { $0.id == collectionToBeDeleted.id }
+        
+        XCTAssertFalse(doesContainCollection)
+    }
+    
     func testDeleteCollectionSuccessifully() throws {
         let indexSet = IndexSet([0])
         let collectionToBeDeleted = collectionRepositoryMock.collections[0]

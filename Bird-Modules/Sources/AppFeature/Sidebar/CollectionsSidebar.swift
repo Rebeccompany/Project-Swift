@@ -12,7 +12,7 @@ import HummingBird
 
 struct CollectionsSidebar: View {
     @Environment(\.editMode) private var editMode
-    @EnvironmentObject var viewModel: ContentViewModel
+    @EnvironmentObject private var viewModel: ContentViewModel
     @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
     private var isCompact: Bool
@@ -51,6 +51,20 @@ struct CollectionsSidebar: View {
                     .listRowBackground(
                         isCompact ? HBColor.secondaryBackground : nil
                     )
+                    .contextMenu {
+                        Button {
+                            viewModel.editCollection(collection)
+                            presentCollectionEdition = true
+                        } label: {
+                            Label("Editar", systemImage: "pencil")
+                        }
+                        
+                        Button(role: .destructive) {
+                            try? viewModel.deleteCollection(collection)
+                        } label: {
+                            Label("Deletar", systemImage: "trash")
+                        }
+                    }
                 }
                 .onDelete { try? viewModel.deleteCollection(at: $0) }
                 
