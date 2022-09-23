@@ -245,6 +245,7 @@ public class StudyViewModel: ObservableObject {
             cards[0].woodpeckerCardInfo.streak += 1
             cards[0].woodpeckerCardInfo.step = 0
             cards[0].woodpeckerCardInfo.isGraduated = true
+            cards[0].woodpeckerCardInfo.interval = 1
             cards[0].woodpeckerCardInfo.hasBeenPresented = true
             removeCard(shouldAddToEdit: true)
         }

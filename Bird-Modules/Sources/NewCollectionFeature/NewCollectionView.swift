@@ -12,7 +12,7 @@ import Storage
 
 public struct NewCollectionView: View {
     
-    @ObservedObject private var viewModel: NewCollectionViewModel
+    @StateObject private var viewModel: NewCollectionViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showingAlert: Bool = false
     @State private var activeAlert: ActiveAlert = .error
@@ -20,9 +20,9 @@ public struct NewCollectionView: View {
     @FocusState private var selectedField: Int?
     
     public init(
-        viewModel: NewCollectionViewModel
+        viewModel: @autoclosure @escaping () -> NewCollectionViewModel
     ) {
-        self.viewModel = viewModel
+        self._viewModel = StateObject(wrappedValue: viewModel())
     }
     
     public var body: some View {

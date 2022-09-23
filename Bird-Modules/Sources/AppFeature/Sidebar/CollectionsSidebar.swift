@@ -34,7 +34,7 @@ struct CollectionsSidebar: View {
         .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
         .scrollContentBackground(.hidden)
         .viewBackgroundColor(HBColor.primaryBackground)
-        .navigationTitle("Nome do App")
+        .navigationTitle("Spixii")
         .toolbar {
             ToolbarItem {
                 EditButton()

@@ -36,6 +36,7 @@ struct EndOfStudyView: View {
                 .padding()
             
             Button {
+                action()
                 dismiss()
             } label: {
                 Text("Voltar para o Baralho")

@@ -10,7 +10,7 @@ import SwiftUI
 public struct Router<Root, Destination, Route>: View where Root: View, Destination: View, Route: Hashable {
     private let root: () -> Root
     private let destination: (Route) -> Destination
-    @ObservedObject private var store: RouterStore<Route>
+    @StateObject private var store: RouterStore<Route>
     public init(
         path: Binding<NavigationPath>,
         @ViewBuilder root: @escaping () -> Root,
@@ -18,7 +18,7 @@ public struct Router<Root, Destination, Route>: View where Root: View, Destinati
     ) {
         self.root = root
         self.destination = destination
-        self.store = RouterStore(path: path)
+        self._store = StateObject(wrappedValue: RouterStore(path: path))
     }
     
     public var body: some View {

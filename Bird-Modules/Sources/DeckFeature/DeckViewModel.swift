@@ -11,6 +11,7 @@ import HummingBird
 import Combine
 import Storage
 import Woodpecker
+import Utils
 
 public class DeckViewModel: ObservableObject {
     @Published var deck: Deck
@@ -21,25 +22,28 @@ public class DeckViewModel: ObservableObject {
     private var deckRepository: DeckRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
+    private var dateHandler: DateHandlerProtocol
+    private var sessionCacher: SessionCacher
+    
     var canStudy: Bool {
         let canStudy = try? checkIfCanStudy()
         return canStudy ?? false
     }
     
-    public init(deck: Deck, deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil)) {
+    public init(deck: Deck, deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil), dateHandler: DateHandlerProtocol = DateHandler(), sessionCacher: SessionCacher = SessionCacher()) {
         self.deck = deck
         self.searchFieldContent = ""
         self.deckRepository = deckRepository
         self.cards = []
+        self.dateHandler = dateHandler
+        self.sessionCacher = sessionCacher
     }
     
     private var cardListener: AnyPublisher<[Card], Never> {
         deckRepository
             .cardListener(forId: deck.id)
             .replaceError(with: [])
-            .map {
-                cards in cards.sorted { c1, c2 in c1.datesLogs.createdAt > c2.datesLogs.createdAt }
-            }
+            .map { cards in cards.sorted { c1, c2 in c1.datesLogs.createdAt > c2.datesLogs.createdAt } }
             .eraseToAnyPublisher()
     }
     
@@ -70,6 +74,11 @@ public class DeckViewModel: ObservableObject {
     }
     
     private func checkIfCanStudy() throws -> Bool {
+        
+        if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
+            return !session.cardIds.isEmpty
+        }
+        
         let cardsInfo = cards.map { OrganizerCardInfo(card: $0) }
         let cardsToStudy = try Woodpecker.scheduler(cardsInfo: cardsInfo, config: deck.spacedRepetitionConfig)
         let todayCards = cardsToStudy.todayLearningCards + cardsToStudy.todayReviewingCards
@@ -78,6 +87,9 @@ public class DeckViewModel: ObservableObject {
         } else {
             return false
         }
+        
+        
+        
     }
     
     func deleteFlashcard(card: Card) throws {

@@ -47,7 +47,7 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
         Card(id: "57d08e28-ae11-43ce-a849-6210cab6e3f0", deckId: "4e56be0a-bc7c-4497-aec9-c30482e82496", state: .review), //14
         Card(id: "ad631ff8-b851-4870-938a-b3aea335577c", deckId: "4e56be0a-bc7c-4497-aec9-c30482e82496", state: .review), //15
         
-        Card(id: "cd3cc305-e80e-4c84-b1e5-e27fda8a9cfe", deckId: "a498bc3c-85a3-4784-b560-a33a272a0a92", state: .review), //16
+        Card(id: "cd3cc305-e80e-4c84-b1e5-e27fda8a9cfe", deckId: "a498bc3c-85a3-4784-b560-a33a272a0a92", state: .learn), //16
         
         Card(id: "5896cc41-ce48-44af-80f0-844dd24bca0b", deckId: "3947217b-2f55-4f16-ae59-10017d291579", state: .review), //17
         Card(id: "df6dcb79-28a4-4aae-8c6e-7656e4e79d2e", deckId: "3947217b-2f55-4f16-ae59-10017d291579", state: .review) //18
