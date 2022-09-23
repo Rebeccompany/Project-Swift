@@ -115,6 +115,7 @@ class NewFlashcardFeatureTests: XCTestCase {
         let expectations = expectation(description: "Can submit binding")
         sut.flashcardFront = "frente"
         sut.flashcardBack = "tras"
+        sut.currentSelectedColor = nil
         sut.$canSubmit.sink { canSubmit in
             XCTAssertFalse(canSubmit)
             expectations.fulfill()

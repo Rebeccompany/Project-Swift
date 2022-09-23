@@ -102,7 +102,7 @@ struct CollectionsSidebar: View {
                     viewModel.createCollection()
                     presentCollectionEdition = true
                 } label: {
-                    Image(systemName: "folder.badge.plus")
+                    Image(systemName: "plus")
                 }
             }
         }
