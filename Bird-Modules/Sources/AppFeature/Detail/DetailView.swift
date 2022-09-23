@@ -20,7 +20,6 @@ struct DetailView: View {
     
     var body: some View {
         content
-            .scrollContentBackground(.hidden)
             .searchable(text: $viewModel.searchText)
             .toolbar(editMode?.wrappedValue.isEditing ?? false ? .visible : .hidden,
                      for: .bottomBar)
