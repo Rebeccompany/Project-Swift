@@ -21,13 +21,6 @@ let package = Package(
         ),
         
         .library(
-            name: "CollectionFeature",
-            targets: [
-                "CollectionFeature"
-            ]
-        ),
-        
-        .library(
             name: "DeckFeature",
             targets: [
                 "DeckFeature"
@@ -129,21 +122,12 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "StudyFeature",
-                "CollectionFeature",
                 "NewCollectionFeature",
                 "NewDeckFeature",
                 "DeckFeature",
                 "Models",
                 "Flock",
                 "NewFlashcardFeature"
-            ]
-        ),
-        
-        .target(
-            name: "CollectionFeature",
-            dependencies: [
-                "Models",
-                "HummingBird"
             ]
         ),
         
