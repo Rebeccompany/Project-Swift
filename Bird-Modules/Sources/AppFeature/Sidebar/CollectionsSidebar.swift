@@ -103,4 +103,3 @@ struct CollectionsSidebar: View {
     }
     
 }
-
