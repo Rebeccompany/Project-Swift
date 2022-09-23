@@ -65,7 +65,6 @@ struct DeckTableView: View {
                 Text(deck.datesLogs.lastAccess, style: .date)
             }
         }
-        .scrollContentBackground(.hidden)
         .animation(.linear, value: sortOrder)
     }
 }
