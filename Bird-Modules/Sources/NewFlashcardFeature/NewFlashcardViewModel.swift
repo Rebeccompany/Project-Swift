@@ -15,7 +15,7 @@ import Combine
 public class NewFlashcardViewModel: ObservableObject {
     @Published var flashcardFront: String = ""
     @Published var flashcardBack: String = ""
-    @Published var currentSelectedColor: CollectionColor?
+    @Published var currentSelectedColor: CollectionColor? = CollectionColor.red
     @Published var canSubmit: Bool
     @Published var showingErrorAlert: Bool = false
     @Published var editingFlashcard: Card?
