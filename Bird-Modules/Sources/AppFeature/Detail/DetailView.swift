@@ -8,59 +8,36 @@
 import SwiftUI
 import Models
 import HummingBird
+import NewDeckFeature
+import Storage
 
-public struct DetailView: View {
+struct DetailView: View {
     
-    var decks: [Deck]
-    private var deleteAction: () -> Void
-    private var editAction: () -> Void
-    
-    @Binding private var searchText: String
-    @Binding private var detailType: DetailDisplayType
-    @Binding private var presentNewDeck: Bool
-    @Binding private var sortOrder: [KeyPathComparator<Deck>]
-    @Binding private var selection: Set<Deck.ID>
-    
+    @EnvironmentObject private var viewModel: ContentViewModel
     @Environment(\.editMode) private var editMode
+    @State private var presentDeckEdition = false
+    @State private var shouldDisplayAlert = false
     
-    public init(
-        decks: [Deck],
-        searchText: Binding<String>,
-        detailType: Binding<DetailDisplayType>,
-        sortOrder: Binding<[KeyPathComparator<Deck>]>,
-        selection: Binding<Set<Deck.ID>>,
-        presentNewDeck: Binding<Bool>,
-        editAction: @escaping () -> Void,
-        deleteAction: @escaping () -> Void) {
-            self.decks = decks
-            self.deleteAction = deleteAction
-            self.editAction = editAction
-            self._searchText = searchText
-            self._detailType = detailType
-            self._sortOrder = sortOrder
-            self._selection = selection
-            self._presentNewDeck = presentNewDeck
-        }
-    
-    public var body: some View {
+    var body: some View {
         content
-            .searchable(text: $searchText)
+            .searchable(text: $viewModel.searchText)
             .toolbar(editMode?.wrappedValue.isEditing ?? false ? .visible : .hidden,
                      for: .bottomBar)
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     Button {
-                        editAction()
+                        viewModel.editDeck()
+                        presentDeckEdition = true
                     } label: {
                         Text("Editar")
                     }
-                    .disabled(selection.count != 1)
+                    .disabled(viewModel.selection.count != 1)
 
                 }
                 
                 ToolbarItem(placement: .bottomBar) {
                     Button("Deletar", role: .destructive) {
-                        deleteAction()
+                        shouldDisplayAlert = true
                     }
                     .foregroundColor(.red)
                 }
@@ -69,20 +46,20 @@ public struct DetailView: View {
                 ToolbarItem {
                     Menu {
                         Button {
-                            detailType = .grid
+                            viewModel.detailType = .grid
                         } label: {
                             Label("Ícones", systemImage: "rectangle.grid.2x2")
                         }
                         .disabled(editMode?.wrappedValue.isEditing ?? false)
                         
                         Button {
-                            detailType = .table
+                            viewModel.detailType = .table
                         } label: {
                             Label("Lista", systemImage: "list.bullet")
                         }
                         
-                        if detailType == .table {
-                            Picker(selection: $sortOrder) {
+                        if viewModel.detailType == .table {
+                            Picker(selection: $viewModel.sortOrder) {
                                 Text("Nome").tag([KeyPathComparator(\Deck.name)])
                                 Text("Quantidade de Flashcards").tag([KeyPathComparator(\Deck.cardCount)])
                                 Text("Data do Último Acesso").tag([KeyPathComparator(\Deck.datesLogs.lastAccess)])
@@ -95,7 +72,7 @@ public struct DetailView: View {
                         Label {
                             Text("Visualização")
                         } icon: {
-                            Image(systemName: detailType == .grid ? "rectangle.grid.2x2" : "list.bullet")
+                            Image(systemName: viewModel.detailType == .grid ? "rectangle.grid.2x2" : "list.bullet")
                         }
                         
                     }
@@ -109,7 +86,7 @@ public struct DetailView: View {
                 
                 ToolbarItem {
                     Button {
-                        presentNewDeck = true
+                        presentDeckEdition = true
                     } label: {
                         Image(systemName: "plus")
                             .foregroundColor(HBColor.actionColor)
@@ -118,30 +95,50 @@ public struct DetailView: View {
             }
             .onChange(of: editMode?.wrappedValue) { newValue in
                 if newValue == .active {
-                    detailType = .table
+                    viewModel.detailType = .table
                 }
             }
-            .onChange(of: detailType) { newValue in
+            .onChange(of: viewModel.detailType) { newValue in
                 if newValue == .grid {
                     editMode?.wrappedValue = .inactive
                 }
+            }
+            .alert(viewModel.selection.isEmpty ? "Nada foi selecionado" : "Você tem certeza que deseja apagar?", isPresented: $shouldDisplayAlert) {
+                Button("Apagar", role: .destructive) {
+                    try? viewModel.deleteDecks()
+                }
+                .disabled(viewModel.selection.isEmpty)
+                
+                Button("Cancelar", role: .cancel) { }
+            }
+            .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
+            .navigationTitle(viewModel.detailTitle)
+            .sheet(isPresented: $presentDeckEdition) {
+                NewDeckView(viewModel: NewDeckViewModel(
+                    colors: CollectionColor.allCases,
+                    icons: IconNames.allCases,
+                    editingDeck: viewModel.editingDeck,
+                    deckRepository: DeckRepository.shared,
+                    collectionRepository: CollectionRepository.shared,
+                    collection: viewModel.selectedCollection))
             }
     }
     
     @ViewBuilder
     private var content: some View {
-        if detailType == .grid {
-            DeckGridView(decks: decks) { deck in
-                selection = Set([deck.id])
-                editAction()
+        if viewModel.detailType == .grid {
+            DeckGridView(decks: viewModel.decks) { deck in
+//                selection = Set([deck.id])
+//                editAction()
             } deleteAction: { deck in
-                selection = Set([deck.id])
-                deleteAction()
+//                selection = Set([deck.id])
+//                deleteAction()
             }
         } else {
-            DeckTableView(decks: decks,
-                          sortOrder: $sortOrder,
-                          selection: $selection)
+            DeckTableView(decks: viewModel.decks,
+                          sortOrder: $viewModel.sortOrder,
+                          selection: $viewModel.selection)
+            
         }
     }
 }
