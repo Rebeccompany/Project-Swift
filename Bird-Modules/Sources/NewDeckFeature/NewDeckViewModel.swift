@@ -14,8 +14,8 @@ import Combine
 
 public class NewDeckViewModel: ObservableObject {
     @Published var deckName: String = ""
-    @Published var currentSelectedColor: CollectionColor?
-    @Published var currentSelectedIcon: IconNames?
+    @Published var currentSelectedColor: CollectionColor? = CollectionColor.red
+    @Published var currentSelectedIcon: IconNames? = IconNames.gamecontroller
     @Published var canSubmit: Bool
     @Published var showingErrorAlert: Bool = false
     @Published var editingDeck: Deck?

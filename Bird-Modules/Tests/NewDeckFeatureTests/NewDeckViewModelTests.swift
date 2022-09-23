@@ -126,6 +126,7 @@ class NewDeckViewModelTests: XCTestCase {
         let expectations = expectation(description: "Can submit binding")
         sut.deckName = "Name"
         sut.currentSelectedIcon = IconNames.atom
+        sut.currentSelectedColor = nil
         sut.$canSubmit.sink { canSubmit in
             XCTAssertTrue(!canSubmit)
             expectations.fulfill()
@@ -137,6 +138,7 @@ class NewDeckViewModelTests: XCTestCase {
     func testCanSubmitBindingErrorNoIcon() {
         let expectations = expectation(description: "Can submit binding")
         sut.deckName = "Name"
+        sut.currentSelectedIcon = nil
         sut.currentSelectedColor = CollectionColor.red
         sut.$canSubmit.sink { canSubmit in
             XCTAssertTrue(!canSubmit)
@@ -171,6 +173,8 @@ class NewDeckViewModelTests: XCTestCase {
     func testCanSubmitBindingErrorNoColorAndIcon() {
         let expectations = expectation(description: "Can submit binding")
         sut.deckName = "Name"
+        sut.currentSelectedIcon = nil
+        sut.currentSelectedColor = nil
         sut.$canSubmit.sink { canSubmit in
             XCTAssertTrue(!canSubmit)
             expectations.fulfill()

@@ -90,9 +90,10 @@ class NewCollectionViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testCanSubmitBindingSuccessfullyNoColor() {
+    func testCanSubmitBindingSuccessfullyNoIcon() {
         let expectation = expectation(description: "Can submit binding")
         sut.collectionName = "Name"
+        sut.currentSelectedIcon = nil
         sut.$canSubmit.sink { canSubmit in
             XCTAssertFalse(canSubmit)
             expectation.fulfill()
