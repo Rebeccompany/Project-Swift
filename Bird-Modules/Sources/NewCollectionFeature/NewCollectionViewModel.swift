@@ -13,7 +13,7 @@ import Utils
 
 public class NewCollectionViewModel: ObservableObject {
     @Published var collectionName: String = ""
-    @Published var currentSelectedIcon: IconNames?
+    @Published var currentSelectedIcon: IconNames? = IconNames.gamecontroller
     @Published var canSubmit: Bool
     @Published var editingCollection: DeckCollection?
     
