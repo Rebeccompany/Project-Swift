@@ -30,9 +30,6 @@ struct FlashcardView: View {
                 .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0.0001))
         }
         .onTapGesture(perform: flip)
-        .onAppear {
-            print(index)
-        }
         .onChange(of: viewModel.isFlipped) { newValue in
                 flipWithAnimation(newValue)
         }
