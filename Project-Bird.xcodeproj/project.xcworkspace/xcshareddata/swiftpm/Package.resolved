@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "owl",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Rebeccompany/Owl.git",
+      "state" : {
+        "revision" : "2ee76e4bd5c263fa40220890eefe03eabd181bd2",
+        "version" : "1.0.2"
+      }
+    }
+  ],
+  "version" : 2
+}
