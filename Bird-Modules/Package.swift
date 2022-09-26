@@ -96,11 +96,17 @@ let package = Package(
                 "HummingBird"
             ]
         ),
+        
         .library(
             name: "Flock",
             targets: [
                 "Flock"
             ]
+        ),
+        
+        .library(
+            name: "Habitat",
+            targets: ["Habitat"]
         )
     ],
     
@@ -233,6 +239,14 @@ let package = Package(
         
         .target(
             name: "Flock"
+        ),
+        
+        .target(
+            name: "Habitat",
+            dependencies: [
+                "Storage",
+                "Utils"
+            ]
         ),
         
         // MARK: Test Targets
