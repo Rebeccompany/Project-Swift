@@ -12,6 +12,7 @@ import NewDeckFeature
 import HummingBird
 import Flock
 import NewCollectionFeature
+import Habitat
 import Storage
 
 public struct ContentView: View {
@@ -20,13 +21,11 @@ public struct ContentView: View {
     @State private var editModeForDeck: EditMode = .inactive
     @State private var path: NavigationPath = .init()
     
-    @ObservedObject private var viewModel: ContentViewModel
+    @StateObject private var viewModel: ContentViewModel = ContentViewModel()
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
-    public init(viewModel: ContentViewModel) {
-        self.viewModel = viewModel
-    }
+    public init() {}
     
     public var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
@@ -62,11 +61,8 @@ public struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(
-            viewModel: ContentViewModel(
-                collectionRepository: CollectionRepositoryMock.shared,
-                deckRepository: DeckRepositoryMock.shared
-            )
-        )
+        HabitatPreview {
+            ContentView()
+        }
     }
 }

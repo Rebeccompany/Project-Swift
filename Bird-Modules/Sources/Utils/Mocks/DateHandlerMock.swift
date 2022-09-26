@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct DateHandlerMock: DateHandlerProtocol {
+public class DateHandlerMock: DateHandlerProtocol {
     public init() {}
     
     public var today: Date {

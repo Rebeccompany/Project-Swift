@@ -9,6 +9,7 @@ import XCTest
 @testable import AppFeature
 import Models
 import Storage
+import Habitat
 import Combine
 
 //TODO: Delete Deck
@@ -23,10 +24,8 @@ final class ContentViewModelTests: XCTestCase {
     override func setUp() {
         deckRepositoryMock = DeckRepositoryMock()
         collectionRepositoryMock = CollectionRepositoryMock()
-        sut = ContentViewModel(
-            collectionRepository: collectionRepositoryMock,
-            deckRepository: deckRepositoryMock
-        )
+        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock)
+        sut = ContentViewModel()
         cancelables = Set<AnyCancellable>()
         sut.startup()
     }
