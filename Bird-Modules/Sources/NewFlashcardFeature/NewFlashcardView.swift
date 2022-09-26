@@ -9,6 +9,7 @@ import SwiftUI
 import HummingBird
 import Models
 import Storage
+import Habitat
 
 public struct NewFlashcardView: View {
     @StateObject private var viewModel: NewFlashcardViewModel = NewFlashcardViewModel()
@@ -21,6 +22,7 @@ public struct NewFlashcardView: View {
     private var okButtonState: String = ""
     
     @Environment(\.dismiss) private var dismiss
+    
 
     var deck: Deck
     var editingFlashcard: Card?
@@ -71,7 +73,7 @@ public struct NewFlashcardView: View {
                     
                     Spacer()
                     
-                    if viewModel.editingFlashcard != nil {
+                    if editingFlashcard != nil {
                         Button {
                             activeAlert = .confirm
                             showingAlert = true
@@ -88,7 +90,7 @@ public struct NewFlashcardView: View {
             .scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
             .viewBackgroundColor(HBColor.primaryBackground)
-            .navigationTitle(viewModel.editingFlashcard != nil ? "Editar Flashcard" : "Criar Flashcard")
+            .navigationTitle(editingFlashcard != nil ? "Editar Flashcard" : "Criar Flashcard")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 viewModel.startUp(editingFlashcard: editingFlashcard)
@@ -104,7 +106,7 @@ public struct NewFlashcardView: View {
                                  message: Text("Você perderá permanentemente o conteúdo deste flashcard."),
                                  primaryButton: .destructive(Text("Apagar")) {
                                     do {
-                                        try viewModel.deleteFlashcard()
+                                        try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
                                         dismiss()
                                     } catch {
                                         activeAlert = .error
@@ -145,7 +147,7 @@ public struct NewFlashcardView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
-                        if viewModel.editingFlashcard == nil {
+                        if editingFlashcard == nil {
                             do {
                                 try viewModel.createFlashcard(for: deck)
                                 dismiss()
@@ -156,7 +158,7 @@ public struct NewFlashcardView: View {
                             
                         } else {
                             do {
-                                try viewModel.editFlashcard()
+                                try viewModel.editFlashcard(editingFlashcard: editingFlashcard)
                                 dismiss()
                             } catch {
                                 selectedErrorMessage = .editCard
@@ -183,6 +185,8 @@ public struct NewFlashcardView: View {
 
 struct NewFlashcardView_Previews: PreviewProvider {
     static var previews: some View {
-        NewFlashcardView(deck: Deck(id: UUID(), name: "Nome", icon: "chove", color: .darkBlue, collectionId: nil, cardsIds: []), editingFlashcard: nil)
+        HabitatPreview {
+            NewFlashcardView(deck: Deck(id: UUID(), name: "Nome", icon: "chove", color: .darkBlue, collectionId: nil, cardsIds: []), editingFlashcard: nil)
+        }
     }
 }

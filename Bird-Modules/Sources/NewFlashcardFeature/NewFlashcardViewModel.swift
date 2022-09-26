@@ -11,6 +11,7 @@ import HummingBird
 import Storage
 import Utils
 import Combine
+import Habitat
 
 public class NewFlashcardViewModel: ObservableObject {
     @Published var flashcardFront: String = ""
@@ -18,13 +19,12 @@ public class NewFlashcardViewModel: ObservableObject {
     @Published var currentSelectedColor: CollectionColor? = CollectionColor.red
     @Published var canSubmit: Bool = false
     @Published var showingErrorAlert: Bool = false
-    @Published var editingFlashcard: Card? = nil
     
     var colors: [CollectionColor] = CollectionColor.allCases
 
-    private let deckRepository: DeckRepositoryProtocol = DeckRepositoryMock()
-    private let dateHandler: DateHandlerProtocol = DateHandlerMock()
-    private let uuidGenerator: UUIDGeneratorProtocol = UUIDHandlerMock()
+    @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
+    @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
+    @Dependency(\.uuidGenerator) private var uuidGenerator: UUIDGeneratorProtocol
     
 
     private func setupDeckContentIntoFields(_ card: Card) {
@@ -67,7 +67,7 @@ public class NewFlashcardViewModel: ObservableObject {
             to: deck)
     }
     
-    func editFlashcard() throws {
+    func editFlashcard(editingFlashcard: Card?) throws {
         guard let selectedColor = currentSelectedColor, var editingFlashcard = editingFlashcard else {
             return
         }
@@ -80,7 +80,7 @@ public class NewFlashcardViewModel: ObservableObject {
         try deckRepository.editCard(editingFlashcard)
     }
     
-    func deleteFlashcard() throws {
+    func deleteFlashcard(editingFlashcard: Card?) throws {
         guard let editingFlashcard = editingFlashcard else {
             return
         }
