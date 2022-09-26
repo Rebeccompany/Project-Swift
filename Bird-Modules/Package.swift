@@ -133,6 +133,7 @@ let package = Package(
                 "DeckFeature",
                 "Models",
                 "Flock",
+                "Habitat",
                 "NewFlashcardFeature"
             ]
         ),
