@@ -91,9 +91,7 @@ public struct DeckView: View {
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
-                viewModel: StudyViewModel(
-                    deck: viewModel.deck
-                )
+                deck: viewModel.deck  
             )
         }
     }

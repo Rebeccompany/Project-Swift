@@ -13,7 +13,9 @@ import Combine
 import Utils
 
 //swiftlint:disable trailing_closure
+@MainActor
 public class StudyViewModel: ObservableObject {
+    
     let deckRepository: DeckRepositoryProtocol = DeckRepositoryMock()
     let sessionCacher: SessionCacher = SessionCacher(storage: LocalStorageMock(), encoder: JSONEncoder(), decoder: JSONDecoder())
     let dateHandler: DateHandlerProtocol = DateHandlerMock()

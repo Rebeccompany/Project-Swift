@@ -17,10 +17,10 @@ public struct StudyView: View {
     @State private var showingErrorAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     
-    @Binding var deck: Deck
+    var deck: Deck
     
-    public init(deck: Binding<Deck>) {
-        self._deck = deck
+    public init(deck: Deck) {
+        self.deck = deck
     }
     
     private func toString(_ attributed: AttributedString) -> String {
@@ -132,7 +132,7 @@ struct StudyView_Previews: PreviewProvider {
     static var repo: DeckRepositoryMock { DeckRepositoryMock() }
 
     static var previews: some View {
-        StudyView(deck: .constant(repo.decks.first!))
+        StudyView(deck: repo.decks.first!)
     }
 }
 
