@@ -10,15 +10,17 @@ import Models
 import Storage
 import Combine
 import Utils
+import Habitat
 
+@MainActor
 public class NewCollectionViewModel: ObservableObject {
     @Published var collectionName: String = ""
     @Published var currentSelectedIcon: IconNames? = IconNames.gamecontroller
     @Published var canSubmit: Bool = false
     
-    private let dateHandler: DateHandlerProtocol = DateHandlerMock()
-    private let idGenerator: UUIDGeneratorProtocol = UUIDHandlerMock()
-    private let collectionRepository: CollectionRepositoryProtocol = CollectionRepositoryMock()
+    @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
+    @Dependency(\.uuidGenerator) private var idGenerator: UUIDGeneratorProtocol
+    @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
     let icons: [IconNames] = IconNames.allCases
     
 //    public init(

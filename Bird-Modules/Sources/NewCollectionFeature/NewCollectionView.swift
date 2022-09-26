@@ -9,6 +9,7 @@ import SwiftUI
 import HummingBird
 import Models
 import Storage
+import Habitat
 
 public struct NewCollectionView: View {
     
@@ -153,8 +154,10 @@ public struct NewCollectionView: View {
 struct NewCollectionView_Previews: PreviewProvider {
     static var previews: some View {
         
-        NewCollectionView(editingCollection: nil)
-        .preferredColorScheme(.light)
+        HabitatPreview {
+            NewCollectionView(editingCollection: nil)
+            .preferredColorScheme(.light)
+        }
         
         
         

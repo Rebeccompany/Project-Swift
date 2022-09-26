@@ -10,7 +10,9 @@ import XCTest
 import Storage
 import Combine
 import Models
+import Habitat
 
+@MainActor
 class NewCollectionViewModelTests: XCTestCase {
 
     var sut: NewCollectionViewModel!
@@ -25,12 +27,9 @@ class NewCollectionViewModelTests: XCTestCase {
         dateHandlerMock = DateHandlerMock()
         uuidHandlerMock = UUIDHandlerMock()
         
-        sut = NewCollectionViewModel(
-            collectionRepository: collectionRepository,
-            dateHandler: dateHandlerMock,
-            idGenerator: uuidHandlerMock
-        )
-        sut.startUp()
+        setupHabitatForIsolatedTesting(collectionRepository: collectionRepository, dateHandler: dateHandlerMock, uuidGenerator: uuidHandlerMock)
+        sut = NewCollectionViewModel()
+        sut.startUp(editingCollection: nil)
     }
     
     override func tearDown() {
@@ -114,43 +113,42 @@ class NewCollectionViewModelTests: XCTestCase {
     
     
     func testEditNameCollectionSuccessfuly() throws {
-        sut = NewCollectionViewModel(collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
+        
         
         XCTAssertEqual(collectionRepository.collections[0].name, "Matemática Básica")
         
         sut.collectionName = "Matemática II"
-        try sut.editCollection()
+        try sut.editCollection(editingCollection: collectionRepository.collections[0])
         
         XCTAssertEqual(collectionRepository.collections[0].name, "Matemática II")
     }
     
     func testEditColorCollectionSuccessfuly() throws {
-        sut = NewCollectionViewModel(collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
+        
         
         XCTAssertEqual(collectionRepository.collections[0].icon, IconNames.atom)
         
         sut.currentSelectedIcon = IconNames.books
-        try sut.editCollection()
+        try sut.editCollection(editingCollection: collectionRepository.collections[0])
         
         XCTAssertEqual(collectionRepository.collections[0].icon, IconNames.books)
     }
     
     func testEditCollectionError() throws {
-        sut = NewCollectionViewModel(collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
         
         XCTAssertEqual(collectionRepository.collections[0].icon, .atom)
         
         collectionRepository.shouldThrowError = true
         sut.currentSelectedIcon = .books
         
-        XCTAssertThrowsError(try sut.editCollection())
+        XCTAssertThrowsError(try sut.editCollection(editingCollection: collectionRepository.collections[0]))
         
         XCTAssertNotEqual(collectionRepository.collections[0].icon, .books)
         XCTAssertEqual(collectionRepository.collections[0].icon, .atom)
     }
     
     func testDeleteCollectionSuccessfully() throws {
-        sut = NewCollectionViewModel(collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
+        
         let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
         
         let containsCollection = collectionRepository.collections.contains(where: {
@@ -159,7 +157,7 @@ class NewCollectionViewModelTests: XCTestCase {
         
         XCTAssertTrue(containsCollection)
         
-        try sut.deleteCollection()
+        try sut.deleteCollection(editingCollection: collectionRepository.collections[0])
         
         let deletedCollection = collectionRepository.collections.contains(where: {
             $0.id == id
@@ -169,7 +167,6 @@ class NewCollectionViewModelTests: XCTestCase {
     }
     
     func testDeleteCollectionError() throws {
-        sut = NewCollectionViewModel(collectionRepository: collectionRepository, dateHandler: dateHandlerMock, idGenerator: uuidHandlerMock, editingCollection: collectionRepository.collections[0])
         let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
         
         let containsCollection = collectionRepository.collections.contains(where: {
@@ -180,7 +177,7 @@ class NewCollectionViewModelTests: XCTestCase {
         
         collectionRepository.shouldThrowError = true
         
-        XCTAssertThrowsError(try sut.deleteCollection())
+        XCTAssertThrowsError(try sut.deleteCollection(editingCollection: collectionRepository.collections[0]))
         
         let deletedCollection = collectionRepository.collections.contains(where: {
             $0.id == id
