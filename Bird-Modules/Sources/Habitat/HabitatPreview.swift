@@ -10,7 +10,7 @@ import SwiftUI
 public struct HabitatPreview<V: View>: View {
     var child: () -> V
     
-    init(@ViewBuilder child: @escaping () -> V) {
+    public init(@ViewBuilder child: @escaping () -> V) {
         setupHabitatForIsolatedTesting()
         self.child = child
     }

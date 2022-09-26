@@ -12,7 +12,7 @@ public struct Dependency<T> {
     
     private let keyPath: WritableKeyPath<Habitat, T>
     
-    public init(keyPath: WritableKeyPath<Habitat, T>) {
+    public init(_ keyPath: WritableKeyPath<Habitat, T>) {
         self.keyPath = keyPath
     }
     

@@ -4,7 +4,7 @@
 //
 //  Created by Gabriel Ferreira de Carvalho on 26/09/22.
 //
-
+import Foundation
 import Storage
 import Utils
 
@@ -24,6 +24,14 @@ private struct DateHandlerKey: HabitatKey {
 
 private struct UUIDGeneratorKey: HabitatKey {
     static var currentValue: UUIDGeneratorProtocol = UUIDGenerator()
+}
+
+private struct SystemObserverKey: HabitatKey {
+    static var currentValue: SystemObserverProtocol = SystemObserver.shared
+}
+
+private struct SessionCacherKey: HabitatKey {
+    static var currentValue: SessionCacher = SessionCacher()
 }
 
 
@@ -47,5 +55,15 @@ extension Habitat {
     public var uuidGenerator: UUIDGeneratorProtocol {
         get { Self[UUIDGeneratorKey.self] }
         set { Self[UUIDGeneratorKey.self] = newValue }
+    }
+    
+    public var systemObserver: SystemObserverProtocol {
+        get { Self[SystemObserverKey.self] }
+        set { Self[SystemObserverKey.self] = newValue }
+    }
+    
+    public var sessionCacher: SessionCacher {
+        get { Self[SessionCacherKey.self] }
+        set { Self[SessionCacherKey.self] = newValue }
     }
 }
