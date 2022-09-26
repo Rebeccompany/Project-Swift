@@ -9,6 +9,7 @@ import SwiftUI
 import HummingBird
 import Models
 import Storage
+import Habitat
 
 public struct NewDeckView: View {
     @StateObject private var viewModel: NewDeckViewModel = NewDeckViewModel()
@@ -175,7 +176,9 @@ public struct NewDeckView: View {
 
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
-        NewDeckView(collection: nil, editingDeck: nil)
-            .preferredColorScheme(.dark)
+        HabitatPreview {
+            NewDeckView(collection: nil, editingDeck: nil)
+                .preferredColorScheme(.dark)
+        }
     }
 }

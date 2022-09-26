@@ -11,7 +11,9 @@ import HummingBird
 import Storage
 import Utils
 import Combine
+import Habitat
 
+@MainActor
 public class NewDeckViewModel: ObservableObject {
     @Published var deckName: String = ""
     @Published var currentSelectedColor: CollectionColor? = CollectionColor.red
@@ -21,36 +23,11 @@ public class NewDeckViewModel: ObservableObject {
     
     let colors: [CollectionColor] = CollectionColor.allCases
     let icons: [IconNames] = IconNames.allCases
-//    var collection: DeckCollection?
-    private let deckRepository: DeckRepositoryProtocol = DeckRepositoryMock()
-    private let dateHandler: DateHandlerProtocol = DateHandlerMock()
-    private let uuidGenerator: UUIDGeneratorProtocol = UUIDGenerator()
-    private let collectionRepository: CollectionRepositoryProtocol = CollectionRepositoryMock()
     
-    
-//    public init(
-//        colors: [CollectionColor],
-//        icons: [IconNames],
-//        editingDeck: Deck? = nil,
-//        deckRepository: DeckRepositoryProtocol,
-//        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
-//        collection: DeckCollection?,
-//        dateHandler: DateHandlerProtocol = DateHandler(),
-//        uuidGenerator: UUIDGeneratorProtocol = UUIDGenerator()
-//    ) {
-//
-//        self.colors = colors
-//        self.icons = icons
-//        self.editingDeck = editingDeck
-//        self.collection = collection
-//        self.deckRepository = deckRepository
-//        self.collectionRepository = collectionRepository
-//        self.dateHandler = dateHandler
-//        self.uuidGenerator = uuidGenerator
-//        self.canSubmit = false
-//
-        
-//    }
+    @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
+    @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
+    @Dependency(\.uuidGenerator) private var uuidGenerator: UUIDGeneratorProtocol
+    @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
     
     private func setupDeckContentIntoFields(_ deck: Deck) {
         deckName = deck.name
