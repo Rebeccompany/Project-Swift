@@ -11,7 +11,9 @@ import Storage
 import Models
 import Combine
 import Utils
+import Habitat
 
+@MainActor
 class StudyViewModelTests: XCTestCase {
     
     var sut: StudyViewModel!
@@ -31,6 +33,7 @@ class StudyViewModelTests: XCTestCase {
         deck = deckRepository.decks.first
         dateHandler = DateHandlerMock()
         systemObserver = SystemObserverMock()
+        setupHabitatForIsolatedTesting(deckRepository: deckRepository, collectionRepository: CollectionRepositoryMock(), dateHandler: dateHandler, uuidGenerator: UUIDHandlerMock(), systemObserver: systemObserver, sessionCacher: sessionCacher)
         
         sut = .init()
         cancellables = .init()

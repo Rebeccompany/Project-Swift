@@ -11,16 +11,15 @@ import Models
 import Woodpecker
 import Combine
 import Utils
+import Habitat
 
 //swiftlint:disable trailing_closure
 @MainActor
 public class StudyViewModel: ObservableObject {
-    
-    let deckRepository: DeckRepositoryProtocol = DeckRepositoryMock()
-    let sessionCacher: SessionCacher = SessionCacher(storage: LocalStorageMock(), encoder: JSONEncoder(), decoder: JSONDecoder())
-    let dateHandler: DateHandlerProtocol = DateHandlerMock()
-    let systemObserver: SystemObserverProtocol = SystemObserverMock()
-    let cardSortingFunc: (Card, Card) -> Bool = Woodpecker.cardSorter
+    @Dependency(\.deckRepository) var deckRepository
+    @Dependency(\.sessionCacher) var sessionCacher
+    @Dependency(\.dateHandler) var dateHandler
+    @Dependency(\.systemObserver) var systemObserver
 
     
     
@@ -56,14 +55,11 @@ public class StudyViewModel: ObservableObject {
         .eraseToAnyPublisher()
     }
     
-    private func sessionPublisher(cardIds: [UUID]) -> AnyPublisher<[Card], Never> {
+    private func sessionPublisher(cardIds: [UUID], cardSortingFunc: @MainActor @escaping (Card, Card) -> Bool) -> AnyPublisher<[Card], Never> {
         fetchCardsPublisher(for: cardIds)
             .replaceError(with: [])
-            .compactMap { [weak self] cards in
-                guard let self = self else {
-                    return nil
-                }
-                return cards.sorted(by: self.cardSortingFunc)
+            .compactMap { cards in
+                cards.sorted(by: cardSortingFunc)
             }
             .eraseToAnyPublisher()
     }
@@ -90,7 +86,7 @@ public class StudyViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func startup(deck: Deck) {
+    func startup(deck: Deck, cardSortingFunc: @MainActor @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) {
         systemObserver.voiceOverDidChange()
             .assign(to: &$isVOOn)
             
@@ -109,15 +105,15 @@ public class StudyViewModel: ObservableObject {
         
         
         if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
-            sessionPublisher(cardIds: session.cardIds)
+            sessionPublisher(cardIds: session.cardIds, cardSortingFunc: cardSortingFunc)
                 .assign(to: &$cards)
             
         } else {
             newSessionCardsPublisher(deck: deck, cardIds: deck.cardsIds)
                 .sink { [weak self] in
                     self?.finishFetchCards($0)
-                } receiveValue: {[weak self] cards in
-                    self?.receiveCards(todayReviewingCards: cards.0, todayLearningCards: cards.1, toModify: cards.2)
+                } receiveValue: { [weak self] cards in
+                    self?.receiveCards(todayReviewingCards: cards.0, todayLearningCards: cards.1, toModify: cards.2, cardSortingFunc: cardSortingFunc)
                 }
                 .store(in: &cancellables)
         }
@@ -141,7 +137,7 @@ public class StudyViewModel: ObservableObject {
         }
     }
     
-    private func receiveCards(todayReviewingCards: [Card], todayLearningCards: [Card], toModify: [Card]) {
+    private func receiveCards(todayReviewingCards: [Card], todayLearningCards: [Card], toModify: [Card], cardSortingFunc: @MainActor @escaping (Card, Card) -> Bool) {
         cards = (todayLearningCards + todayReviewingCards).sorted(by: cardSortingFunc)
         cardsToEdit = toModify.map { card in
             var newCard = card
@@ -172,7 +168,7 @@ public class StudyViewModel: ObservableObject {
         sessionCacher.setCurrentSession(session: session)
     }
     
-    func pressedButton(for userGrade: UserGrade, deck: Deck) throws {
+    func pressedButton(for userGrade: UserGrade, deck: Deck, cardSortingFunc: @MainActor @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
         guard let newCard = cards.first else { return }
         
         if newCard.woodpeckerCardInfo.isGraduated {
