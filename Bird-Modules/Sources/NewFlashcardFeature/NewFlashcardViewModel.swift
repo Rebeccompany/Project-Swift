@@ -16,39 +16,17 @@ public class NewFlashcardViewModel: ObservableObject {
     @Published var flashcardFront: String = ""
     @Published var flashcardBack: String = ""
     @Published var currentSelectedColor: CollectionColor? = CollectionColor.red
-    @Published var canSubmit: Bool
+    @Published var canSubmit: Bool = false
     @Published var showingErrorAlert: Bool = false
-    @Published var editingFlashcard: Card?
+    @Published var editingFlashcard: Card? = nil
     
-    var colors: [CollectionColor]
-    var deck: Deck
-    private let deckRepository: DeckRepositoryProtocol
-    private let dateHandler: DateHandlerProtocol
-    private let uuidGenerator: UUIDGeneratorProtocol
+    var colors: [CollectionColor] = CollectionColor.allCases
+
+    private let deckRepository: DeckRepositoryProtocol = DeckRepositoryMock()
+    private let dateHandler: DateHandlerProtocol = DateHandlerMock()
+    private let uuidGenerator: UUIDGeneratorProtocol = UUIDHandlerMock()
     
-    
-    public init(
-        colors: [CollectionColor],
-        editingFlashcard: Card? = nil,
-        deckRepository: DeckRepositoryProtocol,
-        deck: Deck,
-        dateHandler: DateHandlerProtocol = DateHandler(),
-        uuidGenerator: UUIDGeneratorProtocol = UUIDGenerator()
-    ) {
-        
-        self.colors = colors
-        self.deck = deck
-        self.deckRepository = deckRepository
-        self.dateHandler = dateHandler
-        self.uuidGenerator = uuidGenerator
-        self.canSubmit = false
-        self.editingFlashcard = editingFlashcard
-        
-        if let editingFlashcard = editingFlashcard {
-            setupDeckContentIntoFields(editingFlashcard)
-        }
-    }
-    
+
     private func setupDeckContentIntoFields(_ card: Card) {
         flashcardFront = NSAttributedString(card.front).string
         flashcardBack = NSAttributedString(card.back).string
@@ -63,12 +41,16 @@ public class NewFlashcardViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func startUp() {
+    func startUp(editingFlashcard: Card?) {
         canSubmitPublisher
             .assign(to: &$canSubmit)
+        
+        if let editingFlashcard {
+            setupDeckContentIntoFields(editingFlashcard)
+        }
     }
     
-    func createFlashcard() throws {
+    func createFlashcard(for deck: Deck) throws {
         guard let selectedColor = currentSelectedColor else {
             return
         }

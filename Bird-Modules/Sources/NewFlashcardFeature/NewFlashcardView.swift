@@ -11,17 +11,23 @@ import Models
 import Storage
 
 public struct NewFlashcardView: View {
-    @StateObject private var viewModel: NewFlashcardViewModel
+    @StateObject private var viewModel: NewFlashcardViewModel = NewFlashcardViewModel()
+    
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
+    
     @FocusState private var focus: NewFlashcardFocus?
     private var okButtonState: String = ""
     
     @Environment(\.dismiss) private var dismiss
+
+    var deck: Deck
+    var editingFlashcard: Card?
     
-    public init(viewModel: @autoclosure @escaping () -> NewFlashcardViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel())
+    init(deck: Deck, editingFlashcard: Card? = nil) {
+        self.deck = deck
+        self.editingFlashcard = editingFlashcard
     }
     
     public var body: some View {
@@ -84,7 +90,9 @@ public struct NewFlashcardView: View {
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(viewModel.editingFlashcard != nil ? "Editar Flashcard" : "Criar Flashcard")
             .navigationBarTitleDisplayMode(.inline)
-            .onAppear(perform: viewModel.startUp)
+            .onAppear {
+                viewModel.startUp(editingFlashcard: editingFlashcard)
+            }
             .alert(isPresented: $showingAlert) {
                 switch activeAlert {
                 case .error:
@@ -139,7 +147,7 @@ public struct NewFlashcardView: View {
                     Button("OK") {
                         if viewModel.editingFlashcard == nil {
                             do {
-                                try viewModel.createFlashcard()
+                                try viewModel.createFlashcard(for: deck)
                                 dismiss()
                             } catch {
                                 selectedErrorMessage = .createCard
@@ -175,6 +183,6 @@ public struct NewFlashcardView: View {
 
 struct NewFlashcardView_Previews: PreviewProvider {
     static var previews: some View {
-        NewFlashcardView(viewModel: NewFlashcardViewModel(colors: CollectionColor.allCases, deckRepository: DeckRepositoryMock(), deck: Deck(id: UUID(), name: "asdsa", icon: "book", color: .red, collectionId: nil, cardsIds: [])))
+        NewFlashcardView(deck: Deck(id: UUID(), name: "Nome", icon: "chove", color: .darkBlue, collectionId: nil, cardsIds: []), editingFlashcard: nil)
     }
 }
