@@ -96,11 +96,17 @@ let package = Package(
                 "HummingBird"
             ]
         ),
+        
         .library(
             name: "Flock",
             targets: [
                 "Flock"
             ]
+        ),
+        
+        .library(
+            name: "Habitat",
+            targets: ["Habitat"]
         )
     ],
     
@@ -127,6 +133,7 @@ let package = Package(
                 "DeckFeature",
                 "Models",
                 "Flock",
+                "Habitat",
                 "NewFlashcardFeature"
             ]
         ),
@@ -235,6 +242,14 @@ let package = Package(
             name: "Flock"
         ),
         
+        .target(
+            name: "Habitat",
+            dependencies: [
+                "Storage",
+                "Utils"
+            ]
+        ),
+        
         // MARK: Test Targets
         .testTarget(
             name: "ImportingFeatureTests",
@@ -248,7 +263,8 @@ let package = Package(
             dependencies: [
                 "AppFeature",
                 "Models",
-                "Storage"
+                "Storage",
+                "Habitat"
             ]
         ),
         
