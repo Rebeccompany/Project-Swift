@@ -14,11 +14,13 @@ import Utils
 
 //swiftlint:disable trailing_closure
 public class StudyViewModel: ObservableObject {
-    private let deckRepository: DeckRepositoryProtocol
-    private let sessionCacher: SessionCacher
-    private let dateHandler: DateHandlerProtocol
-    let deck: Deck
-    let cardSortingFunc: (Card, Card) -> Bool
+    let deckRepository: DeckRepositoryProtocol = DeckRepositoryMock()
+    let sessionCacher: SessionCacher = SessionCacher(storage: LocalStorageMock(), encoder: JSONEncoder(), decoder: JSONDecoder())
+    let dateHandler: DateHandlerProtocol = DateHandlerMock()
+    let systemObserver: SystemObserverProtocol = SystemObserverMock()
+    let cardSortingFunc: (Card, Card) -> Bool = Woodpecker.cardSorter
+
+    
     
     @Published var cards: [Card] = []
     @Published var displayedCards: [CardViewModel] = []
@@ -28,28 +30,11 @@ public class StudyViewModel: ObservableObject {
     
     @Published var shouldButtonsBeDisabled: Bool = true
     
-    private var timefromLastCard: Date
+    private lazy var timefromLastCard: Date = dateHandler.today
     
-    @Published var isVOOn: Bool
-    let systemObserver: SystemObserverProtocol
+    @Published var isVOOn: Bool = getIsVOOn()
     
-    public init(
-        deckRepository: DeckRepositoryProtocol = DeckRepository.shared,
-        sessionCacher: SessionCacher = SessionCacher(),
-        deck: Deck,
-        dateHandler: DateHandlerProtocol = DateHandler(),
-        systemObserver: SystemObserverProtocol = SystemObserver(),
-        isVOOn: Bool = getIsVOOn(),
-        cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter
-    ) {
-        self.deckRepository = deckRepository
-        self.sessionCacher = sessionCacher
-        self.deck = deck
-        self.dateHandler = dateHandler
-        self.cardSortingFunc = cardSortingFunc
-        self.timefromLastCard = dateHandler.today
-        self.isVOOn = false
-        self.systemObserver = systemObserver
+    init() {
     }
     
     private var displayedCardsPublisher: AnyPublisher<[CardViewModel], Never> {
@@ -81,15 +66,15 @@ public class StudyViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    private func newSessionCardsPublisher(cardIds: [UUID]) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
+    private func newSessionCardsPublisher(deck: Deck, cardIds: [UUID]) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
         deckRepository.fetchCardsByIds(cardIds)
             .map {
                 $0.map(OrganizerCardInfo.init(card:))
             }
-            .tryMap { [deck, dateHandler] cards in
+            .tryMap { [dateHandler] cards in
                 try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: dateHandler.today)
             }
-            .handleEvents(receiveOutput: { [weak self] in self?.saveCardIdsToCache(ids: $0) })
+            .handleEvents(receiveOutput: { [weak self] in self?.saveCardIdsToCache(deck: deck, ids: $0) })
             .mapError { _ in
                 RepositoryError.internalError
             }
@@ -103,13 +88,13 @@ public class StudyViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func startup() {
+    func startup(deck: Deck) {
         systemObserver.voiceOverDidChange()
             .assign(to: &$isVOOn)
             
         systemObserver.willTerminate()
             .sink {[weak self] _ in
-                try? self?.saveChanges()
+                try? self?.saveChanges(deck: deck)
             }
             .store(in: &cancellables)
 
@@ -126,7 +111,7 @@ public class StudyViewModel: ObservableObject {
                 .assign(to: &$cards)
             
         } else {
-            newSessionCardsPublisher(cardIds: deck.cardsIds)
+            newSessionCardsPublisher(deck: deck, cardIds: deck.cardsIds)
                 .sink { [weak self] in
                     self?.finishFetchCards($0)
                 } receiveValue: {[weak self] cards in
@@ -136,7 +121,7 @@ public class StudyViewModel: ObservableObject {
         }
     }
     
-    func saveChanges() throws {
+    func saveChanges(deck: Deck) throws {
         
         try cardsToEdit.forEach { card in
             try deckRepository.editCard(card)
@@ -180,18 +165,18 @@ public class StudyViewModel: ObservableObject {
         }
     }
     
-    private func saveCardIdsToCache(ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) ) {
+    private func saveCardIdsToCache(deck: Deck, ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) ) {
         let session = Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id)
         sessionCacher.setCurrentSession(session: session)
     }
     
-    func pressedButton(for userGrade: UserGrade) throws {
+    func pressedButton(for userGrade: UserGrade, deck: Deck) throws {
         guard let newCard = cards.first else { return }
         
         if newCard.woodpeckerCardInfo.isGraduated {
             try dealWithSm2Card(userGrade: userGrade)
         } else {
-            try dealWithSteppedCard(userGrade: userGrade)
+            try dealWithSteppedCard(userGrade: userGrade, deck: deck)
         }
         var lastCards: [Card] = []
         if cards.count > 2 {
@@ -215,7 +200,7 @@ public class StudyViewModel: ObservableObject {
         removeCard(shouldAddToEdit: true)
     }
     
-    private func dealWithSteppedCard(userGrade: UserGrade) throws {
+    private func dealWithSteppedCard(userGrade: UserGrade, deck: Deck) throws {
         var newCard = cards[0]
         newCard.woodpeckerCardInfo.hasBeenPresented = true
         

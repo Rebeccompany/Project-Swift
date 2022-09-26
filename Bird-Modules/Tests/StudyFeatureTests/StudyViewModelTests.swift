@@ -32,7 +32,7 @@ class StudyViewModelTests: XCTestCase {
         dateHandler = DateHandlerMock()
         systemObserver = SystemObserverMock()
         
-        sut = .init(deckRepository: deckRepository, sessionCacher: sessionCacher, deck: deck, dateHandler: dateHandler, systemObserver: systemObserver, isVOOn: false, cardSortingFunc: sortCardByStepMock)
+        sut = .init()
         cancellables = .init()
     }
     
@@ -53,7 +53,7 @@ class StudyViewModelTests: XCTestCase {
         let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id)
         sessionCacher.setCurrentSession(session: session)
         
-        sut.startup()
+        sut.startup(deck: deck)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { [unowned self] cards in
             let first3Cards = Array(self.deckRepository.cards.prefix(3))
@@ -67,7 +67,7 @@ class StudyViewModelTests: XCTestCase {
     
     func testDidCreateNewSessionOnStartup() {
         XCTAssertNil(sessionCacher.currentSession(for: deck.id))
-        sut.startup()
+        sut.startup(deck: deck)
         
         let expectation = expectation(description: "did handle events correctly")
         
@@ -88,7 +88,7 @@ class StudyViewModelTests: XCTestCase {
     
     func testStartupWithNewSessionFewerCardsThanLimit() {
         XCTAssertEqual(sut.cards, [])
-        sut.startup()
+        sut.startup(deck: deck)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { cards in
             
@@ -104,9 +104,9 @@ class StudyViewModelTests: XCTestCase {
     
     func testStartupWithNewSessionNoCards() {
         XCTAssertEqual(sut.cards, [])
-        sut = .init(deckRepository: deckRepository, sessionCacher: sessionCacher, deck: deckRepository.decks[1], dateHandler: dateHandler)
+        self.deck = deckRepository.decks[1]
         deckRepository.cards = []
-        sut.startup()
+        sut.startup(deck: deck)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { cards in
             XCTAssertEqual(cards.count, 0)
@@ -121,14 +121,10 @@ class StudyViewModelTests: XCTestCase {
     
     func testStartupWithNewSessionTooManyCards() {
         XCTAssertEqual(sut.cards, [])
-        
-        sut = .init(deckRepository: deckRepository,
-                    sessionCacher: sessionCacher,
-                    deck: deckRepository.decks[2],
-                    dateHandler: dateHandler)
+        self.deck = deckRepository.decks[2]
         
         
-        sut.startup()
+        sut.startup(deck: deck)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { cards in
             XCTAssertEqual(cards.count, 3)
@@ -150,9 +146,9 @@ class StudyViewModelTests: XCTestCase {
     
     func testStartupWithNewSession2Cards() {
         XCTAssertEqual(sut.cards, [])
-        sut = .init(deckRepository: deckRepository, sessionCacher: sessionCacher, deck: deckRepository.decks[3], dateHandler: dateHandler)
+        self.deck = deckRepository.decks[3]
         
-        sut.startup()
+        sut.startup(deck: deck)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { cards in
             XCTAssertEqual(self.sut.displayedCards.map(\.card.id), cards.prefix(2).reversed().map(CardViewModel.init).map(\.card.id))
@@ -165,9 +161,9 @@ class StudyViewModelTests: XCTestCase {
     
     func testStartupWithNewSession1Card() {
         XCTAssertEqual(sut.cards, [])
-        sut = .init(deckRepository: deckRepository, sessionCacher: sessionCacher, deck: deckRepository.decks[1], dateHandler: dateHandler)
+        self.deck = deckRepository.decks[1]
         
-        sut.startup()
+        sut.startup(deck: deck)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { cards in
             XCTAssertEqual(self.sut.displayedCards.map(\.card.id), cards.prefix(2).reversed().map(CardViewModel.init).map(\.card.id))
@@ -181,13 +177,13 @@ class StudyViewModelTests: XCTestCase {
     func testPressedButtonCardDidGoBack() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup()
+        sut.startup(deck: deck)
         
         let oldCard = sut.cards[0]
         sut.cards[0] = Card(id: oldCard.id, front: oldCard.front, back: oldCard.back, color: oldCard.color, datesLogs: oldCard.datesLogs, deckID: oldCard.deckID, woodpeckerCardInfo: WoodpeckerCardInfo(step: 1, isGraduated: false, easeFactor: 2.5, streak: 0, interval: 0, hasBeenPresented: true), history: [])
         //vai ficar no msm step, pq esta no 0
 
-        try sut.pressedButton(for: .wrongHard)
+        try sut.pressedButton(for: .wrongHard, deck: deck)
         
         let modCard = sut.cards.first { card in
             card.id == oldCard.id
@@ -200,11 +196,11 @@ class StudyViewModelTests: XCTestCase {
     func testPressedButtonCardDidStay() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup()
+        sut.startup(deck: deck)
         let oldCard = sut.cards[0]
         //vai ficar no msm step, pq esta no 0
         
-        try sut.pressedButton(for: .wrongHard)
+        try sut.pressedButton(for: .wrongHard, deck: deck)
         
         let modCard = sut.cards.first { card in
             card.id == oldCard.id
@@ -219,11 +215,11 @@ class StudyViewModelTests: XCTestCase {
     func testPressedButtonCardDidGoFoward() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup()
+        sut.startup(deck: deck)
         let oldCard = sut.cards[0]
         //vai ficar no msm step, pq esta no 0
         
-        try sut.pressedButton(for: .correct)
+        try sut.pressedButton(for: .correct, deck: deck)
         
         let modCard = sut.cards.first { card in
             card.id == oldCard.id
@@ -238,11 +234,11 @@ class StudyViewModelTests: XCTestCase {
     func testPressedButtonCardDidGraduate() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup()
+        sut.startup(deck: deck)
         let oldCard = sut.cards[0]
         //vai ficar no msm step, pq esta no 0
         
-        try sut.pressedButton(for: .correctEasy)
+        try sut.pressedButton(for: .correctEasy, deck: deck)
         
         let modCard = sut.cardsToEdit.first { card in
             card.id == oldCard.id
@@ -259,12 +255,12 @@ class StudyViewModelTests: XCTestCase {
     func testPressedButtonGraduatedCardDemoted() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup()
+        sut.startup(deck: deck)
         sut.cards.reverse()
         let oldCard = sut.cards[0]
         
         
-        try sut.pressedButton(for: .wrongHard)
+        try sut.pressedButton(for: .wrongHard, deck: deck)
         
         let modCard = sut.cardsToEdit.first { card in
             card.id == oldCard.id
@@ -280,12 +276,12 @@ class StudyViewModelTests: XCTestCase {
     func testPressedButtonGraduatedCardReviwed() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup()
+        sut.startup(deck: deck)
         sut.cards.reverse()
         let oldCard = sut.cards[0]
         
         
-        try sut.pressedButton(for: .correct)
+        try sut.pressedButton(for: .correct, deck: deck)
         
         let modCard = sut.cardsToEdit.first { card in
             card.id == oldCard.id
@@ -320,7 +316,7 @@ class StudyViewModelTests: XCTestCase {
         let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id)
         sessionCacher.setCurrentSession(session: session)
         
-        sut.startup()
+        sut.startup(deck: deck)
         XCTAssertFalse(sut.isVOOn)
         systemObserver.voiceOverDidChangeSubject.send(true)
         XCTAssertTrue(sut.isVOOn)
@@ -328,16 +324,13 @@ class StudyViewModelTests: XCTestCase {
     
     func testSaveEditedCards() throws {
         let expectation = expectation(description: "receive card for id")
-        sut = .init(deckRepository: deckRepository,
-                    sessionCacher: sessionCacher,
-                    deck: deckRepository.decks[1],
-                    dateHandler: dateHandler)
+        self.deck = deckRepository.decks[1]
         
-        sut.startup()
+        sut.startup(deck: deck)
         let card = sut.cards.first!
         XCTAssertEqual(card.woodpeckerCardInfo.interval, 0)
-        try sut.pressedButton(for: .correctEasy)
-        try sut.saveChanges()
+        try sut.pressedButton(for: .correctEasy, deck: deck)
+        try sut.saveChanges(deck: deck)
       
         deckRepository.fetchCardById(deckRepository.decks[1].cardsIds.first!)
             .assertNoFailure()
