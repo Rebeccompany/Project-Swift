@@ -217,7 +217,6 @@ final class ContentViewModelTests: XCTestCase {
         sut.didDeckPresentationStatusChanged(false)
         
         XCTAssertNil(sut.editingDeck)
-        XCTAssertTrue(sut.selection.isEmpty)
     }
     
     func testCollectionStatusPresentationTrue() {

@@ -159,7 +159,6 @@ public final class ContentViewModel: ObservableObject {
     }
     
     func deleteDecks() throws {
-        
         let decksToBeDeleted = self.decks.filter { deck in
             selection.contains(deck.id)
         }
@@ -173,7 +172,6 @@ public final class ContentViewModel: ObservableObject {
                 try deckRepository.deleteDeck(deck)
             }
         
-        selection = Set()
         editingDeck = nil
     }
     
@@ -190,13 +188,20 @@ public final class ContentViewModel: ObservableObject {
         editingDeck = deck
     }
     
+    func updateEditingDeck(with deck: Deck) {
+        editingDeck = deck
+    }
+    
+    func deleteDeck(_ deck: Deck) throws {
+        try deckRepository.deleteDeck(deck)
+    }
+    
     func didDeckPresentationStatusChanged(_ status: Bool) {
         guard status == false else {
             return
         }
         
         editingDeck = nil
-        selection = Set()
     }
     
     func didCollectionPresentationStatusChanged(_ status: Bool) {

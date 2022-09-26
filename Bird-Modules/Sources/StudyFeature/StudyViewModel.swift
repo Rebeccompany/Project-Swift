@@ -82,7 +82,7 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func newSessionCardsPublisher(cardIds: [UUID]) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
-        return deckRepository.fetchCardsByIds(cardIds)
+        deckRepository.fetchCardsByIds(cardIds)
             .map {
                 $0.map(OrganizerCardInfo.init(card:))
             }

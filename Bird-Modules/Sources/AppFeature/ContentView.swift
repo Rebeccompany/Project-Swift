@@ -16,7 +16,8 @@ import Storage
 
 public struct ContentView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
-    @State private var editMode: EditMode = .inactive
+    @State private var editModeForCollection: EditMode = .inactive
+    @State private var editModeForDeck: EditMode = .inactive
     @State private var path: NavigationPath = .init()
     
     @ObservedObject private var viewModel: ContentViewModel
@@ -44,7 +45,7 @@ public struct ContentView: View {
             isCompact: horizontalSizeClass == .compact
         )
         .environmentObject(viewModel)
-        .environment(\.editMode, $editMode)
+        .environment(\.editMode, $editModeForCollection)
     }
     
     @ViewBuilder
@@ -52,6 +53,7 @@ public struct ContentView: View {
         Router(path: $path) {
             DetailView()
             .environmentObject(viewModel)
+            .environment(\.editMode, $editModeForDeck)
         } destination: { (route: StudyRoute) in
             StudyRoutes.destination(for: route)
         }
