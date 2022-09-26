@@ -263,7 +263,8 @@ let package = Package(
             dependencies: [
                 "AppFeature",
                 "Models",
-                "Storage"
+                "Storage",
+                "Habitat"
             ]
         ),
         
