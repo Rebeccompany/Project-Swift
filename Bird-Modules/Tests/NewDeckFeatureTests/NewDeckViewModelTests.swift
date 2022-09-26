@@ -34,7 +34,6 @@ class NewDeckViewModelTests: XCTestCase {
         
         setupHabitatForIsolatedTesting(deckRepository: deckRepository, collectionRepository: collectionRepository, dateHandler: dateHandlerMock, uuidGenerator: uuidHandler)
         sut = NewDeckViewModel()
-        
         sut.startUp(editingDeck: nil)
     }
     
