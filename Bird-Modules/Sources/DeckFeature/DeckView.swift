@@ -65,7 +65,7 @@ public struct DeckView: View {
                              secondaryButton: .cancel(Text("Cancelar"))
                 )
             }
-                }
+        }
         .navigationTitle(viewModel.deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
