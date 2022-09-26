@@ -14,7 +14,7 @@ import Utils
 import Habitat
 
 //swiftlint:disable trailing_closure
-@MainActor
+
 public class StudyViewModel: ObservableObject {
     @Dependency(\.deckRepository) var deckRepository
     @Dependency(\.sessionCacher) var sessionCacher

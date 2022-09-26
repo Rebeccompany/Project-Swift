@@ -13,7 +13,6 @@ import Combine
 import Utils
 import Habitat
 
-@MainActor
 class StudyViewModelTests: XCTestCase {
     
     var sut: StudyViewModel!
@@ -199,11 +198,11 @@ class StudyViewModelTests: XCTestCase {
     func testPressedButtonCardDidStay() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, cardSortingFunc: sortCardByStepMock)
         let oldCard = sut.cards[0]
         //vai ficar no msm step, pq esta no 0
         
-        try sut.pressedButton(for: .wrongHard, deck: deck)
+        try sut.pressedButton(for: .wrongHard, deck: deck, cardSortingFunc: sortCardByStepMock)
         
         let modCard = sut.cards.first { card in
             card.id == oldCard.id

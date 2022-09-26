@@ -156,7 +156,6 @@ public struct Woodpecker {
         return result
     }
     
-    @MainActor
     public static func cardSorter(card0: Card, card1: Card) -> Bool {
         if card0.woodpeckerCardInfo.step == card1.woodpeckerCardInfo.step
             || card0.woodpeckerCardInfo.isGraduated
