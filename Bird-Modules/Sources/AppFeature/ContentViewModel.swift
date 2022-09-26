@@ -10,6 +10,7 @@ import Models
 import Combine
 import Storage
 import DeckFeature
+import Habitat
 
 //swiftlint:disable trailing_closure
 public final class ContentViewModel: ObservableObject {
@@ -30,8 +31,8 @@ public final class ContentViewModel: ObservableObject {
     @Published var sortOrder: [KeyPathComparator<Deck>]
 
     // MARK: Repositories
-    private let collectionRepository: CollectionRepositoryProtocol
-    private let deckRepository: DeckRepositoryProtocol
+    @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
+    @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     private var cancellables: Set<AnyCancellable>
     
     var detailTitle: String {
@@ -52,12 +53,7 @@ public final class ContentViewModel: ObservableObject {
         }
     }
     
-    public init(
-        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
-        deckRepository: DeckRepositoryProtocol = DeckRepository.shared
-    ) {
-        self.collectionRepository = collectionRepository
-        self.deckRepository = deckRepository
+    public init() {
         self.collections = []
         self.cancellables = .init()
         self.decks = []
