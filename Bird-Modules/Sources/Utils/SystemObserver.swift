@@ -26,6 +26,8 @@ public protocol SystemObserverProtocol {
 }
 
 public final class SystemObserver: SystemObserverProtocol {
+    public static let shared: SystemObserver = SystemObserver()
+    
     public init() {}
     
     #if os(macOS)
