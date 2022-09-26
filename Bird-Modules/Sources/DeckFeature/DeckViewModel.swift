@@ -14,7 +14,6 @@ import Woodpecker
 import Utils
 
 public class DeckViewModel: ObservableObject {
-    @Published var deck: Deck
     @Published var searchFieldContent: String
     @Published var cards: [Card]
     @Published var editingFlashcard: Card?
@@ -25,13 +24,9 @@ public class DeckViewModel: ObservableObject {
     private var dateHandler: DateHandlerProtocol
     private var sessionCacher: SessionCacher
     
-    var canStudy: Bool {
-        let canStudy = try? checkIfCanStudy()
-        return canStudy ?? false
-    }
+   
     
     public init(deck: Deck, deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil), dateHandler: DateHandlerProtocol = DateHandler(), sessionCacher: SessionCacher = SessionCacher()) {
-        self.deck = deck
         self.searchFieldContent = ""
         self.deckRepository = deckRepository
         self.cards = []
@@ -39,7 +34,7 @@ public class DeckViewModel: ObservableObject {
         self.sessionCacher = sessionCacher
     }
     
-    private var cardListener: AnyPublisher<[Card], Never> {
+    private func cardListener(_ deck: Deck) -> AnyPublisher<[Card], Never> {
         deckRepository
             .cardListener(forId: deck.id)
             .replaceError(with: [])
@@ -47,7 +42,7 @@ public class DeckViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    private var deckListener: AnyPublisher<Deck, RepositoryError> {
+    private func deckListener(_ deck: Deck) -> AnyPublisher<Deck, RepositoryError> {
         deckRepository
             .cardListener(forId: deck.id)
             .flatMap {[weak self, deck] _ in
@@ -60,35 +55,36 @@ public class DeckViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func startup() {
-        cardListener
+    func startup(_ deck: Deck) {
+        cardListener(deck)
             .assign(to: &$cards)
         
-        deckListener
+        deckListener(deck)
             .sink { _ in
                 
             } receiveValue: {[weak self] deck in
-                self?.deck = deck
             }
             .store(in: &cancellables)
     }
     
-    private func checkIfCanStudy() throws -> Bool {
+    func checkIfCanStudy(_ deck: Deck) -> Bool {
         
-        if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
-            return !session.cardIds.isEmpty
-        }
-        
-        let cardsInfo = cards.map { OrganizerCardInfo(card: $0) }
-        let cardsToStudy = try Woodpecker.scheduler(cardsInfo: cardsInfo, config: deck.spacedRepetitionConfig)
-        let todayCards = cardsToStudy.todayLearningCards + cardsToStudy.todayReviewingCards
-        if !todayCards.isEmpty {
-            return true
-        } else {
+        do {
+            if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
+                return !session.cardIds.isEmpty
+            }
+            
+            let cardsInfo = cards.map { OrganizerCardInfo(card: $0) }
+            let cardsToStudy = try Woodpecker.scheduler(cardsInfo: cardsInfo, config: deck.spacedRepetitionConfig)
+            let todayCards = cardsToStudy.todayLearningCards + cardsToStudy.todayReviewingCards
+            if !todayCards.isEmpty {
+                return true
+            } else {
+                return false
+            }
+        } catch {
             return false
         }
-        
-        
         
     }
     

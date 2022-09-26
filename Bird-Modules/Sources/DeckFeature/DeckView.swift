@@ -23,8 +23,10 @@ public struct DeckView: View {
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
     @State private var deletedCard: Card?
+    var deck: Deck
     
-    public init(viewModel: @autoclosure @escaping () -> DeckViewModel) {
+    public init(viewModel: @autoclosure @escaping () -> DeckViewModel, deck: Deck) {
+        self.deck = deck
         _viewModel = StateObject(wrappedValue: viewModel())
     }
     
@@ -37,7 +39,9 @@ public struct DeckView: View {
             }
         }
         .viewBackgroundColor(HBColor.primaryBackground)
-        .onAppear(perform: viewModel.startup)
+        .onAppear {
+            viewModel.startup(deck)
+        }
         .listStyle(.plain)
         .searchable(text: $viewModel.searchFieldContent)
         
@@ -66,7 +70,7 @@ public struct DeckView: View {
                 )
             }
                 }
-        .navigationTitle(viewModel.deck.name)
+        .navigationTitle(deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button {
@@ -84,7 +88,7 @@ public struct DeckView: View {
                     colors: CollectionColor.allCases,
                     editingFlashcard: viewModel.editingFlashcard,
                     deckRepository: DeckRepository.shared,
-                    deck: viewModel.deck,
+                    deck: deck,
                     dateHandler: DateHandler(),
                     uuidGenerator: UUIDGenerator())
             )
@@ -92,7 +96,7 @@ public struct DeckView: View {
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
                 viewModel: StudyViewModel(
-                    deck: viewModel.deck
+                    deck: deck
                 )
             )
         }
@@ -121,7 +125,7 @@ public struct DeckView: View {
     @ViewBuilder
     private var list: some View {
         List {
-            if !viewModel.canStudy && !viewModel.cards.isEmpty {
+            if !viewModel.checkIfCanStudy(deck) && !viewModel.cards.isEmpty {
                 Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
                     .bold()
                     .multilineTextAlignment(.center)
@@ -131,8 +135,8 @@ public struct DeckView: View {
                 shouldDisplayStudyView = true
             }
             
-            .disabled(!viewModel.canStudy)
-            .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.canStudy))
+            .disabled(!viewModel.checkIfCanStudy(deck))
+            .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck)))
             .listRowInsets(.zero)
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
@@ -230,7 +234,9 @@ struct DeckView_Previews: PreviewProvider {
                         )
                     ),
                     deckRepository: DeckRepositoryMock()
-                )
+                ),
+                deck: DeckRepositoryMock()
+                    .decks[0]
             )
         }
         .preferredColorScheme(.dark)
