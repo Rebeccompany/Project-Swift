@@ -54,7 +54,6 @@ struct DetailView: View {
             ToolbarItem {
                 Menu {
                     Button {
-                        viewModel.detailType = .grid
                         viewModel.changeDetailType(for: .grid)
                     } label: {
                         Label("Ícones", systemImage: "rectangle.grid.2x2")
@@ -62,7 +61,6 @@ struct DetailView: View {
                     .disabled(editMode?.wrappedValue.isEditing ?? false)
                     
                     Button {
-                        viewModel.detailType = .table
                         viewModel.changeDetailType(for: .table)
                     } label: {
                         Label("Lista", systemImage: "list.bullet")

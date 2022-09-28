@@ -100,6 +100,7 @@ public final class ContentViewModel: ObservableObject {
     }
     
     func changeDetailType(for newDetailType: DetailDisplayType) {
+        detailType = newDetailType
         displayCacher.saveDetailType(detailType: newDetailType)
     }
     
