@@ -82,21 +82,11 @@ public struct DeckView: View {
             }
         }
         .sheet(isPresented: $shouldDisplayNewFlashcard) {
-            NewFlashcardView(
-                viewModel: NewFlashcardViewModel(
-                    colors: CollectionColor.allCases,
-                    editingFlashcard: viewModel.editingFlashcard,
-                    deckRepository: DeckRepository.shared,
-                    deck: deck,
-                    dateHandler: DateHandler(),
-                    uuidGenerator: UUIDGenerator())
-            )
+            NewFlashcardView(deck: viewModel.deck, editingFlashcard: viewModel.editingFlashcard)
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
-                viewModel: StudyViewModel(
-                    deck: deck
-                )
+                deck: viewModel.deck  
             )
         }
     }

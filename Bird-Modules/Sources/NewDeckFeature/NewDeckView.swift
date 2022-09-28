@@ -9,17 +9,22 @@ import SwiftUI
 import HummingBird
 import Models
 import Storage
+import Habitat
 
 public struct NewDeckView: View {
-    @StateObject private var viewModel: NewDeckViewModel
+    @StateObject private var viewModel: NewDeckViewModel = NewDeckViewModel()
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteDeck
     @State private var activeAlert: ActiveAlert = .error
     @Environment(\.dismiss) private var dismiss
     @FocusState private var selectedField: Int?
     
-    public init(viewModel: @autoclosure @escaping () -> NewDeckViewModel) {
-        self._viewModel = StateObject(wrappedValue: viewModel())
+    var editingDeck: Deck?
+    var collection: DeckCollection?
+    
+    public init(collection: DeckCollection?, editingDeck: Deck?) {
+        self.collection = collection
+        self.editingDeck = editingDeck
     }
     
     public var body: some View {
@@ -73,7 +78,7 @@ public struct NewDeckView: View {
                     }
                     Spacer()
                     
-                    if viewModel.editingDeck != nil {
+                    if editingDeck != nil {
                         Button {
                             activeAlert = .confirm
                             showingAlert = true
@@ -96,7 +101,7 @@ public struct NewDeckView: View {
                                      message: Text("Você perderá permanentemente o conteúdo deste baralho."),
                                      primaryButton: .destructive(Text("Apagar")) {
                                         do {
-                                            try viewModel.deleteDeck()
+                                            try viewModel.deleteDeck(editingDeck: editingDeck)
                                             dismiss()
                                         } catch {
                                             activeAlert = .error
@@ -110,7 +115,7 @@ public struct NewDeckView: View {
                     }
                     
                 }
-                .navigationTitle(viewModel.editingDeck != nil ? "Editar baralho" : "Criar Baralho")
+                .navigationTitle(editingDeck != nil ? "Editar baralho" : "Criar Baralho")
                 .navigationBarTitleDisplayMode(.inline)
                 
             }
@@ -126,9 +131,9 @@ public struct NewDeckView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
                         
-                        if viewModel.editingDeck == nil {
+                        if editingDeck == nil {
                             do {
-                                try viewModel.createDeck()
+                                try viewModel.createDeck(collection: collection)
                                 dismiss()
                             } catch {
                                 activeAlert = .error
@@ -137,7 +142,7 @@ public struct NewDeckView: View {
                             }
                         } else {
                             do {
-                                try viewModel.editDeck()
+                                try viewModel.editDeck(editingDeck: editingDeck)
                                 dismiss()
                             } catch {
                                 activeAlert = .error
@@ -156,7 +161,10 @@ public struct NewDeckView: View {
                     .foregroundColor(.red)
                 }
             }
-        .onAppear(perform: viewModel.startUp)
+            .onAppear {
+                viewModel.startUp(editingDeck: editingDeck)
+            }
+            
             .scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
             .viewBackgroundColor(HBColor.primaryBackground)
@@ -168,7 +176,9 @@ public struct NewDeckView: View {
 
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
-        NewDeckView(viewModel: NewDeckViewModel(colors: CollectionColor.allCases, icons: IconNames.allCases, deckRepository: DeckRepositoryMock(), collection: nil))
-            .preferredColorScheme(.dark)
+        HabitatPreview {
+            NewDeckView(collection: nil, editingDeck: nil)
+                .preferredColorScheme(.dark)
+        }
     }
 }

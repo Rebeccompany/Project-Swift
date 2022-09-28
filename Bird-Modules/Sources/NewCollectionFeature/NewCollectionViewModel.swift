@@ -10,36 +10,18 @@ import Models
 import Storage
 import Combine
 import Utils
+import Habitat
 
+@MainActor
 public class NewCollectionViewModel: ObservableObject {
     @Published var collectionName: String = ""
     @Published var currentSelectedIcon: IconNames? = IconNames.gamecontroller
-    @Published var canSubmit: Bool
-    @Published var editingCollection: DeckCollection?
+    @Published var canSubmit: Bool = false
     
-    private let dateHandler: DateHandlerProtocol
-    private let idGenerator: UUIDGeneratorProtocol
-    private let collectionRepository: CollectionRepositoryProtocol
-    var icons: [IconNames]
-    
-    public init(
-        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
-        dateHandler: DateHandlerProtocol = DateHandler(),
-        idGenerator: UUIDGeneratorProtocol = UUIDGenerator(),
-        editingCollection: DeckCollection? = nil
-    ) {
-        self.icons = IconNames.allCases
-        self.collectionRepository = collectionRepository
-        self.dateHandler = dateHandler
-        self.idGenerator = idGenerator
-        self.canSubmit = false
-        self.editingCollection = editingCollection
-        
-        if let editingCollection = editingCollection {
-            setupCollectionContentIntoFields(collection: editingCollection)
-        }
-        
-    }
+    @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
+    @Dependency(\.uuidGenerator) private var idGenerator: UUIDGeneratorProtocol
+    @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
+    let icons: [IconNames] = IconNames.allCases
     
     private func setupCollectionContentIntoFields(collection: DeckCollection) {
         collectionName = collection.name
@@ -52,9 +34,13 @@ public class NewCollectionViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func startUp() {
+    func startUp(editingCollection: DeckCollection?) {
         canSubmitPublisher
             .assign(to: &$canSubmit)
+        
+        if let editingCollection = editingCollection {
+                setupCollectionContentIntoFields(collection: editingCollection)
+            }
     }
     
     
@@ -77,7 +63,7 @@ public class NewCollectionViewModel: ObservableObject {
             decksIds: [])
     }
     
-    func editCollection() throws {
+    func editCollection(editingCollection: DeckCollection?) throws {
         guard let currentSelectedIcon,
             let editingCollectionUnwraped = editingCollection
         else {
@@ -90,10 +76,9 @@ public class NewCollectionViewModel: ObservableObject {
         editingCollection.datesLogs.lastAccess = dateHandler.today
         editingCollection.datesLogs.lastEdit = dateHandler.today
         try collectionRepository.editCollection(editingCollection)
-        self.editingCollection = editingCollection
     }
     
-    func deleteCollection() throws {
+    func deleteCollection(editingCollection: DeckCollection?) throws {
         guard let editingCollection = editingCollection
         else { return }
         try collectionRepository.deleteCollection(editingCollection)

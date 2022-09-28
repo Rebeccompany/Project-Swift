@@ -28,13 +28,6 @@ let package = Package(
         ),
         
         .library(
-            name: "EditFlashcardFeature",
-            targets: [
-                "EditFlashcardFeature"
-            ]
-        ),
-        
-        .library(
             name: "StudyFeature",
             targets: [
                 "StudyFeature"
@@ -152,13 +145,6 @@ let package = Package(
                 "Habitat"
             ]
         ),
-        
-        .target(
-            name: "EditFlashcardFeature",
-            dependencies: [
-                "Models"
-            ]
-        ),
             
         .target(name: "StudyFeature",
                 dependencies: [
@@ -166,7 +152,8 @@ let package = Package(
                      "HummingBird",
                      "Woodpecker",
                      "Storage",
-                     "Utils"
+                     "Utils",
+                     "Habitat"
                 ]
         ),
         
@@ -187,7 +174,8 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Storage",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
@@ -197,7 +185,8 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Storage",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
@@ -207,7 +196,8 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Storage",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
@@ -289,7 +279,8 @@ let package = Package(
             dependencies: [
                 "StudyFeature",
                 "Models",
-                "Storage"
+                "Storage",
+                "Habitat"
             ]
         ),
         
@@ -306,7 +297,8 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Models",
-                "NewCollectionFeature"
+                "NewCollectionFeature",
+                "Habitat"
             ]
         ),
         
@@ -318,7 +310,8 @@ let package = Package(
                 "Models",
                 "NewDeckFeature",
                 "HummingBird",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
@@ -329,7 +322,8 @@ let package = Package(
                 "Models",
                 "NewFlashcardFeature",
                 "HummingBird",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         

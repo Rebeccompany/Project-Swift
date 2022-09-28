@@ -35,6 +35,7 @@ struct DeckCell: View {
             Text("\(info.numberOfCards) cartas")
                 .foregroundColor(.secondary)
         }
+        .padding(.top)
     }
     
     
