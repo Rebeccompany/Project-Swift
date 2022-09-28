@@ -16,7 +16,7 @@ struct StudyRoutes {
     static func destination(for route: StudyRoute) -> some View {
         switch route {
         case .deck(let deck):
-            DeckView(viewModel: DeckViewModel(deck: deck, deckRepository: DeckRepository.shared))
+            DeckView(deck: deck)
         case .card(let card):
             Text("card \(card.id.uuidString)")
         }

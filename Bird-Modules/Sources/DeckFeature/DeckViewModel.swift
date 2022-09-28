@@ -12,26 +12,23 @@ import Combine
 import Storage
 import Woodpecker
 import Utils
+import Habitat
 
+@MainActor
 public class DeckViewModel: ObservableObject {
     @Published var searchFieldContent: String
     @Published var cards: [Card]
     @Published var editingFlashcard: Card?
     
-    private var deckRepository: DeckRepositoryProtocol
+    @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    private var dateHandler: DateHandlerProtocol
-    private var sessionCacher: SessionCacher
+    @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
+    @Dependency(\.sessionCacher) private var sessionCacher: SessionCacher
     
-   
-    
-    public init(deck: Deck, deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil), dateHandler: DateHandlerProtocol = DateHandler(), sessionCacher: SessionCacher = SessionCacher()) {
+    public init() {
         self.searchFieldContent = ""
-        self.deckRepository = deckRepository
         self.cards = []
-        self.dateHandler = dateHandler
-        self.sessionCacher = sessionCacher
     }
     
     private func cardListener(_ deck: Deck) -> AnyPublisher<[Card], Never> {
@@ -62,7 +59,7 @@ public class DeckViewModel: ObservableObject {
         deckListener(deck)
             .sink { _ in
                 
-            } receiveValue: {[weak self] deck in
+            } receiveValue: { deck in
             }
             .store(in: &cancellables)
     }
