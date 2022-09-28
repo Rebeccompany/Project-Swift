@@ -26,103 +26,97 @@ struct DetailView: View {
                 content
             }
         }
-            .searchable(text: $viewModel.searchText)
-            .toolbar(editMode?.wrappedValue.isEditing ?? false ? .visible : .hidden,
-                     for: .bottomBar)
-            .toolbar {
-                ToolbarItem(placement: .bottomBar) {
+        .searchable(text: $viewModel.searchText)
+        .toolbar(editMode?.wrappedValue.isEditing ?? false ? .visible : .hidden,
+                 for: .bottomBar)
+        .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                Button {
+                    viewModel.editDeck()
+                    presentDeckEdition = true
+                } label: {
+                    Text("Editar")
+                }
+                .disabled(viewModel.selection.count != 1)
+                
+            }
+            
+            ToolbarItem(placement: .bottomBar) {
+                Button("Deletar", role: .destructive) {
+                    shouldDisplayAlert = true
+                }
+                .foregroundColor(.red)
+            }
+            
+            
+            ToolbarItem {
+                Menu {
                     Button {
-                        viewModel.editDeck()
-                        presentDeckEdition = true
+                        viewModel.detailType = .grid
                     } label: {
-                        Text("Editar")
+                        Label("Ícones", systemImage: "rectangle.grid.2x2")
                     }
-                    .disabled(viewModel.selection.count != 1)
-
-                }
-                
-                ToolbarItem(placement: .bottomBar) {
-                    Button("Deletar", role: .destructive) {
-                        shouldDisplayAlert = true
-                    }
-                    .foregroundColor(.red)
-                }
-                
-                
-                ToolbarItem {
-                    Menu {
-                        Button {
-                            viewModel.detailType = .grid
-                        } label: {
-                            Label("Ícones", systemImage: "rectangle.grid.2x2")
-                        }
-                        .disabled(editMode?.wrappedValue.isEditing ?? false)
-                        
-                        Button {
-                            viewModel.detailType = .table
-                        } label: {
-                            Label("Lista", systemImage: "list.bullet")
-                        }
-                        
-                        if viewModel.detailType == .table {
-                            Picker(selection: $viewModel.sortOrder) {
-                                Text("Nome").tag([KeyPathComparator(\Deck.name)])
-                                Text("Quantidade de Flashcards").tag([KeyPathComparator(\Deck.cardCount)])
-                                Text("Data do Último Acesso").tag([KeyPathComparator(\Deck.datesLogs.lastAccess)])
-                            } label: {
-                                Text("Opções de ordenação")
-                            }
-                        }
-                        
+                    .disabled(editMode?.wrappedValue.isEditing ?? false)
+                    
+                    Button {
+                        viewModel.detailType = .table
                     } label: {
-                        Label {
-                            Text("Visualização")
-                        } icon: {
-                            Image(systemName: viewModel.detailType == .grid ? "rectangle.grid.2x2" : "list.bullet")
-                        }
-                        
+                        Label("Lista", systemImage: "list.bullet")
                     }
+                    
+                    if viewModel.detailType == .table {
+                        Picker(selection: $viewModel.sortOrder) {
+                            Text("Nome").tag([KeyPathComparator(\Deck.name)])
+                            Text("Quantidade de Flashcards").tag([KeyPathComparator(\Deck.cardCount)])
+                            Text("Data do Último Acesso").tag([KeyPathComparator(\Deck.datesLogs.lastAccess)])
+                        } label: {
+                            Text("Opções de ordenação")
+                        }
+                    }
+                    
+                } label: {
+                    Label {
+                        Text("Visualização")
+                    } icon: {
+                        Image(systemName: viewModel.detailType == .grid ? "rectangle.grid.2x2" : "list.bullet")
+                    }
+                    
                 }
-                
-                
-                ToolbarItem {
-                    EditButton()
+            }
+            
+            
+            ToolbarItem {
+                EditButton()
+                    .foregroundColor(HBColor.actionColor)
+            }
+            
+            ToolbarItem {
+                Button {
+                    presentDeckEdition = true
+                } label: {
+                    Image(systemName: "plus")
                         .foregroundColor(HBColor.actionColor)
                 }
-                
-                ToolbarItem {
-                    Button {
-                        presentDeckEdition = true
-                    } label: {
-                        Image(systemName: "plus")
-                            .foregroundColor(HBColor.actionColor)
-                    }
-                }
             }
-            .onChange(of: editMode?.wrappedValue) { newValue in
-                if newValue == .active {
-                    viewModel.detailType = .table
-                }
+        }
+        .onChange(of: editMode?.wrappedValue) { newValue in
+            if newValue == .active {
+                viewModel.detailType = .table
             }
-            .alert(viewModel.selection.isEmpty ? "Nada foi selecionado" : "Você tem certeza que deseja apagar?", isPresented: $shouldDisplayAlert) {
-                Button("Apagar", role: .destructive) {
-                    try? viewModel.deleteDecks()
-                }
-                .disabled(viewModel.selection.isEmpty)
-                
-                Button("Cancelar", role: .cancel) { }
+        }
+        .alert(viewModel.selection.isEmpty ? "Nada foi selecionado" : "Você tem certeza que deseja apagar?", isPresented: $shouldDisplayAlert) {
+            Button("Apagar", role: .destructive) {
+                try? viewModel.deleteDecks()
             }
-            .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
-            .navigationTitle(viewModel.detailTitle)
-            .sheet(isPresented: $presentDeckEdition) {
-                NewDeckView(viewModel: NewDeckViewModel(
-                    colors: CollectionColor.allCases,
-                    icons: IconNames.allCases,
-                    editingDeck: viewModel.editingDeck,
-                    deckRepository: DeckRepository.shared,
-                    collectionRepository: CollectionRepository.shared,
-                    collection: viewModel.selectedCollection))
-            }
+            .disabled(viewModel.selection.isEmpty)
+            
+            Button("Cancelar", role: .cancel) { }
+        }
+        .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
+        .navigationTitle(viewModel.detailTitle)
+        .sheet(isPresented: $presentDeckEdition) {
+            NewDeckView(collection: viewModel.selectedCollection, editingDeck: viewModel.editingDeck)
+        }
     }
     
     @ViewBuilder

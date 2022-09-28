@@ -23,12 +23,58 @@ struct CollectionsSidebar: View {
     }
     
     var body: some View {
-        
-        Group {
-            if viewModel.collections.isEmpty {
-                emptyState
-            } else {
-                list
+        List(selection: $selection) {
+            NavigationLink(value: SidebarRoute.allDecks) {
+                Label("Todos os baralhos", systemImage: "square.stack")
+            }
+            .listRowBackground(
+                isCompact ? HBColor.secondaryBackground : nil
+            )
+            
+            Section {
+                if viewModel.collections.isEmpty {
+                    emptyState
+                        .listRowBackground(Color.clear)
+                } else {
+                    ForEach(viewModel.collections) { collection in
+                        NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
+                            HStack {
+                                Label(collection.name, systemImage: collection.icon.rawValue)
+                                Spacer()
+                                if editMode?.wrappedValue.isEditing ?? false {
+                                    Image(systemName: "info.circle")
+                                        .foregroundColor(HBColor.actionColor)
+                                        .onTapGesture {
+                                            viewModel.editCollection(collection)
+                                            presentCollectionEdition = true
+                                        }
+                                        .accessibility(addTraits: .isButton)
+                                }
+                            }
+                        }
+                        .listRowBackground(
+                            isCompact ? HBColor.secondaryBackground : nil
+                        )
+                        .contextMenu {
+                            Button {
+                                viewModel.editCollection(collection)
+                                presentCollectionEdition = true
+                            } label: {
+                                Label("Editar", systemImage: "pencil")
+                            }
+                            
+                            Button(role: .destructive) {
+                                try? viewModel.deleteCollection(collection)
+                            } label: {
+                                Label("Deletar", systemImage: "trash")
+                            }
+                        }
+                    }
+                    .onDelete { try? viewModel.deleteCollection(at: $0) }
+                }
+                
+            } header: {
+                Text("Coleções")
             }
         }
         .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
@@ -55,60 +101,6 @@ struct CollectionsSidebar: View {
                 )
             )
         }
-        
-    }
-    
-    @ViewBuilder
-    private var list: some View {
-        List(selection: $selection) {
-            NavigationLink(value: SidebarRoute.allDecks) {
-                Label("Todos os baralhos", systemImage: "square.stack")
-            }
-            .listRowBackground(
-                isCompact ? HBColor.secondaryBackground : nil
-            )
-            
-            Section {
-                ForEach(viewModel.collections) { collection in
-                    NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
-                        HStack {
-                            Label(collection.name, systemImage: collection.icon.rawValue)
-                            Spacer()
-                            if editMode?.wrappedValue.isEditing ?? false {
-                                Image(systemName: "info.circle")
-                                    .foregroundColor(HBColor.actionColor)
-                                    .onTapGesture {
-                                        viewModel.editCollection(collection)
-                                        presentCollectionEdition = true
-                                    }
-                                    .accessibility(addTraits: .isButton)
-                            }
-                        }
-                    }
-                    .listRowBackground(
-                        isCompact ? HBColor.secondaryBackground : nil
-                    )
-                    .contextMenu {
-                        Button {
-                            viewModel.editCollection(collection)
-                            presentCollectionEdition = true
-                        } label: {
-                            Label("Editar", systemImage: "pencil")
-                        }
-                        
-                        Button(role: .destructive) {
-                            try? viewModel.deleteCollection(collection)
-                        } label: {
-                            Label("Deletar", systemImage: "trash")
-                        }
-                    }
-                }
-                .onDelete { try? viewModel.deleteCollection(at: $0) }
-                
-            } header: {
-                Text("Coleções")
-            }
-        }
     }
     
     @ViewBuilder
@@ -124,6 +116,5 @@ struct CollectionsSidebar: View {
             .buttonStyle(LargeButtonStyle(isDisabled: false))
             .padding()
         }
-        
     }
 }
