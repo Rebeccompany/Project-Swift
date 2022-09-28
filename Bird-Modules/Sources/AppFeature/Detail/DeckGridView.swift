@@ -20,7 +20,6 @@ struct DeckGridView: View {
                 ForEach(decks) { deck in
                     NavigationLink(value: StudyRoute.deck(deck)) {
                         DeckCell(info: DeckCellInfo(deck: deck))
-                            .frame(minHeight: 100)
                             .contextMenu {
                                 Button {
                                     editAction(deck)
