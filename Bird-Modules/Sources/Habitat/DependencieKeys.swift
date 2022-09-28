@@ -34,6 +34,9 @@ private struct SessionCacherKey: HabitatKey {
     static var currentValue: SessionCacher = SessionCacher()
 }
 
+private struct DisplayCacherKey: HabitatKey {
+    static var currentValue: DisplayCacherProtocol = DisplayCacher()
+}
 
 // MARK: Extension
 extension Habitat {
@@ -65,5 +68,10 @@ extension Habitat {
     public var sessionCacher: SessionCacher {
         get { Self[SessionCacherKey.self] }
         set { Self[SessionCacherKey.self] = newValue }
+    }
+    
+    public var displayCacher: DisplayCacherProtocol {
+        get { Self[DisplayCacherKey.self] }
+        set { Self[DisplayCacherKey.self] = newValue }
     }
 }

@@ -10,6 +10,8 @@ import Models
 import HummingBird
 import NewDeckFeature
 import Storage
+import Habitat
+
 
 struct DetailView: View {
     
@@ -53,6 +55,7 @@ struct DetailView: View {
                 Menu {
                     Button {
                         viewModel.detailType = .grid
+                        viewModel.changeDetailType(for: .grid)
                     } label: {
                         Label("Ícones", systemImage: "rectangle.grid.2x2")
                     }
@@ -60,6 +63,7 @@ struct DetailView: View {
                     
                     Button {
                         viewModel.detailType = .table
+                        viewModel.changeDetailType(for: .table)
                     } label: {
                         Label("Lista", systemImage: "list.bullet")
                     }
@@ -102,6 +106,7 @@ struct DetailView: View {
         .onChange(of: editMode?.wrappedValue) { newValue in
             if newValue == .active {
                 viewModel.detailType = .table
+                viewModel.changeDetailType(for: .table)
             }
         }
         .alert(viewModel.selection.isEmpty ? "Nada foi selecionado" : "Você tem certeza que deseja apagar?", isPresented: $shouldDisplayAlert) {
@@ -145,12 +150,8 @@ struct DetailView: View {
             }
         } else {
             DeckTableView()
-            
         }
     }
 }
 
-public enum DetailDisplayType {
-    case grid
-    case table
-}
+

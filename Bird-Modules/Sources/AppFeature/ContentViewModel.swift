@@ -33,6 +33,7 @@ public final class ContentViewModel: ObservableObject {
     // MARK: Repositories
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
+    @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
     private var cancellables: Set<AnyCancellable>
     
     var detailTitle: String {
@@ -95,6 +96,11 @@ public final class ContentViewModel: ObservableObject {
         deckListener
             .assign(to: &$decks)
         
+        detailType = displayCacher.getCurrentDetailType() ?? .grid
+    }
+    
+    func changeDetailType(for newDetailType: DetailDisplayType) {
+        displayCacher.saveDetailType(detailType: newDetailType)
     }
     
     private func mapDecksBySidebarSelection(decks: [Deck], sidebarSelection: SidebarRoute?) -> [Deck] {
