@@ -151,5 +151,3 @@ struct DetailView: View {
         }
     }
 }
-
-
