@@ -217,11 +217,11 @@ class StudyViewModelTests: XCTestCase {
     func testPressedButtonCardDidGoFoward() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, cardSortingFunc: sortCardByStepMock)
         let oldCard = sut.cards[0]
         //vai ficar no msm step, pq esta no 0
         
-        try sut.pressedButton(for: .correct, deck: deck)
+        try sut.pressedButton(for: .correct, deck: deck, cardSortingFunc: sortCardByStepMock)
         
         let modCard = sut.cards.first { card in
             card.id == oldCard.id
@@ -236,11 +236,11 @@ class StudyViewModelTests: XCTestCase {
     func testPressedButtonCardDidGraduate() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, cardSortingFunc: sortCardByStepMock)
         let oldCard = sut.cards[0]
         //vai ficar no msm step, pq esta no 0
         
-        try sut.pressedButton(for: .correctEasy, deck: deck)
+        try sut.pressedButton(for: .correctEasy, deck: deck, cardSortingFunc: sortCardByStepMock)
         
         let modCard = sut.cardsToEdit.first { card in
             card.id == oldCard.id
@@ -257,12 +257,12 @@ class StudyViewModelTests: XCTestCase {
     func testPressedButtonGraduatedCardDemoted() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, cardSortingFunc: sortCardByStepMock)
         sut.cards.reverse()
         let oldCard = sut.cards[0]
         
         
-        try sut.pressedButton(for: .wrongHard, deck: deck)
+        try sut.pressedButton(for: .wrongHard, deck: deck, cardSortingFunc: sortCardByStepMock)
         
         let modCard = sut.cardsToEdit.first { card in
             card.id == oldCard.id
@@ -278,12 +278,12 @@ class StudyViewModelTests: XCTestCase {
     func testPressedButtonGraduatedCardReviwed() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, cardSortingFunc: sortCardByStepMock)
         sut.cards.reverse()
         let oldCard = sut.cards[0]
         
         
-        try sut.pressedButton(for: .correct, deck: deck)
+        try sut.pressedButton(for: .correct, deck: deck, cardSortingFunc: sortCardByStepMock)
         
         let modCard = sut.cardsToEdit.first { card in
             card.id == oldCard.id

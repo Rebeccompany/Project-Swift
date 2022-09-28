@@ -55,7 +55,7 @@ public class StudyViewModel: ObservableObject {
         .eraseToAnyPublisher()
     }
     
-    private func sessionPublisher(cardIds: [UUID], cardSortingFunc: @MainActor @escaping (Card, Card) -> Bool) -> AnyPublisher<[Card], Never> {
+    private func sessionPublisher(cardIds: [UUID], cardSortingFunc: @escaping (Card, Card) -> Bool) -> AnyPublisher<[Card], Never> {
         fetchCardsPublisher(for: cardIds)
             .replaceError(with: [])
             .compactMap { cards in
@@ -86,7 +86,7 @@ public class StudyViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func startup(deck: Deck, cardSortingFunc: @MainActor @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) {
+    func startup(deck: Deck, cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) {
         systemObserver.voiceOverDidChange()
             .assign(to: &$isVOOn)
             
@@ -137,7 +137,7 @@ public class StudyViewModel: ObservableObject {
         }
     }
     
-    private func receiveCards(todayReviewingCards: [Card], todayLearningCards: [Card], toModify: [Card], cardSortingFunc: @MainActor @escaping (Card, Card) -> Bool) {
+    private func receiveCards(todayReviewingCards: [Card], todayLearningCards: [Card], toModify: [Card], cardSortingFunc: @escaping (Card, Card) -> Bool) {
         cards = (todayLearningCards + todayReviewingCards).sorted(by: cardSortingFunc)
         cardsToEdit = toModify.map { card in
             var newCard = card
@@ -168,7 +168,7 @@ public class StudyViewModel: ObservableObject {
         sessionCacher.setCurrentSession(session: session)
     }
     
-    func pressedButton(for userGrade: UserGrade, deck: Deck, cardSortingFunc: @MainActor @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
+    func pressedButton(for userGrade: UserGrade, deck: Deck, cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
         guard let newCard = cards.first else { return }
         
         if newCard.woodpeckerCardInfo.isGraduated {

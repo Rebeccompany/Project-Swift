@@ -152,7 +152,7 @@ deployment_target:
   watchOS_deployment_target: '6'
 custom_rules:
   no_print:
-    regex: 'print'
+    regex: 'print\([^)]*\)'
     message: 'Dont use print on final version'
   no_nsrect:
     regex: '\bNSRect\b'
