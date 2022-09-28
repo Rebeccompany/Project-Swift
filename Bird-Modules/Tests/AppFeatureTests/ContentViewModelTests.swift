@@ -18,13 +18,17 @@ final class ContentViewModelTests: XCTestCase {
     
     var sut: ContentViewModel!
     var deckRepositoryMock: DeckRepositoryMock!
+    var displayCacherMock: DisplayCacher!
+    var localStorageMock: LocalStorageMock!
     var collectionRepositoryMock: CollectionRepositoryMock!
     var cancelables: Set<AnyCancellable>!
 
     override func setUp() {
         deckRepositoryMock = DeckRepositoryMock()
         collectionRepositoryMock = CollectionRepositoryMock()
-        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock)
+        localStorageMock = LocalStorageMock()
+        displayCacherMock = DisplayCacher(localStorage: localStorageMock)
+        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock, displayCacher: displayCacherMock)
         sut = ContentViewModel()
         cancelables = Set<AnyCancellable>()
         sut.startup()
@@ -61,6 +65,15 @@ final class ContentViewModelTests: XCTestCase {
             .store(in: &cancelables)
         
         wait(for: [collectionExpectation, deckExpectation], timeout: 1)
+    }
+    
+    func testStartupDetail() {
+        displayCacherMock.saveDetailType(detailType: .table)
+        XCTAssertEqual(sut.detailType, .grid)
+        
+        sut.startup()
+        
+        XCTAssertEqual(.table, sut.detailType)
     }
     
     func testDeckReactionToSidebarSelection() {
@@ -256,5 +269,14 @@ final class ContentViewModelTests: XCTestCase {
         sut.selection.insert(UUID())
         
         XCTAssertThrowsError(try sut.deleteDecks())
+    }
+    
+    func testChangeDetailType() throws {
+        XCTAssertEqual(sut.detailType, .grid)
+        let current = displayCacherMock.getCurrentDetailType()
+        XCTAssertNil(current)
+        sut.changeDetailType(for: .table)
+        XCTAssertEqual(sut.detailType, .table)
+        XCTAssertEqual(.table, displayCacherMock.getCurrentDetailType())
     }
 }
