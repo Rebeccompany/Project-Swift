@@ -12,13 +12,15 @@ import HummingBird
 import Utils
 
 public struct StudyView: View {
-    @StateObject private var viewModel: StudyViewModel
+    @StateObject private var viewModel: StudyViewModel = StudyViewModel()
     @Environment(\.dismiss) private var dismiss
     @State private var showingErrorAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     
-    public init(viewModel: @autoclosure @escaping () -> StudyViewModel) {
-        self._viewModel = StateObject(wrappedValue: viewModel())
+    var deck: Deck
+    
+    public init(deck: Deck) {
+        self.deck = deck
     }
     
     private func toString(_ attributed: AttributedString) -> String {
@@ -62,7 +64,7 @@ public struct StudyView: View {
                                 DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in
                                     withAnimation {
                                         do {
-                                            try viewModel.pressedButton(for: userGrade)
+                                            try viewModel.pressedButton(for: userGrade, deck: deck)
                                         } catch {
                                             selectedErrorMessage = .gradeCard
                                             showingErrorAlert = true
@@ -82,7 +84,7 @@ public struct StudyView: View {
                 } else {
                     EndOfStudyView {
                         do {
-                            try viewModel.saveChanges()
+                            try viewModel.saveChanges(deck: deck)
                             dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy
@@ -92,12 +94,12 @@ public struct StudyView: View {
                 }
             }
             .viewBackgroundColor(HBColor.primaryBackground)
-            .navigationTitle(viewModel.deck.name)
+            .navigationTitle(deck.name)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(role: .destructive) {
                         do {
-                            try viewModel.saveChanges()
+                            try viewModel.saveChanges(deck: deck)
                             dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy
@@ -113,14 +115,14 @@ public struct StudyView: View {
             })
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                viewModel.startup()
+                viewModel.startup(deck: deck)
             }
             
             .alert(isPresented: $showingErrorAlert) {
                 Alert(title: Text(selectedErrorMessage.texts.title),
                       message: Text(selectedErrorMessage.texts.message),
                       dismissButton: .default(Text("Fechar")))
-        }
+            }
         }
         
     }
@@ -130,68 +132,6 @@ struct StudyView_Previews: PreviewProvider {
     static var repo: DeckRepositoryMock { DeckRepositoryMock() }
     
     static var previews: some View {
-        
-        Group {
-            NavigationView {
-                StudyView(
-                    viewModel: StudyViewModel(
-                        deckRepository: repo,
-                        sessionCacher: SessionCacher(
-                            storage: LocalStorageMock()
-                        ),
-                        deck: repo.decks.first!,
-                        dateHandler: DateHandler()
-                    )
-                )
-            }
-            .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
-            .previewDisplayName("iPhone 12")
-            
-            NavigationView {
-                StudyView(
-                    viewModel: StudyViewModel(
-                        deckRepository: repo,
-                        sessionCacher: SessionCacher(
-                            storage: LocalStorageMock()
-                        ),
-                        deck: repo.decks.first!,
-                        dateHandler: DateHandler()
-                    )
-                )
-            }
-            .previewDevice(PreviewDevice(rawValue: "iPhone 13 Pro Max"))
-            .previewDisplayName("iPhone 13 Pro Max")
-            
-            
-            NavigationStack {
-                StudyView(
-                    viewModel: StudyViewModel(
-                        deckRepository: repo,
-                        sessionCacher: SessionCacher(
-                            storage: LocalStorageMock()
-                        ),
-                        deck: repo.decks.first!,
-                        dateHandler: DateHandler()
-                    )
-                )
-            }
-            .previewDevice(PreviewDevice(rawValue: "iPad Pro (12.9-inch)"))
-            .previewDisplayName("iPad Pro (12.9-inch)")
-            
-            NavigationView {
-                StudyView(
-                    viewModel: StudyViewModel(
-                        deckRepository: repo,
-                        sessionCacher: SessionCacher(
-                            storage: LocalStorageMock()
-                        ),
-                        deck: repo.decks.first!,
-                        dateHandler: DateHandler()
-                    )
-                )
-            }
-            .previewDevice(PreviewDevice(rawValue: "iPhone SE (3rd generation)"))
-            .previewDisplayName("iPhone SE (3rd generation)")
-        }
+        StudyView(deck: repo.decks.first { $0.id == repo.deckWithCardsId }!)
     }
 }
