@@ -121,7 +121,7 @@ public struct NewDeckView: View {
             }
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
-                    
+                    Spacer()
                     Button("Feito") {
                         selectedField = nil
                     }
