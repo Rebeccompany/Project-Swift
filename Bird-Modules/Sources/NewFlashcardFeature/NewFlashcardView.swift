@@ -27,7 +27,7 @@ public struct NewFlashcardView: View {
     var deck: Deck
     var editingFlashcard: Card?
     
-    init(deck: Deck, editingFlashcard: Card? = nil) {
+    public init(deck: Deck, editingFlashcard: Card? = nil) {
         self.deck = deck
         self.editingFlashcard = editingFlashcard
     }
