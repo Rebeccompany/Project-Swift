@@ -196,7 +196,8 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Storage",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
@@ -317,7 +318,8 @@ let package = Package(
                 "Models",
                 "NewDeckFeature",
                 "HummingBird",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
