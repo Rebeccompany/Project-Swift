@@ -28,13 +28,6 @@ let package = Package(
         ),
         
         .library(
-            name: "EditFlashcardFeature",
-            targets: [
-                "EditFlashcardFeature"
-            ]
-        ),
-        
-        .library(
             name: "StudyFeature",
             targets: [
                 "StudyFeature"
@@ -149,13 +142,6 @@ let package = Package(
                 "Utils",
                 "NewFlashcardFeature",
                 "StudyFeature"
-            ]
-        ),
-        
-        .target(
-            name: "EditFlashcardFeature",
-            dependencies: [
-                "Models"
             ]
         ),
             
