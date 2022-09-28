@@ -23,82 +23,86 @@ struct CollectionsSidebar: View {
     }
     
     var body: some View {
-        List(selection: $selection) {
-            NavigationLink(value: SidebarRoute.allDecks) {
-                Label("Todos os baralhos", systemImage: "square.stack")
-            }
-            .listRowBackground(
-                isCompact ? HBColor.secondaryBackground : nil
-            )
-            
-            Section {
-                if viewModel.collections.isEmpty {
-                    emptyState
-                        .listRowBackground(Color.clear)
-                } else {
-                    ForEach(viewModel.collections) { collection in
-                        NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
-                            HStack {
-                                Label(collection.name, systemImage: collection.icon.rawValue)
-                                Spacer()
-                                if editMode?.wrappedValue.isEditing ?? false {
-                                    Image(systemName: "info.circle")
-                                        .foregroundColor(HBColor.actionColor)
-                                        .onTapGesture {
-                                            viewModel.editCollection(collection)
-                                            presentCollectionEdition = true
-                                        }
-                                        .accessibility(addTraits: .isButton)
+        
+            List(selection: $selection) {
+                NavigationLink(value: SidebarRoute.allDecks) {
+                    Label("Todos os baralhos", systemImage: "square.stack")
+                }
+                .listRowBackground(
+                    isCompact ? HBColor.secondaryBackground : nil
+                )
+                
+                Section {
+                    if viewModel.collections.isEmpty {
+                        emptyState
+                            .listRowBackground(Color.clear)
+                    } else {
+                        ForEach(viewModel.collections) { collection in
+                            NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
+                                HStack {
+                                    Label(collection.name, systemImage: collection.icon.rawValue)
+                                    Spacer()
+                                    if editMode?.wrappedValue.isEditing ?? false {
+                                        Image(systemName: "info.circle")
+                                            .foregroundColor(HBColor.actionColor)
+                                            .onTapGesture {
+                                                viewModel.editCollection(collection)
+                                                presentCollectionEdition = true
+                                            }
+                                            .accessibility(addTraits: .isButton)
+                                    }
+                                }
+                            }
+                            .listRowBackground(
+                                isCompact ? HBColor.secondaryBackground : nil
+                            )
+                            .contextMenu {
+                                Button {
+                                    viewModel.editCollection(collection)
+                                    presentCollectionEdition = true
+                                } label: {
+                                    Label("Editar", systemImage: "pencil")
+                                }
+                                
+                                Button(role: .destructive) {
+                                    try? viewModel.deleteCollection(collection)
+                                } label: {
+                                    Label("Deletar", systemImage: "trash")
                                 }
                             }
                         }
-                        .listRowBackground(
-                            isCompact ? HBColor.secondaryBackground : nil
-                        )
-                        .contextMenu {
-                            Button {
-                                viewModel.editCollection(collection)
-                                presentCollectionEdition = true
-                            } label: {
-                                Label("Editar", systemImage: "pencil")
-                            }
-                            
-                            Button(role: .destructive) {
-                                try? viewModel.deleteCollection(collection)
-                            } label: {
-                                Label("Deletar", systemImage: "trash")
-                            }
-                        }
+                        .onDelete { try? viewModel.deleteCollection(at: $0) }
                     }
-                    .onDelete { try? viewModel.deleteCollection(at: $0) }
-                }
-                
-            } header: {
-                Text("Coleções")
-            }
-        }
-        .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
-        .scrollContentBackground(.hidden)
-        .viewBackgroundColor(HBColor.primaryBackground)
-        .navigationTitle("Spixii")
-        .toolbar {
-            ToolbarItem {
-                EditButton()
-            }
-            ToolbarItem {
-                Button {
-                    viewModel.createCollection()
-                    presentCollectionEdition = true
-                } label: {
-                    Image(systemName: "plus")
+                    
+                } header: {
+                    Text("Coleções")
                 }
             }
-        }
-        .sheet(isPresented: $presentCollectionEdition) {
-            NewCollectionView(
-                editingCollection: viewModel.editingCollection
-            )
-        }
+            .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
+            .scrollContentBackground(.hidden)
+            .viewBackgroundColor(HBColor.primaryBackground)
+            .navigationTitle("Spixii")
+            .toolbar {
+                ToolbarItem {
+                    EditButton()
+                }
+                ToolbarItem {
+                    Button {
+                        viewModel.createCollection()
+                        presentCollectionEdition = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .popover(isPresented: $presentCollectionEdition) {
+                        NewCollectionView(
+                            editingCollection: viewModel.editingCollection
+                        )
+                        .frame(width: 300, height: 600)
+                    }
+                }
+            }
+            
+        
     }
     
     @ViewBuilder
