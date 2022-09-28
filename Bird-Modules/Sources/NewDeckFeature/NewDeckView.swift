@@ -161,7 +161,7 @@ public struct NewDeckView: View {
                     .foregroundColor(.red)
                 }
             }
-            .onAppear{
+            .onAppear {
                 viewModel.startUp(editingDeck: editingDeck)
             }
             

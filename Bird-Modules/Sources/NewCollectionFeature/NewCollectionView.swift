@@ -9,20 +9,20 @@ import SwiftUI
 import HummingBird
 import Models
 import Storage
+import Habitat
 
 public struct NewCollectionView: View {
     
-    @StateObject private var viewModel: NewCollectionViewModel
+    @StateObject private var viewModel: NewCollectionViewModel = NewCollectionViewModel()
     @Environment(\.dismiss) private var dismiss
     @State private var showingAlert: Bool = false
     @State private var activeAlert: ActiveAlert = .error
     @State private var selectedErrorMessage: AlertText = .deleteCollection
     @FocusState private var selectedField: Int?
+    var editingCollection: DeckCollection?
     
-    public init(
-        viewModel: @autoclosure @escaping () -> NewCollectionViewModel
-    ) {
-        self._viewModel = StateObject(wrappedValue: viewModel())
+    public init(editingCollection: DeckCollection?) {
+        self.editingCollection = editingCollection
     }
     
     public var body: some View {
@@ -58,7 +58,7 @@ public struct NewCollectionView: View {
                     
                     Spacer()
                     
-                    if viewModel.editingCollection != nil {
+                    if editingCollection != nil {
                         Button {
                             activeAlert = .confirm
                             showingAlert = true
@@ -70,7 +70,7 @@ public struct NewCollectionView: View {
                     }
                     
                 }
-                .onAppear(perform: viewModel.startUp)
+                .onAppear { viewModel.startUp(editingCollection: editingCollection) }
                 .padding()
                 .alert(isPresented: $showingAlert) {
                     switch activeAlert {
@@ -83,7 +83,7 @@ public struct NewCollectionView: View {
                                      message: Text("Você perderá permanentemente o conteúdo desta coleção."),
                                      primaryButton: .destructive(Text("Apagar")) {
                                         do {
-                                            try viewModel.deleteCollection()
+                                            try viewModel.deleteCollection(editingCollection: editingCollection)
                                             dismiss()
                                         } catch {
                                             activeAlert = .error
@@ -95,7 +95,7 @@ public struct NewCollectionView: View {
                         )
                     }
                 }
-                .navigationTitle(viewModel.editingCollection == nil ? "Criar Coleção" : "Editar Coleção")
+                .navigationTitle(editingCollection == nil ? "Criar Coleção" : "Editar Coleção")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
@@ -115,7 +115,7 @@ public struct NewCollectionView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("OK") {
                             
-                            if viewModel.editingCollection == nil {
+                            if editingCollection == nil {
                                 do {
                                     try viewModel.createCollection()
                                     dismiss()
@@ -126,7 +126,7 @@ public struct NewCollectionView: View {
                                 }
                             } else {
                                 do {
-                                    try viewModel.editCollection()
+                                    try viewModel.editCollection(editingCollection: editingCollection)
                                     dismiss()
                                 } catch {
                                     activeAlert = .error
@@ -154,11 +154,10 @@ public struct NewCollectionView: View {
 struct NewCollectionView_Previews: PreviewProvider {
     static var previews: some View {
         
-        NewCollectionView(
-            viewModel: .init(
-                collectionRepository: CollectionRepositoryMock()
-            ))
-        .preferredColorScheme(.light)
+        HabitatPreview {
+            NewCollectionView(editingCollection: nil)
+            .preferredColorScheme(.light)
+        }
         
         
         

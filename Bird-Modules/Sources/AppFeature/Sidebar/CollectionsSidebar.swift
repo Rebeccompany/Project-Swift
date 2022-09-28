@@ -96,9 +96,7 @@ struct CollectionsSidebar: View {
         }
         .sheet(isPresented: $presentCollectionEdition) {
             NewCollectionView(
-                viewModel: .init(
-                    editingCollection: viewModel.editingCollection
-                )
+                editingCollection: viewModel.editingCollection
             )
         }
     }
