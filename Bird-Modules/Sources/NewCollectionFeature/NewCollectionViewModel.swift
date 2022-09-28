@@ -23,25 +23,6 @@ public class NewCollectionViewModel: ObservableObject {
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
     let icons: [IconNames] = IconNames.allCases
     
-//    public init(
-//        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
-//        dateHandler: DateHandlerProtocol = DateHandler(),
-//        idGenerator: UUIDGeneratorProtocol = UUIDGenerator(),
-//        editingCollection: DeckCollection? = nil
-//    ) {
-//        self.icons = IconNames.allCases
-//        self.collectionRepository = collectionRepository
-//        self.dateHandler = dateHandler
-//        self.idGenerator = idGenerator
-//        self.canSubmit = false
-//        self.editingCollection = editingCollection
-//
-//        if let editingCollection = editingCollection {
-//            setupCollectionContentIntoFields(collection: editingCollection)
-//        }
-//
-//    }
-    
     private func setupCollectionContentIntoFields(collection: DeckCollection) {
         collectionName = collection.name
         currentSelectedIcon = collection.icon
