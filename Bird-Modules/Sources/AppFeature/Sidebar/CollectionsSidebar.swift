@@ -97,7 +97,7 @@ struct CollectionsSidebar: View {
                         NewCollectionView(
                             editingCollection: viewModel.editingCollection
                         )
-                        .frame(width: 300, height: 600)
+                        .frame(minWidth: 300, minHeight: 600)
                     }
                 }
             }
