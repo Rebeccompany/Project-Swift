@@ -202,7 +202,8 @@ let package = Package(
         .target(
             name: "Woodpecker",
             dependencies: [
-                "Models"
+                "Models",
+                "Utils"
             ]
         ),
         

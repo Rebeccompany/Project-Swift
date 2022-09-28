@@ -7,6 +7,7 @@
 
 import Foundation
 import Models
+import Utils
 
 
 ///Woodpecker contains the algorithms used for Spaced Repetition
@@ -74,6 +75,41 @@ public struct Woodpecker {
             toModify = []
         }
         return (todayReviewingCards.map { $0.id }, todayLearningCards.map { $0.id }, toModify.map { $0.id })
+    }
+    
+    public static func dealWithLearningCard(card: Card, userGrade: UserGrade, numberOfSteps: Int, timefromLastCard: Date, dateHandler: DateHandlerProtocol) throws -> Card {
+        let cardDestiny = try Woodpecker.stepper(cardInfo: card.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: numberOfSteps)
+        
+        var modifiedCard = card
+        modifiedCard.woodpeckerCardInfo.hasBeenPresented = true
+        
+        switch cardDestiny {
+        case .back:
+            //update card and bumps to last position of the vector.
+            modifiedCard.woodpeckerCardInfo.step -= 1
+            modifiedCard.woodpeckerCardInfo.streak = 0
+        case .stay:
+            //update card and bumps to last position of the vector.
+            modifiedCard.woodpeckerCardInfo.streak = 0
+        case .foward:
+            //update card and bumps to last position of the vector.
+            modifiedCard.woodpeckerCardInfo.step += 1
+            modifiedCard.woodpeckerCardInfo.streak += 1
+        case .graduate:
+            //update card. Save it to toEdit. Remove from cards.
+            modifiedCard.history.append(CardSnapshot(
+                                            woodpeckerCardInfo: modifiedCard.woodpeckerCardInfo,
+                                            userGrade: userGrade,
+                                            timeSpend: dateHandler.today.timeIntervalSince1970 - timefromLastCard.timeIntervalSince1970,
+                                            date: dateHandler.today)
+                                        )
+            modifiedCard.woodpeckerCardInfo.streak += 1
+            modifiedCard.woodpeckerCardInfo.step = 0
+            modifiedCard.woodpeckerCardInfo.isGraduated = true
+            modifiedCard.woodpeckerCardInfo.interval = 1
+        }
+        
+        return modifiedCard
     }
     
     /**

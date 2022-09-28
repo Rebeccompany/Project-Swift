@@ -21,8 +21,6 @@ public class StudyViewModel: ObservableObject {
     @Dependency(\.dateHandler) var dateHandler
     @Dependency(\.systemObserver) var systemObserver
 
-    
-    
     @Published var cards: [Card] = []
     @Published var displayedCards: [CardViewModel] = []
     var cardsToEdit: [Card] = []
@@ -186,61 +184,38 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func dealWithSm2Card(userGrade: UserGrade) throws {
-        var newInfo: WoodpeckerCardInfo = cards[0].woodpeckerCardInfo
-        
-        newInfo = try Woodpecker.wpSm2(cards[0].woodpeckerCardInfo, userGrade: userGrade)
-        
+        guard var card = cards.first else { return }
+        let newInfo = try Woodpecker.wpSm2(card.woodpeckerCardInfo, userGrade: userGrade)
         
         // modifica o cards[0], salva ele em cardsToEdit, depois remove da lista de cards.
-        cards[0].history.append(CardSnapshot(woodpeckerCardInfo: cards[0].woodpeckerCardInfo, userGrade: userGrade, timeSpend: dateHandler.today.timeIntervalSince1970 - timefromLastCard.timeIntervalSince1970, date: dateHandler.today))
-        cards[0].woodpeckerCardInfo = newInfo
-        cards[0].woodpeckerCardInfo.hasBeenPresented = true
-        removeCard(shouldAddToEdit: true)
+        card.history.append(CardSnapshot(woodpeckerCardInfo: card.woodpeckerCardInfo, userGrade: userGrade, timeSpend: dateHandler.today.timeIntervalSince1970 - timefromLastCard.timeIntervalSince1970, date: dateHandler.today))
+        card.woodpeckerCardInfo = newInfo
+        card.woodpeckerCardInfo.hasBeenPresented = true
+        
+        removeCard()
+        cardsToEdit.append(card)
     }
     
     private func dealWithSteppedCard(userGrade: UserGrade, deck: Deck) throws {
-        var newCard = cards[0]
-        newCard.woodpeckerCardInfo.hasBeenPresented = true
+        guard var card = cards.first else { return }
+        card = try Woodpecker.dealWithLearningCard(card: card, userGrade: userGrade, numberOfSteps: deck.spacedRepetitionConfig.numberOfSteps, timefromLastCard: timefromLastCard, dateHandler: dateHandler)
         
-        let cardDestiny = try Woodpecker.stepper(cardInfo: newCard.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: deck.spacedRepetitionConfig.numberOfSteps)
-        
-        switch cardDestiny {
-        case .back:
-            //update card and bumps to last position of the vector.
-            newCard.woodpeckerCardInfo.step -= 1
-            newCard.woodpeckerCardInfo.streak = 0
+        if userGrade == .correctEasy {
             removeCard()
-            cards.append(newCard)
-        case .stay:
-            //update card and bumps to last position of the vector.
-            newCard.woodpeckerCardInfo.streak = 0
+            cardsToEdit.append(card)
+        } else {
             removeCard()
-            cards.append(newCard)
-        case .foward:
-            //update card and bumps to last position of the vector.
-            newCard.woodpeckerCardInfo.step += 1
-            newCard.woodpeckerCardInfo.streak += 1
-            removeCard()
-            cards.append(newCard)
-        case .graduate:
-            //update card. Save it to toEdit. Remove from cards.
-            cards[0].history.append(CardSnapshot(woodpeckerCardInfo: cards[0].woodpeckerCardInfo, userGrade: userGrade, timeSpend: dateHandler.today.timeIntervalSince1970 - timefromLastCard.timeIntervalSince1970, date: dateHandler.today))
-            cards[0].woodpeckerCardInfo.streak += 1
-            cards[0].woodpeckerCardInfo.step = 0
-            cards[0].woodpeckerCardInfo.isGraduated = true
-            cards[0].woodpeckerCardInfo.interval = 1
-            cards[0].woodpeckerCardInfo.hasBeenPresented = true
-            removeCard(shouldAddToEdit: true)
+            cards.append(card)
         }
-        
     }
     
-    private func removeCard(shouldAddToEdit: Bool = false) {
+    private func removeCard() {
         if cards.count >= 1 {
-            if shouldAddToEdit {
-                cardsToEdit.append(cards[0])
-            }
             cards.remove(at: 0)
         }
     }
+}
+
+public enum RepMode {
+    case spaced, cramming
 }
