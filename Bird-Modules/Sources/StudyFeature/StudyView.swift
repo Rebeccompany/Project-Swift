@@ -122,7 +122,7 @@ public struct StudyView: View {
                 Alert(title: Text(selectedErrorMessage.texts.title),
                       message: Text(selectedErrorMessage.texts.message),
                       dismissButton: .default(Text("Fechar")))
-        }
+            }
         }
         
     }
@@ -130,79 +130,8 @@ public struct StudyView: View {
 
 struct StudyView_Previews: PreviewProvider {
     static var repo: DeckRepositoryMock { DeckRepositoryMock() }
-
+    
     static var previews: some View {
-        StudyView(deck: repo.decks.first!)
+        StudyView(deck: repo.decks.first { $0.id == repo.deckWithCardsId }!)
     }
 }
-
-//
-//struct StudyView_Previews: PreviewProvider {
-//    static var repo: DeckRepositoryMock { DeckRepositoryMock() }
-//
-//    static var previews: some View {
-//
-//        Group {
-//            NavigationView {
-//                StudyView(
-//                    viewModel: StudyViewModel(
-//                        deckRepository: repo,
-//                        sessionCacher: SessionCacher(
-//                            storage: LocalStorageMock()
-//                        ),
-//                        deck: repo.decks.first!,
-//                        dateHandler: DateHandler()
-//                    )
-//                )
-//            }
-//            .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
-//            .previewDisplayName("iPhone 12")
-//
-//            NavigationView {
-//                StudyView(
-//                    viewModel: StudyViewModel(
-//                        deckRepository: repo,
-//                        sessionCacher: SessionCacher(
-//                            storage: LocalStorageMock()
-//                        ),
-//                        deck: repo.decks.first!,
-//                        dateHandler: DateHandler()
-//                    )
-//                )
-//            }
-//            .previewDevice(PreviewDevice(rawValue: "iPhone 13 Pro Max"))
-//            .previewDisplayName("iPhone 13 Pro Max")
-//
-//
-//            NavigationStack {
-//                StudyView(
-//                    viewModel: StudyViewModel(
-//                        deckRepository: repo,
-//                        sessionCacher: SessionCacher(
-//                            storage: LocalStorageMock()
-//                        ),
-//                        deck: repo.decks.first!,
-//                        dateHandler: DateHandler()
-//                    )
-//                )
-//            }
-//            .previewDevice(PreviewDevice(rawValue: "iPad Pro (12.9-inch)"))
-//            .previewDisplayName("iPad Pro (12.9-inch)")
-//
-//            NavigationView {
-//                StudyView(
-//                    viewModel: StudyViewModel(
-//                        deckRepository: repo,
-//                        sessionCacher: SessionCacher(
-//                            storage: LocalStorageMock()
-//                        ),
-//                        deck: repo.decks.first!,
-//                        dateHandler: DateHandler()
-//                    )
-//                )
-//            }
-//            .previewDevice(PreviewDevice(rawValue: "iPhone SE (3rd generation)"))
-//            .previewDisplayName("iPhone SE (3rd generation)")
-//        }
-//    }
-//}
