@@ -54,6 +54,10 @@ public class DeckViewModel: ObservableObject {
     func startup(_ deck: Deck) {
         cardListener(deck)
             .assign(to: &$cards)
+        
+        var deck = deck
+        deck.datesLogs.lastAccess = dateHandler.today
+        try? deckRepository.editDeck(deck)
     }
     
     func checkIfCanStudy(_ deck: Deck) -> Bool {
