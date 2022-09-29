@@ -144,12 +144,6 @@ public final class ContentViewModel: ObservableObject {
         }
     }
     
-    private func handleEndEditing(_ isPresenting: Bool ) {
-        if !isPresenting {
-            self.editingCollection = nil
-        }
-    }
-    
     private func handleCompletion(_ completion: Subscribers.Completion<RepositoryError>) {
         switch completion {
         case .finished:
