@@ -100,6 +100,11 @@ let package = Package(
         .library(
             name: "Habitat",
             targets: ["Habitat"]
+        ),
+        
+        .library(
+            name: "OnboardingFeature",
+            targets: ["OnboardingFeature"]
         )
     ],
     
@@ -239,6 +244,13 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Utils"
+            ]
+        ),
+        
+        .target(
+            name: "OnboardingFeature",
+            dependencies: [
+                "HummingBird"
             ]
         ),
         
