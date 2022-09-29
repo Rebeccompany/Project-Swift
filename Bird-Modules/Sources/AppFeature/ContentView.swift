@@ -33,6 +33,9 @@ public struct ContentView: View {
         } detail: {
             detail
         }
+        .onChange(of: viewModel.sidebarSelection) { _ in
+            path.removeLast(path.count - 1)
+        }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
     }
@@ -54,7 +57,7 @@ public struct ContentView: View {
             .environmentObject(viewModel)
             .environment(\.editMode, $editModeForDeck)
         } destination: { (route: StudyRoute) in
-            StudyRoutes.destination(for: route)
+            StudyRoutes.destination(for: route, viewModel: viewModel)
         }
     }
 }

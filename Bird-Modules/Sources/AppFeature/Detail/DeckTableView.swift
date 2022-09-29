@@ -28,7 +28,7 @@ struct DeckTableView: View {
     private var table: some View {
         Table(sortedDecks, selection: $viewModel.selection, sortOrder: $viewModel.sortOrder) {
             TableColumn("Nome", value: \.name) { deck in
-                NavigationLink(value: StudyRoute.deck(deck)) {
+                NavigationLink(value: deck) {
                     HStack {
                         Image(systemName: deck.icon)
                             .foregroundColor(HBColor.color(for: deck.color))
