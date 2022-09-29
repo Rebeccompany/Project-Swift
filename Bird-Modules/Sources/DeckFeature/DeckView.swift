@@ -62,7 +62,7 @@ public struct DeckView: View {
                         showingAlert = true
                         selectedErrorMessage = .deleteCard
                     }
-                },
+                             },
                 secondaryButton: .cancel(Text("Cancelar"))
                 )
             }
