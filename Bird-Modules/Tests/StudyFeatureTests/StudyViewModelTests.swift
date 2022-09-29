@@ -65,7 +65,7 @@ class StudyViewModelTests: XCTestCase {
         
     }
     
-    func testRepetiotionStartupWithExistingSession() {
+    func testRepetitionStartupWithExistingSession() {
         let cardIds = Array(deckRepository.cards.prefix(3).map(\.id))
         let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id)
         sessionCacher.setCurrentSession(session: session)
@@ -103,7 +103,7 @@ class StudyViewModelTests: XCTestCase {
     }
     
     
-    func testRepetiotionStartupWithNewSessionFewerCardsThanLimit() {
+    func testRepetitionStartupWithNewSessionFewerCardsThanLimit() {
         XCTAssertEqual(sut.cards, [])
         sut.startup(deck: deck, mode: .spaced)
         let expectation = expectation(description: "fetch cards")
@@ -119,7 +119,7 @@ class StudyViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testRepetiotionStartupWithNewSessionNoCards() {
+    func testRepetitionStartupWithNewSessionNoCards() {
         XCTAssertEqual(sut.cards, [])
         self.deck = deckRepository.decks[1]
         deckRepository.cards = []
@@ -136,7 +136,7 @@ class StudyViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testRepetiotionStartupWithNewSessionTooManyCards() {
+    func testRepetitionStartupWithNewSessionTooManyCards() {
         XCTAssertEqual(sut.cards, [])
         self.deck = deckRepository.decks[2]
         
@@ -161,7 +161,7 @@ class StudyViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testRepetiotionStartupWithNewSession2Cards() {
+    func testRepetitionStartupWithNewSession2Cards() {
         XCTAssertEqual(sut.cards, [])
         self.deck = deckRepository.decks[3]
         
@@ -176,7 +176,7 @@ class StudyViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testRepetiotionStartupWithNewSession1Card() {
+    func testRepetitionStartupWithNewSession1Card() {
         XCTAssertEqual(sut.cards, [])
         self.deck = deckRepository.decks[1]
         
