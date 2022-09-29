@@ -12,18 +12,25 @@ import Models
 import HummingBird
 import Combine
 import Utils
+import Habitat
 
+@MainActor
 final class DeckViewModelTests: XCTestCase {
     
     var sut: DeckViewModel!
     var deckRepository: DeckRepositoryMock!
+    var sessionCacher: SessionCacher!
+    var dateHandler: DateHandlerMock!
     var cancellables: Set<AnyCancellable>!
     
     override func setUp() {
         deckRepository = DeckRepositoryMock()
-        sut = DeckViewModel(deck: deckRepository.decks[0], deckRepository: deckRepository, dateHandler: DateHandlerMock(), sessionCacher: SessionCacher(storage: LocalStorageMock(), encoder: JSONEncoder(), decoder: JSONDecoder()))
+        sessionCacher = SessionCacher(storage: LocalStorageMock())
+        dateHandler = DateHandlerMock()
+        setupHabitatForIsolatedTesting(deckRepository: deckRepository, dateHandler: dateHandler, sessionCacher: sessionCacher)
+        sut = DeckViewModel()
         cancellables = .init()
-        sut.startup()
+        sut.startup(deckRepository.decks[0])
     }
     
     override func tearDown() {
@@ -35,7 +42,6 @@ final class DeckViewModelTests: XCTestCase {
     
     func testStartup() throws {
         let cardExpectation = expectation(description: "card reacting to Repository Action")
-        let deckExpectation = expectation(description: "deck reacting to Repository Action")
         
         try deckRepository.addCard(Card(id: UUID(), front: AttributedString(), back: AttributedString(), color: .red, datesLogs: DateLogs(), deckID: deckRepository.decks.first!.id, woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), history: []), to: deckRepository.decks.first!)
         
@@ -46,14 +52,7 @@ final class DeckViewModelTests: XCTestCase {
             }
             .store(in: &cancellables)
         
-        sut.$deck
-            .sink {[unowned self] deck in
-                XCTAssertEqual(deck.cardsIds, self.deckRepository.cards.map(\.id))
-                deckExpectation.fulfill()
-            }
-            .store(in: &cancellables)
-        
-        wait(for: [cardExpectation, deckExpectation], timeout: 1)
+        wait(for: [cardExpectation], timeout: 1)
     }
 
     func testDeleteFlashcard() throws {
@@ -100,36 +99,35 @@ final class DeckViewModelTests: XCTestCase {
     }
     
     func testCanStudyTrue() {
-        XCTAssertTrue(sut.canStudy)
+        XCTAssertTrue(sut.checkIfCanStudy(deckRepository.decks[0]))
     }
     
     func testCanStudyFalse() {
-        let cards: [Card] = [
-            Card(id: UUID(),
-                 front: "",
-                 back: "",
-                 color: .red,
-                 datesLogs: DateLogs(),
-                 deckID: UUID(uuidString: "5c27ad86-b84a-41cf-ab97-bb45586adfbd")!,
-                 woodpeckerCardInfo: WoodpeckerCardInfo(step: 1,
-                                                        isGraduated: false,
-                                                        easeFactor: 2.5,
-                                                        streak: 0,
-                                                        interval: 10000,
-                                                        hasBeenPresented: true),
-                 history: [])]
-        
-        sut = DeckViewModel(deck: Deck(id: UUID(uuidString: "5c27ad86-b84a-41cf-ab97-bb45586adfbd")!,
-                                       name: "Teste Deck",
-                                       icon: "pencil",
-                                       color: .red,
-                                       collectionId: UUID(),
-                                       cardsIds: cards.map{$0.id}),
-                            deckRepository: deckRepository,
-        sessionCacher: SessionCacher(storage: LocalStorageMock(), encoder: JSONEncoder(), decoder: JSONDecoder()))
-        sut.startup()
+        sut = DeckViewModel()
+        sut.startup(deckRepository.decks[2])
 
-        XCTAssertFalse(sut.canStudy)
+        XCTAssertFalse(sut.checkIfCanStudy(deckRepository.decks[2]))
+    }
+    
+    func testCheckIfcanStudyWithSession() {
+        let session = Session(cardIds: deckRepository.decks[0].cardsIds, date: dateHandler.today, deckId: deckRepository.decks[0].id)
+        sessionCacher.setCurrentSession(session: session)
+        sut.startup(deckRepository.decks[0])
+        XCTAssertTrue(sut.checkIfCanStudy(deckRepository.decks[0]))
+    }
+    
+    func testCheckIfcanStudyWithEmptySession() {
+        let session = Session(cardIds: deckRepository.decks[2].cardsIds, date: dateHandler.today, deckId: deckRepository.decks[2].id)
+        sessionCacher.setCurrentSession(session: session)
+        sut.startup(deckRepository.decks[2])
+        XCTAssertFalse(sut.checkIfCanStudy(deckRepository.decks[2]))
+    }
+    
+    func testCheckIfLastAccessIsChanged() {
+        dateHandler.customToday = Date(timeIntervalSince1970: 1000)
+        sut.startup(deckRepository.decks[0])
+        
+        XCTAssertEqual(dateHandler.customToday, deckRepository.decks[0].datesLogs.lastAccess)
     }
 
 }

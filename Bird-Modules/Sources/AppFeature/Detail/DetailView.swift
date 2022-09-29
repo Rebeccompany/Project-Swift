@@ -9,6 +9,7 @@ import SwiftUI
 import Models
 import HummingBird
 import NewDeckFeature
+import DeckFeature
 import Storage
 import Habitat
 
@@ -66,15 +67,15 @@ struct DetailView: View {
                         Label("Lista", systemImage: "list.bullet")
                     }
                     
-                    if viewModel.detailType == .table {
-                        Picker(selection: $viewModel.sortOrder) {
-                            Text("Nome").tag([KeyPathComparator(\Deck.name)])
-                            Text("Quantidade de Flashcards").tag([KeyPathComparator(\Deck.cardCount)])
-                            Text("Data do Último Acesso").tag([KeyPathComparator(\Deck.datesLogs.lastAccess)])
-                        } label: {
-                            Text("Opções de ordenação")
-                        }
+
+                    Picker(selection: $viewModel.sortOrder) {
+                        Text("Nome").tag([KeyPathComparator(\Deck.name)])
+                        Text("Quantidade de Flashcards").tag([KeyPathComparator(\Deck.cardCount)])
+                        Text("Data do Último Acesso").tag([KeyPathComparator(\Deck.datesLogs.lastAccess, order: .reverse)])
+                    } label: {
+                        Text("Opções de ordenação")
                     }
+
                     
                 } label: {
                     Label {
@@ -141,11 +142,9 @@ struct DetailView: View {
     @ViewBuilder
     private var content: some View {
         if viewModel.detailType == .grid {
-            DeckGridView(decks: viewModel.decks) { deck in
+            DeckGridView { deck in
                 viewModel.updateEditingDeck(with: deck)
                 presentDeckEdition = true
-            } deleteAction: { deck in
-                try? viewModel.deleteDeck(deck)
             }
         } else {
             DeckTableView()

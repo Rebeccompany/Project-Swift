@@ -509,7 +509,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.Spixii;
 				PRODUCT_NAME = "Project-Bird";
 				SDKROOT = iphoneos;
@@ -542,7 +542,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.Spixii;
 				PRODUCT_NAME = "Project-Bird";
 				SDKROOT = iphoneos;

@@ -10,14 +10,18 @@ import HummingBird
 import Models
 
 struct DeckGridView: View {
-    var decks: [Deck]
+    
+    @EnvironmentObject private var viewModel: ContentViewModel
     var editAction: (Deck) -> Void
-    var deleteAction: (Deck) -> Void
+    
+    private var sortedDecks: [Deck] {
+        viewModel.decks.sorted(using: viewModel.sortOrder)
+    }
     
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
-                ForEach(decks) { deck in
+                ForEach(sortedDecks) { deck in
                     NavigationLink(value: StudyRoute.deck(deck)) {
                         DeckCell(info: DeckCellInfo(deck: deck))
                             .contextMenu {
@@ -28,7 +32,7 @@ struct DeckGridView: View {
                                 }
                                 
                                 Button(role: .destructive) {
-                                    deleteAction(deck)
+                                    try? viewModel.deleteDeck(deck)
                                 } label: {
                                     Label("Deletar", systemImage: "trash")
                                 }
@@ -36,17 +40,10 @@ struct DeckGridView: View {
                     }
                 }
             }
+            
+            .animation(.linear, value: viewModel.sortOrder)
             .padding([.horizontal], 12)
             .padding(.top, 24)
         }
-    }
-}
-
-struct DeckGridView_Previews: PreviewProvider {
-    static var previews: some View {
-        //NavigationStack {
-        DeckGridView(decks: [Deck(id: UUID(), name: "Baralho 1", icon: "flame", color: .otherPink, collectionId: nil, cardsIds: [])]) { _ in } deleteAction: { _ in }
-            .previewDevice(PreviewDevice(stringLiteral: "iPhone 12"))
-        //}
     }
 }

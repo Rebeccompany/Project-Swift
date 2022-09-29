@@ -11,6 +11,7 @@ import Combine
 import Storage
 import DeckFeature
 import Habitat
+import SwiftUI
 
 //swiftlint:disable trailing_closure
 public final class ContentViewModel: ObservableObject {
@@ -34,6 +35,7 @@ public final class ContentViewModel: ObservableObject {
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
+    
     private var cancellables: Set<AnyCancellable>
     
     var detailTitle: String {
@@ -99,6 +101,25 @@ public final class ContentViewModel: ObservableObject {
         detailType = displayCacher.getCurrentDetailType() ?? .grid
     }
     
+    func bindingToDeck(_ deck: Deck) -> Binding<Deck> {
+        Binding<Deck> { [weak self] in
+            guard let self = self,
+                  let index = self.decks.firstIndex(where: { $0.id == deck.id }) else {
+                preconditionFailure("A deck that do not exist was passed")
+            }
+            
+            return self.decks[index]
+            
+        } set: { [weak self] newValue in
+            guard let self = self,
+                  let index = self.decks.firstIndex(where: { $0.id == newValue.id }) else {
+                preconditionFailure("A deck that do not exist was passed")
+            }
+            
+            return self.decks[index] = newValue
+        }
+    }
+    
     func changeDetailType(for newDetailType: DetailDisplayType) {
         detailType = newDetailType
         displayCacher.saveDetailType(detailType: newDetailType)
@@ -120,12 +141,6 @@ public final class ContentViewModel: ObservableObject {
             return decks
         } else {
             return decks.filter { $0.name.capitalized.contains(searchText.capitalized) }
-        }
-    }
-    
-    private func handleEndEditing(_ isPresenting: Bool ) {
-        if !isPresenting {
-            self.editingCollection = nil
         }
     }
     

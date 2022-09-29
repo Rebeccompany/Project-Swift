@@ -26,16 +26,7 @@ struct FlashcardCell: View {
                 Text(cardText(card.front))
                 Spacer()
             }
-            .foregroundColor(.white)
-            .padding(8)
-            .frame(minHeight: 150)
-            .background(HBColor.color(for: card.color))
-            .cornerRadius(8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.white, lineWidth: 3)
-            )
-        }
+        }.buttonStyle(Style(color: card.color))
     }
     
     private func cardText(_ content: AttributedString) -> AttributedString {
@@ -44,6 +35,27 @@ struct FlashcardCell: View {
         content.swiftUI.foregroundColor = .white
         
         return content
+    }
+    
+    private struct Style: ButtonStyle {
+        
+        private var color: CollectionColor
+        
+        init(color: CollectionColor) {
+            self.color = color
+        }
+        
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+            .foregroundColor(.white)
+            .padding()
+            .background(HBColor.color(for: color))
+            .cornerRadius(16)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.white, lineWidth: 3)
+            )
+        }
     }
 }
 
