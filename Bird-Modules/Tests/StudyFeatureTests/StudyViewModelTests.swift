@@ -50,12 +50,27 @@ class StudyViewModelTests: XCTestCase {
         systemObserver = nil
     }
     
-    func testStartupWithExistingSession() {
+    func testCrammingStartup() {
+        sut.startup(deck: deck, mode: .cramming, cardSortingFunc: sortCardByStepMock)
+        let deckCards = deck.cardsIds.sorted(by: sortIds)
+        let resultCards = sut.cards
+        let result = sut.cards.map(\.id).sorted(by: sortIds)
+        
+        XCTAssertEqual(deckCards, result)
+        
+        resultCards.forEach { card in
+            XCTAssertEqual(card.woodpeckerCardInfo.step, 0)
+            XCTAssertFalse(card.woodpeckerCardInfo.isGraduated)
+        }
+        
+    }
+    
+    func testRepetitionStartupWithExistingSession() {
         let cardIds = Array(deckRepository.cards.prefix(3).map(\.id))
         let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id)
         sessionCacher.setCurrentSession(session: session)
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, mode: .spaced)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { [unowned self] cards in
             let first3Cards = Array(self.deckRepository.cards.prefix(3))
@@ -69,7 +84,7 @@ class StudyViewModelTests: XCTestCase {
     
     func testDidCreateNewSessionOnStartup() {
         XCTAssertNil(sessionCacher.currentSession(for: deck.id))
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, mode: .spaced)
         
         let expectation = expectation(description: "did handle events correctly")
         
@@ -88,9 +103,9 @@ class StudyViewModelTests: XCTestCase {
     }
     
     
-    func testStartupWithNewSessionFewerCardsThanLimit() {
+    func testRepetitionStartupWithNewSessionFewerCardsThanLimit() {
         XCTAssertEqual(sut.cards, [])
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, mode: .spaced)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { cards in
             
@@ -104,11 +119,11 @@ class StudyViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testStartupWithNewSessionNoCards() {
+    func testRepetitionStartupWithNewSessionNoCards() {
         XCTAssertEqual(sut.cards, [])
         self.deck = deckRepository.decks[1]
         deckRepository.cards = []
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, mode: .spaced)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { cards in
             XCTAssertEqual(cards.count, 0)
@@ -121,12 +136,12 @@ class StudyViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testStartupWithNewSessionTooManyCards() {
+    func testRepetitionStartupWithNewSessionTooManyCards() {
         XCTAssertEqual(sut.cards, [])
         self.deck = deckRepository.decks[2]
         
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, mode: .spaced)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { cards in
             XCTAssertEqual(cards.count, 3)
@@ -146,11 +161,11 @@ class StudyViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testStartupWithNewSession2Cards() {
+    func testRepetitionStartupWithNewSession2Cards() {
         XCTAssertEqual(sut.cards, [])
         self.deck = deckRepository.decks[3]
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, mode: .spaced)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { cards in
             XCTAssertEqual(self.sut.displayedCards.map(\.card.id), cards.prefix(2).reversed().map(CardViewModel.init).map(\.card.id))
@@ -161,11 +176,11 @@ class StudyViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testStartupWithNewSession1Card() {
+    func testRepetitionStartupWithNewSession1Card() {
         XCTAssertEqual(sut.cards, [])
         self.deck = deckRepository.decks[1]
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, mode: .spaced)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { cards in
             XCTAssertEqual(self.sut.displayedCards.map(\.card.id), cards.prefix(2).reversed().map(CardViewModel.init).map(\.card.id))
@@ -176,16 +191,16 @@ class StudyViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testPressedButtonCardDidGoBack() throws {
+    func testSpacedPressedButtonCardDidGoBack() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, mode: .spaced)
         
         let oldCard = sut.cards[0]
         sut.cards[0] = Card(id: oldCard.id, front: oldCard.front, back: oldCard.back, color: oldCard.color, datesLogs: oldCard.datesLogs, deckID: oldCard.deckID, woodpeckerCardInfo: WoodpeckerCardInfo(step: 1, isGraduated: false, easeFactor: 2.5, streak: 0, interval: 0, hasBeenPresented: true), history: [])
         //vai ficar no msm step, pq esta no 0
 
-        try sut.pressedButton(for: .wrongHard, deck: deck)
+        try sut.pressedButton(for: .wrongHard, deck: deck, mode: .spaced)
         
         let modCard = sut.cards.first { card in
             card.id == oldCard.id
@@ -195,14 +210,14 @@ class StudyViewModelTests: XCTestCase {
         XCTAssertEqual(modCard?.history.count, 0)
     }
     
-    func testPressedButtonCardDidStay() throws {
+    func testSpacedPressedButtonCardDidStay() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup(deck: deck, cardSortingFunc: sortCardByStepMock)
+        sut.startup(deck: deck, mode: .spaced, cardSortingFunc: sortCardByStepMock)
         let oldCard = sut.cards[0]
         //vai ficar no msm step, pq esta no 0
         
-        try sut.pressedButton(for: .wrongHard, deck: deck, cardSortingFunc: sortCardByStepMock)
+        try sut.pressedButton(for: .wrongHard, deck: deck, mode: .spaced, cardSortingFunc: sortCardByStepMock)
         
         let modCard = sut.cards.first { card in
             card.id == oldCard.id
@@ -214,14 +229,14 @@ class StudyViewModelTests: XCTestCase {
         XCTAssertEqual(modCard?.history.count, 0)
     }
     
-    func testPressedButtonCardDidGoFoward() throws {
+    func testSpacedPressedButtonCardDidGoFoward() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup(deck: deck, cardSortingFunc: sortCardByStepMock)
+        sut.startup(deck: deck, mode: .spaced, cardSortingFunc: sortCardByStepMock)
         let oldCard = sut.cards[0]
         //vai ficar no msm step, pq esta no 0
         
-        try sut.pressedButton(for: .correct, deck: deck, cardSortingFunc: sortCardByStepMock)
+        try sut.pressedButton(for: .correct, deck: deck, mode: .spaced, cardSortingFunc: sortCardByStepMock)
         
         let modCard = sut.cards.first { card in
             card.id == oldCard.id
@@ -233,14 +248,14 @@ class StudyViewModelTests: XCTestCase {
         XCTAssertEqual(modCard?.history.count, 0)
     }
     
-    func testPressedButtonCardDidGraduate() throws {
+    func testSpacedPressedButtonCardDidGraduate() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup(deck: deck, cardSortingFunc: sortCardByStepMock)
+        sut.startup(deck: deck, mode: .spaced, cardSortingFunc: sortCardByStepMock)
         let oldCard = sut.cards[0]
         //vai ficar no msm step, pq esta no 0
         
-        try sut.pressedButton(for: .correctEasy, deck: deck, cardSortingFunc: sortCardByStepMock)
+        try sut.pressedButton(for: .correctEasy, deck: deck, mode: .spaced, cardSortingFunc: sortCardByStepMock)
         
         let modCard = sut.cardsToEdit.first { card in
             card.id == oldCard.id
@@ -254,15 +269,15 @@ class StudyViewModelTests: XCTestCase {
         XCTAssertTrue(sut.cardsToEdit.contains(where: { $0.id == oldCard.id }))
     }
     
-    func testPressedButtonGraduatedCardDemoted() throws {
+    func testSpacedPressedButtonGraduatedCardDemoted() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup(deck: deck, cardSortingFunc: sortCardByStepMock)
+        sut.startup(deck: deck, mode: .spaced, cardSortingFunc: sortCardByStepMock)
         sut.cards.reverse()
         let oldCard = sut.cards[0]
         
         
-        try sut.pressedButton(for: .wrongHard, deck: deck, cardSortingFunc: sortCardByStepMock)
+        try sut.pressedButton(for: .wrongHard, deck: deck, mode: .spaced, cardSortingFunc: sortCardByStepMock)
         
         let modCard = sut.cardsToEdit.first { card in
             card.id == oldCard.id
@@ -275,15 +290,15 @@ class StudyViewModelTests: XCTestCase {
         XCTAssertTrue(sut.cardsToEdit.contains(where: { $0.id == oldCard.id }))
     }
     
-    func testPressedButtonGraduatedCardReviwed() throws {
+    func testSpacedPressedButtonGraduatedCardReviwed() throws {
         XCTAssertEqual(sut.cards, [])
         
-        sut.startup(deck: deck, cardSortingFunc: sortCardByStepMock)
+        sut.startup(deck: deck, mode: .spaced, cardSortingFunc: sortCardByStepMock)
         sut.cards.reverse()
         let oldCard = sut.cards[0]
         
         
-        try sut.pressedButton(for: .correct, deck: deck, cardSortingFunc: sortCardByStepMock)
+        try sut.pressedButton(for: .correct, deck: deck, mode: .spaced, cardSortingFunc: sortCardByStepMock)
         
         let modCard = sut.cardsToEdit.first { card in
             card.id == oldCard.id
@@ -295,6 +310,67 @@ class StudyViewModelTests: XCTestCase {
         XCTAssertFalse(sut.cards.contains(where: { $0.id == oldCard.id }))
         XCTAssertTrue(sut.cardsToEdit.contains(where: { $0.id == oldCard.id }))
     }
+    
+    func testCrammingPressedButtonWrongHard() throws {
+        sut.startup(deck: deck, mode: .cramming, cardSortingFunc: sortCardByStepMock)
+        let firstCard = sut.cards.first!
+        try sut.pressedButton(for: .wrongHard, deck: deck, mode: .cramming, cardSortingFunc: sortCardByStepMock)
+        let deckCards = deck.cardsIds.sorted(by: sortIds)
+        
+        let result = sut.cards.map(\.id).sorted(by: sortIds)
+        
+        XCTAssertEqual(deckCards, result)
+        
+        let modifiedCard = sut.cards.first(where: { $0.id == firstCard.id})
+        XCTAssertEqual(firstCard.woodpeckerCardInfo.step, modifiedCard?.woodpeckerCardInfo.step)
+    }
+    
+    func testCrammingPressedButtonWrong() throws {
+        sut.startup(deck: deck, mode: .cramming, cardSortingFunc: sortCardByStepMock)
+        let firstCard = sut.cards.first!
+        try sut.pressedButton(for: .wrong, deck: deck, mode: .cramming, cardSortingFunc: sortCardByStepMock)
+        let deckCards = deck.cardsIds.sorted(by: sortIds)
+        
+        
+        let result = sut.cards.map(\.id).sorted(by: sortIds)
+        
+        XCTAssertEqual(deckCards, result)
+        
+        let modifiedCard = sut.cards.first(where: { $0.id == firstCard.id})
+        XCTAssertEqual(firstCard.woodpeckerCardInfo.step, modifiedCard?.woodpeckerCardInfo.step)
+    }
+    
+    func testCrammingPressedButtonCorrect() throws {
+        sut.startup(deck: deck, mode: .cramming, cardSortingFunc: sortCardByStepMock)
+        let firstCard = sut.cards.first!
+        try sut.pressedButton(for: .correct, deck: deck, mode: .cramming, cardSortingFunc: sortCardByStepMock)
+        let deckCards = deck.cardsIds.sorted(by: sortIds)
+        
+        
+        let result = sut.cards.map(\.id).sorted(by: sortIds)
+        
+        XCTAssertEqual(deckCards, result)
+        
+        let modifiedCard = sut.cards.first(where: { $0.id == firstCard.id})
+
+
+        XCTAssertEqual(firstCard.woodpeckerCardInfo.step + 1, modifiedCard?.woodpeckerCardInfo.step)
+    }
+    
+    func testCrammingPressedButtonCorrectEasy() throws {
+        sut.startup(deck: deck, mode: .cramming, cardSortingFunc: sortCardByStepMock)
+        let firstCard = sut.cards.first!
+        try sut.pressedButton(for: .correctEasy, deck: deck, mode: .cramming, cardSortingFunc: sortCardByStepMock)
+        let deckCards = deck.cardsIds.sorted(by: sortIds)
+        
+        let resultCard = sut.cards.first(where: {$0.id == firstCard.id})
+        let result = sut.cards.map(\.id).sorted(by: sortIds)
+        
+        XCTAssertEqual(deckCards, result)
+        
+        XCTAssertEqual(resultCard?.woodpeckerCardInfo.step, deck.spacedRepetitionConfig.numberOfSteps - 1)
+    }
+
 
     
     // ordena todos os learning antes, depois os reviewing
@@ -312,13 +388,17 @@ class StudyViewModelTests: XCTestCase {
         return d0.id.uuidString > d1.id.uuidString
     }
     
+    func sortIds(id0: UUID, id1: UUID) -> Bool {
+        return id0.uuidString > id1.uuidString
+    }
+    
     
     func testIsVOOn() {
         let cardIds = Array(deckRepository.cards.prefix(3).map(\.id))
         let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id)
         sessionCacher.setCurrentSession(session: session)
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, mode: .spaced)
         XCTAssertFalse(sut.isVOOn)
         systemObserver.voiceOverDidChangeSubject.send(true)
         XCTAssertTrue(sut.isVOOn)
@@ -328,10 +408,10 @@ class StudyViewModelTests: XCTestCase {
         let expectation = expectation(description: "receive card for id")
         self.deck = deckRepository.decks[1]
         
-        sut.startup(deck: deck)
+        sut.startup(deck: deck, mode: .spaced)
         let card = sut.cards.first!
         XCTAssertEqual(card.woodpeckerCardInfo.interval, 0)
-        try sut.pressedButton(for: .correctEasy, deck: deck)
+        try sut.pressedButton(for: .correctEasy, deck: deck, mode: .spaced)
         try sut.saveChanges(deck: deck)
       
         deckRepository.fetchCardById(deckRepository.decks[1].cardsIds.first!)
