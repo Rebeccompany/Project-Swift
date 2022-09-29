@@ -9,9 +9,23 @@ import SwiftUI
 
 public struct LargeButtonStyle: ButtonStyle {
     var isDisabled: Bool
+    var isFilled: Bool
     
-    public init(isDisabled: Bool) {
+    var backgroundColor: Color
+    var foregroundColor: Color
+    
+    
+    public init(isDisabled: Bool, isFilled: Bool = false) {
         self.isDisabled = isDisabled
+        self.isFilled = isFilled
+        
+        if isFilled {
+            backgroundColor = HBColor.secondaryBackground
+            foregroundColor = HBColor.actionColor
+        } else {
+            backgroundColor = HBColor.actionColor
+            foregroundColor = HBColor.primaryBackground
+        }
     }
     
     public func makeBody(configuration: Configuration) -> some View {
@@ -23,14 +37,14 @@ public struct LargeButtonStyle: ButtonStyle {
                 Spacer()
             }
             .frame(minHeight: 48)
-            .foregroundColor(HBColor.actionColor.opacity(configuration.isPressed ? 0.5 : 1))
-            .background(HBColor.secondaryBackground.opacity(configuration.isPressed ? 0.5 : 1))
+            .foregroundColor(backgroundColor.opacity(configuration.isPressed ? 0.5 : 1))
+            .background(foregroundColor.opacity(configuration.isPressed ? 0.5 : 1))
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(HBColor.actionColor.opacity(configuration.isPressed ? 0.5 : 1), lineWidth: 1.5)
+                    .stroke(backgroundColor.opacity(configuration.isPressed ? 0.5 : 1), lineWidth: 1.5)
             )
-            .shadow(color: HBColor.actionColor.opacity(configuration.isPressed ? 0 : 0.2), radius: 6, x: 2, y: 2)
+            .shadow(color: foregroundColor.opacity(configuration.isPressed ? 0 : 0.2), radius: 6, x: 2, y: 2)
         } else {
             HStack {
                 Spacer()
@@ -40,7 +54,7 @@ public struct LargeButtonStyle: ButtonStyle {
             }
             .frame(minHeight: 48)
             .foregroundColor(HBColor.collectionGray.opacity(configuration.isPressed ? 0.5 : 1))
-            .background(HBColor.secondaryBackground.opacity(configuration.isPressed ? 0.5 : 1))
+            .background(foregroundColor.opacity(configuration.isPressed ? 0.5 : 1))
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
