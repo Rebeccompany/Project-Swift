@@ -38,7 +38,6 @@ public struct DeckView: View {
                 list
             }
         }
-        .viewBackgroundColor(HBColor.primaryBackground)
         .onAppear {
             viewModel.startup(deck)
         }
