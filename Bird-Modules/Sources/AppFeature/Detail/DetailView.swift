@@ -99,6 +99,10 @@ struct DetailView: View {
                     Image(systemName: "plus")
                         .foregroundColor(HBColor.actionColor)
                 }
+                .popover(isPresented: $presentDeckEdition) {
+                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: viewModel.editingDeck)
+                    .frame(minWidth: 300, minHeight: 600)
+                }
             }
         }
         .onChange(of: editMode?.wrappedValue) { newValue in
@@ -117,9 +121,6 @@ struct DetailView: View {
         }
         .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
         .navigationTitle(viewModel.detailTitle)
-        .sheet(isPresented: $presentDeckEdition) {
-            NewDeckView(collection: viewModel.selectedCollection, editingDeck: viewModel.editingDeck)
-        }
     }
     
     @ViewBuilder

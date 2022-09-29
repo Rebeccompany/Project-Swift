@@ -76,10 +76,11 @@ public struct DeckView: View {
                     Image(systemName: "plus")
                 }
                 .foregroundColor(HBColor.actionColor)
+                .popover(isPresented: $shouldDisplayNewFlashcard) {
+                    NewFlashcardView(deck: viewModel.deck, editingFlashcard: viewModel.editingFlashcard)
+                        .frame(minWidth: 300, minHeight: 600)
+                }
             }
-        }
-        .sheet(isPresented: $shouldDisplayNewFlashcard) {
-            NewFlashcardView(deck: viewModel.deck, editingFlashcard: viewModel.editingFlashcard)
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
