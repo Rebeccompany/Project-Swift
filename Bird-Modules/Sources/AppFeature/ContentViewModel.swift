@@ -191,6 +191,7 @@ public final class ContentViewModel: ObservableObject {
             }
         
         editingDeck = nil
+        selection = Set()
     }
     
     func createDecks() {
@@ -220,6 +221,7 @@ public final class ContentViewModel: ObservableObject {
         }
         
         editingDeck = nil
+        selection = Set()
     }
     
     func didCollectionPresentationStatusChanged(_ status: Bool) {
