@@ -38,7 +38,6 @@ public struct DeckView: View {
                 list
             }
         }
-        .viewBackgroundColor(HBColor.primaryBackground)
         .onAppear {
             viewModel.startup(deck)
         }
@@ -54,25 +53,25 @@ public struct DeckView: View {
                 return Alert(title: Text("Deseja apagar este flashcard?"),
                              message: Text("Você perderá permanentemente o conteúdo deste flashcard."),
                              primaryButton: .destructive(Text("Apagar")) {
-                                do {
-                                    guard let deletedCard else { return }
-                                    try viewModel.deleteFlashcard(card: deletedCard)
-                                    self.deletedCard = nil
-                                } catch {
-                                    activeAlert = .error
-                                    showingAlert = true
-                                    selectedErrorMessage = .deleteCard
-                                }
-                             },
-                             secondaryButton: .cancel(Text("Cancelar"))
+                    do {
+                        guard let deletedCard else { return }
+                        try viewModel.deleteFlashcard(card: deletedCard)
+                        self.deletedCard = nil
+                    } catch {
+                        activeAlert = .error
+                        showingAlert = true
+                        selectedErrorMessage = .deleteCard
+                    }
+                },
+                secondaryButton: .cancel(Text("Cancelar"))
                 )
             }
-                }
+        }
         .navigationTitle(deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button {
-                    viewModel.editingFlashcard = nil
+                    editingFlashcard = nil
                     shouldDisplayNewFlashcard = true
                 } label: {
                     Image(systemName: "plus")
@@ -97,7 +96,7 @@ public struct DeckView: View {
                 VStack {
                     EmptyStateView(component: .flashcard)
                     Button {
-                        viewModel.editingFlashcard = nil
+                        editingFlashcard = nil
                         shouldDisplayNewFlashcard = true
                     } label: {
                         Text("Criar Flashcard")
@@ -132,7 +131,7 @@ public struct DeckView: View {
             
             ForEach(viewModel.cardsSearched) { card in
                 FlashcardCell(card: card) {
-                    viewModel.editingFlashcard = card
+                    editingFlashcard = card
                     shouldDisplayNewFlashcard = true
                 }
                 .padding(.bottom, 8)

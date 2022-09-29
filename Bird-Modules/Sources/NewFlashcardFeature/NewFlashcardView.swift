@@ -43,7 +43,7 @@ public struct NewFlashcardView: View {
                         cardText: $viewModel.flashcardFront
                     )
                     .focused($focus, equals: NewFlashcardFocus.front)
-                    .frame(minHeight: 200)
+                    .frame(minHeight: 280)
                     
                     FlashcardTextEditorView(
                         color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
@@ -51,7 +51,7 @@ public struct NewFlashcardView: View {
                         cardText: $viewModel.flashcardBack
                     )
                     .focused($focus, equals: NewFlashcardFocus.back)
-                    .frame(minHeight: 200)
+                    .frame(minHeight: 280)
                     
                     Text("Cores")
                         .font(.callout)
