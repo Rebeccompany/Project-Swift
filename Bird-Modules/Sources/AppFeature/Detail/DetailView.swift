@@ -67,15 +67,15 @@ struct DetailView: View {
                         Label("Lista", systemImage: "list.bullet")
                     }
                     
-//                    if viewModel.detailType == .table {
-                        Picker(selection: $viewModel.sortOrder) {
-                            Text("Nome").tag([KeyPathComparator(\Deck.name)])
-                            Text("Quantidade de Flashcards").tag([KeyPathComparator(\Deck.cardCount)])
-                            Text("Data do Último Acesso").tag([KeyPathComparator(\Deck.datesLogs.lastAccess, order: .reverse)])
-                        } label: {
-                            Text("Opções de ordenação")
-                        }
-//                    }
+
+                    Picker(selection: $viewModel.sortOrder) {
+                        Text("Nome").tag([KeyPathComparator(\Deck.name)])
+                        Text("Quantidade de Flashcards").tag([KeyPathComparator(\Deck.cardCount)])
+                        Text("Data do Último Acesso").tag([KeyPathComparator(\Deck.datesLogs.lastAccess, order: .reverse)])
+                    } label: {
+                        Text("Opções de ordenação")
+                    }
+
                     
                 } label: {
                     Label {
