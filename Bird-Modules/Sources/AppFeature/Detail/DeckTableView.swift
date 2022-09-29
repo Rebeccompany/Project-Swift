@@ -11,7 +11,7 @@ import HummingBird
 
 struct DeckTableView: View {
     @EnvironmentObject private var viewModel: ContentViewModel
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     private var sortedDecks: [Deck] {
         viewModel.decks.sorted(using: viewModel.sortOrder)
@@ -36,11 +36,12 @@ struct DeckTableView: View {
     
     @ViewBuilder
     private var list: some View {
-        List(sortedDecks) { deck in
+        List(sortedDecks, selection: $viewModel.selection) { deck in
             NavigationLink(value: StudyRoute.deck(deck)) {
                 cell(for: deck)
             }
         }
+        .animation(.linear, value: viewModel.sortOrder)
         .listStyle(.plain)
     }
     

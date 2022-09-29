@@ -35,7 +35,7 @@ public struct DeckView: View {
             if viewModel.cards.isEmpty {
                 emptyState
             } else {
-                list
+                grid
             }
         }
         .onAppear {
@@ -62,7 +62,7 @@ public struct DeckView: View {
                         showingAlert = true
                         selectedErrorMessage = .deleteCard
                     }
-                },
+                             },
                 secondaryButton: .cancel(Text("Cancelar"))
                 )
             }
@@ -111,64 +111,67 @@ public struct DeckView: View {
     }
     
     @ViewBuilder
-    private var list: some View {
-        List {
-            if !viewModel.checkIfCanStudy(deck) && !viewModel.cards.isEmpty {
-                Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
-                    .bold()
-                    .multilineTextAlignment(.center)
-                    .listRowBackground(Color.clear)
-            }
-            Button("Estudar Deck") {
-                shouldDisplayStudyView = true
-            }
-            .disabled(!viewModel.checkIfCanStudy(deck))
-            .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck), isFilled: true))
-            .listRowInsets(.zero)
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            .padding()
-            
-            Button("Intenso") {
-                shouldDisplayStudyView = true
-            }
-            .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
-            .listRowInsets(.zero)
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            .padding(.horizontal)
-            .padding(.bottom)
-            
-            ForEach(viewModel.cardsSearched) { card in
-                FlashcardCell(card: card) {
-                    editingFlashcard = card
-                    shouldDisplayNewFlashcard = true
+    private var grid: some View {
+        ScrollView {
+            LazyVStack {
+                if !viewModel.checkIfCanStudy(deck) && !viewModel.cards.isEmpty {
+                    Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
+                        .bold()
+                        .multilineTextAlignment(.center)
+                        .listRowBackground(Color.clear)
                 }
-                .padding(.bottom, 8)
-                .contextMenu {
-                    Button {
-                        editingFlashcard = card
-                        shouldDisplayNewFlashcard = true
-                    } label: {
-                        Label("Editar Flashcard",
-                              systemImage: "pencil")
-                    }
-                    
-                    Button(role: .destructive) {
-                        deletedCard = card
-                        activeAlert = .confirm
-                        showingAlert = true
-                    } label: {
-                        Label("Deletar Flashcard",
-                              systemImage: "trash.fill")
-                    }
-                    
+                
+                Button("Estudar Deck") {
+                    shouldDisplayStudyView = true
                 }
-            }
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+                .disabled(!viewModel.checkIfCanStudy(deck))
+                .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck), isFilled: true))
+                .listRowInsets(.zero)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .padding()
+
+                Button("Intenso") {
+                    shouldDisplayStudyView = true
+                }
+                .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
+                .listRowInsets(.zero)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .padding(.horizontal)
+                .padding(.bottom)
+                        
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 180), spacing: 12, alignment: .top)], spacing: 12) {
+                    ForEach(viewModel.cardsSearched) { card in
+                        FlashcardCell(card: card) {
+                            editingFlashcard = card
+                            shouldDisplayNewFlashcard = true
+                        }
+                        .contextMenu {
+                            Button {
+                                editingFlashcard = card
+                                shouldDisplayNewFlashcard = true
+                            } label: {
+                                Label("Editar Flashcard",
+                                      systemImage: "pencil")
+                            }
+                            
+                            Button(role: .destructive) {
+                                deletedCard = card
+                                activeAlert = .confirm
+                                showingAlert = true
+                            } label: {
+                                Label("Deletar Flashcard",
+                                      systemImage: "trash.fill")
+                            }
+                        }
+                        .frame(height: 230)
+                    }
+                    .listRowSeparator(.hidden)
+                }
+                .padding(.horizontal)
+            }.scrollContentBackground(.hidden)
         }
-        .scrollContentBackground(.hidden)
     }
 }
 

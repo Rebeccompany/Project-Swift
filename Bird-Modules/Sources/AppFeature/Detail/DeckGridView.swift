@@ -14,10 +14,14 @@ struct DeckGridView: View {
     @EnvironmentObject private var viewModel: ContentViewModel
     var editAction: (Deck) -> Void
     
+    private var sortedDecks: [Deck] {
+        viewModel.decks.sorted(using: viewModel.sortOrder)
+    }
+    
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
-                ForEach(viewModel.decks) { deck in
+                ForEach(sortedDecks) { deck in
                     NavigationLink(value: StudyRoute.deck(deck)) {
                         DeckCell(info: DeckCellInfo(deck: deck))
                             .contextMenu {
@@ -36,6 +40,8 @@ struct DeckGridView: View {
                     }
                 }
             }
+            
+            .animation(.linear, value: viewModel.sortOrder)
             .padding([.horizontal], 12)
             .padding(.top, 24)
         }
