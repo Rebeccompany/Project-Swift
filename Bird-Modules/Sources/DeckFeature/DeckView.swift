@@ -23,10 +23,11 @@ public struct DeckView: View {
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
     @State private var deletedCard: Card?
-    var deck: Deck
+    @State private var editingFlashcard: Card?
+    @Binding private var deck: Deck
     
-    public init(deck: Deck) {
-        self.deck = deck
+    public init(deck: Binding<Deck>) {
+        self._deck = deck
     }
     
     public var body: some View {
@@ -43,8 +44,6 @@ public struct DeckView: View {
         }
         .listStyle(.plain)
         .searchable(text: $viewModel.searchFieldContent)
-        
-        
         .alert(isPresented: $showingAlert) {
             switch activeAlert {
             case .error:
@@ -73,7 +72,7 @@ public struct DeckView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button {
-                    viewModel.createFlashcard()
+                    viewModel.editingFlashcard = nil
                     shouldDisplayNewFlashcard = true
                 } label: {
                     Image(systemName: "plus")
@@ -82,11 +81,11 @@ public struct DeckView: View {
             }
         }
         .sheet(isPresented: $shouldDisplayNewFlashcard) {
-            NewFlashcardView(deck: viewModel.deck, editingFlashcard: viewModel.editingFlashcard)
+            NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
-                deck: viewModel.deck  
+                deck: deck
             )
         }
     }
@@ -98,7 +97,7 @@ public struct DeckView: View {
                 VStack {
                     EmptyStateView(component: .flashcard)
                     Button {
-                        viewModel.createFlashcard()
+                        viewModel.editingFlashcard = nil
                         shouldDisplayNewFlashcard = true
                     } label: {
                         Text("Criar Flashcard")
@@ -133,13 +132,13 @@ public struct DeckView: View {
             
             ForEach(viewModel.cardsSearched) { card in
                 FlashcardCell(card: card) {
-                    viewModel.editFlashcard(card)
+                    viewModel.editingFlashcard = card
                     shouldDisplayNewFlashcard = true
                 }
                 .padding(.bottom, 8)
                 .contextMenu {
                     Button {
-                        viewModel.editFlashcard(card)
+                        editingFlashcard = card
                         shouldDisplayNewFlashcard = true
                     } label: {
                         Label("Editar Flashcard",
@@ -168,8 +167,8 @@ struct DeckView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             DeckView(
-                deck: DeckRepositoryMock()
-                    .decks[0]
+                deck: .constant(DeckRepositoryMock()
+                    .decks[0])
             )
         }
         .preferredColorScheme(.dark)

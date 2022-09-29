@@ -9,6 +9,7 @@ import SwiftUI
 import Models
 import HummingBird
 import NewDeckFeature
+import DeckFeature
 import Storage
 import Habitat
 
@@ -140,11 +141,9 @@ struct DetailView: View {
     @ViewBuilder
     private var content: some View {
         if viewModel.detailType == .grid {
-            DeckGridView(decks: viewModel.decks) { deck in
+            DeckGridView { deck in
                 viewModel.updateEditingDeck(with: deck)
                 presentDeckEdition = true
-            } deleteAction: { deck in
-                try? viewModel.deleteDeck(deck)
             }
         } else {
             DeckTableView()

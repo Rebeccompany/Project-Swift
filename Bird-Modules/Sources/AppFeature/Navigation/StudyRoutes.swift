@@ -13,10 +13,10 @@ import Flock
 
 struct StudyRoutes {
     @ViewBuilder
-    static func destination(for route: StudyRoute) -> some View {
+    static func destination(for route: StudyRoute, viewModel: ContentViewModel) -> some View {
         switch route {
         case .deck(let deck):
-            DeckView(deck: deck)
+            DeckView(deck: viewModel.bindingToDeck(deck))
         case .card(let card):
             Text("card \(card.id.uuidString)")
         }

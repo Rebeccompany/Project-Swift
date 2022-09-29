@@ -39,7 +39,7 @@ public class DeckViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    private func deckListener(_ deck: Deck) -> AnyPublisher<Deck, RepositoryError> {
+    func deckListener(_ deck: Deck) -> AnyPublisher<Deck, RepositoryError> {
         deckRepository
             .cardListener(forId: deck.id)
             .flatMap {[weak self, deck] _ in
@@ -55,13 +55,6 @@ public class DeckViewModel: ObservableObject {
     func startup(_ deck: Deck) {
         cardListener(deck)
             .assign(to: &$cards)
-        
-        deckListener(deck)
-            .sink { _ in
-                
-            } receiveValue: { deck in
-            }
-            .store(in: &cancellables)
     }
     
     func checkIfCanStudy(_ deck: Deck) -> Bool {
@@ -95,13 +88,5 @@ public class DeckViewModel: ObservableObject {
         } else {
             return cards.filter { NSAttributedString($0.front).string.contains(searchFieldContent) || NSAttributedString($0.back).string.contains(searchFieldContent) }
         }
-    }
-    
-    func editFlashcard(_ card: Card) {
-        editingFlashcard = card
-    }
-    
-    func createFlashcard() {
-        editingFlashcard = nil
     }
 }

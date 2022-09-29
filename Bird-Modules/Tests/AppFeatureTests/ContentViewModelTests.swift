@@ -76,6 +76,24 @@ final class ContentViewModelTests: XCTestCase {
         XCTAssertEqual(.table, sut.detailType)
     }
     
+    func testDeckBindingGet() {
+        let deck = deckRepositoryMock.decks[0]
+        
+        let binding = sut.bindingToDeck(deck)
+        
+        XCTAssertEqual(deck, binding.wrappedValue)
+    }
+    
+    func testDeckBindingSet() {
+        let deck = deckRepositoryMock.decks[0]
+        
+        let binding = sut.bindingToDeck(deck)
+        
+        let newName = "Alterado"
+        binding.name.wrappedValue = newName
+        XCTAssertEqual(sut.decks[0].name, newName)
+    }
+    
     func testDeckReactionToSidebarSelection() {
         let expectation = expectation(description: "Receive the correct decks")
         
