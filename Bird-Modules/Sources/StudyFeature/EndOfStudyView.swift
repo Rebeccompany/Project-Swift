@@ -41,7 +41,7 @@ struct EndOfStudyView: View {
             } label: {
                 Text("Voltar para o Baralho")
             }
-            .buttonStyle(LargeButtonStyle(isDisabled: false))
+            .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
             .padding()
             
         }
