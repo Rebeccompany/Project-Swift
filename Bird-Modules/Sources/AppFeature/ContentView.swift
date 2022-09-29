@@ -44,7 +44,8 @@ public struct ContentView: View {
     private var sidebar: some View {
         CollectionsSidebar(
             selection: $viewModel.sidebarSelection,
-            isCompact: horizontalSizeClass == .compact
+            isCompact: horizontalSizeClass == .compact,
+            editMode: $editModeForCollection
         )
         .environmentObject(viewModel)
         .environment(\.editMode, $editModeForCollection)

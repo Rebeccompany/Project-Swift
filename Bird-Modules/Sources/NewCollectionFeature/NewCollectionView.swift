@@ -19,10 +19,12 @@ public struct NewCollectionView: View {
     @State private var activeAlert: ActiveAlert = .error
     @State private var selectedErrorMessage: AlertText = .deleteCollection
     @FocusState private var selectedField: Int?
+    @Binding private var editMode: EditMode
     var editingCollection: DeckCollection?
     
-    public init(editingCollection: DeckCollection?) {
+    public init(editingCollection: DeckCollection?, editMode: Binding<EditMode>) {
         self.editingCollection = editingCollection
+        self._editMode = editMode
     }
     
     public var body: some View {
@@ -127,6 +129,7 @@ public struct NewCollectionView: View {
                             } else {
                                 do {
                                     try viewModel.editCollection(editingCollection: editingCollection)
+                                    editMode = .inactive
                                     dismiss()
                                 } catch {
                                     activeAlert = .error
@@ -155,7 +158,7 @@ struct NewCollectionView_Previews: PreviewProvider {
     static var previews: some View {
         
         HabitatPreview {
-            NewCollectionView(editingCollection: nil)
+            NewCollectionView(editingCollection: nil, editMode: .constant(.active))
             .preferredColorScheme(.light)
         }
         
