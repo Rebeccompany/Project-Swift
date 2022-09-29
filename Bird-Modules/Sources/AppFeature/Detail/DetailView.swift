@@ -14,14 +14,18 @@ import Storage
 import Habitat
 
 
-struct DetailView: View {
+public struct DetailView: View {
     
     @EnvironmentObject private var viewModel: ContentViewModel
-    @Environment(\.editMode) private var editMode
+    @Binding private var editMode: EditMode
     @State private var presentDeckEdition = false
     @State private var shouldDisplayAlert = false
     
-    var body: some View {
+    public init(editMode: Binding<EditMode>) {
+        self._editMode = editMode
+    }
+    
+    public var body: some View {
         Group {
             if viewModel.decks.isEmpty {
                 emptyState
@@ -30,7 +34,7 @@ struct DetailView: View {
             }
         }
         .searchable(text: $viewModel.searchText)
-        .toolbar(editMode?.wrappedValue.isEditing ?? false ? .visible : .hidden,
+        .toolbar(editMode.isEditing ? .visible : .hidden,
                  for: .bottomBar)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
@@ -59,7 +63,7 @@ struct DetailView: View {
                     } label: {
                         Label("Ícones", systemImage: "rectangle.grid.2x2")
                     }
-                    .disabled(editMode?.wrappedValue.isEditing ?? false)
+                    .disabled(editMode.isEditing)
                     
                     Button {
                         viewModel.changeDetailType(for: .table)
@@ -102,7 +106,7 @@ struct DetailView: View {
                 }
             }
         }
-        .onChange(of: editMode?.wrappedValue) { newValue in
+        .onChange(of: editMode) { newValue in
             if newValue == .active {
                 viewModel.detailType = .table
                 viewModel.changeDetailType(for: .table)
@@ -119,7 +123,7 @@ struct DetailView: View {
         .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
         .navigationTitle(viewModel.detailTitle)
         .sheet(isPresented: $presentDeckEdition) {
-            NewDeckView(collection: viewModel.selectedCollection, editingDeck: viewModel.editingDeck)
+            NewDeckView(collection: viewModel.selectedCollection, editingDeck: viewModel.editingDeck, editMode: $editMode)
         }
     }
     
