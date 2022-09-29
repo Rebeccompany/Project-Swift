@@ -141,7 +141,8 @@ let package = Package(
                 "Woodpecker",
                 "Utils",
                 "NewFlashcardFeature",
-                "StudyFeature"
+                "StudyFeature",
+                "Habitat"
             ]
         ),
             
@@ -173,7 +174,8 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Storage",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
@@ -296,7 +298,8 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Models",
-                "NewCollectionFeature"
+                "NewCollectionFeature",
+                "Habitat"
             ]
         ),
         
@@ -341,7 +344,8 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Woodpecker",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         )
     ]

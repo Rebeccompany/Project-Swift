@@ -12,34 +12,25 @@ import Combine
 import Storage
 import Woodpecker
 import Utils
+import Habitat
 
+@MainActor
 public class DeckViewModel: ObservableObject {
-    @Published var deck: Deck
     @Published var searchFieldContent: String
     @Published var cards: [Card]
-    @Published var editingFlashcard: Card?
     
-    private var deckRepository: DeckRepositoryProtocol
+    @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    private var dateHandler: DateHandlerProtocol
-    private var sessionCacher: SessionCacher
+    @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
+    @Dependency(\.sessionCacher) private var sessionCacher: SessionCacher
     
-    var canStudy: Bool {
-        let canStudy = try? checkIfCanStudy()
-        return canStudy ?? false
-    }
-    
-    public init(deck: Deck, deckRepository: DeckRepositoryProtocol = DeckRepository(collectionId: nil), dateHandler: DateHandlerProtocol = DateHandler(), sessionCacher: SessionCacher = SessionCacher()) {
-        self.deck = deck
+    public init() {
         self.searchFieldContent = ""
-        self.deckRepository = deckRepository
         self.cards = []
-        self.dateHandler = dateHandler
-        self.sessionCacher = sessionCacher
     }
     
-    private var cardListener: AnyPublisher<[Card], Never> {
+    private func cardListener(_ deck: Deck) -> AnyPublisher<[Card], Never> {
         deckRepository
             .cardListener(forId: deck.id)
             .replaceError(with: [])
@@ -47,7 +38,7 @@ public class DeckViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    private var deckListener: AnyPublisher<Deck, RepositoryError> {
+    func deckListener(_ deck: Deck) -> AnyPublisher<Deck, RepositoryError> {
         deckRepository
             .cardListener(forId: deck.id)
             .flatMap {[weak self, deck] _ in
@@ -60,35 +51,29 @@ public class DeckViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func startup() {
-        cardListener
+    func startup(_ deck: Deck) {
+        cardListener(deck)
             .assign(to: &$cards)
-        
-        deckListener
-            .sink { _ in
-                
-            } receiveValue: {[weak self] deck in
-                self?.deck = deck
-            }
-            .store(in: &cancellables)
     }
     
-    private func checkIfCanStudy() throws -> Bool {
+    func checkIfCanStudy(_ deck: Deck) -> Bool {
         
-        if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
-            return !session.cardIds.isEmpty
-        }
-        
-        let cardsInfo = cards.map { OrganizerCardInfo(card: $0) }
-        let cardsToStudy = try Woodpecker.scheduler(cardsInfo: cardsInfo, config: deck.spacedRepetitionConfig)
-        let todayCards = cardsToStudy.todayLearningCards + cardsToStudy.todayReviewingCards
-        if !todayCards.isEmpty {
-            return true
-        } else {
+        do {
+            if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
+                return !session.cardIds.isEmpty
+            }
+            
+            let cardsInfo = cards.map { OrganizerCardInfo(card: $0) }
+            let cardsToStudy = try Woodpecker.scheduler(cardsInfo: cardsInfo, config: deck.spacedRepetitionConfig)
+            let todayCards = cardsToStudy.todayLearningCards + cardsToStudy.todayReviewingCards
+            if !todayCards.isEmpty {
+                return true
+            } else {
+                return false
+            }
+        } catch {
             return false
         }
-        
-        
         
     }
     
@@ -102,13 +87,5 @@ public class DeckViewModel: ObservableObject {
         } else {
             return cards.filter { NSAttributedString($0.front).string.contains(searchFieldContent) || NSAttributedString($0.back).string.contains(searchFieldContent) }
         }
-    }
-    
-    func editFlashcard(_ card: Card) {
-        editingFlashcard = card
-    }
-    
-    func createFlashcard() {
-        editingFlashcard = nil
     }
 }
