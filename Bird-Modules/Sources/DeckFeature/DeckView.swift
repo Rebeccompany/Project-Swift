@@ -122,13 +122,22 @@ public struct DeckView: View {
             Button("Estudar Deck") {
                 shouldDisplayStudyView = true
             }
-            
             .disabled(!viewModel.checkIfCanStudy(deck))
-            .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck)))
+            .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck), isFilled: true))
             .listRowInsets(.zero)
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
             .padding()
+            
+            Button("Intenso") {
+                shouldDisplayStudyView = true
+            }
+            .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
+            .listRowInsets(.zero)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .padding(.horizontal)
+            .padding(.bottom)
             
             ForEach(viewModel.cardsSearched) { card in
                 FlashcardCell(card: card) {
@@ -168,7 +177,7 @@ struct DeckView_Previews: PreviewProvider {
         NavigationView {
             DeckView(
                 deck: .constant(DeckRepositoryMock()
-                    .decks[0])
+                    .decks[1])
             )
         }
         .preferredColorScheme(.dark)
