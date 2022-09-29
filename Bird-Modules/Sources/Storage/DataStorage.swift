@@ -46,6 +46,8 @@ final class DataStorage {
                 fatalError("Failed loading with error: \(error)")
             }
         }
+        
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
 
     func save() throws {
