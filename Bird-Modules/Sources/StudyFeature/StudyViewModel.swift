@@ -16,25 +16,26 @@ import Habitat
 //swiftlint:disable trailing_closure
 
 public class StudyViewModel: ObservableObject {
+    
+    // MARK: Dependencies
     @Dependency(\.deckRepository) var deckRepository
     @Dependency(\.sessionCacher) var sessionCacher
     @Dependency(\.dateHandler) var dateHandler
     @Dependency(\.systemObserver) var systemObserver
-
+    
+    // MARK: Logic Vars
     @Published var cards: [Card] = []
     @Published var displayedCards: [CardViewModel] = []
     var cardsToEdit: [Card] = []
     
-    private var cancellables: Set<AnyCancellable> = .init()
-    
-    @Published var shouldButtonsBeDisabled: Bool = true
-    
     private lazy var timefromLastCard: Date = dateHandler.today
     
+    // MARK: Flags
+    @Published var shouldButtonsBeDisabled: Bool = true
     @Published var isVOOn: Bool = getIsVOOn()
     
-    init() {
-    }
+    // MARK: Combine Vars
+    private var cancellables: Set<AnyCancellable> = .init()
     
     private var displayedCardsPublisher: AnyPublisher<[CardViewModel], Never> {
         $cards.map { cards -> [Card] in
@@ -84,16 +85,19 @@ public class StudyViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func startup(deck: Deck, cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) {
+    init() {
+    }
+    
+    // MARK: - Startup
+    func startup(deck: Deck, mode: StudyMode, cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) {
         systemObserver.voiceOverDidChange()
             .assign(to: &$isVOOn)
-            
+        
         systemObserver.willTerminate()
             .sink {[weak self] _ in
                 try? self?.saveChanges(deck: deck)
             }
             .store(in: &cancellables)
-
         
         displayedCardsPublisher
             .assign(to: &$displayedCards)
@@ -101,7 +105,29 @@ public class StudyViewModel: ObservableObject {
         shouldButtonsBeDisabledPublisher
             .assign(to: &$shouldButtonsBeDisabled)
         
-        
+        if mode == .spaced {
+            startupForSpaced(deck: deck, cardSortingFunc: cardSortingFunc)
+        } else {
+            startupForCramming(deck: deck, cardSortingFunc: cardSortingFunc)
+        }
+    }
+    
+    private func startupForCramming(deck: Deck, cardSortingFunc: @escaping (Card, Card) -> Bool) {
+        deckRepository
+            .fetchCardsByIds(deck.cardsIds)
+            .map { cards in
+                cards.map { card in
+                    var card = card
+                    card.woodpeckerCardInfo = WoodpeckerCardInfo(hasBeenPresented: false)
+                    return card
+                }
+                .sorted(by: cardSortingFunc)
+            }
+            .replaceError(with: [])
+            .assign(to: &$cards)
+    }
+    
+    private func startupForSpaced(deck: Deck, cardSortingFunc: @escaping (Card, Card) -> Bool) {
         if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
             sessionPublisher(cardIds: session.cardIds, cardSortingFunc: cardSortingFunc)
                 .assign(to: &$cards)
@@ -115,15 +141,6 @@ public class StudyViewModel: ObservableObject {
                 }
                 .store(in: &cancellables)
         }
-    }
-    
-    func saveChanges(deck: Deck) throws {
-        
-        try cardsToEdit.forEach { card in
-            try deckRepository.editCard(card)
-        }
-        sessionCacher.setCurrentSession(session: Session(cardIds: cards.map(\.id), date: dateHandler.today, deckId: deck.id))
-        
     }
     
     private func finishFetchCards(_ completion: Subscribers.Completion<RepositoryError>) {
@@ -161,19 +178,30 @@ public class StudyViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Persistence
+    func saveChanges(deck: Deck) throws {
+        
+        try cardsToEdit.forEach { card in
+            try deckRepository.editCard(card)
+        }
+        sessionCacher.setCurrentSession(session: Session(cardIds: cards.map(\.id), date: dateHandler.today, deckId: deck.id))
+        
+    }
+    
     private func saveCardIdsToCache(deck: Deck, ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) ) {
         let session = Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id)
         sessionCacher.setCurrentSession(session: session)
     }
     
-    func pressedButton(for userGrade: UserGrade, deck: Deck, cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
-        guard let newCard = cards.first else { return }
+    // MARK: - Study Logic
+    func pressedButton(for userGrade: UserGrade, deck: Deck, mode: StudyMode, cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
         
-        if newCard.woodpeckerCardInfo.isGraduated {
-            try dealWithSm2Card(userGrade: userGrade)
+        if mode == .spaced {
+            try spacedFlow(userGrade: userGrade, deck: deck)
         } else {
-            try dealWithSteppedCard(userGrade: userGrade, deck: deck)
+            try crammingFlow(userGrade: userGrade, numberOfSteps: deck.spacedRepetitionConfig.numberOfSteps)
         }
+        
         var lastCards: [Card] = []
         if cards.count > 2 {
             lastCards = cards.suffix(from: 2).sorted(by: cardSortingFunc)
@@ -181,6 +209,36 @@ public class StudyViewModel: ObservableObject {
         
         timefromLastCard = dateHandler.today
         cards = cards.prefix(2) + lastCards
+        
+    }
+    
+    private func crammingFlow(userGrade: UserGrade, numberOfSteps: Int) throws {
+        guard var newCard = cards.first else { return }
+        let destiny = try Woodpecker.stepper(cardInfo: newCard.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: numberOfSteps)
+        
+        switch destiny {
+        case .back:
+            newCard.woodpeckerCardInfo.step -= 1
+        case .stay:
+            break
+        case .foward:
+            newCard.woodpeckerCardInfo.step += 1
+        case .graduate:
+            newCard.woodpeckerCardInfo.step = numberOfSteps - 1
+        }
+        
+        removeCard()
+        cards.append(newCard)
+    }
+    
+    private func spacedFlow(userGrade: UserGrade, deck: Deck) throws {
+        guard let newCard = cards.first else { return }
+        
+        if newCard.woodpeckerCardInfo.isGraduated {
+            try dealWithSm2Card(userGrade: userGrade)
+        } else {
+            try dealWithSteppedCard(userGrade: userGrade, deck: deck)
+        }
     }
     
     private func dealWithSm2Card(userGrade: UserGrade) throws {
@@ -214,8 +272,4 @@ public class StudyViewModel: ObservableObject {
             cards.remove(at: 0)
         }
     }
-}
-
-public enum RepMode {
-    case spaced, cramming
 }

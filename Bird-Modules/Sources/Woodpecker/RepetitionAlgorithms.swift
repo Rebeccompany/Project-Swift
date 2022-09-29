@@ -12,9 +12,7 @@ import Utils
 
 ///Woodpecker contains the algorithms used for Spaced Repetition
 public struct Woodpecker {
-    
-    
-        
+
     /**
      The scheduler static method is responsible for getting the cards to be displayed today, and the cards that have to have their dueDates modified.
      - Parameters:
@@ -77,8 +75,18 @@ public struct Woodpecker {
         return (todayReviewingCards.map { $0.id }, todayLearningCards.map { $0.id }, toModify.map { $0.id })
     }
     
+    /**
+     The dealWithLearningCard is the function that calls the stepper and modifies de card depending of the cards destiny.
+     - Parameters:
+     - card: the card to be ran by the stepper and modified.
+     - userGrade: The grade user gives to the difficulty of the card.
+     - numberOfSteps: The total number of steps. Must be greater than 1.
+     - timefromLastCard: The time that the last card was dismissed.
+     - dateHandler: the DateHandler to get a date.
+     - Returns: The modified card.
+     */
     public static func dealWithLearningCard(card: Card, userGrade: UserGrade, numberOfSteps: Int, timefromLastCard: Date, dateHandler: DateHandlerProtocol) throws -> Card {
-        let cardDestiny = try Woodpecker.stepper(cardInfo: card.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: numberOfSteps)
+        let cardDestiny = try Self.stepper(cardInfo: card.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: numberOfSteps)
         
         var modifiedCard = card
         modifiedCard.woodpeckerCardInfo.hasBeenPresented = true

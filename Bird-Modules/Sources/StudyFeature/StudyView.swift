@@ -18,9 +18,11 @@ public struct StudyView: View {
     @State private var selectedErrorMessage: AlertText = .deleteCard
     
     var deck: Deck
+    let mode: StudyMode
     
-    public init(deck: Deck) {
+    public init(deck: Deck, mode: StudyMode) {
         self.deck = deck
+        self.mode = mode
     }
     
     private func toString(_ attributed: AttributedString) -> String {
@@ -64,7 +66,7 @@ public struct StudyView: View {
                                 DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in
                                     withAnimation {
                                         do {
-                                            try viewModel.pressedButton(for: userGrade, deck: deck)
+                                            try viewModel.pressedButton(for: userGrade, deck: deck, mode: mode)
                                         } catch {
                                             selectedErrorMessage = .gradeCard
                                             showingErrorAlert = true
@@ -115,7 +117,7 @@ public struct StudyView: View {
             })
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                viewModel.startup(deck: deck)
+                viewModel.startup(deck: deck, mode: mode)
             }
             
             .alert(isPresented: $showingErrorAlert) {
@@ -132,6 +134,6 @@ struct StudyView_Previews: PreviewProvider {
     static var repo: DeckRepositoryMock { DeckRepositoryMock() }
     
     static var previews: some View {
-        StudyView(deck: repo.decks.first { $0.id == repo.deckWithCardsId }!)
+        StudyView(deck: repo.decks.first { $0.id == repo.deckWithCardsId }!, mode: .spaced)
     }
 }

@@ -83,7 +83,8 @@ public struct DeckView: View {
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
-                deck: viewModel.deck  
+                deck: viewModel.deck,
+                mode: .spaced
             )
         }
     }
