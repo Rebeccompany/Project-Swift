@@ -36,7 +36,7 @@ struct DeckTableView: View {
     
     @ViewBuilder
     private var list: some View {
-        List(sortedDecks) { deck in
+        List(sortedDecks, selection: $viewModel.selection) { deck in
             NavigationLink(value: StudyRoute.deck(deck)) {
                 cell(for: deck)
             }
