@@ -18,7 +18,6 @@ import Habitat
 public class DeckViewModel: ObservableObject {
     @Published var searchFieldContent: String
     @Published var cards: [Card]
-    @Published var editingFlashcard: Card?
     
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
