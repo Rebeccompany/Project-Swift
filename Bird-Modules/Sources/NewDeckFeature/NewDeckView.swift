@@ -18,13 +18,15 @@ public struct NewDeckView: View {
     @State private var activeAlert: ActiveAlert = .error
     @Environment(\.dismiss) private var dismiss
     @FocusState private var selectedField: Int?
+    @Binding private var editMode: EditMode
     
     var editingDeck: Deck?
     var collection: DeckCollection?
     
-    public init(collection: DeckCollection?, editingDeck: Deck?) {
+    public init(collection: DeckCollection?, editingDeck: Deck?, editMode: Binding<EditMode>) {
         self.collection = collection
         self.editingDeck = editingDeck
+        self._editMode = editMode
     }
     
     public var body: some View {
@@ -82,6 +84,7 @@ public struct NewDeckView: View {
                         Button {
                             activeAlert = .confirm
                             showingAlert = true
+                            editMode = .inactive
                         } label: {
                             Text("Apagar Deck")
                         }
@@ -143,6 +146,7 @@ public struct NewDeckView: View {
                         } else {
                             do {
                                 try viewModel.editDeck(editingDeck: editingDeck)
+                                editMode = .inactive
                                 dismiss()
                             } catch {
                                 activeAlert = .error
@@ -156,6 +160,7 @@ public struct NewDeckView: View {
                 
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") {
+                        editMode = .inactive
                         dismiss()
                     }
                     .foregroundColor(.red)
@@ -177,7 +182,7 @@ public struct NewDeckView: View {
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
-            NewDeckView(collection: nil, editingDeck: nil)
+            NewDeckView(collection: nil, editingDeck: nil, editMode: .constant(.active))
                 .preferredColorScheme(.dark)
         }
     }

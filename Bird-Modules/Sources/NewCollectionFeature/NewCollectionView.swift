@@ -86,6 +86,7 @@ public struct NewCollectionView: View {
                                      primaryButton: .destructive(Text("Apagar")) {
                                         do {
                                             try viewModel.deleteCollection(editingCollection: editingCollection)
+                                            editMode = .inactive
                                             dismiss()
                                         } catch {
                                             activeAlert = .error
@@ -109,6 +110,7 @@ public struct NewCollectionView: View {
                     }
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancelar") {
+                            editMode = .inactive
                             dismiss()
                         }
                         .foregroundColor(Color.red)

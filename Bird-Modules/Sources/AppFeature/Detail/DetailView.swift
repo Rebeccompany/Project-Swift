@@ -119,7 +119,7 @@ struct DetailView: View {
         .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
         .navigationTitle(viewModel.detailTitle)
         .sheet(isPresented: $presentDeckEdition) {
-            NewDeckView(collection: viewModel.selectedCollection, editingDeck: viewModel.editingDeck)
+            NewDeckView(collection: viewModel.selectedCollection, editingDeck: viewModel.editingDeck, editMode: .constant(.active))
         }
     }
     
