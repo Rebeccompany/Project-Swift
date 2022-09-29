@@ -84,7 +84,8 @@ public struct DeckView: View {
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
-                deck: deck
+                deck: deck,
+                mode: .spaced
             )
         }
     }
@@ -124,12 +125,22 @@ public struct DeckView: View {
                     shouldDisplayStudyView = true
                 }
                 .disabled(!viewModel.checkIfCanStudy(deck))
-                .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck)))
+                .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck), isFilled: true))
                 .listRowInsets(.zero)
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
                 .padding()
-                
+
+                Button("Intenso") {
+                    shouldDisplayStudyView = true
+                }
+                .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
+                .listRowInsets(.zero)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .padding(.horizontal)
+                .padding(.bottom)
+                        
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 180), spacing: 12, alignment: .top)], spacing: 12) {
                     ForEach(viewModel.cardsSearched) { card in
                         FlashcardCell(card: card) {
@@ -169,7 +180,7 @@ struct DeckView_Previews: PreviewProvider {
         NavigationView {
             DeckView(
                 deck: .constant(DeckRepositoryMock()
-                    .decks[0])
+                    .decks[1])
             )
         }
         .preferredColorScheme(.dark)
