@@ -21,6 +21,14 @@ struct DetailView: View {
     @State private var presentDeckEdition = false
     @State private var shouldDisplayAlert = false
     
+    @State var editingCollection: DeckCollection?
+    @State var editingDeck: Deck?
+    
+    init(editingCollection: DeckCollection?, editingDeck: Deck?) {
+        self.editingCollection = editingCollection
+        self.editingDeck = editingDeck
+    }
+    
     var body: some View {
         Group {
             if viewModel.decks.isEmpty {
@@ -101,7 +109,7 @@ struct DetailView: View {
                         .foregroundColor(HBColor.actionColor)
                 }
                 .popover(isPresented: $presentDeckEdition) {
-                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: viewModel.editingDeck)
+                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck)
                     .frame(minWidth: 300, minHeight: 600)
                 }
             }
@@ -143,6 +151,7 @@ struct DetailView: View {
     private var content: some View {
         if viewModel.detailType == .grid {
             DeckGridView { deck in
+                editingDeck = deck
                 viewModel.updateEditingDeck(with: deck)
                 presentDeckEdition = true
             }

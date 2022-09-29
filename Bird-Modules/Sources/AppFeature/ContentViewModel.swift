@@ -20,10 +20,6 @@ public final class ContentViewModel: ObservableObject {
     @Published var collections: [DeckCollection]
     @Published var decks: [Deck]
     
-    // MARK: CRUD Published
-    @Published var editingDeck: Deck?
-    @Published var editingCollection: DeckCollection?
-    
     // MARK: View Bindings
     @Published var sidebarSelection: SidebarRoute? = .allDecks
     @Published var selection: Set<Deck.ID>
