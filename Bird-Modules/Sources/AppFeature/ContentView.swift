@@ -54,7 +54,7 @@ public struct ContentView: View {
     @ViewBuilder
     private var detail: some View {
         Router(path: $path) {
-            DetailView()
+            DetailView(editMode: $editModeForDeck)
             .environmentObject(viewModel)
             .environment(\.editMode, $editModeForDeck)
         } destination: { (route: StudyRoute) in

@@ -84,7 +84,6 @@ public struct NewDeckView: View {
                         Button {
                             activeAlert = .confirm
                             showingAlert = true
-                            editMode = .inactive
                         } label: {
                             Text("Apagar Deck")
                         }
@@ -105,6 +104,7 @@ public struct NewDeckView: View {
                                      primaryButton: .destructive(Text("Apagar")) {
                                         do {
                                             try viewModel.deleteDeck(editingDeck: editingDeck)
+                                            editMode = .inactive
                                             dismiss()
                                         } catch {
                                             activeAlert = .error
