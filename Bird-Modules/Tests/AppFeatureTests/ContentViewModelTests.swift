@@ -9,6 +9,7 @@ import XCTest
 @testable import AppFeature
 import Models
 import Storage
+import Habitat
 import Combine
 
 //TODO: Delete Deck
@@ -17,16 +18,18 @@ final class ContentViewModelTests: XCTestCase {
     
     var sut: ContentViewModel!
     var deckRepositoryMock: DeckRepositoryMock!
+    var displayCacherMock: DisplayCacher!
+    var localStorageMock: LocalStorageMock!
     var collectionRepositoryMock: CollectionRepositoryMock!
     var cancelables: Set<AnyCancellable>!
 
     override func setUp() {
         deckRepositoryMock = DeckRepositoryMock()
         collectionRepositoryMock = CollectionRepositoryMock()
-        sut = ContentViewModel(
-            collectionRepository: collectionRepositoryMock,
-            deckRepository: deckRepositoryMock
-        )
+        localStorageMock = LocalStorageMock()
+        displayCacherMock = DisplayCacher(localStorage: localStorageMock)
+        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock, displayCacher: displayCacherMock)
+        sut = ContentViewModel()
         cancelables = Set<AnyCancellable>()
         sut.startup()
     }
@@ -62,6 +65,33 @@ final class ContentViewModelTests: XCTestCase {
             .store(in: &cancelables)
         
         wait(for: [collectionExpectation, deckExpectation], timeout: 1)
+    }
+    
+    func testStartupDetail() {
+        displayCacherMock.saveDetailType(detailType: .table)
+        XCTAssertEqual(sut.detailType, .grid)
+        
+        sut.startup()
+        
+        XCTAssertEqual(.table, sut.detailType)
+    }
+    
+    func testDeckBindingGet() {
+        let deck = deckRepositoryMock.decks[0]
+        
+        let binding = sut.bindingToDeck(deck)
+        
+        XCTAssertEqual(deck, binding.wrappedValue)
+    }
+    
+    func testDeckBindingSet() {
+        let deck = deckRepositoryMock.decks[0]
+        
+        let binding = sut.bindingToDeck(deck)
+        
+        let newName = "Alterado"
+        binding.name.wrappedValue = newName
+        XCTAssertEqual(sut.decks[0].name, newName)
     }
     
     func testDeckReactionToSidebarSelection() {
@@ -257,5 +287,14 @@ final class ContentViewModelTests: XCTestCase {
         sut.selection.insert(UUID())
         
         XCTAssertThrowsError(try sut.deleteDecks())
+    }
+    
+    func testChangeDetailType() throws {
+        XCTAssertEqual(sut.detailType, .grid)
+        let current = displayCacherMock.getCurrentDetailType()
+        XCTAssertNil(current)
+        sut.changeDetailType(for: .table)
+        XCTAssertEqual(sut.detailType, .table)
+        XCTAssertEqual(.table, displayCacherMock.getCurrentDetailType())
     }
 }

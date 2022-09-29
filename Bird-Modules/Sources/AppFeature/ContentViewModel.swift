@@ -10,6 +10,8 @@ import Models
 import Combine
 import Storage
 import DeckFeature
+import Habitat
+import SwiftUI
 
 //swiftlint:disable trailing_closure
 public final class ContentViewModel: ObservableObject {
@@ -30,8 +32,10 @@ public final class ContentViewModel: ObservableObject {
     @Published var sortOrder: [KeyPathComparator<Deck>]
 
     // MARK: Repositories
-    private let collectionRepository: CollectionRepositoryProtocol
-    private let deckRepository: DeckRepositoryProtocol
+    @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
+    @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
+    @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
+    
     private var cancellables: Set<AnyCancellable>
     
     var detailTitle: String {
@@ -52,12 +56,7 @@ public final class ContentViewModel: ObservableObject {
         }
     }
     
-    public init(
-        collectionRepository: CollectionRepositoryProtocol = CollectionRepository.shared,
-        deckRepository: DeckRepositoryProtocol = DeckRepository.shared
-    ) {
-        self.collectionRepository = collectionRepository
-        self.deckRepository = deckRepository
+    public init() {
         self.collections = []
         self.cancellables = .init()
         self.decks = []
@@ -99,6 +98,31 @@ public final class ContentViewModel: ObservableObject {
         deckListener
             .assign(to: &$decks)
         
+        detailType = displayCacher.getCurrentDetailType() ?? .grid
+    }
+    
+    func bindingToDeck(_ deck: Deck) -> Binding<Deck> {
+        Binding<Deck> { [weak self] in
+            guard let self = self,
+                  let index = self.decks.firstIndex(where: { $0.id == deck.id }) else {
+                preconditionFailure("A deck that do not exist was passed")
+            }
+            
+            return self.decks[index]
+            
+        } set: { [weak self] newValue in
+            guard let self = self,
+                  let index = self.decks.firstIndex(where: { $0.id == newValue.id }) else {
+                preconditionFailure("A deck that do not exist was passed")
+            }
+            
+            return self.decks[index] = newValue
+        }
+    }
+    
+    func changeDetailType(for newDetailType: DetailDisplayType) {
+        detailType = newDetailType
+        displayCacher.saveDetailType(detailType: newDetailType)
     }
     
     private func mapDecksBySidebarSelection(decks: [Deck], sidebarSelection: SidebarRoute?) -> [Deck] {

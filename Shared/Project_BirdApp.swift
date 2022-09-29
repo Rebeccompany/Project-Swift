@@ -10,11 +10,11 @@ import AppFeature
 
 @main
 struct Project_BirdApp: App {
-    @StateObject private var viewModel = ContentViewModel()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {
         WindowGroup {
-            ContentView(viewModel: viewModel)
+            ContentView()
         }
     }
 }

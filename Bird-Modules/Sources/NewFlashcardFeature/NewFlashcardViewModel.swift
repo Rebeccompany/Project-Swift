@@ -11,44 +11,22 @@ import HummingBird
 import Storage
 import Utils
 import Combine
+import Habitat
 
 public class NewFlashcardViewModel: ObservableObject {
     @Published var flashcardFront: String = ""
     @Published var flashcardBack: String = ""
     @Published var currentSelectedColor: CollectionColor? = CollectionColor.red
-    @Published var canSubmit: Bool
+    @Published var canSubmit: Bool = false
     @Published var showingErrorAlert: Bool = false
-    @Published var editingFlashcard: Card?
     
-    var colors: [CollectionColor]
-    var deck: Deck
-    private let deckRepository: DeckRepositoryProtocol
-    private let dateHandler: DateHandlerProtocol
-    private let uuidGenerator: UUIDGeneratorProtocol
+    var colors: [CollectionColor] = CollectionColor.allCases
+
+    @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
+    @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
+    @Dependency(\.uuidGenerator) private var uuidGenerator: UUIDGeneratorProtocol
     
-    
-    public init(
-        colors: [CollectionColor],
-        editingFlashcard: Card? = nil,
-        deckRepository: DeckRepositoryProtocol,
-        deck: Deck,
-        dateHandler: DateHandlerProtocol = DateHandler(),
-        uuidGenerator: UUIDGeneratorProtocol = UUIDGenerator()
-    ) {
-        
-        self.colors = colors
-        self.deck = deck
-        self.deckRepository = deckRepository
-        self.dateHandler = dateHandler
-        self.uuidGenerator = uuidGenerator
-        self.canSubmit = false
-        self.editingFlashcard = editingFlashcard
-        
-        if let editingFlashcard = editingFlashcard {
-            setupDeckContentIntoFields(editingFlashcard)
-        }
-    }
-    
+
     private func setupDeckContentIntoFields(_ card: Card) {
         flashcardFront = NSAttributedString(card.front).string
         flashcardBack = NSAttributedString(card.back).string
@@ -63,12 +41,16 @@ public class NewFlashcardViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func startUp() {
+    func startUp(editingFlashcard: Card?) {
         canSubmitPublisher
             .assign(to: &$canSubmit)
+        
+        if let editingFlashcard {
+            setupDeckContentIntoFields(editingFlashcard)
+        }
     }
     
-    func createFlashcard() throws {
+    func createFlashcard(for deck: Deck) throws {
         guard let selectedColor = currentSelectedColor else {
             return
         }
@@ -85,7 +67,7 @@ public class NewFlashcardViewModel: ObservableObject {
             to: deck)
     }
     
-    func editFlashcard() throws {
+    func editFlashcard(editingFlashcard: Card?) throws {
         guard let selectedColor = currentSelectedColor, var editingFlashcard = editingFlashcard else {
             return
         }
@@ -98,7 +80,7 @@ public class NewFlashcardViewModel: ObservableObject {
         try deckRepository.editCard(editingFlashcard)
     }
     
-    func deleteFlashcard() throws {
+    func deleteFlashcard(editingFlashcard: Card?) throws {
         guard let editingFlashcard = editingFlashcard else {
             return
         }

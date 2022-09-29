@@ -28,13 +28,6 @@ let package = Package(
         ),
         
         .library(
-            name: "EditFlashcardFeature",
-            targets: [
-                "EditFlashcardFeature"
-            ]
-        ),
-        
-        .library(
             name: "StudyFeature",
             targets: [
                 "StudyFeature"
@@ -96,11 +89,17 @@ let package = Package(
                 "HummingBird"
             ]
         ),
+        
         .library(
             name: "Flock",
             targets: [
                 "Flock"
             ]
+        ),
+        
+        .library(
+            name: "Habitat",
+            targets: ["Habitat"]
         )
     ],
     
@@ -127,6 +126,7 @@ let package = Package(
                 "DeckFeature",
                 "Models",
                 "Flock",
+                "Habitat",
                 "NewFlashcardFeature"
             ]
         ),
@@ -141,14 +141,8 @@ let package = Package(
                 "Woodpecker",
                 "Utils",
                 "NewFlashcardFeature",
-                "StudyFeature"
-            ]
-        ),
-        
-        .target(
-            name: "EditFlashcardFeature",
-            dependencies: [
-                "Models"
+                "StudyFeature",
+                "Habitat"
             ]
         ),
             
@@ -158,7 +152,8 @@ let package = Package(
                      "HummingBird",
                      "Woodpecker",
                      "Storage",
-                     "Utils"
+                     "Utils",
+                     "Habitat"
                 ]
         ),
         
@@ -179,7 +174,8 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Storage",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
@@ -189,7 +185,8 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Storage",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
@@ -199,7 +196,8 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Storage",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
@@ -235,6 +233,14 @@ let package = Package(
             name: "Flock"
         ),
         
+        .target(
+            name: "Habitat",
+            dependencies: [
+                "Storage",
+                "Utils"
+            ]
+        ),
+        
         // MARK: Test Targets
         .testTarget(
             name: "ImportingFeatureTests",
@@ -248,7 +254,8 @@ let package = Package(
             dependencies: [
                 "AppFeature",
                 "Models",
-                "Storage"
+                "Storage",
+                "Habitat"
             ]
         ),
         
@@ -272,7 +279,8 @@ let package = Package(
             dependencies: [
                 "StudyFeature",
                 "Models",
-                "Storage"
+                "Storage",
+                "Habitat"
             ]
         ),
         
@@ -289,7 +297,8 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Models",
-                "NewCollectionFeature"
+                "NewCollectionFeature",
+                "Habitat"
             ]
         ),
         
@@ -301,7 +310,8 @@ let package = Package(
                 "Models",
                 "NewDeckFeature",
                 "HummingBird",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
@@ -312,7 +322,8 @@ let package = Package(
                 "Models",
                 "NewFlashcardFeature",
                 "HummingBird",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         ),
         
@@ -332,7 +343,8 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "Woodpecker",
-                "Utils"
+                "Utils",
+                "Habitat"
             ]
         )
     ]
