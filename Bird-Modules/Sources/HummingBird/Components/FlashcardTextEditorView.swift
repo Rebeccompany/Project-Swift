@@ -22,12 +22,12 @@ public struct FlashcardTextEditorView: View {
         VStack(alignment: .leading) {
             Text(side)
                 .foregroundColor(.white)
-                .padding()
+                .padding([.leading, .top])
                 .font(.system(size: 16))
             
             TextEditor(text: $cardText)
                 .foregroundColor(.white)
-                .padding()
+                .padding([.horizontal, .bottom], 16)
                 .scrollContentBackground(.hidden)
         }
         .background(color)
@@ -38,7 +38,6 @@ public struct FlashcardTextEditorView: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(.white, lineWidth: 3)
         )
-        .padding()
     }
 }
 
