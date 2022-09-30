@@ -24,7 +24,7 @@ public struct LargeButtonStyle: ButtonStyle {
             foregroundColor = HBColor.actionColor
         } else {
             backgroundColor = HBColor.actionColor
-            foregroundColor = HBColor.primaryBackground
+            foregroundColor = HBColor.intenseButtonBackground
         }
     }
     
@@ -53,14 +53,14 @@ public struct LargeButtonStyle: ButtonStyle {
                 Spacer()
             }
             .frame(minHeight: 48)
-            .foregroundColor(HBColor.collectionGray.opacity(configuration.isPressed ? 0.5 : 1))
-            .background(Color.white.opacity(configuration.isPressed ? 0.5 : 1))
+            .foregroundColor(HBColor.disabledStudyButtonForeground.opacity(configuration.isPressed ? 0.5 : 1))
+            .background(HBColor.disabledStudyButtonBackground.opacity(configuration.isPressed ? 0.5 : 1))
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(HBColor.collectionGray.opacity(configuration.isPressed ? 0.5 : 1), lineWidth: 1.5)
+                    .stroke(HBColor.disabledStudyButtonForeground.opacity(configuration.isPressed ? 0.5 : 1), lineWidth: 1.5)
             )
-            .shadow(color: HBColor.collectionGray.opacity(configuration.isPressed ? 0 : 0.2), radius: 6, x: 2, y: 2)
+            .shadow(color: HBColor.disabledStudyButtonForeground.opacity(configuration.isPressed ? 0 : 0.2), radius: 6, x: 2, y: 2)
         }
     }
 }
