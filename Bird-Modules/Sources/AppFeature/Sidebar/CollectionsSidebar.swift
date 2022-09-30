@@ -102,6 +102,7 @@ struct CollectionsSidebar: View {
             ToolbarItem {
                 Button {
                     editingCollection = nil
+                    presentCollectionCreation = true
                 } label: {
                     Image(systemName: "plus")
                 }
