@@ -44,7 +44,8 @@ public struct ContentView: View {
     private var sidebar: some View {
         CollectionsSidebar(
             selection: $viewModel.sidebarSelection,
-            isCompact: horizontalSizeClass == .compact
+            isCompact: horizontalSizeClass == .compact,
+            editMode: $editModeForCollection
         )
         .environmentObject(viewModel)
         .environment(\.editMode, $editModeForCollection)
@@ -53,7 +54,7 @@ public struct ContentView: View {
     @ViewBuilder
     private var detail: some View {
         Router(path: $path) {
-            DetailView(editingCollection: DeckCollection(id: UUID.init(), name: "Coleção", icon: .abc, datesLogs: DateLogs.init(), decksIds: []), editingDeck: nil)
+            DetailView(editMode: $editModeForDeck)
             .environmentObject(viewModel)
             .environment(\.editMode, $editModeForDeck)
         } destination: { (route: StudyRoute) in

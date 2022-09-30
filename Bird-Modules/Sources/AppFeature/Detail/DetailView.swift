@@ -14,22 +14,23 @@ import Storage
 import Habitat
 
 
-struct DetailView: View {
+public struct DetailView: View {
     
     @EnvironmentObject private var viewModel: ContentViewModel
-    @Environment(\.editMode) private var editMode
+    @Binding private var editMode: EditMode
     @State private var presentDeckEdition = false
     @State private var shouldDisplayAlert = false
     
     @State var editingCollection: DeckCollection?
     @State var editingDeck: Deck?
     
-    init(editingCollection: DeckCollection?, editingDeck: Deck?) {
+    init(editingCollection: DeckCollection?, editingDeck: Deck?, editMode: Binding<EditMode>) {
         self.editingCollection = editingCollection
         self.editingDeck = editingDeck
+        self._editMode = editMode
     }
     
-    var body: some View {
+    public var body: some View {
         Group {
             if viewModel.decks.isEmpty {
                 emptyState
@@ -37,8 +38,8 @@ struct DetailView: View {
                 content
             }
         }
-        .searchable(text: $viewModel.searchText)
-        .toolbar(editMode?.wrappedValue.isEditing ?? false ? .visible : .hidden,
+        .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
+        .toolbar(editMode.isEditing ? .visible : .hidden,
                  for: .bottomBar)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
@@ -67,7 +68,7 @@ struct DetailView: View {
                     } label: {
                         Label("Ícones", systemImage: "rectangle.grid.2x2")
                     }
-                    .disabled(editMode?.wrappedValue.isEditing ?? false)
+                    .disabled(editMode.isEditing)
                     
                     Button {
                         viewModel.changeDetailType(for: .table)
@@ -114,7 +115,7 @@ struct DetailView: View {
                 }
             }
         }
-        .onChange(of: editMode?.wrappedValue) { newValue in
+        .onChange(of: editMode) { newValue in
             if newValue == .active {
                 viewModel.detailType = .table
                 viewModel.changeDetailType(for: .table)

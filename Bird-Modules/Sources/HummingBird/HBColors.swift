@@ -144,14 +144,14 @@ public enum HBColor {
     public static var primaryBackground: Color {
         Color(
             light: "#F2F2F7",
-            dark: "#191F2D"
+            dark: "#121212"
         )
     }
     
     public static var secondaryBackground: Color {
         Color(
             light: "#FEFEFE",
-            dark: "#2B354C"
+            dark: "#222222"
         )
     }
     
@@ -172,14 +172,14 @@ public enum HBColor {
     public static var selectIconBackground: Color {
         Color(
             light: "F4F4F4",
-            dark: "191F2D"
+            dark: "121212"
         )
     }
     
     public static var selectIconGridColor: Color {
         Color(
             light: "FFFFFF",
-            dark: "2B354C"
+            dark: "222222"
         )
     }
     

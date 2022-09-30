@@ -175,6 +175,8 @@ public final class ContentViewModel: ObservableObject {
             .forEach { deck in
                 try deckRepository.deleteDeck(deck)
             }
+            
+        selection = Set()
     }
     
     func editDeck() -> Deck? {
@@ -194,6 +196,8 @@ public final class ContentViewModel: ObservableObject {
         guard status == false else {
             return
         }
+        
+        selection = Set()
     }
     
     func didCollectionPresentationStatusChanged(_ status: Bool) {

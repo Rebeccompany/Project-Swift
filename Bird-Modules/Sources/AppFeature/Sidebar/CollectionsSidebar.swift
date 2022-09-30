@@ -11,7 +11,7 @@ import NewCollectionFeature
 import HummingBird
 
 struct CollectionsSidebar: View {
-    @Environment(\.editMode) private var editMode
+    @Binding private var editMode: EditMode
     @EnvironmentObject private var viewModel: ContentViewModel
     @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
@@ -19,8 +19,9 @@ struct CollectionsSidebar: View {
     @State private var editingCollection: DeckCollection? = nil
     private var isCompact: Bool
     
-    init(selection: Binding<SidebarRoute?>, isCompact: Bool) {
+    init(selection: Binding<SidebarRoute?>, isCompact: Bool, editMode: Binding<EditMode>) {
         self._selection = selection
+        self._editMode = editMode
         self.isCompact = isCompact
     }
     
@@ -44,7 +45,7 @@ struct CollectionsSidebar: View {
                             HStack {
                                 Label(collection.name, systemImage: collection.icon.rawValue)
                                 Spacer()
-                                if editMode?.wrappedValue.isEditing ?? false {
+                                if editMode.isEditing {
                                     Image(systemName: "info.circle")
                                         .foregroundColor(HBColor.actionColor)
                                         .onTapGesture {
