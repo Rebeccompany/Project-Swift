@@ -54,7 +54,7 @@ public struct LargeButtonStyle: ButtonStyle {
             }
             .frame(minHeight: 48)
             .foregroundColor(HBColor.collectionGray.opacity(configuration.isPressed ? 0.5 : 1))
-            .background(foregroundColor.opacity(configuration.isPressed ? 0.5 : 1))
+            .background(Color.white.opacity(configuration.isPressed ? 0.5 : 1))
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
