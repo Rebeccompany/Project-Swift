@@ -100,7 +100,7 @@ public struct DeckView: View {
                         editingFlashcard = nil
                         shouldDisplayNewFlashcard = true
                     } label: {
-                        Text(NSLocalizedString("criar_flashcard", bundle: .module, comment: ""))
+                        Text("criar_flashcard", bundle: .module)
                     }
                     .buttonStyle(LargeButtonStyle(isDisabled: false))
                     .padding()
