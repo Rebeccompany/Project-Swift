@@ -183,6 +183,27 @@ public enum HBColor {
         )
     }
     
+    public static var disabledStudyButtonBackground: Color {
+        Color(
+            light: "FFFFFF",
+            dark: "000000"
+        )
+    }
+    
+    public static var disabledStudyButtonForeground: Color {
+        Color(
+            light: "8C8C8C",
+            dark: "959595"
+        )
+    }
+    
+    public static var intenseButtonBackground: Color {
+        Color(
+            light: "F2F2F7",
+            dark: "222222"
+        )
+    }
+    
 
     public static func color(for collectionColor: CollectionColor) -> Color {
         switch collectionColor {
@@ -210,6 +231,7 @@ public enum HBColor {
             return Self.collectionGray
         case .darkBlue:
             return Self.collectionDarkBlue
+        
         }
     }
 }
