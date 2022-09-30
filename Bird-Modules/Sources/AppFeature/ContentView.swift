@@ -53,7 +53,7 @@ public struct ContentView: View {
     @ViewBuilder
     private var detail: some View {
         Router(path: $path) {
-            DetailView()
+            DetailView(editingCollection: DeckCollection(id: UUID.init(), name: "Coleção", icon: .abc, datesLogs: DateLogs.init(), decksIds: []), editingDeck: nil)
             .environmentObject(viewModel)
             .environment(\.editMode, $editModeForDeck)
         } destination: { (route: StudyRoute) in

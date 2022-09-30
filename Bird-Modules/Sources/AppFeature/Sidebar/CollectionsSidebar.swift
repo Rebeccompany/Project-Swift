@@ -16,6 +16,7 @@ struct CollectionsSidebar: View {
     @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
     @State private var presentCollectionCreation = false
+    @State private var editingCollection: DeckCollection? = nil
     private var isCompact: Bool
     
     init(selection: Binding<SidebarRoute?>, isCompact: Bool) {
@@ -47,7 +48,7 @@ struct CollectionsSidebar: View {
                                     Image(systemName: "info.circle")
                                         .foregroundColor(HBColor.actionColor)
                                         .onTapGesture {
-                                            viewModel.editCollection(collection)
+                                            editingCollection = collection
                                             presentCollectionEdition = true
                                         }
                                         .accessibility(addTraits: .isButton)
@@ -59,7 +60,7 @@ struct CollectionsSidebar: View {
                         )
                         .contextMenu {
                             Button {
-                                viewModel.editCollection(collection)
+                                editingCollection = collection
                                 presentCollectionEdition = true
                             } label: {
                                 Label("Editar", systemImage: "pencil")
@@ -67,12 +68,16 @@ struct CollectionsSidebar: View {
                             
                             Button(role: .destructive) {
                                 try? viewModel.deleteCollection(collection)
+                                editingCollection = nil
                             } label: {
                                 Label("Deletar", systemImage: "trash")
                             }
                         }
                     }
-                    .onDelete { try? viewModel.deleteCollection(at: $0) }
+                    .onDelete {
+                        try? viewModel.deleteCollection(at: $0)
+                        editingCollection = nil
+                    }
                 }
                 
             } header: {
@@ -88,14 +93,14 @@ struct CollectionsSidebar: View {
                 EditButton()
                     .popover(isPresented: $presentCollectionEdition) {
                         NewCollectionView(
-                            editingCollection: viewModel.editingCollection
+                            editingCollection: editingCollection
                         )
                         .frame(minWidth: 300, minHeight: 600)
                     }
             }
             ToolbarItem {
                 Button {
-                    viewModel.createCollection()
+                    editingCollection = nil
                     withAnimation {
                         presentCollectionCreation = true
                     }
@@ -104,7 +109,7 @@ struct CollectionsSidebar: View {
                 }
                 .popover(isPresented: $presentCollectionCreation) {
                     NewCollectionView(
-                        editingCollection: viewModel.editingCollection
+                        editingCollection: editingCollection
                     )
                     .frame(minWidth: 300, minHeight: 600)
                 }
@@ -117,7 +122,7 @@ struct CollectionsSidebar: View {
         VStack {
             EmptyStateView(component: .collection)
             Button {
-                viewModel.createCollection()
+                editingCollection = nil
                 presentCollectionEdition = true
             } label: {
                 Text("Criar Coleção")

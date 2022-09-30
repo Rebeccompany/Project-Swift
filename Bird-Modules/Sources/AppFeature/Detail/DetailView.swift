@@ -43,7 +43,7 @@ struct DetailView: View {
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
                 Button {
-                    viewModel.editDeck()
+                    editingDeck = viewModel.editDeck()
                     presentDeckEdition = true
                 } label: {
                     Text("Editar")
@@ -123,6 +123,7 @@ struct DetailView: View {
         .alert(viewModel.selection.isEmpty ? "Nada foi selecionado" : "Você tem certeza que deseja apagar?", isPresented: $shouldDisplayAlert) {
             Button("Apagar", role: .destructive) {
                 try? viewModel.deleteDecks()
+                editingDeck = nil
             }
             .disabled(viewModel.selection.isEmpty)
             
@@ -152,7 +153,6 @@ struct DetailView: View {
         if viewModel.detailType == .grid {
             DeckGridView { deck in
                 editingDeck = deck
-                viewModel.updateEditingDeck(with: deck)
                 presentDeckEdition = true
             }
         } else {
