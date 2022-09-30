@@ -94,7 +94,7 @@ struct CollectionsSidebar: View {
                 EditButton()
                     .popover(isPresented: $presentCollectionEdition) {
                         NewCollectionView(
-                            editingCollection: editingCollection
+                            editingCollection: editingCollection, editMode: $editMode
                         )
                         .frame(minWidth: 300, minHeight: 600)
                     }
@@ -102,15 +102,12 @@ struct CollectionsSidebar: View {
             ToolbarItem {
                 Button {
                     editingCollection = nil
-                    withAnimation {
-                        presentCollectionCreation = true
-                    }
                 } label: {
                     Image(systemName: "plus")
                 }
                 .popover(isPresented: $presentCollectionCreation) {
                     NewCollectionView(
-                        editingCollection: editingCollection
+                        editingCollection: editingCollection, editMode: $editMode
                     )
                     .frame(minWidth: 300, minHeight: 600)
                 }

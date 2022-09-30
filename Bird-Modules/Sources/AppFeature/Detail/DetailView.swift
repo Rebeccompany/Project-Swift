@@ -20,13 +20,9 @@ public struct DetailView: View {
     @Binding private var editMode: EditMode
     @State private var presentDeckEdition = false
     @State private var shouldDisplayAlert = false
+    @State private var editingDeck: Deck? = nil
     
-    @State var editingCollection: DeckCollection?
-    @State var editingDeck: Deck?
-    
-    init(editingCollection: DeckCollection?, editingDeck: Deck?, editMode: Binding<EditMode>) {
-        self.editingCollection = editingCollection
-        self.editingDeck = editingDeck
+    init(editMode: Binding<EditMode>) {
         self._editMode = editMode
     }
     
@@ -110,7 +106,7 @@ public struct DetailView: View {
                         .foregroundColor(HBColor.actionColor)
                 }
                 .popover(isPresented: $presentDeckEdition) {
-                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck)
+                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
                     .frame(minWidth: 300, minHeight: 600)
                 }
             }
