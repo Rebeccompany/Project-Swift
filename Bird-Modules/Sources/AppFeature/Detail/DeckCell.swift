@@ -32,7 +32,7 @@ struct DeckCell: View {
                     
             Text(info.name)
                 .lineLimit(2)
-            Text("\(info.numberOfCards) cartas")
+            Text("\(info.numberOfCards) " + NSLocalizedString("cartas", bundle: .module, comment: ""))
                 .foregroundColor(.secondary)
         }
         .padding(.top)

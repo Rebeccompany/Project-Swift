@@ -28,13 +28,13 @@ struct DeckGridView: View {
                                 Button {
                                     editAction(deck)
                                 } label: {
-                                    Label("Editar", systemImage: "pencil")
+                                    Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
                                 }
                                 
                                 Button(role: .destructive) {
                                     try? viewModel.deleteDeck(deck)
                                 } label: {
-                                    Label("Deletar", systemImage: "trash")
+                                    Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
                                 }
                             }
                     }
