@@ -10,19 +10,20 @@ import HummingBird
 
 struct OnboardingView: View {
     var body: some View {
-        VStack {
-            Text("Hello World")
-//            TabView {
-//                Text("One")
-//                    .viewBackgroundColor(.red)
-//
-//                Text("Two")
-//                    .viewBackgroundColor(.orange)
-//
-//                Text("Three")
-//                    .viewBackgroundColor(.yellow)
-//                    .tabViewStyle(PageTabViewStyle())
-//            }
+        ZStack {
+            TabView {
+                OnboardingPageOneView()
+                    .padding()
+                OnboardingPageTwoView()
+                    .padding()
+                OnboardingPageThreeView()
+                    .padding()
+                OnboardingPageFourView()
+                    .padding()
+            }
+            .tabViewStyle(.page)
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
+            
         }
     }
 }
