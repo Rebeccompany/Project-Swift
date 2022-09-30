@@ -33,7 +33,7 @@ public struct DetailView: View {
                 content
             }
         }
-        .searchable(text: $viewModel.searchText)
+        .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
         .toolbar(editMode.isEditing ? .visible : .hidden,
                  for: .bottomBar)
         .toolbar {
