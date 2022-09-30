@@ -49,6 +49,19 @@ struct DeckCell: View {
             }
             .frame(height: 116)
     }
+    
+    struct Style: ButtonStyle {
+        
+        private var color: CollectionColor
+        
+        init(color: CollectionColor) {
+            self.color = color
+        }
+        
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+        }
+    }
 }
 
 struct DeckCell_Previews: PreviewProvider {
