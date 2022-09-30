@@ -16,7 +16,7 @@ struct CollectionsSidebar: View {
     @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
     @State private var presentCollectionCreation = false
-    @State private var editingCollection: DeckCollection? = nil
+    @State private var editingCollection: DeckCollection?
     private var isCompact: Bool
     
     init(selection: Binding<SidebarRoute?>, isCompact: Bool, editMode: Binding<EditMode>) {
