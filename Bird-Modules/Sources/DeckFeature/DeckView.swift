@@ -42,7 +42,7 @@ public struct DeckView: View {
             viewModel.startup(deck)
         }
         .listStyle(.plain)
-        .searchable(text: $viewModel.searchFieldContent)
+        .searchable(text: $viewModel.searchFieldContent, placement: .navigationBarDrawer(displayMode: .always))
         .alert(isPresented: $showingAlert) {
             switch activeAlert {
             case .error:
