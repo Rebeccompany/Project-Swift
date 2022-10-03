@@ -37,7 +37,7 @@ public struct DateHandler: DateHandlerProtocol {
 }
 
 extension Date {
-    init(timeIntervalSince1970: TimeInterval, timeZone: TimeZone) {
+    public init(timeIntervalSince1970: TimeInterval, timeZone: TimeZone) {
         self.init(timeIntervalSince1970: timeIntervalSince1970)
         var cal = Calendar(identifier: .gregorian)
         cal.timeZone = timeZone
