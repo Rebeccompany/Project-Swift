@@ -363,12 +363,12 @@ class StudyViewModelTests: XCTestCase {
         try sut.pressedButton(for: .correctEasy, deck: deck, mode: .cramming, cardSortingFunc: sortCardByStepMock)
         let deckCards = deck.cardsIds.sorted(by: sortIds)
         
-        let resultCard = sut.cards.first(where: {$0.id == firstCard.id})
         let result = sut.cards.map(\.id).sorted(by: sortIds)
         
-        XCTAssertEqual(deckCards, result)
-        
-        XCTAssertEqual(resultCard?.woodpeckerCardInfo.step, deck.spacedRepetitionConfig.numberOfSteps - 1)
+        for deck in result {
+            XCTAssertNotEqual(deck, firstCard.id)
+        }
+        XCTAssertNotEqual(deckCards, result)
     }
 
 
@@ -412,7 +412,7 @@ class StudyViewModelTests: XCTestCase {
         let card = sut.cards.first!
         XCTAssertEqual(card.woodpeckerCardInfo.interval, 0)
         try sut.pressedButton(for: .correctEasy, deck: deck, mode: .spaced)
-        try sut.saveChanges(deck: deck)
+        try sut.saveChanges(deck: deck, mode: .spaced)
       
         deckRepository.fetchCardById(deckRepository.decks[1].cardsIds.first!)
             .assertNoFailure()
