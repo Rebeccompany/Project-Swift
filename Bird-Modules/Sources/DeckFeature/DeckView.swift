@@ -90,7 +90,7 @@ public struct DeckView: View {
             NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
         }
         .sheet(isPresented: $test) {
-            ImportView()
+            ImportView(deck: deck, isPresenting: $test)
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(

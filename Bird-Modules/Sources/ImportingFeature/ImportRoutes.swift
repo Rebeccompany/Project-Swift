@@ -8,5 +8,5 @@
 import Foundation
 
 enum ImportRoute: Hashable {
-    case preview(cards: [ImportedCardInfo])
+    case preview
 }
