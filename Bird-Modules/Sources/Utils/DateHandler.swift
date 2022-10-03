@@ -29,20 +29,9 @@ public struct DateHandler: DateHandlerProtocol {
     
     public func isToday(date: Date) -> Bool {
         var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = TimeZone.current
+        cal.timeZone = TimeZone.gmt
         
         
         return cal.dateComponents([.day], from: date) == cal.dateComponents([.day], from: today)
-    }
-}
-
-extension Date {
-    public init(timeIntervalSince1970: TimeInterval, timeZone: TimeZone) {
-        self.init(timeIntervalSince1970: timeIntervalSince1970)
-        var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = timeZone
-        
-        let secondsFromGmt = cal.timeZone.secondsFromGMT()
-        self = self.addingTimeInterval(TimeInterval(secondsFromGmt))
     }
 }

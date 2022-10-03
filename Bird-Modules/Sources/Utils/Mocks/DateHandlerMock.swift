@@ -14,7 +14,7 @@ public class DateHandlerMock: DateHandlerProtocol {
     
     public var today: Date {
         var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = TimeZone.current
+        cal.timeZone = TimeZone.gmt
         let secondsFomGMT = cal.timeZone.secondsFromGMT()
         let jan1stCurrent = Double(secondsFomGMT)
         return customToday ?? Date(timeIntervalSince1970: jan1stCurrent)

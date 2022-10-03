@@ -24,66 +24,66 @@ class CardModelTests: XCTestCase {
     
     // Testing set dueDate
     func testSet() {
-        var card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 0, timeZone: TimeZone.current), interval: 0)
-        card.dueDate = Date(timeIntervalSince1970: secondsInADay, timeZone: TimeZone.current)
+        var card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 0), interval: 0)
+        card.dueDate = Date(timeIntervalSince1970: secondsInADay)
         XCTAssertEqual(card.woodpeckerCardInfo.interval, 1)
     }
     
     // Testing set dueDate with negative interval
     func testSetNegative() {
-        var card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 0, timeZone: TimeZone.current), interval: 0)
-        card.dueDate = Date(timeIntervalSince1970: -secondsInADay, timeZone: TimeZone.current)
+        var card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 0), interval: 0)
+        card.dueDate = Date(timeIntervalSince1970: -secondsInADay)
         XCTAssertEqual(card.woodpeckerCardInfo.interval, 0)
     }
     
     // I = interval; H = Hour of last snapshot
     // Testing the dueDate for a card with interval = 0 and last snapshot at 01/01/1970 12:00
     func testI0H12() {
-        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: secondsInADay/2, timeZone: TimeZone.current), interval: 0)
+        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: secondsInADay/2), interval: 0)
     
-        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: 0, timeZone: TimeZone.current)))
+        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: 0)))
     }
     
     // Testing the dueDate for a card with interval = 0 and last snapshot at 01/01/1970 00:00
     func testI0H0() {
-        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 0, timeZone: TimeZone.current), interval: 0)
+        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 0), interval: 0)
     
-        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: 0, timeZone: TimeZone.current)))
+        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: 0)))
     }
     
     // Testing the dueDate for a card with interval = 0 and last snapshot at 01/01/1970 06:00
     func testI0H6() {
-        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 6 * 3600, timeZone: TimeZone.current), interval: 0)
+        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 6 * 3600), interval: 0)
     
-        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: 0, timeZone: TimeZone.current)))
+        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: 0)))
     }
 
     // Testing the dueDate for a card with interval = 1 and last snapshot at 01/01/1970 12:00
     func testI1H12() {
-        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: secondsInADay/2, timeZone: TimeZone.current), interval: 1)
+        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: secondsInADay/2), interval: 1)
     
-        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: secondsInADay, timeZone: TimeZone.current)))
+        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: secondsInADay)))
     }
     
     // Testing the dueDate for a card with interval = 1 and last snapshot at 01/01/1970 00:00
     func testI1H0() {
-        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 0, timeZone: TimeZone.current), interval: 1)
+        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 0), interval: 1)
     
-        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: secondsInADay, timeZone: TimeZone.current)))
+        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: secondsInADay)))
     }
     
     // Testing the dueDate for a card with interval = 1 and last snapshot at 01/01/1970 06:00
     func testI1H6() {
-        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 6 * 3600, timeZone: TimeZone.current), interval: 1)
-    
-        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: secondsInADay, timeZone: TimeZone.current)))
+        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 6 * 3600), interval: 1)
+        
+        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: secondsInADay)))
     }
     
     // Testing the dueDate for a card with interval = 200 and last snapshot at 01/01/1970 06:00
     func testI200H6() {
-        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 6 * 3600, timeZone: TimeZone.current), interval: 200)
+        let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 6 * 3600), interval: 200)
     
-        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: 200 * secondsInADay, timeZone: .current)))
+        XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: 200 * secondsInADay)))
     }
     
     private func getCard(sut: Card?, snapshotDate: Date, interval: Int) ->  Card {
@@ -97,7 +97,7 @@ class CardModelTests: XCTestCase {
     
     private func getComponents(date: Date) -> DateComponents {
         var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = TimeZone.current
+        cal.timeZone = TimeZone.gmt
         return cal.dateComponents([.day, .month, .year], from: date)
     }
 
