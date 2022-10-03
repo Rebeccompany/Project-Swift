@@ -93,7 +93,4 @@ public class DeckViewModel: ObservableObject {
         }
     }
     
-    func acha(deck: Deck) {
-        print(sessionCacher.currentSession(for: deck.id))
-    }
 }
