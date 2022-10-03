@@ -2,7 +2,7 @@
 //  DeckEntity+CoreDataClass.swift
 //  Project-Bird
 //
-//  Created by Marcos Chevis on 20/09/22.
+//  Created by Nathalia do Valle Papst on 03/10/22.
 //
 //
 
