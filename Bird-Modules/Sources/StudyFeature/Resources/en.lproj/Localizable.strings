@@ -22,3 +22,5 @@
 "quatro_botoes" = "Four buttons.";
 "sair" = "Leave";
 "fechar" = "Close";
+"intenso_concluido" = "You finished your intense session!";
+"intenso_concluido_text" = "Congrats, you've completed an intense session!";
