@@ -64,6 +64,7 @@ public struct DetailView: View {
                     } label: {
                         Label("Ícones", systemImage: "rectangle.grid.2x2")
                     }
+                    .keyboardShortcut("i", modifiers: .command)
                     .disabled(editMode.isEditing)
                     
                     Button {
@@ -71,6 +72,7 @@ public struct DetailView: View {
                     } label: {
                         Label("Lista", systemImage: "list.bullet")
                     }
+                    .keyboardShortcut("l", modifiers: .command)
                     
 
                     Picker(selection: $viewModel.sortOrder) {
@@ -95,6 +97,7 @@ public struct DetailView: View {
             
             ToolbarItem {
                 EditButton()
+                    .keyboardShortcut("e", modifiers: .command)
                     .foregroundColor(HBColor.actionColor)
             }
             
@@ -105,6 +108,7 @@ public struct DetailView: View {
                     Image(systemName: "plus")
                         .foregroundColor(HBColor.actionColor)
                 }
+                .keyboardShortcut("a", modifiers: .command)
                 .popover(isPresented: $presentDeckEdition) {
                     NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
                     .frame(minWidth: 300, minHeight: 600)
