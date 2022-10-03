@@ -95,7 +95,7 @@ public class StudyViewModel: ObservableObject {
         
         systemObserver.willTerminate()
             .sink {[weak self] _ in
-                try? self?.saveChanges(deck: deck)
+                try? self?.saveChanges(deck: deck, mode: mode)
             }
             .store(in: &cancellables)
         
@@ -179,8 +179,8 @@ public class StudyViewModel: ObservableObject {
     }
     
     // MARK: - Persistence
-    func saveChanges(deck: Deck) throws {
-        
+    func saveChanges(deck: Deck, mode: StudyMode) throws {
+        guard mode == .spaced else { return }
         try cardsToEdit.forEach { card in
             try deckRepository.editCard(card)
         }
@@ -224,7 +224,8 @@ public class StudyViewModel: ObservableObject {
         case .foward:
             newCard.woodpeckerCardInfo.step += 1
         case .graduate:
-            newCard.woodpeckerCardInfo.step = numberOfSteps - 1
+            removeCard()
+            return
         }
         
         removeCard()

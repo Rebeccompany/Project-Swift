@@ -21,6 +21,7 @@ public struct DeckView: View {
     @State private var shouldDisplayNewFlashcard: Bool = false
     @State private var shouldDisplayImport: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
+    @State private var studyMode: StudyMode = .spaced
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
@@ -90,20 +91,20 @@ public struct DeckView: View {
                     Label("Adicionar", systemImage: "plus")
                 }
                 .foregroundColor(HBColor.actionColor)
-                
+                .popover(isPresented: $shouldDisplayNewFlashcard) {
+                    NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
+                        .frame(minWidth: 300, minHeight: 600)
+                }
             }
-        }
-        .sheet(isPresented: $shouldDisplayNewFlashcard) {
-            NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
-        }
-        .sheet(isPresented: $shouldDisplayImport) {
-            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
                 deck: deck,
-                mode: .spaced
+                mode: studyMode
             )
+        }
+        .sheet(isPresented: $shouldDisplayImport) {
+            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
         }
     }
     
@@ -130,15 +131,21 @@ public struct DeckView: View {
     @ViewBuilder
     private var grid: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(alignment: .leading) {
+                Text("Modos de Estudo")
+                    .font(.title3)
+                    .bold()
+                    .padding(.leading)
+                    .padding(.bottom)
                 if !viewModel.checkIfCanStudy(deck) && !viewModel.cards.isEmpty {
-                    Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
-                        .bold()
+                    Text("Atividade diária concluída! Volte em breve para retornar com seus estudos ou use o modo intenso.")
+                        .padding(.leading)
+                        .font(.subheadline)
                         .multilineTextAlignment(.center)
                         .listRowBackground(Color.clear)
                 }
-                
-                Button("Estudar Deck") {
+                Button("Spixii") {
+                    studyMode = .spaced
                     shouldDisplayStudyView = true
                 }
                 .disabled(!viewModel.checkIfCanStudy(deck))
@@ -149,6 +156,7 @@ public struct DeckView: View {
                 .padding()
 
                 Button("Intenso") {
+                    studyMode = .cramming
                     shouldDisplayStudyView = true
                 }
                 .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
@@ -157,7 +165,11 @@ public struct DeckView: View {
                 .listRowSeparator(.hidden)
                 .padding(.horizontal)
                 .padding(.bottom)
-                        
+                
+                Text("Flashcards")
+                    .font(.title3)
+                    .bold()
+                    .padding(.leading)
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 180), spacing: 12, alignment: .top)], spacing: 12) {
                     ForEach(viewModel.cardsSearched) { card in
                         FlashcardCell(card: card) {
@@ -188,6 +200,8 @@ public struct DeckView: View {
                 }
                 .padding(.horizontal)
             }.scrollContentBackground(.hidden)
+                
+                
         }
     }
 }

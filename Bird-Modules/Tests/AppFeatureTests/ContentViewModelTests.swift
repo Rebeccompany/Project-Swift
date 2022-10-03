@@ -172,22 +172,6 @@ final class ContentViewModelTests: XCTestCase {
         XCTAssertFalse(doesContainCollection)
     }
     
-    func testEditCollection() {
-        let collection = collectionRepositoryMock.collections[0]
-        
-        sut.editCollection(collection)
-        
-        XCTAssertEqual(collection, sut.editingCollection)
-    }
-    
-    func testCreateCollection() {
-        sut.editingCollection = collectionRepositoryMock.collections[0]
-        
-        sut.createCollection()
-        
-        XCTAssertNil(sut.editingCollection)
-    }
-    
     func testSelectedCollectionWhenSidebarIsAllDecks() {
         sut.sidebarSelection = .allDecks
         
@@ -206,71 +190,21 @@ final class ContentViewModelTests: XCTestCase {
         
         XCTAssertEqual(sut.selection.count, 1)
         
-        sut.editDeck()
-        
-        XCTAssertEqual(sut.editingDeck, deck)
+        XCTAssertEqual(sut.editDeck(), deck)
     }
 
     func testEditDeckWithWrongSelection() {
         sut.selection = .init()
         
-        XCTAssertNil(sut.editingDeck)
-        
-        sut.editDeck()
-        
-        XCTAssertNil(sut.editingDeck)
+        XCTAssertNil(sut.editDeck())
     }
     
     func testEditDeckWithWrongDeck() {
         let deck = Deck(id: UUID.init(), name: "deck", icon: "flame", color: .beigeBrown, collectionId: UUID.init(), cardsIds: [])
         
         sut.selection.insert(deck.id)
-        sut.editDeck()
         
-        XCTAssertNil(sut.editingDeck)
-    }
-    
-    func testDeckStatusPresentationTrue() {
-        sut.editingDeck = deckRepositoryMock.decks[0]
-        sut.selection.insert(sut.editingDeck!.id)
-        
-        sut .didDeckPresentationStatusChanged(true)
-        
-        XCTAssertEqual(sut.editingDeck, deckRepositoryMock.decks.first)
-        XCTAssertEqual(sut.selection.first, deckRepositoryMock.decks.first?.id)
-    }
-    
-    func testDeckPresentationFalse() {
-        sut.editingDeck = deckRepositoryMock.decks[0]
-        sut.selection.insert(sut.editingDeck!.id)
-        
-        sut.didDeckPresentationStatusChanged(false)
-        
-        XCTAssertNil(sut.editingDeck)
-    }
-    
-    func testCollectionStatusPresentationTrue() {
-        sut.editingCollection = collectionRepositoryMock.collections.first
-        
-        sut.didCollectionPresentationStatusChanged(true)
-        
-        XCTAssertEqual(sut.editingCollection, collectionRepositoryMock.collections.first)
-    }
-    
-    func testCollectionStatusPresentationFalse() {
-        sut.editingCollection = collectionRepositoryMock.collections.first
-        
-        sut.didCollectionPresentationStatusChanged(false)
-        
-        XCTAssertNil(sut.editingCollection)
-    }
-    
-    func testCreateDeck() {
-        sut.editingDeck = deckRepositoryMock.decks[0]
-        
-        sut.createDecks()
-        
-        XCTAssertNil(sut.editingDeck)
+        XCTAssertNil(sut.editDeck())
     }
     
     func testDeleteDeckSuccessifully() throws {
