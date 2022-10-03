@@ -17,7 +17,7 @@ struct EndOfStudyView: View {
     
     var body: some View {
         VStack {
-            Text("Atividade diária concluída!")
+            Text("atividade_concluida", bundle: .module)
                 .bold()
                 .font(.system(size: 32))
                 .multilineTextAlignment(.center)
@@ -27,9 +27,9 @@ struct EndOfStudyView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 300, height: 300)
-                .accessibilityLabel(Text("Arara está comemorando com você"))
+                .accessibilityLabel(Text("arara_comemorando", bundle: .module))
             
-            Text("Parabéns, você cumpriu sua meta de estudos diária desse baralho! Volte em breve para continuar seus estudos!")
+            Text("atividade_concluida_text", bundle: .module)
                 .foregroundColor(HBColor.collectionGray)
                 .font(.system(size: 16))
                 .multilineTextAlignment(.center)
@@ -39,7 +39,7 @@ struct EndOfStudyView: View {
                 action()
                 dismiss()
             } label: {
-                Text("Voltar para o Baralho")
+                Text("go_back_to_deck", bundle: .module)
             }
             .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
             .padding()

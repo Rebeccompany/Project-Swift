@@ -1,0 +1,24 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 03/10/22.
+  
+*/
+
+"clicar_em" = "Tap in ";
+"muito_dificil" = "Very Hard";
+"dificil" = "Hard";
+"facil" = "Easy";
+"muito_facil" = "Very Easy";
+"atividade_concluida" = "You finished your daily activity!";
+"arara_comemorando" = "Macaw is celebrating with you!";
+"atividade_concluida_text" = "Congrats, you've accomplished your daily study goal from this deck! Come back soon to continue your studies!";
+"go_back_to_deck" = "Back to Deck";
+"frente" = "Front";
+"verso" = "Back";
+"toque_virar" = "Tap to flip the card";
+"escolha_nivel" = "Choose the dificulty level.";
+"quatro_botoes" = "Four buttons.";
+"sair" = "Leave";
+"fechar" = "Close";
