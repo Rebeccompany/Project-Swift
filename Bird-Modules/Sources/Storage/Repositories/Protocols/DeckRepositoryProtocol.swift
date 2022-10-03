@@ -30,5 +30,6 @@ public protocol DeckRepositoryProtocol: AnyObject {
     
     func deleteCard(_ card: Card) throws
     func editCard(_ card: Card) throws
+    func addHistory(_ snapshot: CardSnapshot, to card: Card) throws
     
 }

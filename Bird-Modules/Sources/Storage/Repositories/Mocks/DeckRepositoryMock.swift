@@ -186,6 +186,13 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
          
          cardSubject.send(cards)
      }
+    
+    public func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
+        guard let i = cards.firstIndex(of: card) else {
+            throw NSError()
+        }
+        cards[i].history.append(snapshot)
+    }
 
 
  }
