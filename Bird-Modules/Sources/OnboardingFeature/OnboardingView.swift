@@ -8,6 +8,7 @@
 import SwiftUI
 import HummingBird
 
+//var nomeBotao: [String] =
 struct OnboardingView: View {
     var body: some View {
         NavigationView {
@@ -22,11 +23,20 @@ struct OnboardingView: View {
                 .indexViewStyle(.page(backgroundDisplayMode: .always))
             }
             .toolbar {
-                Button("Pular") {
-                    print("Hello")
+                if(TabView.indexViewStyle() == 4) {
+                    Button("Começar") {
+                        print("Hello")
+                    }
+                    .padding(.trailing)
+                    .foregroundColor(HBColor.actionColor)
                 }
-                .padding(.trailing)
-                .foregroundColor(HBColor.actionColor)
+                else {
+                    Button("Pular") {
+                        print("Hello")
+                    }
+                    .padding(.trailing)
+                    .foregroundColor(HBColor.actionColor)
+                }
             }
 
         }
