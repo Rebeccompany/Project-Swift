@@ -13,11 +13,17 @@ import Utils
 
 struct EndOfStudyView: View {
     @Environment(\.dismiss) private var dismiss
+    private let mode: StudyMode
     var action: () -> Void
+    
+    init(mode: StudyMode, action: @escaping () -> Void) {
+        self.mode = mode
+        self.action = action
+    }
     
     var body: some View {
         VStack {
-            Text("atividade_concluida", bundle: .module)
+            Text(mode == .spaced ? NSLocalizedString("atividade_concluida", bundle: .module, comment: "") : NSLocalizedString("intenso_concluido", bundle: .module, comment: ""))
                 .bold()
                 .font(.system(size: 32))
                 .multilineTextAlignment(.center)
@@ -29,7 +35,7 @@ struct EndOfStudyView: View {
                 .frame(width: 300, height: 300)
                 .accessibilityLabel(Text("arara_comemorando", bundle: .module))
             
-            Text("atividade_concluida_text", bundle: .module)
+            Text(mode == .spaced ? NSLocalizedString("atividade_concluida_text", bundle: .module, comment: "") : NSLocalizedString("intenso_concluido_text", bundle: .module, comment: ""))
                 .foregroundColor(HBColor.collectionGray)
                 .font(.system(size: 16))
                 .multilineTextAlignment(.center)
@@ -50,8 +56,6 @@ struct EndOfStudyView: View {
 
 struct EndOfStudyView_Previews: PreviewProvider {
     static var previews: some View {
-        EndOfStudyView {
-            
-        }
+        EndOfStudyView(mode: .spaced) { }
     }
 }

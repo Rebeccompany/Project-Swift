@@ -20,8 +20,9 @@ public struct DetailView: View {
     @Binding private var editMode: EditMode
     @State private var presentDeckEdition = false
     @State private var shouldDisplayAlert = false
+    @State private var editingDeck: Deck? = nil
     
-    public init(editMode: Binding<EditMode>) {
+    init(editMode: Binding<EditMode>) {
         self._editMode = editMode
     }
     
@@ -33,13 +34,13 @@ public struct DetailView: View {
                 content
             }
         }
-        .searchable(text: $viewModel.searchText)
+        .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
         .toolbar(editMode.isEditing ? .visible : .hidden,
                  for: .bottomBar)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
                 Button {
-                    viewModel.editDeck()
+                    editingDeck = viewModel.editDeck()
                     presentDeckEdition = true
                 } label: {
                     Text(NSLocalizedString("editar", bundle: .module, comment: ""))
@@ -100,6 +101,10 @@ public struct DetailView: View {
                     Image(systemName: "plus")
                         .foregroundColor(HBColor.actionColor)
                 }
+                .popover(isPresented: $presentDeckEdition) {
+                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
+                    .frame(minWidth: 300, minHeight: 600)
+                }
             }
         }
         .onChange(of: editMode) { newValue in
@@ -111,6 +116,7 @@ public struct DetailView: View {
         .alert(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""), isPresented: $shouldDisplayAlert) {
             Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
                 try? viewModel.deleteDecks()
+                editingDeck = nil
             }
             .disabled(viewModel.selection.isEmpty)
             
@@ -118,9 +124,6 @@ public struct DetailView: View {
         }
         .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
         .navigationTitle(viewModel.detailTitle)
-        .sheet(isPresented: $presentDeckEdition) {
-            NewDeckView(collection: viewModel.selectedCollection, editingDeck: viewModel.editingDeck, editMode: $editMode)
-        }
     }
     
     @ViewBuilder
@@ -142,7 +145,7 @@ public struct DetailView: View {
     private var content: some View {
         if viewModel.detailType == .grid {
             DeckGridView { deck in
-                viewModel.updateEditingDeck(with: deck)
+                editingDeck = deck
                 presentDeckEdition = true
             }
         } else {
