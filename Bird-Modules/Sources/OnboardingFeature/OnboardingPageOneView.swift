@@ -12,10 +12,17 @@ struct OnboardingPageOneView: View {
     var body: some View {
         VStack {
             HBImages.BirdOneOnboarding
-            Text("Aqui você pode estudar através de flashcards e potencializar seu aprendizado e memorização")
-                .font(.body)
-                .fontWeight(.regular)
-                .foregroundColor(.black)
+                .resizable()
+                .frame(width: 250, height: 250)
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Aqui você pode estudar através de flashcards e potencializar seu aprendizado e memorização")
+                        .font(.title3)
+                        .fontWeight(.regular)
+                        .foregroundColor(.black)
+                        .padding(.all)
+                }
+            }
         }
     }
 }

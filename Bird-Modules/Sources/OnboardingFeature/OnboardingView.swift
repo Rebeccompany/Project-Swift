@@ -10,20 +10,25 @@ import HummingBird
 
 struct OnboardingView: View {
     var body: some View {
-        ZStack {
-            TabView {
-                OnboardingPageOneView()
-                    .padding()
-                OnboardingPageTwoView()
-                    .padding()
-                OnboardingPageThreeView()
-                    .padding()
-                OnboardingPageFourView()
-                    .padding()
+        NavigationView {
+            ZStack {
+                TabView {
+                    OnboardingPageOneView()
+                    OnboardingPageTwoView()
+                    OnboardingPageThreeView()
+                    OnboardingPageFourView()
+                }
+                .tabViewStyle(.page)
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
             }
-            .tabViewStyle(.page)
-            .indexViewStyle(.page(backgroundDisplayMode: .always))
-            
+            .toolbar {
+                Button("Pular") {
+                    print("Hello")
+                }
+                .padding(.trailing)
+                .foregroundColor(HBColor.actionColor)
+            }
+
         }
     }
 }
