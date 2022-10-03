@@ -10,7 +10,7 @@
 "nome" = "Nome";
 "apagar_colecao" = "Apagar Coleção";
 "fechar" = "Fechar";
-"alert_delete_collection" = "Tem certeza que deseja deletar a coleção?";
+"alert_delete_collection" = "Tem certeza de que deseja deletar a coleção?";
 "alert_delete_collection_text" = "Você perderá permanentemente o conteúdo desta coleção.";
 "deletar" = "Apagar";
 "cancelar" = "Cancelar";
