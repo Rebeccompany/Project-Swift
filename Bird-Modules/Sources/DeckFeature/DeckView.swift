@@ -10,6 +10,7 @@ import SwiftUI
 import Models
 import HummingBird
 import NewFlashcardFeature
+import ImportingFeature
 import StudyFeature
 import Storage
 import Flock
@@ -25,6 +26,8 @@ public struct DeckView: View {
     @State private var deletedCard: Card?
     @State private var editingFlashcard: Card?
     @Binding private var deck: Deck
+    
+    @State private var test = false
     
     public init(deck: Binding<Deck>) {
         self._deck = deck
@@ -77,10 +80,17 @@ public struct DeckView: View {
                     Image(systemName: "plus")
                 }
                 .foregroundColor(HBColor.actionColor)
+                
+                Button("Test") {
+                    test = true
+                }
             }
         }
         .sheet(isPresented: $shouldDisplayNewFlashcard) {
             NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
+        }
+        .sheet(isPresented: $test) {
+            ImportView()
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(

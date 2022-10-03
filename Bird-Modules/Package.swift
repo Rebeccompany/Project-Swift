@@ -142,6 +142,7 @@ let package = Package(
                 "Utils",
                 "NewFlashcardFeature",
                 "StudyFeature",
+                "ImportingFeature",
                 "Habitat"
             ]
         ),
@@ -160,7 +161,9 @@ let package = Package(
         .target(
             name: "ImportingFeature",
             dependencies: [
-                "Owl"
+                "Owl",
+                "HummingBird",
+                "Flock"
             ]
         ),
         
