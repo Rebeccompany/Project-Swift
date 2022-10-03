@@ -45,7 +45,6 @@
       }
     },
     {
-      "enabled" : false,
       "target" : {
         "containerPath" : "container:Bird-Modules",
         "identifier" : "ImportingFeatureTests",
