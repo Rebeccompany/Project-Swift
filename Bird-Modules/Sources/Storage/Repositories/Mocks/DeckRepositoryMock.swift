@@ -117,8 +117,9 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
          }
          
          if let i = decks.firstIndex(where: { d in d.id == deck.id }) {
-             var deck = deck
+             var deck = decks[i]
              deck.cardsIds.append(card.id)
+             
              decks[i] = deck
              cards.append(card)
              subject.send(decks)

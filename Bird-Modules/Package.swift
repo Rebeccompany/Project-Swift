@@ -254,7 +254,9 @@ let package = Package(
             dependencies: [
                 "ImportingFeature",
                 "Utils",
-                "Models"
+                "Models",
+                "Storage",
+                "Habitat"
             ]
         ),
         
