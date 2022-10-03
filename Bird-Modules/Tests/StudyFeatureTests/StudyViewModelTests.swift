@@ -412,7 +412,7 @@ class StudyViewModelTests: XCTestCase {
         let card = sut.cards.first!
         XCTAssertEqual(card.woodpeckerCardInfo.interval, 0)
         try sut.pressedButton(for: .correctEasy, deck: deck, mode: .spaced)
-        try sut.saveChanges(deck: deck)
+        try sut.saveChanges(deck: deck, mode: .spaced)
       
         deckRepository.fetchCardById(deckRepository.decks[1].cardsIds.first!)
             .assertNoFailure()

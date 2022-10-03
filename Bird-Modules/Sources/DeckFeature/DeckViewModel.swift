@@ -92,4 +92,8 @@ public class DeckViewModel: ObservableObject {
             return cards.filter { NSAttributedString($0.front).string.contains(searchFieldContent) || NSAttributedString($0.back).string.contains(searchFieldContent) }
         }
     }
+    
+    func acha(deck: Deck) {
+        print(sessionCacher.currentSession(for: deck.id))
+    }
 }

@@ -15,7 +15,7 @@ public protocol DateHandlerProtocol {
 // swiftlint:disable no_extension_access_modifier
 public extension DateHandlerProtocol {
     func dayAfterToday(_ count: Int) -> Date {
-        let timeInterval = today.timeIntervalSince1970 + Double(8400 * count)
+        let timeInterval = today.timeIntervalSince1970 + Double(86400 * count)
         return Date(timeIntervalSince1970: timeInterval)
     }
 }
@@ -29,11 +29,20 @@ public struct DateHandler: DateHandlerProtocol {
     
     public func isToday(date: Date) -> Bool {
         var cal = Calendar(identifier: .gregorian)
-        guard let timezone = TimeZone(identifier: "UTC") else {
-            return false
-        }
-        cal.timeZone = timezone
+        cal.timeZone = TimeZone.current
+        
         
         return cal.dateComponents([.day], from: date) == cal.dateComponents([.day], from: today)
+    }
+}
+
+extension Date {
+    init(timeIntervalSince1970: TimeInterval, timeZone: TimeZone) {
+        self.init(timeIntervalSince1970: timeIntervalSince1970)
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = timeZone
+        
+        let secondsFromGmt = cal.timeZone.secondsFromGMT()
+        self = self.addingTimeInterval(TimeInterval(secondsFromGmt))
     }
 }

@@ -299,7 +299,8 @@ let package = Package(
                 "Storage",
                 "Models",
                 "NewCollectionFeature",
-                "Habitat"
+                "Habitat",
+                "Utils"
             ]
         ),
         

@@ -13,7 +13,11 @@ public class DateHandlerMock: DateHandlerProtocol {
     public init() {}
     
     public var today: Date {
-        customToday ?? Date(timeIntervalSince1970: 0)
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone.current
+        let secondsFomGMT = cal.timeZone.secondsFromGMT()
+        let jan1stCurrent = Double(secondsFomGMT)
+        return customToday ?? Date(timeIntervalSince1970: jan1stCurrent)
     }
     
     public func isToday(date: Date) -> Bool {

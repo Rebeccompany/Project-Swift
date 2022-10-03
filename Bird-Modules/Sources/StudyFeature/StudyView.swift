@@ -86,7 +86,7 @@ public struct StudyView: View {
                 } else {
                     EndOfStudyView {
                         do {
-                            try viewModel.saveChanges(deck: deck)
+                            try viewModel.saveChanges(deck: deck, mode: mode)
                             dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy
@@ -101,7 +101,7 @@ public struct StudyView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(role: .destructive) {
                         do {
-                            try viewModel.saveChanges(deck: deck)
+                            try viewModel.saveChanges(deck: deck, mode: mode)
                             dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy

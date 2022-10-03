@@ -96,7 +96,7 @@ class CardModelTests: XCTestCase {
     
     private func getComponents(date: Date) -> DateComponents {
         var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = .init(identifier: "UTC")!
+        cal.timeZone = TimeZone.current
         return cal.dateComponents([.day, .month, .year], from: date)
     }
 
