@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  StudyViewModel.swift
 //  
 //
 //  Created by Marcos Chevis on 05/09/22.
@@ -180,9 +180,7 @@ public class StudyViewModel: ObservableObject {
     
     // MARK: - Persistence
     func saveChanges(deck: Deck, mode: StudyMode) throws {
-        
         guard mode == .spaced else { return }
-        
         try cardsToEdit.forEach { card in
             try deckRepository.editCard(card)
         }
@@ -226,7 +224,8 @@ public class StudyViewModel: ObservableObject {
         case .foward:
             newCard.woodpeckerCardInfo.step += 1
         case .graduate:
-            newCard.woodpeckerCardInfo.step = numberOfSteps - 1
+            removeCard()
+            return
         }
         
         removeCard()
