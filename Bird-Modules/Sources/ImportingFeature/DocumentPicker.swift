@@ -13,6 +13,7 @@ import Combine
 struct DocumentPicker: UIViewControllerRepresentable {
     @Binding var fileContent: [Card]
     var deckId: UUID
+    var cancel: () -> Void
     
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
         let controller = UIDocumentPickerViewController(forOpeningContentTypes: [.commaSeparatedText], asCopy: true)
@@ -23,7 +24,9 @@ struct DocumentPicker: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
     
     func makeCoordinator() -> DocumentPickerCoordinator {
-        DocumentPickerCoordinator(fileContent: $fileContent, deckId: deckId)
+        DocumentPickerCoordinator(fileContent: $fileContent, deckId: deckId) {
+            cancel()
+        }
     }
 }
 
@@ -31,10 +34,12 @@ final class DocumentPickerCoordinator: NSObject, UIDocumentPickerDelegate, UINav
     @Binding private var fileContent: [Card]
     private let converter: DeckConverter = DeckConverter()
     private let deckId: UUID
+    private let cancel: (() -> Void)?
     
-    init(fileContent: Binding<[Card]>, deckId: UUID) {
+    init(fileContent: Binding<[Card]>, deckId: UUID, cancel: @escaping () -> Void) {
         _fileContent = fileContent
         self.deckId = deckId
+        self.cancel = cancel
         super.init()
     }
     
@@ -46,6 +51,11 @@ final class DocumentPickerCoordinator: NSObject, UIDocumentPickerDelegate, UINav
         autoreleasepool {
             fileContent = importedContent.compactMap { ImportedCardInfoTransformer.transformToCard($0, deckID: deckId, cardColor: CollectionColor.allCases.randomElement() ?? .darkBlue) }
         }
+    }
+    
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        guard let cancel else { return }
+        cancel()
     }
     
     

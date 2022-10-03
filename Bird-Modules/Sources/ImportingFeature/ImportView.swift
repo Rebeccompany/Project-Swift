@@ -28,7 +28,9 @@ public struct ImportView: View {
         Router(path: $path) {
             ImportSelectionView(presentFileSheet: $presentFileSheet)
                 .sheet(isPresented: $presentFileSheet) {
-                    DocumentPicker(fileContent: $cards, deckId: deck.id)
+                    DocumentPicker(fileContent: $cards, deckId: deck.id) {
+                        isPresenting = false
+                    }
                 }
         } destination: { (route: ImportRoute) in
             switch route {

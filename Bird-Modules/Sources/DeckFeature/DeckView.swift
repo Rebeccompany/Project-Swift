@@ -19,6 +19,7 @@ import Utils
 public struct DeckView: View {
     @StateObject private var viewModel: DeckViewModel = DeckViewModel()
     @State private var shouldDisplayNewFlashcard: Bool = false
+    @State private var shouldDisplayImport: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
@@ -26,8 +27,6 @@ public struct DeckView: View {
     @State private var deletedCard: Card?
     @State private var editingFlashcard: Card?
     @Binding private var deck: Deck
-    
-    @State private var test = false
     
     public init(deck: Binding<Deck>) {
         self._deck = deck
@@ -73,24 +72,32 @@ public struct DeckView: View {
         .navigationTitle(deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button {
-                    editingFlashcard = nil
-                    shouldDisplayNewFlashcard = true
+                Menu {
+                    Button {
+                        editingFlashcard = nil
+                        shouldDisplayNewFlashcard = true
+                    } label: {
+                        Label("Adicionar", systemImage: "plus")
+                    }
+                    
+                    Button {
+                        shouldDisplayImport = true
+                    } label: {
+                        Label("Importar", systemImage: "arrow.down")
+                    }
+                    
                 } label: {
-                    Image(systemName: "plus")
+                    Label("Adicionar", systemImage: "plus")
                 }
                 .foregroundColor(HBColor.actionColor)
                 
-                Button("Test") {
-                    test = true
-                }
             }
         }
         .sheet(isPresented: $shouldDisplayNewFlashcard) {
             NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
         }
-        .sheet(isPresented: $test) {
-            ImportView(deck: deck, isPresenting: $test)
+        .sheet(isPresented: $shouldDisplayImport) {
+            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
