@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Bird-Modules",
+    defaultLocalization: "pt-BR",
     
     platforms: [
         .iOS("16.0"),

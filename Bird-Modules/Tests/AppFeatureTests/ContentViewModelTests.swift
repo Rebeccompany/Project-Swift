@@ -143,7 +143,7 @@ final class ContentViewModelTests: XCTestCase {
     
     func testDetailNameForAllDecks() {
         sut.sidebarSelection = .allDecks
-        XCTAssertEqual("Todos os Baralhos", sut.detailTitle)
+        XCTAssertEqual(NSLocalizedString("todos_os_baralhos", bundle: .module, comment: ""), sut.detailTitle)
     }
     
     func testDetailNameForSingleCollection() {

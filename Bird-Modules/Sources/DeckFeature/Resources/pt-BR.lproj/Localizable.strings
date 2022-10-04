@@ -1,0 +1,21 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 30/09/22.
+  
+*/
+
+"alert_delete_flashcard_error" = "Erro ao tentar deletar flashcard";
+"alert_delete_flashcard_error_text" = "Algo deu errado! Por favor, tente novamente.";
+"fechar" = "Fechar";
+"alert_delete_flashcard" = "Deseja apagar este flashcard?";
+"alert_delete_flashcard_text" = "Você perderá permanentemente o conteúdo deste flashcard.";
+"deletar" = "Deletar";
+"cancelar" = "Cancelar";
+"criar_flashcard" = "Criar Flashcard";
+"no_study_allowed" = "Atividade diária concluída! Volte em breve para retornar com seus estudos ou use o modo intenso.";
+"intenso" = "Intenso";
+"editar_flashcard" = "Editar Flashcard";
+"deletar_flashcard" = "Deletar Flashcard";
+"frente" = "Frente";

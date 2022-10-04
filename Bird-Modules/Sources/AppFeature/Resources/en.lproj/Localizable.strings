@@ -1,0 +1,27 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 30/09/22.
+  
+*/
+
+"colecoes" = "collections";
+"todos_os_baralhos" = "All Decks";
+"editar" = "Edit";
+"deletar" = "Delete";
+"cancelar" = "Cancel";
+"icones" = "Icons";
+"lista" = "List";
+"nome" = "Name";
+"quantidade" = "Size";
+"ultimo_acesso" = "Last access";
+"opcoes_organizacao" = "Order options";
+"visualizacao" = "View";
+"alert_nada_selecionado" = "No decks were selected";
+"alert_confirmacao_deletar" = "Are you sure you want to delete it?";
+"criar_baralho" = "Create Deck";
+"acessar" = "Access";
+"abrir" = "Open";
+"cartas" = "cards";
+"criar_colecao" = "Create Collection";
