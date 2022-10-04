@@ -40,6 +40,7 @@ struct DeckGridView: View {
                             Label("Deletar", systemImage: "trash")
                         }
                     }
+                    .hoverEffect(.lift)
                 }
             }
             .animation(.linear, value: viewModel.sortOrder)
