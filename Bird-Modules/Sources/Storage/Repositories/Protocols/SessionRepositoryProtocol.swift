@@ -9,8 +9,7 @@ import Foundation
 import Combine
 import Models
 
-public protocol SessionRepositoryProtocol: AnyObject {
-    func object(forKey: String) -> Any?
-    func string(forKey: String) -> String?
-    func set(_ value: Any?, forKey: String)
+public protocol SessionRepositoryProtocol {
+    func currentSession(for deckId: UUID) -> Session?
+    func setCurrentSession(session: Session) throws
 }
