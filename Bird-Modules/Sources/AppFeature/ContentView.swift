@@ -67,7 +67,6 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
             ContentView()
-                .environment(\.locale, .init(identifier: "es"))
         }
     }
 }

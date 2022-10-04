@@ -24,20 +24,20 @@ struct DeckGridView: View {
                 ForEach(sortedDecks) { deck in
                     NavigationLink(value: StudyRoute.deck(deck)) {
                         DeckCell(info: DeckCellInfo(deck: deck))
-                            .buttonStyle(DeckCell.Style(color: deck.color))
-                            .contextMenu {
-                                Button {
-                                    editAction(deck)
-                                } label: {
-                                    Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
-                                }
-                                
-                                Button(role: .destructive) {
-                                    try? viewModel.deleteDeck(deck)
-                                } label: {
-                                    Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
-                                }
+                        .buttonStyle(DeckCell.Style(color: deck.color))
+                        .contextMenu {
+                            Button {
+                                editAction(deck)
+                            } label: {
+                                Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
                             }
+                                
+                            Button(role: .destructive) {
+                                try? viewModel.deleteDeck(deck)
+                            } label: {
+                                Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
+                            }
+                        }
                     }
                 }
             }
