@@ -23,7 +23,7 @@ public struct FlashcardCell: View {
         Button(action: action) {
             VStack(alignment: .center) {
                 HStack {
-                    Text(isFront ? "Frente" : "Verso")
+                    Text(isFront ? "frente" : "verso", bundle: .module)
                         .font(.system(size: 15))
                     Spacer()
                 }
