@@ -32,14 +32,14 @@ struct ReviewImportView: View {
                 cards.remove(atOffsets: i)
             }
         }
-        .navigationTitle("Revisar Conteúdo")
+        .navigationTitle(Text("import_review_title", bundle: .module))
         .toolbar {
             ToolbarItem {
                 Button {
                     viewModel.save(cards, to: deck)
                     isPresentingSheet = false
                 } label: {
-                    Text("Adicionar")
+                    Text("add_button", bundle: .module)
                 }
 
             }

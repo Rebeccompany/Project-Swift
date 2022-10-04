@@ -78,17 +78,26 @@ public struct DeckView: View {
                         editingFlashcard = nil
                         shouldDisplayNewFlashcard = true
                     } label: {
-                        Label("Adicionar", systemImage: "plus")
+                        Label(
+                            NSLocalizedString("add", bundle: .module, comment: ""),
+                            systemImage: "plus"
+                        )
                     }
                     
                     Button {
                         shouldDisplayImport = true
                     } label: {
-                        Label("Importar", systemImage: "arrow.down")
+                        Label(
+                            NSLocalizedString("import", bundle: .module, comment: ""),
+                            systemImage: "arrow.down"
+                        )
                     }
                     
                 } label: {
-                    Label("Adicionar", systemImage: "plus")
+                    Label(
+                        NSLocalizedString("add", bundle: .module, comment: ""),
+                        systemImage: "plus"
+                    )
                 }
                 .foregroundColor(HBColor.actionColor)
                 .popover(isPresented: $shouldDisplayNewFlashcard) {
@@ -132,7 +141,7 @@ public struct DeckView: View {
     private var grid: some View {
         ScrollView {
             LazyVStack(alignment: .leading) {
-                Text("Modos de Estudo")
+                Text("modos_de_estudo", bundle: .module)
                     .font(.title3)
                     .bold()
                     .padding(.leading)

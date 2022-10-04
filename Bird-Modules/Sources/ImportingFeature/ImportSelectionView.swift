@@ -13,12 +13,15 @@ struct ImportSelectionView: View {
     
     var body: some View {
         VStack {
-            GroupBox("Arquivo CSV - .csv") {
+            GroupBox(NSLocalizedString("csv_title", bundle: .module, comment: "")) {
                 VStack(alignment: .leading) {
-                    Text("O baralho no formato CSV precisa que seja um deck padrão com apenas frente e verso e **sem imagens**. Os nomes dos cabeçalhos do arquivo csv precisam ser ”Front” e ”Back”.")
-                    Text("Se você tem um deck no formato Anki você pode transformar ele em CSV usando o link abaixo")
+                    Text("csv_description", bundle: .module)
+                    Text("csv_anki_description", bundle: .module)
                     if let convertURL = URL(string: "https://www.easy4u.tools/apkg2csv") {
-                        Link("Transformar .apkg em .csv", destination: convertURL)
+                        Link(
+                            NSLocalizedString("csv_anki_link", bundle: .module, comment: ""),
+                            destination: convertURL
+                        )
                             .foregroundColor(HBColor.actionColor)
                             .padding(.top, 4)
                     }
@@ -28,7 +31,10 @@ struct ImportSelectionView: View {
                 Button {
                     presentFileSheet = true
                 } label: {
-                   Label("Importar .csv", systemImage: "arrow.up")
+                   Label(
+                    NSLocalizedString("csv_import_button", bundle: .module, comment: ""),
+                    systemImage: "arrow.up"
+                   )
                 }
                 .buttonStyle(.bordered)
                 .tint(HBColor.actionColor)
@@ -38,7 +44,7 @@ struct ImportSelectionView: View {
             }
             .padding()
         }
-        .navigationTitle("Importar Flashcards")
+        .navigationTitle(Text("Importar Flashcards", bundle: .module))
     }
 }
 

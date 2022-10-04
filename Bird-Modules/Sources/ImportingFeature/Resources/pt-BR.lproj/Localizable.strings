@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Gabriel Ferreira de Carvalho on 04/10/22.
+  
+*/
+
+"csv_title" = "Arquivo CSV - .csv";
+"csv_description" = "O baralho no formato CSV precisa que seja um deck padrão com apenas frente e verso e **sem imagens**. Os nomes dos cabeçalhos do arquivo csv precisam ser ”Front” e ”Back”.";
+"csv_anki_description" = "Se você tem um deck no formato Anki você pode transformar ele em CSV usando o link abaixo";
+"csv_anki_link" = "Transformar .apkg em .csv";
+"csv_import_button" = "Importar .csv";
+"import_selection_title" = "Importar Flashcards";
+"import_review_title" = "Revisar Flashcards";
+"add_button" = "Adicionar";
