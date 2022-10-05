@@ -133,7 +133,8 @@ let package = Package(
                 "Models",
                 "Flock",
                 "Habitat",
-                "NewFlashcardFeature"
+                "NewFlashcardFeature",
+                "OnboardingFeature"
             ]
         ),
         

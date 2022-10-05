@@ -19,7 +19,7 @@ struct OnboardingPageOneView: View {
                     Text("Aqui você pode estudar através de flashcards e potencializar seu aprendizado e memorização")
                         .font(.title3)
                         .fontWeight(.regular)
-                        .foregroundColor(.black)
+                        .foregroundColor(HBColor.collectionTextColor)
                         .padding(.all)
                 }
             }

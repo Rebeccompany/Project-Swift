@@ -8,51 +8,30 @@
 import SwiftUI
 import HummingBird
 
-var names = ["Pular","Pular","Pular","Começar"]
-
-//var nomeBotao: [String] =
-struct OnboardingView: View {
-    var body: some View {
+public struct OnboardingView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var tab: Int = 0
+    public init() {
+        
+    }
+    public var body: some View {
         NavigationView {
-            ZStack {
-                TabView {
-                    OnboardingPageOneView()
-                    OnboardingPageTwoView()
-                    OnboardingPageThreeView()
-                    OnboardingPageFourView()
-                }
-                .tabViewStyle(.page)
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
+            TabView(selection: $tab) {
+                OnboardingPageOneView().tag(0)
+                OnboardingPageTwoView().tag(1)
+                OnboardingPageThreeView().tag(2)
+                OnboardingPageFourView().tag(3)
             }
+            .tabViewStyle(.page)
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
+            .animation(.linear, value: tab)
             .toolbar {
-                ForEach(0..<names.endIndex) { index in
-                    Button(names[index]) {
-                        print("Hello")
-                    }
-                    .padding(.trailing)
-                    .foregroundColor(HBColor.actionColor)
-
+                Button(tab == 3 ? "Começar" : "Pular") {
+                    dismiss()
                 }
+                .foregroundColor(HBColor.actionColor)
+                
             }
-            
-            
-            
-            //            .toolbar {
-            //                if(TabView.indexViewStyle() == 4) {
-            //                    Button("Começar") {
-            //                        print("Hello")
-            //                    }
-            //                    .padding(.trailing)
-            //                    .foregroundColor(HBColor.actionColor)
-            //                }
-            //                else {
-            //                    Button("Pular") {
-            //                        print("Hello")
-            //                    }
-            //                    .padding(.trailing)
-            //                    .foregroundColor(HBColor.actionColor)
-            //                }
-            //            }
             
         }
     }
