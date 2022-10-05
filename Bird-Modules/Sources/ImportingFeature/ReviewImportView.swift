@@ -26,6 +26,7 @@ struct ReviewImportView: View {
                         .frame(height: 180)
                         .padding(.leading, 4)
                 }
+                .accessibilityElement(children: .combine)
                 .padding(8)
             }
             .onDelete { i in
