@@ -14,14 +14,18 @@ public final class SessionRepository: SessionRepositoryProtocol {
     
     private let sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>
     private let dateHandler: DateHandlerProtocol
+    private let deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>
+    private let cardsRepository: Repository<Card, CardEntity, CardModelEntityTransformer>
     
-    init(sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>, dateHandler: DateHandlerProtocol) {
+    init(sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>, dateHandler: DateHandlerProtocol, deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>, cardsRepository: Repository<Card, CardEntity, CardModelEntityTransformer>) {
         self.sessionRepository = sessionRepository
         self.dateHandler = dateHandler
+        self.deckRepository = deckRepository
+        self.cardsRepository = cardsRepository
     }
     
     public static let shared: SessionRepositoryProtocol = {
-        SessionRepository(sessionRepository: Repository(transformer: SessionModelEntityTransformer(), .shared), dateHandler: DateHandler())
+        SessionRepository(sessionRepository: Repository(transformer: SessionModelEntityTransformer(), .shared), dateHandler: DateHandler(), deckRepository: Repository(transformer: DeckModelEntityTransformer(), .shared), cardsRepository: Repository(transformer: CardModelEntityTransformer(), .shared))
     }()
     
     public func currentSession(for deckId: UUID) -> Session? {
@@ -31,7 +35,18 @@ public final class SessionRepository: SessionRepositoryProtocol {
     }
     
     public func setCurrentSession(session: Session) throws {
-    
+        let entity = try sessionRepository.create(session)
+        let deck = try deckRepository.fetchEntityById(session.deckId)
+        let cards = try session.cardIds.map { id in
+            try cardsRepository.fetchEntityById(id)
+        }
+        
+        deck.addToSessions(entity)
+        cards.forEach { card in
+            entity.addToCards(card)
+        }
+        
+        try sessionRepository.save()
     }
     
 }
