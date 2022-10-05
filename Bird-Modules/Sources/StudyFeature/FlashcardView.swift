@@ -48,6 +48,7 @@ struct FlashcardView: View {
         }
         
     }
+    
     private func flipWithoutAnimation(_ newValue: Bool) {
         if newValue {
             frontDegree = 90
