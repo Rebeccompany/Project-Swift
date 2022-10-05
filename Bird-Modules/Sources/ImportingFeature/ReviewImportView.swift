@@ -44,6 +44,15 @@ struct ReviewImportView: View {
                 }
 
             }
+            
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(role: .cancel) {
+                    isPresentingSheet = false
+                } label: {
+                    Text("cancel", bundle: .module)
+                }
+            }
         }
+        .navigationBarBackButtonHidden(true)
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 import HummingBird
 
 struct ImportSelectionView: View {
+    @Binding var isPresenting: Bool
     @Binding var presentFileSheet: Bool
     
     var body: some View {
@@ -44,12 +45,22 @@ struct ImportSelectionView: View {
             }
             .padding()
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(role: .cancel) {
+                    isPresenting = false
+                } label: {
+                    Text("cancel", bundle: .module)
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
         .navigationTitle(Text("Importar Flashcards", bundle: .module))
     }
 }
 
 struct ImportSelectionView_Previews: PreviewProvider {
     static var previews: some View {
-        ImportSelectionView(presentFileSheet: .constant(false))
+        ImportSelectionView(isPresenting: .constant(true), presentFileSheet: .constant(false))
     }
 }
