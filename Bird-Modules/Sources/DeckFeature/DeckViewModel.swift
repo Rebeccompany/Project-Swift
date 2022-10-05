@@ -61,7 +61,6 @@ public class DeckViewModel: ObservableObject {
     }
     
     func checkIfCanStudy(_ deck: Deck) -> Bool {
-//        sessionCacher.setCurrentSession(session: Session(cardIds: [], date: Date(), deckId: deck.id))
         do {
             if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
                 return !session.cardIds.isEmpty

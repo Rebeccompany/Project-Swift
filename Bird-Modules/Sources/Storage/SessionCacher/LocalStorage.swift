@@ -47,7 +47,6 @@ public final class SessionCacher {
     public func setCurrentSession(session: Session) {
         let data = try? encoder.encode(session)
         storage.set(data, forKey: sessionKey(for: session.deckId))
-//        storage.set(nil, forKey: sessionKey(for: session.deckId))
     }
     
     private func sessionKey(for id: UUID) -> String {
