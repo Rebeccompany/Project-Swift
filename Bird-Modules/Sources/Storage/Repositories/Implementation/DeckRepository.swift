@@ -156,17 +156,3 @@ public final class DeckRepository: DeckRepositoryProtocol {
     }
     
 }
-
-class CardSnapshotRepository {
-    private let dataStorage: DataStorage
-    private let transformer: CardSnapshotTransformer
-    
-    init(transformer: CardSnapshotTransformer, dataStorage: DataStorage = .shared) {
-        self.transformer = transformer
-        self.dataStorage = dataStorage
-    }
-    
-    func create(snapshot: CardSnapshot) -> CardSnapshotEntity {
-        return transformer.modelToEntity(snapshot, on: dataStorage.mainContext)
-    }
-}

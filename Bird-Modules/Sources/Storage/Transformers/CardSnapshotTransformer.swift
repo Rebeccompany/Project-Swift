@@ -17,7 +17,7 @@ struct CardSnapshotTransformer: ModelEntityTransformer {
     }
     
     func listenerRequest() -> NSFetchRequest<CardSnapshotEntity> {
-        return requestForAll()
+        requestForAll()
     }
     
     

@@ -263,10 +263,6 @@ public class StudyViewModel: ObservableObject {
         
         if userGrade == .correctEasy {
             removeCard()
-            card.history.append(CardSnapshot(woodpeckerCardInfo: card.woodpeckerCardInfo,
-                                             userGrade: userGrade,
-                                             timeSpend: dateHandler.today.timeIntervalSince1970 - timefromLastCard.timeIntervalSince1970,
-                                             date: dateHandler.today))
             cardsToEdit.append(card)
         } else {
             removeCard()

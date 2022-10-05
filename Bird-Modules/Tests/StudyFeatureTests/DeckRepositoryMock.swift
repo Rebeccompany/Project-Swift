@@ -11,6 +11,7 @@ import Models
 import Combine
 
 class DeckRepositoryMock: DeckRepositoryProtocol {
+    
     var deckWithCardsId: UUID = UUID(uuidString: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2")!
     
     lazy var decks: [Deck] = [Deck(id: "c3046ed9-83fb-4c81-a83c-b11ae4863bd2",
@@ -144,6 +145,14 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
         } else {
             throw RepositoryError.couldNotEdit
         }
+    }
+    
+    func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
+        guard let index = cards.firstIndex(of: card) else { throw NSError() }
+        var card = card
+        card.history.append(snapshot)
+        
+        cards[index] = card
     }
     
     
