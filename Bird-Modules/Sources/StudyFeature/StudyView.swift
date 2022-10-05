@@ -10,8 +10,10 @@ import Storage
 import Models
 import HummingBird
 import Utils
+import FlashcardsOnboardingFeature
 
 public struct StudyView: View {
+    @State private var flashcardsOnboarding: Bool = false
     @StateObject private var viewModel: StudyViewModel = StudyViewModel()
     @Environment(\.dismiss) private var dismiss
     @State private var showingErrorAlert: Bool = false
@@ -98,6 +100,20 @@ public struct StudyView: View {
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(deck.name)
             .toolbar(content: {
+                ToolbarItem {
+                    Button {
+                        flashcardsOnboarding = true
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(HBColor.actionColor)
+                            .accessibility(addTraits: .isButton)
+                    }
+                    .sheet(isPresented:  $flashcardsOnboarding) {
+                        FlashcardsOnboardingView()
+                        
+                    }
+                    
+                }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(role: .destructive) {
                         do {

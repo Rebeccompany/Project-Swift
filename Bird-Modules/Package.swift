@@ -106,7 +106,12 @@ let package = Package(
         .library(
             name: "OnboardingFeature",
             targets: ["OnboardingFeature"]
-        )
+        ),
+        
+        .library(
+            name: "FlashcardsOnboardingFeature",
+            targets: ["FlashcardsOnboardingFeature"]
+        ),
     ],
     
     dependencies: [
@@ -160,7 +165,8 @@ let package = Package(
                      "Woodpecker",
                      "Storage",
                      "Utils",
-                     "Habitat"
+                     "Habitat",
+                     "FlashcardsOnboardingFeature"
                 ]
         ),
         
@@ -251,6 +257,13 @@ let package = Package(
         
         .target(
             name: "OnboardingFeature",
+            dependencies: [
+                "HummingBird"
+            ]
+        ),
+        
+        .target(
+            name: "FlashcardsOnboardingFeature",
             dependencies: [
                 "HummingBird"
             ]

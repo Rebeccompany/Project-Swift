@@ -17,7 +17,7 @@ import Storage
 import OnboardingFeature
 
 public struct ContentView: View {
-    @AppStorage("com.projectbird.birdmodules.appfeature.onboarding") private var onBoarding: Bool = true
+    @AppStorage("com.projectbird.birdmodules.appfeature.onboarding") private var onboarding: Bool = true
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @State private var editModeForCollection: EditMode = .inactive
     @State private var editModeForDeck: EditMode = .inactive
@@ -41,7 +41,7 @@ public struct ContentView: View {
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
         
-        .sheet(isPresented: $onBoarding) {
+        .sheet(isPresented: $onboarding) {
             OnboardingView()
         }
     }
