@@ -96,6 +96,7 @@ public struct DetailView: View {
             
             ToolbarItem {
                 Button {
+                    editingDeck = nil
                     presentDeckEdition = true
                 } label: {
                     Image(systemName: "plus")
@@ -131,6 +132,7 @@ public struct DetailView: View {
         VStack {
             EmptyStateView(component: .deck)
             Button {
+                editingDeck = nil
                 presentDeckEdition = true
             } label: {
                 Text(NSLocalizedString("criar_baralho", bundle: .module, comment: ""))
