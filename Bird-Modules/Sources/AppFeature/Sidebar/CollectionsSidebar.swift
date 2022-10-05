@@ -29,7 +29,7 @@ struct CollectionsSidebar: View {
         
         List(selection: $selection) {
             NavigationLink(value: SidebarRoute.allDecks) {
-                Label("Todos os baralhos", systemImage: "square.stack")
+                Label(NSLocalizedString("todos_os_baralhos", bundle: .module, comment: ""), systemImage: "square.stack")
             }
             .listRowBackground(
                 isCompact ? HBColor.secondaryBackground : nil
@@ -64,14 +64,14 @@ struct CollectionsSidebar: View {
                                 editingCollection = collection
                                 presentCollectionEdition = true
                             } label: {
-                                Label("Editar", systemImage: "pencil")
+                                Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
                             }
                             
                             Button(role: .destructive) {
                                 try? viewModel.deleteCollection(collection)
                                 editingCollection = nil
                             } label: {
-                                Label("Deletar", systemImage: "trash")
+                                Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
                             }
                         }
                     }
@@ -82,7 +82,7 @@ struct CollectionsSidebar: View {
                 }
                 
             } header: {
-                Text("Coleções")
+                Text(NSLocalizedString("colecoes", bundle: .module, comment: ""))
             }
         }
         .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
@@ -124,7 +124,7 @@ struct CollectionsSidebar: View {
                 editingCollection = nil
                 presentCollectionEdition = true
             } label: {
-                Text("Criar Coleção")
+                Text(NSLocalizedString("criar_colecao", bundle: .module, comment: ""))
             }
             .buttonStyle(LargeButtonStyle(isDisabled: false))
             .padding()

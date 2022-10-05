@@ -18,7 +18,7 @@ struct FlashcardCell: View {
         Button(action: action) {
             VStack(alignment: .center) {
                 HStack {
-                    Text("Frente")
+                    Text("frente", bundle: .module)
                         .font(.system(size: 15))
                     Spacer()
                 }

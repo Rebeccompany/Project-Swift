@@ -1,0 +1,27 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 30/09/22.
+  
+*/
+
+"colecoes" = "Coleções";
+"todos_os_baralhos" = "Todos os Baralhos";
+"editar" = "Editar";
+"deletar" = "Deletar";
+"cancelar" = "Cancelar";
+"icones" = "Ícones";
+"lista" = "Lista";
+"nome" = "Nome";
+"quantidade" = "Quantidade de Flashcards";
+"ultimo_acesso" = "Data do último acesso";
+"opcoes_organizacao" = "Opções de ordenação";
+"visualizacao" = "Visualização";
+"alert_nada_selecionado" = "Nada foi selecinado";
+"alert_confirmacao_deletar" = "Tem certeza que deseja deletar";
+"criar_baralho" = "Criar Baralho";
+"acessar" = "Acessar";
+"abrir" = "Abrir";
+"cartas" = "cartas";
+"criar_colecao" = "Criar Coleção";

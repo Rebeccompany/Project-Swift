@@ -1,0 +1,17 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 03/10/22.
+  
+*/
+
+"sem_colecao" = "No Collections";
+"sem_deck" = "No Decks";
+"sem_flashcards" = "No Flashcards";
+"clicar_para_criar_colecao" = "Clique em + para criar uma nova coleção";
+"clicar_para_criar_deck" = "Clique em + para criar um novo baralho";
+"clicar_para_criar_flashcard" = "Clique em + para criar um novo flashcard";
+"piu" = "Piu! Sem ";
+"colecao" = "coleção";
+"deck" = "baralho";
