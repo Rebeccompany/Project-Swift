@@ -133,6 +133,7 @@ public struct DeckView: View {
                     studyMode = .spaced
                     shouldDisplayStudyView = true
                 }
+                .hoverEffect(.automatic)
                 .disabled(!viewModel.checkIfCanStudy(deck))
                 .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck), isFilled: true))
                 .listRowInsets(.zero)
@@ -144,6 +145,7 @@ public struct DeckView: View {
                     studyMode = .cramming
                     shouldDisplayStudyView = true
                 }
+                .hoverEffect(.automatic)
                 .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
                 .listRowInsets(.zero)
                 .listRowBackground(Color.clear)
@@ -180,6 +182,7 @@ public struct DeckView: View {
                             }
                         }
                         .frame(height: 230)
+                        .hoverEffect(.lift)
                     }
                     .listRowSeparator(.hidden)
                 }

@@ -73,6 +73,7 @@ public struct StudyView: View {
                                         }
                                     }
                                 }
+                                .hoverEffect(.lift)
                                 Spacer()
                             }
                         }
