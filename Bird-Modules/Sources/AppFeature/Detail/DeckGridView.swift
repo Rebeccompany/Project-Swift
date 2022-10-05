@@ -31,14 +31,17 @@ struct DeckGridView: View {
                             } label: {
                                 Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
                             }
+                            .accessibilityIdentifier("Edit_Deck")
                                 
                             Button(role: .destructive) {
                                 try? viewModel.deleteDeck(deck)
                             } label: {
                                 Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
                             }
+                            .accessibilityIdentifier("Delete_Deck")
                         }
                     }
+                    .accessibilityIdentifier("Deck_\(deck.id.uuidString)")
                     .hoverEffect(.lift)
                 }
             }

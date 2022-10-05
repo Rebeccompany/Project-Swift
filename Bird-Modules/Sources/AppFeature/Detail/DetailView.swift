@@ -45,6 +45,7 @@ public struct DetailView: View {
                 } label: {
                     Text(NSLocalizedString("editar", bundle: .module, comment: ""))
                 }
+                .accessibilityIdentifier("Edit_Deck")
                 .disabled(viewModel.selection.count != 1)
                 
             }
@@ -53,6 +54,7 @@ public struct DetailView: View {
                 Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
                     shouldDisplayAlert = true
                 }
+                .accessibilityIdentifier("Delete_Deck")
                 .foregroundColor(.red)
             }
             
@@ -65,12 +67,14 @@ public struct DetailView: View {
                         Label(NSLocalizedString("icones", bundle: .module, comment: ""), systemImage: "rectangle.grid.2x2")
                     }
                     .disabled(editMode.isEditing)
+                    .accessibilityIdentifier("View_Grid")
                     
                     Button {
                         viewModel.changeDetailType(for: .table)
                     } label: {
                         Label(NSLocalizedString("lista", bundle: .module, comment: ""), systemImage: "list.bullet")
                     }
+                    .accessibilityIdentifier("View_List")
 
                     Picker(selection: $viewModel.sortOrder) {
                         Text(NSLocalizedString("nome", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.name)])
@@ -79,6 +83,7 @@ public struct DetailView: View {
                     } label: {
                         Text(NSLocalizedString("opcoes_ordenacao", bundle: .module, comment: ""))
                     }
+                    .accessibilityIdentifier("Sort_Picker")
                     
                 } label: {
                     Label {
@@ -87,11 +92,13 @@ public struct DetailView: View {
                         Image(systemName: viewModel.detailType == .grid ? "rectangle.grid.2x2" : "list.bullet")
                     }
                 }
+                .accessibilityIdentifier("Visualization_Menu")
             }
             
             ToolbarItem {
                 EditButton()
                     .foregroundColor(HBColor.actionColor)
+                    .accessibilityIdentifier("Edit_Decks")
             }
             
             ToolbarItem {
@@ -106,6 +113,7 @@ public struct DetailView: View {
                     NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
                     .frame(minWidth: 300, minHeight: 600)
                 }
+                .accessibilityIdentifier("Plus_Deck")
             }
         }
         .onChange(of: editMode) { newValue in
