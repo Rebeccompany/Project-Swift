@@ -43,17 +43,17 @@ public struct DeckView: View {
             viewModel.startup(deck)
         }
         .listStyle(.plain)
-        .searchable(text: $viewModel.searchFieldContent)
+        .searchable(text: $viewModel.searchFieldContent, placement: .navigationBarDrawer(displayMode: .always))
         .alert(isPresented: $showingAlert) {
             switch activeAlert {
             case .error:
-                return Alert(title: Text("Erro ao apagar flashcard."),
-                             message: Text("Algo deu errado! Por favor, tente novamente."),
-                             dismissButton: .default(Text("Fechar")))
+                return Alert(title: Text(NSLocalizedString("alert_delete_flashcard_error", bundle: .module, comment: "")),
+                             message: Text(NSLocalizedString("alert_delete_flashcard_error_text", bundle: .module, comment: "")),
+                             dismissButton: .default(Text(NSLocalizedString("fechar", bundle: .module, comment: ""))))
             case .confirm:
-                return Alert(title: Text("Deseja apagar este flashcard?"),
-                             message: Text("Você perderá permanentemente o conteúdo deste flashcard."),
-                             primaryButton: .destructive(Text("Apagar")) {
+                return Alert(title: Text(NSLocalizedString("alert_delete_flashcard", bundle: .module, comment: "")),
+                             message: Text(NSLocalizedString("alert_delete_flashcard_text", bundle: .module, comment: "")),
+                             primaryButton: .destructive(Text(NSLocalizedString("deletar", bundle: .module, comment: ""))) {
                     do {
                         guard let deletedCard else { return }
                         try viewModel.deleteFlashcard(card: deletedCard)
@@ -64,7 +64,7 @@ public struct DeckView: View {
                         selectedErrorMessage = .deleteCard
                     }
                              },
-                secondaryButton: .cancel(Text("Cancelar"))
+                secondaryButton: .cancel(Text(NSLocalizedString("cancelar", bundle: .module, comment: "")))
                 )
             }
         }
@@ -78,10 +78,11 @@ public struct DeckView: View {
                     Image(systemName: "plus")
                 }
                 .foregroundColor(HBColor.actionColor)
+                .popover(isPresented: $shouldDisplayNewFlashcard) {
+                    NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
+                        .frame(minWidth: 300, minHeight: 600)
+                }
             }
-        }
-        .sheet(isPresented: $shouldDisplayNewFlashcard) {
-            NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
@@ -101,7 +102,7 @@ public struct DeckView: View {
                         editingFlashcard = nil
                         shouldDisplayNewFlashcard = true
                     } label: {
-                        Text("Criar Flashcard")
+                        Text("criar_flashcard", bundle: .module)
                     }
                     .buttonStyle(LargeButtonStyle(isDisabled: false))
                     .padding()
@@ -121,12 +122,13 @@ public struct DeckView: View {
                     .padding(.leading)
                     .padding(.bottom)
                 if !viewModel.checkIfCanStudy(deck) && !viewModel.cards.isEmpty {
-                    Text("Atividade diária concluída! Volte em breve para retornar com seus estudos ou use o modo intenso.")
+                    Text(NSLocalizedString("no_study_allowed", bundle: .module, comment: ""))
                         .padding(.leading)
                         .font(.subheadline)
                         .multilineTextAlignment(.center)
                         .listRowBackground(Color.clear)
                 }
+                
                 Button("Spixii") {
                     studyMode = .spaced
                     shouldDisplayStudyView = true
@@ -138,7 +140,7 @@ public struct DeckView: View {
                 .listRowSeparator(.hidden)
                 .padding()
 
-                Button("Intenso") {
+                Button(NSLocalizedString("intenso", bundle: .module, comment: "")) {
                     studyMode = .cramming
                     shouldDisplayStudyView = true
                 }
@@ -164,7 +166,7 @@ public struct DeckView: View {
                                 editingFlashcard = card
                                 shouldDisplayNewFlashcard = true
                             } label: {
-                                Label("Editar Flashcard",
+                                Label(NSLocalizedString("editar_flashcard", bundle: .module, comment: ""),
                                       systemImage: "pencil")
                             }
                             
@@ -173,7 +175,7 @@ public struct DeckView: View {
                                 activeAlert = .confirm
                                 showingAlert = true
                             } label: {
-                                Label("Deletar Flashcard",
+                                Label(NSLocalizedString("deletar_flashcard", bundle: .module, comment: ""),
                                       systemImage: "trash.fill")
                             }
                         }
