@@ -204,6 +204,30 @@ public enum HBColor {
         )
     }
     
+    public static var progressGraphBackground: Color {
+        Color(light: "D8D8D8",
+              dark: "40444F"
+        )
+    }
+    
+    public static var progressGraphTotal: Color {
+        Color(light: "B36BF0",
+              dark: "B778ED"
+        )
+    }
+    
+    public static var progressGraphReviewing: Color {
+        Color(light: "08A15E",
+              dark: "13925B"
+        )
+    }
+    
+    public static var progressGraphLearning: Color {
+        Color(light: "F37012",
+              dark: "DB641C"
+        )
+    }
+    
 
     public static func color(for collectionColor: CollectionColor) -> Color {
         switch collectionColor {
