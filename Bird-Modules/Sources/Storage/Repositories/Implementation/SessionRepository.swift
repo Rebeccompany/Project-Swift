@@ -41,7 +41,7 @@ public final class SessionRepository: SessionRepositoryProtocol {
             try cardsRepository.fetchEntityById(id)
         }
         
-        deck.addToSessions(entity)
+        //deck.addToSessions(entity)
         cards.forEach { card in
             entity.addToCards(card)
         }

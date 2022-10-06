@@ -2,7 +2,7 @@
 //  CardEntity+CoreDataClass.swift
 //  Project-Bird
 //
-//  Created by Nathalia do Valle Papst on 03/10/22.
+//  Created by Nathalia do Valle Papst on 06/10/22.
 //
 //
 

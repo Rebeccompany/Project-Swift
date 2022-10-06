@@ -10,51 +10,54 @@ import XCTest
 import Models
 import SwiftUI
 
-class SessionModelEntityTransformerTests: XCTestCase {
+class SessionInitsTests: XCTestCase {
     var dataStorage: DataStorage! = nil
-    var sut: SessionModelEntityTransformer! = nil
     
     override func setUp() {
         dataStorage = .init(StoreType.inMemory)
-        sut = .init()
     }
     
     override func tearDown() {
         dataStorage = nil
-        sut = nil
     }
     
-    func testCreateEntityFromModel() {
-        let dummySession = SessionDummy.dummy
-        let entity = sut.modelToEntity(dummySession, on: dataStorage.mainContext)
+    func testCreateEntityFromModel() throws {
+        let entity = try createEntity()
         
-        XCTAssertEqual(dummySession.id, entity.id)
-        XCTAssertEqual(dummySession.date, entity.date)
+        let model = Session(entity: entity)
+        
+        XCTAssertEqual(model, SessionDummy.dummy)
     }
     
     func testCreateModelFromEntity() throws {
+        let entity = try createEntity()
+        
+        let dummy = SessionDummy.dummy
+        let entityCardsIds = entity.cards?.allObjects as? [CardEntity]
+        let cardsIds = entityCardsIds?.compactMap(\.id)
+        
+        XCTAssertEqual(entity.id, dummy.id)
+        XCTAssertEqual(entity.date, dummy.date)
+        XCTAssertEqual(cardsIds, dummy.cardIds)
+        XCTAssertEqual(entity.deck?.id, dummy.deckId)
+    }
+    
+    private func createEntity() throws -> SessionEntity {
         let card = CardDummy.dummy
         let deck = DeckDummy.newDummy(with: UUID(uuidString: "1bdcc8a0-467e-4dd2-b02a-5cce07997a0c")!)
         
-        let dummySession = SessionDummy.dummy
-        let entity = sut.modelToEntity(dummySession, on: dataStorage.mainContext)
-        
-        try dataStorage.mainContext.save()
-        
         let cardTransformer = CardModelEntityTransformer()
-        let cardEntity = cardTransformer.modelToEntity(card, on: dataStorage.mainContext)
+        _ = cardTransformer.modelToEntity(card, on: dataStorage.mainContext)
         
         let deckTransformer = DeckModelEntityTransformer()
-        let deckEntity = deckTransformer.modelToEntity(deck, on: dataStorage.mainContext)
-        
-        deckEntity.addToSessions(entity)
-        deckEntity.addToCards(cardEntity)
-        entity.addToCards(cardEntity)
+        _ = deckTransformer.modelToEntity(deck, on: dataStorage.mainContext)
         
         try dataStorage.mainContext.save()
         
-        let model = sut.entityToModel(entity)
+        let entity = try SessionEntity(with: SessionDummy.dummy, on: dataStorage.mainContext)
         
-        XCTAssertEqual(model, dummySession)
+        try dataStorage.save()
+        
+        return entity
     }
 }

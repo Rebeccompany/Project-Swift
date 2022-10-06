@@ -52,12 +52,12 @@
         <attribute name="numberOfSteps" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="cards" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CardEntity" inverseName="deck" inverseEntity="CardEntity"/>
         <relationship name="collection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CollectionEntity" inverseName="decks" inverseEntity="CollectionEntity"/>
-        <relationship name="sessions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SessionEntity" inverseName="deck" inverseEntity="SessionEntity"/>
+        <relationship name="session" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="SessionEntity" inverseName="deck" inverseEntity="SessionEntity"/>
     </entity>
     <entity name="SessionEntity" representedClassName="SessionEntity" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="cards" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CardEntity" inverseName="sessions" inverseEntity="CardEntity"/>
-        <relationship name="deck" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DeckEntity" inverseName="sessions" inverseEntity="DeckEntity"/>
+        <relationship name="deck" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DeckEntity" inverseName="session" inverseEntity="DeckEntity"/>
     </entity>
 </model>

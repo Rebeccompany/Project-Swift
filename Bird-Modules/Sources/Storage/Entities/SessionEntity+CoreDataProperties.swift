@@ -2,7 +2,7 @@
 //  SessionEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Nathalia do Valle Papst on 03/10/22.
+//  Created by Nathalia do Valle Papst on 06/10/22.
 //
 //
 
@@ -15,8 +15,8 @@ extension SessionEntity {
         return NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
     }
 
-    @NSManaged public var id: UUID?
     @NSManaged public var date: Date?
+    @NSManaged public var id: UUID?
     @NSManaged public var cards: NSSet?
     @NSManaged public var deck: DeckEntity?
 

@@ -2,7 +2,7 @@
 //  DeckEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Nathalia do Valle Papst on 03/10/22.
+//  Created by Nathalia do Valle Papst on 06/10/22.
 //
 //
 
@@ -27,7 +27,7 @@ extension DeckEntity {
     @NSManaged public var numberOfSteps: Int16
     @NSManaged public var cards: NSSet?
     @NSManaged public var collection: CollectionEntity?
-    @NSManaged public var sessions: NSSet?
+    @NSManaged public var session: SessionEntity?
 
 }
 
@@ -45,22 +45,5 @@ extension DeckEntity {
 
     @objc(removeCards:)
     @NSManaged public func removeFromCards(_ values: NSSet)
-
-}
-
-// MARK: Generated accessors for sessions
-extension DeckEntity {
-
-    @objc(addSessionsObject:)
-    @NSManaged public func addToSessions(_ value: SessionEntity)
-
-    @objc(removeSessionsObject:)
-    @NSManaged public func removeFromSessions(_ value: SessionEntity)
-
-    @objc(addSessions:)
-    @NSManaged public func addToSessions(_ values: NSSet)
-
-    @objc(removeSessions:)
-    @NSManaged public func removeFromSessions(_ values: NSSet)
 
 }
