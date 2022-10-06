@@ -226,6 +226,7 @@ public class StudyViewModel: ObservableObject {
         case .foward:
             newCard.woodpeckerCardInfo.step += 1
         case .graduate:
+            cardsToEdit.append(newCard)
             removeCard()
             return
         }
@@ -275,4 +276,63 @@ public class StudyViewModel: ObservableObject {
             cards.remove(at: 0)
         }
     }
+    
+    // MARK: - Study Progress
+    func getSessionTotalCards() -> Int {
+        cards.count + cardsToEdit.count
+    }
+    func getSessionTotalSeenCards() -> Int {
+        cardsToEdit.count
+    }
+    func getSessionReviewingCards() -> Int {
+        cards.filter { card in
+            card.woodpeckerCardInfo.isGraduated == true
+        }.count + cardsToEdit.filter { card in
+            if let isGraduated = card.history.last?.woodpeckerCardInfo.isGraduated {
+                return isGraduated
+            } else {
+                return false
+            }
+        }.count
+    }
+    func getSessionReviewingSeenCards() -> Int {
+        cardsToEdit.filter { card in
+            if let isGraduated = card.history.last?.woodpeckerCardInfo.isGraduated {
+                return isGraduated
+            } else {
+                return false
+            }
+        }.count
+    }
+    func getSessionLearningCards(mode: StudyMode) -> Int {
+        
+        if mode == .spaced {
+            return cards.filter { card in
+                card.woodpeckerCardInfo.isGraduated == false
+            }.count + cardsToEdit.filter { card in
+                if let isGraduated = card.history.last?.woodpeckerCardInfo.isGraduated {
+                    return !isGraduated
+                } else {
+                    return false
+                }
+            }.count
+        } else {
+            return getSessionTotalCards()
+        }
+        
+    }
+    func getSessionLearningSeenCards(mode: StudyMode) -> Int {
+        if mode == .spaced {
+            return cardsToEdit.filter { card in
+                if let isGraduated = card.history.last?.woodpeckerCardInfo.isGraduated {
+                    return !isGraduated
+                } else {
+                    return false
+                }
+            }.count
+        } else {
+            return getSessionTotalSeenCards()
+        }
+    }
+    
 }

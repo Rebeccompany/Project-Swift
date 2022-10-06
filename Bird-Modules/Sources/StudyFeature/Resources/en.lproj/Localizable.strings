@@ -18,9 +18,16 @@
 "frente" = "Front";
 "verso" = "Back";
 "toque_virar" = "Tap to flip the card";
-"escolha_nivel" = "Choose the dificulty level.";
+"escolha_nivel" = "Choose the difficulty level.";
 "quatro_botoes" = "Four buttons.";
 "sair" = "Leave";
 "fechar" = "Close";
 "intenso_concluido" = "You finished your intense session!";
 "intenso_concluido_text" = "Congrats, you've completed an intense session!";
+"progress_view" = "Session Progress";
+"titulo_grafico_total" = "Total of The Session";
+"titulo_grafico_aprendizado" = "Learning";
+"titulo_grafico_revisao" = "Reviewing";
+"cartas_estudadas" = "cards studied";
+"de" = "of";
+"cartas" = "cards";

@@ -204,9 +204,9 @@ public enum HBColor {
         )
     }
     
-    public static var progressGraphBackground: Color {
-        Color(light: "D8D8D8",
-              dark: "40444F"
+    public static var progressGraphTotalBackground: Color {
+        Color(light: "E1D1EE",
+              dark: "4A345E"
         )
     }
     
@@ -216,9 +216,21 @@ public enum HBColor {
         )
     }
     
+    public static var progressGraphReviewingBackground: Color {
+        Color(light: "BAE0CF",
+              dark: "374B42"
+        )
+    }
+    
     public static var progressGraphReviewing: Color {
         Color(light: "08A15E",
               dark: "13925B"
+        )
+    }
+    
+    public static var progressGraphLearningBackground: Color {
+        Color(light: "EED1BC",
+              dark: "472E1E"
         )
     }
     

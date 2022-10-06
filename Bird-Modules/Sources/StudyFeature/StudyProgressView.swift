@@ -8,22 +8,58 @@
 import SwiftUI
 import HummingBird
 
-struct StudyProgressView: View {
-    var body: some View {
-        NavigationView {
+public struct StudyProgressView: View {
+    let numOfTotalSeen: Int
+    let numOfTotalCards: Int
+    let numOfReviewingSeen: Int
+    let numOfReviewingCards: Int
+    let numOfLearningSeen: Int
+    let numOfLearningCards: Int
+    let studyMode: StudyMode
+    @Environment(\.dismiss) private var dismiss
+    
+    
+    public init(numOfTotalSeen: Int, numOfTotalCards: Int, numOfReviewingSeen: Int, numOfReviewingCards: Int, numOfLearningSeen: Int, numOfLearningCards: Int, studyMode: StudyMode) {
+        self.numOfTotalSeen = numOfTotalSeen
+        self.numOfTotalCards = numOfTotalCards
+        self.numOfReviewingSeen = numOfReviewingSeen
+        self.numOfReviewingCards = numOfReviewingCards
+        self.numOfLearningSeen = numOfLearningSeen
+        self.numOfLearningCards = numOfLearningCards
+        self.studyMode = studyMode
+    }
+    
+    public var body: some View {
+        NavigationStack {
             ScrollView {
-                GraphView(title: "Total da Sessão", numOfCardsSeen: 50, numOfTotalCards: 100, color: HBColor.progressGraphTotal)
-                .padding()
+                LazyVStack {
+                    GraphView(title: NSLocalizedString("titulo_grafico_total", bundle: .module, comment: ""), numOfCardsSeen: numOfTotalSeen, numOfTotalCards: numOfTotalCards, color: HBColor.progressGraphTotal, backgroundColor: HBColor.progressGraphTotalBackground)
+                        .frame(width: 250)
+                        .padding()
+                    
+                    if (numOfReviewingCards > 0 && studyMode == .spaced) {
+                        GraphView(title: NSLocalizedString("titulo_grafico_revisao", bundle: .module, comment: ""), numOfCardsSeen: numOfReviewingSeen, numOfTotalCards: numOfReviewingCards, color: HBColor.progressGraphReviewing, backgroundColor: HBColor.progressGraphReviewingBackground)
+                            .frame(width: 250)
+                            .padding()
+                    }
+                    
+                    if (numOfLearningCards > 0 && studyMode == .spaced) {
+                        GraphView(title: NSLocalizedString("titulo_grafico_aprendizado", bundle: .module, comment: ""), numOfCardsSeen: numOfLearningSeen, numOfTotalCards: numOfLearningCards, color: HBColor.progressGraphLearning, backgroundColor: HBColor.progressGraphLearningBackground)
+                            .frame(width: 250)
+                            .padding()
+                    }
+                }
                 
                 
             }
-            .navigationTitle("Progresso da Sessão")
+            .navigationTitle(NSLocalizedString("progress_view", bundle: .module, comment: ""))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("OK") {
-                        print("dismiss")
+                        dismiss()
                     }
+                    .foregroundColor(HBColor.actionColor)
                 }
             }
         }
@@ -32,36 +68,37 @@ struct StudyProgressView: View {
 
 struct StudyProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        StudyProgressView()
+        StudyProgressView(numOfTotalSeen: 30, numOfTotalCards: 100, numOfReviewingSeen: 44, numOfReviewingCards: 90, numOfLearningSeen: 3, numOfLearningCards: 5, studyMode: .spaced)
     }
 }
 
 
 struct ProgressGraphBackground: View {
-    @State var lineWidth: CGFloat = 16
+    var lineWidth: CGFloat = 16
+    let backgroundColor: Color
     var body: some View {
         Circle()
-            .stroke(HBColor.progressGraphBackground,
-                    style: StrokeStyle(lineWidth: lineWidth / 1.6))
+            .stroke(backgroundColor,
+                    style: StrokeStyle(lineWidth: lineWidth))
             .rotationEffect(.degrees(-90))
-            .padding(lineWidth/2)
+            .padding()
     }
 }
 
 struct ProgressGraph: View {
     let completedPercentage: CGFloat
-    @State var lineWidth: CGFloat = 16
+    var lineWidth: CGFloat = 16
     let color: Color
     var body: some View {
         Circle()
-            .trim(from: 0, to: CGFloat(completedPercentage)/100)
+            .trim(from: 0, to: CGFloat(completedPercentage) / 100)
             .stroke(color,
                     style: StrokeStyle(
                         lineWidth: lineWidth,
                         lineCap: .round
                     ))
             .rotationEffect(.degrees(-90))
-            .padding(lineWidth/2)
+            .padding()
     }
 }
 
@@ -70,40 +107,23 @@ struct GraphView: View {
     let numOfCardsSeen: Int
     let numOfTotalCards: Int
     let color: Color
+    let backgroundColor: Color
     
     var body: some View {
-        Text(title)
-            .font(.subheadline)
-            .bold()
-        HStack {
+        VStack {
+            Text(title)
+                .font(.subheadline)
+                .bold()
             ZStack {
-                ProgressGraphBackground()
-                ProgressGraph(completedPercentage: CGFloat(numOfCardsSeen * 100)/CGFloat(numOfTotalCards), color: color)
+                ProgressGraphBackground(backgroundColor: backgroundColor)
+                ProgressGraph(completedPercentage: CGFloat(numOfCardsSeen * 100) / CGFloat(numOfTotalCards), color: color)
                 VStack {
-                    Text("\(numOfCardsSeen)")
-                        .font(.title2)
+                    Text("\(numOfCardsSeen) cartas estudadas")
+                        .font(.title3)
                     Text("de \(numOfTotalCards) cartas")
                         .foregroundColor(.gray)
                 }
             }
-            Spacer()
-            VStack(alignment: .leading) {
-                HStack {
-                    Circle()
-                        .fill(color)
-                        .frame(width: 15)
-                    Text("Estudados")
-                }
-                HStack {
-                    Circle()
-                        .fill(HBColor.progressGraphBackground)
-                        .frame(width: 15)
-                    Text("Restantes")
-                }
-                
-            }
         }
-        .padding()
     }
-    
 }

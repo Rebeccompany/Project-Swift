@@ -16,6 +16,7 @@ public struct StudyView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showingErrorAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
+    @State private var shouldDisplaySessionProgress: Bool = false
     
     var deck: Deck
     let mode: StudyMode
@@ -82,8 +83,21 @@ public struct StudyView: View {
                         .accessibilityHint(NSLocalizedString("escolha_nivel", bundle: .module, comment: ""))
                         .accessibilityLabel(NSLocalizedString("quatro_botoes", bundle: .module, comment: ""))
                     }
-                    
-                    
+                    .toolbar {
+                        ToolbarItem {
+                            Button {
+                                shouldDisplaySessionProgress = true
+                            } label: {
+                                Image(systemName: "chart.line.uptrend.xyaxis")
+                                    .foregroundColor(HBColor.actionColor)
+                            }
+                            .popover(isPresented: $shouldDisplaySessionProgress) {
+                                StudyProgressView(numOfTotalSeen: viewModel.getSessionTotalSeenCards(), numOfTotalCards: viewModel.getSessionTotalCards(), numOfReviewingSeen: viewModel.getSessionReviewingSeenCards(), numOfReviewingCards: viewModel.getSessionReviewingCards(), numOfLearningSeen: viewModel.getSessionLearningSeenCards(mode: mode), numOfLearningCards: viewModel.getSessionLearningCards(mode: mode), studyMode: mode)
+                                .frame(minWidth: 300, minHeight: 600)
+                            }
+                        }
+                    }
+    
                 } else {
                     EndOfStudyView(mode: mode) {
                         do {
@@ -114,9 +128,8 @@ public struct StudyView: View {
                         Text("sair", bundle: .module)
                     }
                     .foregroundColor(.red)
-                    
-                    
                 }
+                
             })
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
