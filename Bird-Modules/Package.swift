@@ -282,7 +282,8 @@ let package = Package(
         .testTarget(
             name: "CardModelTests",
             dependencies: [
-                "Models"
+                "Models",
+                "Utils"
             ]
         ),
         
@@ -310,7 +311,8 @@ let package = Package(
                 "Storage",
                 "Models",
                 "NewCollectionFeature",
-                "Habitat"
+                "Habitat",
+                "Utils"
             ]
         ),
         
