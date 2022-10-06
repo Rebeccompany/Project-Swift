@@ -26,7 +26,7 @@ final class DeckConverter {
     }
 }
 
-public struct ImportedCardInfo: Decodable {
+public struct ImportedCardInfo: Decodable, Hashable {
     public var front: String
     public var back: String
     public var tags: String

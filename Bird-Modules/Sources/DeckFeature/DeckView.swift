@@ -10,6 +10,7 @@ import SwiftUI
 import Models
 import HummingBird
 import NewFlashcardFeature
+import ImportingFeature
 import StudyFeature
 import Storage
 import Flock
@@ -18,6 +19,7 @@ import Utils
 public struct DeckView: View {
     @StateObject private var viewModel: DeckViewModel = DeckViewModel()
     @State private var shouldDisplayNewFlashcard: Bool = false
+    @State private var shouldDisplayImport: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
     @State private var studyMode: StudyMode = .spaced
     @State private var showingAlert: Bool = false
@@ -71,11 +73,31 @@ public struct DeckView: View {
         .navigationTitle(deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button {
-                    editingFlashcard = nil
-                    shouldDisplayNewFlashcard = true
+                Menu {
+                    Button {
+                        editingFlashcard = nil
+                        shouldDisplayNewFlashcard = true
+                    } label: {
+                        Label(
+                            NSLocalizedString("add", bundle: .module, comment: ""),
+                            systemImage: "plus"
+                        )
+                    }
+                    
+                    Button {
+                        shouldDisplayImport = true
+                    } label: {
+                        Label(
+                            NSLocalizedString("import", bundle: .module, comment: ""),
+                            systemImage: "arrow.down"
+                        )
+                    }
+                    
                 } label: {
-                    Image(systemName: "plus")
+                    Label(
+                        NSLocalizedString("add", bundle: .module, comment: ""),
+                        systemImage: "plus"
+                    )
                 }
                 .foregroundColor(HBColor.actionColor)
                 .popover(isPresented: $shouldDisplayNewFlashcard) {
@@ -89,6 +111,9 @@ public struct DeckView: View {
                 deck: deck,
                 mode: studyMode
             )
+        }
+        .sheet(isPresented: $shouldDisplayImport) {
+            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
         }
     }
     
@@ -116,7 +141,7 @@ public struct DeckView: View {
     private var grid: some View {
         ScrollView {
             LazyVStack(alignment: .leading) {
-                Text("Modos de Estudo")
+                Text("modos_de_estudo", bundle: .module)
                     .font(.title3)
                     .bold()
                     .padding(.leading)

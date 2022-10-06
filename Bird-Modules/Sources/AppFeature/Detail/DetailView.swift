@@ -20,7 +20,7 @@ public struct DetailView: View {
     @Binding private var editMode: EditMode
     @State private var presentDeckEdition = false
     @State private var shouldDisplayAlert = false
-    @State private var editingDeck: Deck? = nil
+    @State private var editingDeck: Deck?
     
     init(editMode: Binding<EditMode>) {
         self._editMode = editMode
