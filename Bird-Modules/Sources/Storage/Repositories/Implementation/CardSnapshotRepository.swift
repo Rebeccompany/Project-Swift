@@ -21,5 +21,3 @@ final class CardSnapshotRepository {
         transformer.modelToEntity(snapshot, on: dataStorage.mainContext)
     }
 }
-
-#warning("test")
