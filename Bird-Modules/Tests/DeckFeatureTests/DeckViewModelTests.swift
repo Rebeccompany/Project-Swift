@@ -110,14 +110,14 @@ final class DeckViewModelTests: XCTestCase {
     }
     
     func testCheckIfcanStudyWithSession() {
-        let session = Session(cardIds: deckRepository.decks[0].cardsIds, date: dateHandler.today, deckId: deckRepository.decks[0].id)
+        let session = Session(cardIds: deckRepository.decks[0].cardsIds, date: dateHandler.today, deckId: deckRepository.decks[0].id, id: UUID())
         sessionCacher.setCurrentSession(session: session)
         sut.startup(deckRepository.decks[0])
         XCTAssertTrue(sut.checkIfCanStudy(deckRepository.decks[0]))
     }
     
     func testCheckIfcanStudyWithEmptySession() {
-        let session = Session(cardIds: deckRepository.decks[2].cardsIds, date: dateHandler.today, deckId: deckRepository.decks[2].id)
+        let session = Session(cardIds: deckRepository.decks[2].cardsIds, date: dateHandler.today, deckId: deckRepository.decks[2].id, id: UUID())
         sessionCacher.setCurrentSession(session: session)
         sut.startup(deckRepository.decks[2])
         XCTAssertFalse(sut.checkIfCanStudy(deckRepository.decks[2]))

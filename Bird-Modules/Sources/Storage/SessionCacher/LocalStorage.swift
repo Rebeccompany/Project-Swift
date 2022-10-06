@@ -20,37 +20,24 @@ extension UserDefaults: LocalStorageService {}
 
 
 public final class SessionCacher {
-    private let storage: LocalStorageService
-    private let decoder: JSONDecoder
-    private let encoder: JSONEncoder
-    private let currentSessionKey: String = "com.birdmodules.storage.sessioncacher.session"
+    private let repository: SessionRepositoryProtocol
     
-    public init(storage: LocalStorageService = UserDefaults.standard,
-                encoder: JSONEncoder = JSONEncoder(),
-                decoder: JSONDecoder = JSONDecoder()) {
-        self.storage = storage
-        self.encoder = encoder
-        self.decoder = decoder
+    public init(repository: SessionRepositoryProtocol = SessionRepository.shared) {
+        self.repository = repository
     }
     
     public func currentSession(for id: UUID) -> Session? {
-        guard
-            let sessionData = storage.object(forKey: sessionKey(for: id)) as? Data,
-            let session = try? decoder.decode(Session.self, from: sessionData)
-        else {
-            return nil
+        
+        repository.currentSession(for: id)
+    }
+    
+    public func setCurrentSession(session: Session) throws {
+        if let session = currentSession(for: session.deckId) {
+            try repository.editSession(session)
+        } else {
+            try repository.setCurrentSession(session: session)
         }
         
-        return session
-    }
-    
-    public func setCurrentSession(session: Session) {
-        let data = try? encoder.encode(session)
-        storage.set(data, forKey: sessionKey(for: session.deckId))
-    }
-    
-    private func sessionKey(for id: UUID) -> String {
-        "\(currentSessionKey).\(id.uuidString)"
     }
     
 }

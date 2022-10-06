@@ -12,4 +12,5 @@ import Models
 public protocol SessionRepositoryProtocol {
     func currentSession(for deckId: UUID) -> Session?
     func setCurrentSession(session: Session) throws
+    func editSession(_ session: Session) throws
 }

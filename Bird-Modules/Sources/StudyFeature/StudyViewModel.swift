@@ -184,12 +184,12 @@ public class StudyViewModel: ObservableObject {
         try cardsToEdit.forEach { card in
             try deckRepository.editCard(card)
         }
-        sessionCacher.setCurrentSession(session: Session(cardIds: cards.map(\.id), date: dateHandler.today, deckId: deck.id))
+        sessionCacher.setCurrentSession(session: Session(cardIds: cards.map(\.id), date: dateHandler.today, deckId: deck.id, id: UUID()))
         
     }
     
     private func saveCardIdsToCache(deck: Deck, ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) ) {
-        let session = Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id)
+        let session = Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id, id: UUID())
         sessionCacher.setCurrentSession(session: session)
     }
     

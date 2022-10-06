@@ -11,11 +11,14 @@ import Models
 
 struct SessionModelEntityTransformer: ModelEntityTransformer {
     func requestForAll() -> NSFetchRequest<SessionEntity> {
-        SessionEntity.fetchRequest()
+        let request = SessionEntity.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \SessionEntity.date, ascending: false)]
+
+        return request
     }
     
     func listenerRequest() -> NSFetchRequest<SessionEntity> {
-        SessionEntity.fetchRequest()
+        requestForAll()
     }
     
     func modelToEntity(_ model: Session, on context: NSManagedObjectContext) -> SessionEntity {

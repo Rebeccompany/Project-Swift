@@ -67,7 +67,7 @@ class StudyViewModelTests: XCTestCase {
     
     func testRepetitionStartupWithExistingSession() {
         let cardIds = Array(deckRepository.cards.prefix(3).map(\.id))
-        let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id)
+        let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id, id: UUID())
         sessionCacher.setCurrentSession(session: session)
         
         sut.startup(deck: deck, mode: .spaced)
@@ -88,7 +88,7 @@ class StudyViewModelTests: XCTestCase {
         
         let expectation = expectation(description: "did handle events correctly")
         
-        let expectedSession = Session(cardIds: deck.cardsIds.sorted(by: { $0.uuidString > $1.uuidString } ), date: dateHandler.today, deckId: deck.id)
+        let expectedSession = Session(cardIds: deck.cardsIds.sorted(by: { $0.uuidString > $1.uuidString } ), date: dateHandler.today, deckId: deck.id, id: UUID())
         
         sut.$cards.sink {[unowned self] cards in
             var session = self.sessionCacher.currentSession(for: self.deck.id)
@@ -395,7 +395,7 @@ class StudyViewModelTests: XCTestCase {
     
     func testIsVOOn() {
         let cardIds = Array(deckRepository.cards.prefix(3).map(\.id))
-        let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id)
+        let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id, id: UUID())
         sessionCacher.setCurrentSession(session: session)
         
         sut.startup(deck: deck, mode: .spaced)
