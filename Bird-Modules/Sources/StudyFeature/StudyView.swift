@@ -17,7 +17,7 @@ public struct StudyView: View {
     @State private var showingErrorAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    
+        
     var deck: Deck
     let mode: StudyMode
     
@@ -146,13 +146,15 @@ public struct StudyView: View {
         HStack {
             Spacer()
             FlashcardDeckView(cards: $viewModel.displayedCards)
-                .zIndex(1)
-                .padding(.vertical)
-                .accessibilityElement(children: .ignore)
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel(generateAttributedLabel())
-                .accessibilityHidden(viewModel.cards.isEmpty)
             
+            .frame(maxWidth: 700, maxHeight: 700)
+            .zIndex(1)
+            .padding(.vertical)
+            .accessibilityElement(children: .ignore)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(generateAttributedLabel())
+            .accessibilityHidden(viewModel.cards.isEmpty)
+            Spacer()
             VStack(alignment: .trailing) {
                 ForEach(UserGrade.allCases) { userGrade in
                     DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in

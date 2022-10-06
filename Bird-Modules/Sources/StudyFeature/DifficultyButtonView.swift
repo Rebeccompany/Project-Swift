@@ -69,14 +69,7 @@ struct DifficultyButtonView: View {
     
     @ViewBuilder
     var regularView: some View {
-        HStack {
-            Text(content.label)
-                .font(.system(size: 24))
-                .fontWeight(.medium)
-                .foregroundColor(isDisabled ? .gray : .primary)
-                .padding(.top, 4)
-                .accessibilityHidden(true)
-                .padding()
+        VStack {
             
             Button {
                 if !isDisabled {
@@ -95,6 +88,14 @@ struct DifficultyButtonView: View {
                     )
             }
             .disabled(isDisabled)
+            
+            Text(content.label)
+                .font(.system(size: 18))
+                .fontWeight(.medium)
+                .foregroundColor(isDisabled ? .gray : .primary)
+                .padding(.top, 4)
+                .accessibilityHidden(true)
+//                .padding()
         }
         .accessibilityLabel(NSLocalizedString("clicar_em", bundle: .module, comment: "") + content.label.finilized)
     }
