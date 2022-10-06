@@ -37,9 +37,9 @@ public struct StudyView: View {
             }
             
             if !isFlipped {
-                return "Frente: " + toString(card.front)
+                return NSLocalizedString("frente", bundle: .module, comment: "") + ": " + toString(card.front)
             } else {
-                return "Verso: " + toString(card.back)
+                return NSLocalizedString("verso", bundle: .module, comment: "") + ": " + toString(card.back)
             }
         }
         return ""
@@ -72,13 +72,14 @@ public struct StudyView: View {
                                         }
                                     }
                                 }
+                                .hoverEffect(.lift)
                                 Spacer()
                             }
                         }
                         .padding()
                         .accessibilityElement(children: .contain)
-                        .accessibilityHint("Escolha nível de dificuldade")
-                        .accessibilityLabel("Quatro Botões.")
+                        .accessibilityHint(NSLocalizedString("escolha_nivel", bundle: .module, comment: ""))
+                        .accessibilityLabel(NSLocalizedString("quatro_botoes", bundle: .module, comment: ""))
                     }
                     
                     
@@ -109,7 +110,7 @@ public struct StudyView: View {
                             showingErrorAlert = true
                         }
                     } label: {
-                        Text("Sair")
+                        Text("sair", bundle: .module)
                     }
                     .foregroundColor(.red)
                     
@@ -124,7 +125,7 @@ public struct StudyView: View {
             .alert(isPresented: $showingErrorAlert) {
                 Alert(title: Text(selectedErrorMessage.texts.title),
                       message: Text(selectedErrorMessage.texts.message),
-                      dismissButton: .default(Text("Fechar")))
+                      dismissButton: .default(Text("fechar", bundle: .module)))
             }
         }
         

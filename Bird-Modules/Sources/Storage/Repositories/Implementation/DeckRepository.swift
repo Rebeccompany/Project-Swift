@@ -13,11 +13,14 @@ public final class DeckRepository: DeckRepositoryProtocol {
     
     private let deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>
     private let cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>
+    private let cardSnapshotRepository: CardSnapshotRepository
     
     init(deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>,
-         cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>) {
+         cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>,
+         cardSnapshotRepository: CardSnapshotRepository) {
         self.deckRepository = deckRepository
         self.cardRepository = cardRepository
+        self.cardSnapshotRepository = cardSnapshotRepository
     }
     
     public static let shared: DeckRepositoryProtocol = {
@@ -27,7 +30,7 @@ public final class DeckRepository: DeckRepositoryProtocol {
     public convenience init(collectionId: UUID?) {
         let deckRepository = Repository(transformer: DeckModelEntityTransformer(collectionIds: collectionId), .shared)
         let cardRepository = Repository(transformer: CardModelEntityTransformer(), .shared)
-        self.init(deckRepository: deckRepository, cardRepository: cardRepository)
+        self.init(deckRepository: deckRepository, cardRepository: cardRepository, cardSnapshotRepository: CardSnapshotRepository(transformer: CardSnapshotTransformer()))
     }
     
     public func fetchDeckById(_ id: UUID) -> AnyPublisher<Deck, RepositoryError> {
@@ -142,6 +145,13 @@ public final class DeckRepository: DeckRepositoryProtocol {
         entity.lastAccess = card.datesLogs.lastAccess
         entity.lastEdit = card.datesLogs.lastEdit
         
+        try cardRepository.save()
+    }
+    
+    public func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
+        let entity = try cardRepository.fetchEntityById(card.id)
+        let snapshotEntity = cardSnapshotRepository.create(snapshot: snapshot)
+        entity.addToHistory(snapshotEntity)
         try cardRepository.save()
     }
     

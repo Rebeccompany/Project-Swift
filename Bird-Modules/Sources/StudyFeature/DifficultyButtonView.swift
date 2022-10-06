@@ -69,7 +69,7 @@ struct DifficultyButtonView: View {
                 .accessibilityHidden(true)
                 
         }
-        .accessibilityLabel("Clicar em " + content.label.finilized)
+        .accessibilityLabel(NSLocalizedString("clicar_em", bundle: .module, comment: "") + content.label.finilized)
     }
     
 }

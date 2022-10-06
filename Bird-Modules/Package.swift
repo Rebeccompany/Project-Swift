@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Bird-Modules",
+    defaultLocalization: "pt-BR",
     
     platforms: [
         .iOS("16.0"),
@@ -142,6 +143,7 @@ let package = Package(
                 "Utils",
                 "NewFlashcardFeature",
                 "StudyFeature",
+                "ImportingFeature",
                 "Habitat"
             ]
         ),
@@ -160,7 +162,11 @@ let package = Package(
         .target(
             name: "ImportingFeature",
             dependencies: [
-                "Owl"
+                "Owl",
+                "HummingBird",
+                "Flock",
+                "Habitat",
+                "Storage"
             ]
         ),
         
@@ -212,7 +218,8 @@ let package = Package(
         .target(
             name: "Storage",
             dependencies: [
-                "Models"
+                "Models",
+                "Utils"
             ],
             resources: [
                 .copy("Resources/Bird.xcdatamodeld")
@@ -246,7 +253,11 @@ let package = Package(
         .testTarget(
             name: "ImportingFeatureTests",
             dependencies: [
-                "ImportingFeature"
+                "ImportingFeature",
+                "Utils",
+                "Models",
+                "Storage",
+                "Habitat"
             ]
         ),
         
@@ -271,7 +282,8 @@ let package = Package(
         .testTarget(
             name: "CardModelTests",
             dependencies: [
-                "Models"
+                "Models",
+                "Utils"
             ]
         ),
         
@@ -299,7 +311,8 @@ let package = Package(
                 "Storage",
                 "Models",
                 "NewCollectionFeature",
-                "Habitat"
+                "Habitat",
+                "Utils"
             ]
         ),
         

@@ -24,9 +24,9 @@ struct FlashcardView: View {
     
     var body: some View {
         ZStack {
-            cardFace(content: viewModel.card.back, face: "Verso", description: "Toque para ver a frente")
+            cardFace(content: viewModel.card.back, face: NSLocalizedString("verso", bundle: .module, comment: ""), description: NSLocalizedString("toque_virar", bundle: .module, comment: ""))
                 .rotation3DEffect(.degrees(backDegree), axis: (x: 0, y: 1, z: 0.0001))
-            cardFace(content: viewModel.card.front, face: "Frente", description: "Toque para ver o verso")
+            cardFace(content: viewModel.card.front, face: NSLocalizedString("frente", bundle: .module, comment: ""), description: NSLocalizedString("toque_virar", bundle: .module, comment: ""))
                 .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0.0001))
         }
         .background(

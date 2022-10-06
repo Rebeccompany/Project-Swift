@@ -34,7 +34,7 @@ public struct NewDeckView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading) {
-                    Text("Nome")
+                    Text("nome", bundle: .module)
                         .font(.callout)
                         .bold()
                     
@@ -44,7 +44,7 @@ public struct NewDeckView: View {
                         .focused($selectedField, equals: 0)
                         
                     
-                    Text("Cores")
+                    Text("cores", bundle: .module)
                         .font(.callout)
                         .bold()
                     
@@ -61,7 +61,7 @@ public struct NewDeckView: View {
                         }
                     }
                     
-                    Text("Ícones")
+                    Text("icones", bundle: .module)
                         .font(.callout)
                         .bold()
                         .padding(.top)
@@ -85,7 +85,7 @@ public struct NewDeckView: View {
                             activeAlert = .confirm
                             showingAlert = true
                         } label: {
-                            Text("Apagar Deck")
+                            Text("apagar_deck", bundle: .module)
                         }
                         .buttonStyle(DeleteButtonStyle())
                     }
@@ -97,11 +97,11 @@ public struct NewDeckView: View {
                     case .error:
                         return Alert(title: Text(selectedErrorMessage.texts.title),
                                      message: Text(selectedErrorMessage.texts.message),
-                                     dismissButton: .default(Text("Fechar")))
+                                     dismissButton: .default(Text("fechar", bundle: .module)))
                     case .confirm:
-                        return Alert(title: Text("Deseja apagar este baralho?"),
-                                     message: Text("Você perderá permanentemente o conteúdo deste baralho."),
-                                     primaryButton: .destructive(Text("Apagar")) {
+                        return Alert(title: Text("alert_delete_deck", bundle: .module),
+                                     message: Text("alert_delete_deck_text", bundle: .module),
+                                     primaryButton: .destructive(Text("deletar", bundle: .module)) {
                                         do {
                                             try viewModel.deleteDeck(editingDeck: editingDeck)
                                             editMode = .inactive
@@ -112,27 +112,27 @@ public struct NewDeckView: View {
                                             selectedErrorMessage = .deleteDeck
                                         }
                                      },
-                                     secondaryButton: .cancel(Text("Cancelar"))
+                                     secondaryButton: .cancel(Text("cancelar", bundle: .module))
                         )
                         
                     }
                     
                 }
-                .navigationTitle(editingDeck != nil ? "Editar baralho" : "Criar Baralho")
+                .navigationTitle(editingDeck == nil ? NSLocalizedString("criar_deck", bundle: .module, comment: "") : NSLocalizedString("editar_deck", bundle: .module, comment: ""))
                 .navigationBarTitleDisplayMode(.inline)
                 
             }
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button("Feito") {
+                    Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                         selectedField = nil
                     }
-                    .accessibilityLabel(Text("Botão de feito"))
+                    .accessibilityLabel(Text("botao_feito", bundle: .module))
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("OK") {
+                    Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                         
                         if editingDeck == nil {
                             do {
@@ -159,7 +159,7 @@ public struct NewDeckView: View {
                 }
                 
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") {
+                    Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
                         editMode = .inactive
                         dismiss()
                     }
