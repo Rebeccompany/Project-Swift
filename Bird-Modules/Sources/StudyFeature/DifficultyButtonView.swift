@@ -31,7 +31,6 @@ struct DifficultyButtonView: View {
         switch userGrade {
         case .wrongHard:
             return .init("1")
-            
         case .wrong:
             return .init("2")
         case .correct:
