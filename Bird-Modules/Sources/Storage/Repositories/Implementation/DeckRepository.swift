@@ -13,11 +13,13 @@ public final class DeckRepository: DeckRepositoryProtocol {
     
     private let deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>
     private let cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>
+    private let sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>
     
     init(deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>,
-         cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>) {
+         cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>, sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>) {
         self.deckRepository = deckRepository
         self.cardRepository = cardRepository
+        self.sessionRepository = sessionRepository
     }
     
     public static let shared: DeckRepositoryProtocol = {
@@ -27,7 +29,8 @@ public final class DeckRepository: DeckRepositoryProtocol {
     public convenience init(collectionId: UUID?) {
         let deckRepository = Repository(transformer: DeckModelEntityTransformer(collectionIds: collectionId), .shared)
         let cardRepository = Repository(transformer: CardModelEntityTransformer(), .shared)
-        self.init(deckRepository: deckRepository, cardRepository: cardRepository)
+        let sessionRepository = Repository(transformer: SessionModelEntityTransformer(), .shared)
+        self.init(deckRepository: deckRepository, cardRepository: cardRepository, sessionRepository: sessionRepository)
     }
     
     public func fetchDeckById(_ id: UUID) -> AnyPublisher<Deck, RepositoryError> {
@@ -143,6 +146,52 @@ public final class DeckRepository: DeckRepositoryProtocol {
         entity.lastEdit = card.datesLogs.lastEdit
         
         try cardRepository.save()
+    }
+    
+    public func createSession(_ session: Session, for deck: Deck) throws {
+        let sessionEntity = try sessionRepository.create(session)
+        let deckEntity = try deckRepository.fetchEntityById(deck.id)
+        let cardsEntity = try cardRepository.fetchMultipleEntitiesByIds(session.cardIds)
+        
+        sessionEntity.deck = deckEntity
+        cardsEntity.forEach { card in
+            sessionEntity.addToCards(card)
+        }
+        
+        try sessionRepository.save()
+    }
+    
+    public func editSession(_ session: Session) throws {
+        let entity = try sessionRepository.fetchEntityById(session.id)
+        entity.date = session.date
+        
+        try sessionRepository.save()
+    }
+    
+    public func deleteSession(_ session: Session, for deck: Deck) throws {
+        try sessionRepository.delete(session)
+    }
+    
+    public func addCardsToSession(_ session: Session, cards: [Card]) throws {
+        let entity = try sessionRepository.fetchEntityById(session.id)
+        let cardsEntities = try cardRepository.fetchMultipleEntitiesByIds(cards.map(\.id))
+        
+        cardsEntities.forEach { card in
+            entity.addToCards(card)
+        }
+        
+        try sessionRepository.save()
+    }
+    
+    public func removeCardsFromSession(_ session: Session, cards: [Card]) throws {
+        let entity = try sessionRepository.fetchEntityById(session.id)
+        let cardsEntities = try cardRepository.fetchMultipleEntitiesByIds(cards.map(\.id))
+        
+        cardsEntities.forEach { card in
+            entity.removeFromCards(card)
+        }
+        
+        try sessionRepository.save()
     }
     
 }

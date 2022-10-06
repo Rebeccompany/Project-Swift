@@ -186,8 +186,27 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
          
          cardSubject.send(cards)
      }
-
-
+    
+    public func createSession(_ session: Session, for deck: Deck) throws {
+        
+    }
+    
+    public func editSession(_ session: Session) throws {
+        
+    }
+    
+    public func deleteSession(_ session: Session, for deck: Deck) throws {
+        
+    }
+    
+    public func addCardsToSession(_ session: Models.Session, cards: [Models.Card]) throws {
+        
+    }
+    
+    public func removeCardsFromSession(_ session: Models.Session, cards: [Models.Card]) throws {
+        
+    }
+    
  }
 
  fileprivate enum WoodpeckerState {

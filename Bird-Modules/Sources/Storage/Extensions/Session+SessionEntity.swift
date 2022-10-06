@@ -23,30 +23,3 @@ extension Session {
         self.init(cardIds: cardsIds, date: date, deckId: deck, id: id)
     }
 }
-
-extension SessionEntity {
-    convenience init(with model: Session, on context: NSManagedObjectContext) throws {
-        self.init(context: context)
-        self.id = model.id
-        self.date = model.date
-        
-        let deckPredicate = NSPredicate(format: "id == %@", model.deckId as NSUUID)
-        let cardsPredicate = NSPredicate(format: "id IN %@", model.cardIds)
-        
-        let deckRequest = DeckEntity.fetchRequest()
-        deckRequest.predicate = deckPredicate
-        deckRequest.fetchLimit = 1
-        
-        let deckEntity = try context.fetch(deckRequest)
-        self.deck = deckEntity.first
-        
-        let cardsRequest = CardEntity.fetchRequest()
-        cardsRequest.predicate = cardsPredicate
-        
-        let cardEntities = try context.fetch(cardsRequest)
-        
-        cardEntities.forEach { card in
-            self.addToCards(card)
-        }
-    }
-}

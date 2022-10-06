@@ -31,4 +31,10 @@ public protocol DeckRepositoryProtocol: AnyObject {
     func deleteCard(_ card: Card) throws
     func editCard(_ card: Card) throws
     
+    // Session
+    func createSession(_ session: Session, for deck: Deck) throws
+    func editSession(_ session: Session) throws
+    func deleteSession(_ session: Session, for deck: Deck) throws
+    func addCardsToSession(_ session: Session, cards: [Card]) throws
+    func removeCardsFromSession(_ session: Session, cards: [Card]) throws
 }
