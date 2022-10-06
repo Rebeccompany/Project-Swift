@@ -7,23 +7,28 @@
 
 import SwiftUI
 import Models
-import HummingBird
-import Storage
 
-struct FlashcardCell: View {
+public struct FlashcardCell: View {
     var card: Card
+    var isFront: Bool
     var action: () -> Void
     
-    var body: some View {
+    public init(card: Card, isFront: Bool = true, action: @escaping () -> Void) {
+        self.card = card
+        self.action = action
+        self.isFront = isFront
+    }
+    
+    public var body: some View {
         Button(action: action) {
             VStack(alignment: .center) {
                 HStack {
-                    Text("frente", bundle: .module)
+                    Text(isFront ? "frente" : "verso", bundle: .module)
                         .font(.system(size: 15))
                     Spacer()
                 }
                 Spacer()
-                Text(cardText(card.front))
+                Text(cardText(isFront ? card.front : card.back))
                 Spacer()
             }
         }.buttonStyle(Style(color: card.color))

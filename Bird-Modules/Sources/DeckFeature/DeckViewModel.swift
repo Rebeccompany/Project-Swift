@@ -61,7 +61,6 @@ public class DeckViewModel: ObservableObject {
     }
     
     func checkIfCanStudy(_ deck: Deck) -> Bool {
-        
         do {
             if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
                 return !session.cardIds.isEmpty
@@ -92,4 +91,5 @@ public class DeckViewModel: ObservableObject {
             return cards.filter { NSAttributedString($0.front).string.contains(searchFieldContent) || NSAttributedString($0.back).string.contains(searchFieldContent) }
         }
     }
+    
 }

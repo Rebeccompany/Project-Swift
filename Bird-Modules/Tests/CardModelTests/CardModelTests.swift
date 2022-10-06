@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import Models
+import Utils
 
 class CardModelTests: XCTestCase {
     
@@ -74,7 +75,7 @@ class CardModelTests: XCTestCase {
     // Testing the dueDate for a card with interval = 1 and last snapshot at 01/01/1970 06:00
     func testI1H6() {
         let card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 6 * 3600), interval: 1)
-    
+        
         XCTAssertEqual(getComponents(date: card.dueDate!), getComponents(date: Date(timeIntervalSince1970: secondsInADay)))
     }
     
@@ -96,7 +97,7 @@ class CardModelTests: XCTestCase {
     
     private func getComponents(date: Date) -> DateComponents {
         var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = .init(identifier: "UTC")!
+        cal.timeZone = TimeZone.gmt
         return cal.dateComponents([.day, .month, .year], from: date)
     }
 

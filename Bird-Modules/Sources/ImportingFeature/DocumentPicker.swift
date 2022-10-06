@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import Models
+import Flock
 import Combine
 
 struct DocumentPicker: UIViewControllerRepresentable {
-    typealias UIViewControllerType = UIDocumentPickerViewController
-    
-    @Binding var fileContent: Data
+    @Binding var fileContent: [Card]
+    var deckId: UUID
+    var cancel: () -> Void
     
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
         let controller = UIDocumentPickerViewController(forOpeningContentTypes: [.commaSeparatedText], asCopy: true)
@@ -22,55 +24,39 @@ struct DocumentPicker: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
     
     func makeCoordinator() -> DocumentPickerCoordinator {
-        DocumentPickerCoordinator(fileContent: $fileContent)
+        DocumentPickerCoordinator(fileContent: $fileContent, deckId: deckId) {
+            cancel()
+        }
     }
 }
 
-#warning("Testing not implemented")
 final class DocumentPickerCoordinator: NSObject, UIDocumentPickerDelegate, UINavigationControllerDelegate {
-    @Binding var fileContent: Data
+    @Binding private var fileContent: [Card]
+    private let converter: DeckConverter = DeckConverter()
+    private let deckId: UUID
+    private let cancel: (() -> Void)?
     
-    init(fileContent: Binding<Data>) {
+    init(fileContent: Binding<[Card]>, deckId: UUID, cancel: @escaping () -> Void) {
         _fileContent = fileContent
+        self.deckId = deckId
+        self.cancel = cancel
         super.init()
     }
     
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let fileURL = urls.first, let content = try? Data(contentsOf: fileURL, options: .mappedIfSafe)
         else { return }
-        fileContent = content
-    }
-}
-
-// swiftlint:disable discouraged_optional_collection
-public struct DeckFilePicker: View {
-    @Binding public var selectedData: [ImportedCardInfo]?
-    @ObservedObject private var viewModel: CSVPickerViewModel
-    
-    public init(selectedData: Binding<[ImportedCardInfo]?>,
-                viewModel: CSVPickerViewModel = .init()) {
-        self._selectedData = selectedData
-        self.viewModel = viewModel
+        let importedContent = (try? converter.convert(content)) ?? []
+        
+        autoreleasepool {
+            fileContent = importedContent.compactMap { ImportedCardInfoTransformer.transformToCard($0, deckID: deckId, cardColor: CollectionColor.allCases.randomElement() ?? .darkBlue) }
+        }
     }
     
-    public var body: some View {
-        DocumentPicker(fileContent: $viewModel.fileContent)
-            .onReceive(viewModel.$fileContent) { data in
-                selectedData = viewModel.convert(data)
-            }
-    }
-}
-
-public final class CSVPickerViewModel: ObservableObject {
-    @Published var fileContent: Data
-    private let deckConverter: DeckConverter
-    
-    public init() {
-        self.fileContent = Data()
-        self.deckConverter = .init()
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        guard let cancel else { return }
+        cancel()
     }
     
-    func convert(_ data: Data) -> [ImportedCardInfo]? {
-        try? deckConverter.convert(data)
-    }
+    
 }
