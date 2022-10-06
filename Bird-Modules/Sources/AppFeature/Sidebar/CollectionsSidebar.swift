@@ -15,6 +15,8 @@ struct CollectionsSidebar: View {
     @EnvironmentObject private var viewModel: ContentViewModel
     @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
+    @State private var presentCollectionCreation = false
+    @State private var editingCollection: DeckCollection?
     private var isCompact: Bool
     
     init(selection: Binding<SidebarRoute?>, isCompact: Bool, editMode: Binding<EditMode>) {
@@ -24,9 +26,10 @@ struct CollectionsSidebar: View {
     }
     
     var body: some View {
+        
         List(selection: $selection) {
             NavigationLink(value: SidebarRoute.allDecks) {
-                Label("Todos os baralhos", systemImage: "square.stack")
+                Label(NSLocalizedString("todos_os_baralhos", bundle: .module, comment: ""), systemImage: "square.stack")
             }
             .listRowBackground(
                 isCompact ? HBColor.secondaryBackground : nil
@@ -46,7 +49,7 @@ struct CollectionsSidebar: View {
                                     Image(systemName: "info.circle")
                                         .foregroundColor(HBColor.actionColor)
                                         .onTapGesture {
-                                            viewModel.editCollection(collection)
+                                            editingCollection = collection
                                             presentCollectionEdition = true
                                         }
                                         .accessibility(addTraits: .isButton)
@@ -58,24 +61,28 @@ struct CollectionsSidebar: View {
                         )
                         .contextMenu {
                             Button {
-                                viewModel.editCollection(collection)
+                                editingCollection = collection
                                 presentCollectionEdition = true
                             } label: {
-                                Label("Editar", systemImage: "pencil")
+                                Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
                             }
                             
                             Button(role: .destructive) {
                                 try? viewModel.deleteCollection(collection)
+                                editingCollection = nil
                             } label: {
-                                Label("Deletar", systemImage: "trash")
+                                Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
                             }
                         }
                     }
-                    .onDelete { try? viewModel.deleteCollection(at: $0) }
+                    .onDelete {
+                        try? viewModel.deleteCollection(at: $0)
+                        editingCollection = nil
+                    }
                 }
                 
             } header: {
-                Text("Coleções")
+                Text(NSLocalizedString("colecoes", bundle: .module, comment: ""))
             }
         }
         .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
@@ -85,21 +92,27 @@ struct CollectionsSidebar: View {
         .toolbar {
             ToolbarItem {
                 EditButton()
+                    .popover(isPresented: $presentCollectionEdition) {
+                        NewCollectionView(
+                            editingCollection: editingCollection, editMode: $editMode
+                        )
+                        .frame(minWidth: 300, minHeight: 600)
+                    }
             }
             ToolbarItem {
                 Button {
-                    viewModel.createCollection()
-                    presentCollectionEdition = true
+                    editingCollection = nil
+                    presentCollectionCreation = true
                 } label: {
                     Image(systemName: "plus")
                 }
+                .popover(isPresented: $presentCollectionCreation) {
+                    NewCollectionView(
+                        editingCollection: editingCollection, editMode: $editMode
+                    )
+                    .frame(minWidth: 300, minHeight: 600)
+                }
             }
-        }
-        .sheet(isPresented: $presentCollectionEdition) {
-            NewCollectionView(
-                editingCollection: viewModel.editingCollection,
-                editMode: $editMode
-            )
         }
     }
     
@@ -108,10 +121,10 @@ struct CollectionsSidebar: View {
         VStack {
             EmptyStateView(component: .collection)
             Button {
-                viewModel.createCollection()
+                editingCollection = nil
                 presentCollectionEdition = true
             } label: {
-                Text("Criar Coleção")
+                Text(NSLocalizedString("criar_colecao", bundle: .module, comment: ""))
             }
             .buttonStyle(LargeButtonStyle(isDisabled: false))
             .padding()

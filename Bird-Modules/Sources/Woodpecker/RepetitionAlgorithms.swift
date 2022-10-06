@@ -47,10 +47,7 @@ public struct Woodpecker {
             .prefix(config.maxLearningCards))
         
         var cal = Calendar(identifier: .gregorian)
-        guard let timezone = TimeZone(identifier: "UTC") else {
-            throw WoodpeckerSchedulerErrors.timezoneError
-        }
-        cal.timeZone = timezone
+        cal.timeZone = TimeZone.gmt
         
         let reviewingDueTodayCards: [OrganizerCardInfo] = cardsInfo
             .filter { card in

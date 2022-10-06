@@ -8,13 +8,13 @@ import Foundation
 import SwiftUI
 
 extension Data {
-    func toRtf() -> NSAttributedString? {
+    public func toRtf() -> NSAttributedString? {
         try? NSAttributedString(data: self, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
     }
 }
 
 extension NSAttributedString {
-    func rtfData() -> Data? {
+    public func rtfData() -> Data? {
         try? data(from: .init(location: 0, length: length), documentAttributes: [.documentType: NSAttributedString.DocumentType.rtf])
     }
 }

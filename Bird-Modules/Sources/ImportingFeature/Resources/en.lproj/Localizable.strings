@@ -1,0 +1,17 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Gabriel Ferreira de Carvalho on 04/10/22.
+  
+*/
+
+"csv_title" = "CSV File - .csv";
+"csv_description" = "The deck must be in the CSV Format, it must be a standard deck only with front and back and **without images**. The header names in the CSV file must be ”Front” and ”Back”.";
+"csv_anki_description" = "If you have a deck in the Anki format you can transform it in CSV using the link below";
+"csv_anki_link" = "Transform .apkg into .csv";
+"csv_import_button" = "Import .csv";
+"import_selection_title" = "Import Flashcards";
+"import_review_title" = "Review Flashcards";
+"add_button" = "Add";
+"cancel" = "Cancel";

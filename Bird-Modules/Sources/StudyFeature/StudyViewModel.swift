@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  StudyViewModel.swift
 //  
 //
 //  Created by Marcos Chevis on 05/09/22.
@@ -95,7 +95,7 @@ public class StudyViewModel: ObservableObject {
         
         systemObserver.willTerminate()
             .sink {[weak self] _ in
-                try? self?.saveChanges(deck: deck)
+                try? self?.saveChanges(deck: deck, mode: mode)
             }
             .store(in: &cancellables)
         
@@ -179,10 +179,12 @@ public class StudyViewModel: ObservableObject {
     }
     
     // MARK: - Persistence
-    func saveChanges(deck: Deck) throws {
-        
+    func saveChanges(deck: Deck, mode: StudyMode) throws {
+        guard mode == .spaced else { return }
         try cardsToEdit.forEach { card in
             try deckRepository.editCard(card)
+            guard let lastSnapshot = card.history.last else { return }
+            try deckRepository.addHistory(lastSnapshot, to: card)
         }
         sessionCacher.setCurrentSession(session: Session(cardIds: cards.map(\.id), date: dateHandler.today, deckId: deck.id))
         
@@ -224,7 +226,8 @@ public class StudyViewModel: ObservableObject {
         case .foward:
             newCard.woodpeckerCardInfo.step += 1
         case .graduate:
-            newCard.woodpeckerCardInfo.step = numberOfSteps - 1
+            removeCard()
+            return
         }
         
         removeCard()

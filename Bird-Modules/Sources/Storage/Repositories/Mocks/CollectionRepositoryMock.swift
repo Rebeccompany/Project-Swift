@@ -8,10 +8,12 @@
 import Foundation
 import Models
 import Combine
+import Utils
 
 //swiftlint: disable private_subject
 public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
     public var shouldThrowError: Bool = false
+    var dateHandler = DateHandlerMock()
     
     public static let shared: CollectionRepositoryProtocol = {
         CollectionRepositoryMock()
@@ -19,14 +21,14 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
     
     public init() {}
     
-    public var collections: [DeckCollection] = [
+    public lazy var collections: [DeckCollection] = [
         DeckCollection(id: UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!,
                        name: "Matemática Básica",
                        icon: .atom,
                        datesLogs: DateLogs(
-                        lastAccess: Date(timeIntervalSince1970: 0),
-                        lastEdit: Date(timeIntervalSince1970: 0),
-                        createdAt: Date(timeIntervalSince1970: 0)),
+                        lastAccess: dateHandler.today,
+                        lastEdit: dateHandler.today,
+                        createdAt: dateHandler.today),
                        decksIds: [
                         UUID(uuidString: "a498bc3c-85a3-4784-b560-a33a272a0a92")!,
                         UUID(uuidString: "4e56be0a-bc7c-4497-aec9-c30482e82496")!,
@@ -38,9 +40,9 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
                        name: "Portugues",
                        icon: .atom,
                        datesLogs: DateLogs(
-                        lastAccess: Date(timeIntervalSince1970: 0),
-                        lastEdit: Date(timeIntervalSince1970: 0),
-                        createdAt: Date(timeIntervalSince1970: 0)),
+                        lastAccess: dateHandler.today,
+                        lastEdit: dateHandler.today,
+                        createdAt: dateHandler.today),
                        decksIds: [
                         UUID(uuidString: "a498bc3c-85a3-4784-b560-a33a272a0a92")!,
                         UUID(uuidString: "4e56be0a-bc7c-4497-aec9-c30482e82496")!
@@ -51,9 +53,9 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
                        name: "Programação JAVA",
                        icon: .atom,
                        datesLogs: DateLogs(
-                        lastAccess: Date(timeIntervalSince1970: 0),
-                        lastEdit: Date(timeIntervalSince1970: 0),
-                        createdAt: Date(timeIntervalSince1970: 0)),
+                        lastAccess: dateHandler.today,
+                        lastEdit: dateHandler.today,
+                        createdAt: dateHandler.today),
                        decksIds: [
                         UUID(uuidString: "a498bc3c-85a3-4784-b560-a33a272a0a92")!,
                         UUID(uuidString: "4e56be0a-bc7c-4497-aec9-c30482e82496")!,
@@ -65,9 +67,9 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
                        name: "Geografia",
                        icon: .atom,
                        datesLogs: DateLogs(
-                        lastAccess: Date(timeIntervalSince1970: 0),
-                        lastEdit: Date(timeIntervalSince1970: 0),
-                        createdAt: Date(timeIntervalSince1970: 0)),
+                        lastAccess: dateHandler.today,
+                        lastEdit: dateHandler.today,
+                        createdAt: dateHandler.today),
                        decksIds: [
                         UUID(uuidString: "a498bc3c-85a3-4784-b560-a33a272a0a92")!,
                         UUID(uuidString: "4e56be0a-bc7c-4497-aec9-c30482e82496")!,
@@ -79,9 +81,9 @@ public final class CollectionRepositoryMock: CollectionRepositoryProtocol {
                        name: "Bandeiras",
                        icon: .atom,
                        datesLogs: DateLogs(
-                        lastAccess: Date(timeIntervalSince1970: 0),
-                        lastEdit: Date(timeIntervalSince1970: 0),
-                        createdAt: Date(timeIntervalSince1970: 0)),
+                        lastAccess: dateHandler.today,
+                        lastEdit: dateHandler.today,
+                        createdAt: dateHandler.today),
                        decksIds: [
                         UUID(uuidString: "a498bc3c-85a3-4784-b560-a33a272a0a92")!,
                         UUID(uuidString: "4e56be0a-bc7c-4497-aec9-c30482e82496")!,

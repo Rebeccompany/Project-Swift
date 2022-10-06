@@ -20,8 +20,9 @@ public struct DetailView: View {
     @Binding private var editMode: EditMode
     @State private var presentDeckEdition = false
     @State private var shouldDisplayAlert = false
+    @State private var editingDeck: Deck?
     
-    public init(editMode: Binding<EditMode>) {
+    init(editMode: Binding<EditMode>) {
         self._editMode = editMode
     }
     
@@ -33,23 +34,23 @@ public struct DetailView: View {
                 content
             }
         }
-        .searchable(text: $viewModel.searchText)
+        .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
         .toolbar(editMode.isEditing ? .visible : .hidden,
                  for: .bottomBar)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
                 Button {
-                    viewModel.editDeck()
+                    editingDeck = viewModel.editDeck()
                     presentDeckEdition = true
                 } label: {
-                    Text("Editar")
+                    Text(NSLocalizedString("editar", bundle: .module, comment: ""))
                 }
                 .disabled(viewModel.selection.count != 1)
                 
             }
             
             ToolbarItem(placement: .bottomBar) {
-                Button("Deletar", role: .destructive) {
+                Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
                     shouldDisplayAlert = true
                 }
                 .foregroundColor(.red)
@@ -61,48 +62,50 @@ public struct DetailView: View {
                     Button {
                         viewModel.changeDetailType(for: .grid)
                     } label: {
-                        Label("Ícones", systemImage: "rectangle.grid.2x2")
+                        Label(NSLocalizedString("icones", bundle: .module, comment: ""), systemImage: "rectangle.grid.2x2")
                     }
                     .disabled(editMode.isEditing)
                     
                     Button {
                         viewModel.changeDetailType(for: .table)
                     } label: {
-                        Label("Lista", systemImage: "list.bullet")
+                        Label(NSLocalizedString("lista", bundle: .module, comment: ""), systemImage: "list.bullet")
                     }
-                    
 
                     Picker(selection: $viewModel.sortOrder) {
-                        Text("Nome").tag([KeyPathComparator(\Deck.name)])
-                        Text("Quantidade de Flashcards").tag([KeyPathComparator(\Deck.cardCount)])
-                        Text("Data do Último Acesso").tag([KeyPathComparator(\Deck.datesLogs.lastAccess, order: .reverse)])
+                        Text(NSLocalizedString("nome", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.name)])
+                        Text(NSLocalizedString("quantidade", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.cardCount)])
+                        Text(NSLocalizedString("ultimo_acesso", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.datesLogs.lastAccess, order: .reverse)])
                     } label: {
-                        Text("Opções de ordenação")
+                        Text(NSLocalizedString("opcoes_ordenacao", bundle: .module, comment: ""))
                     }
-
                     
                 } label: {
                     Label {
-                        Text("Visualização")
+                        Text(NSLocalizedString("visualizacao", bundle: .module, comment: ""))
                     } icon: {
                         Image(systemName: viewModel.detailType == .grid ? "rectangle.grid.2x2" : "list.bullet")
                     }
-                    
                 }
             }
             
-            
             ToolbarItem {
                 EditButton()
+                    .keyboardShortcut("e", modifiers: .command)
                     .foregroundColor(HBColor.actionColor)
             }
             
             ToolbarItem {
                 Button {
+                    editingDeck = nil
                     presentDeckEdition = true
                 } label: {
                     Image(systemName: "plus")
                         .foregroundColor(HBColor.actionColor)
+                }
+                .popover(isPresented: $presentDeckEdition) {
+                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
+                    .frame(minWidth: 300, minHeight: 600)
                 }
             }
         }
@@ -112,19 +115,17 @@ public struct DetailView: View {
                 viewModel.changeDetailType(for: .table)
             }
         }
-        .alert(viewModel.selection.isEmpty ? "Nada foi selecionado" : "Você tem certeza que deseja apagar?", isPresented: $shouldDisplayAlert) {
-            Button("Apagar", role: .destructive) {
+        .alert(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""), isPresented: $shouldDisplayAlert) {
+            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
                 try? viewModel.deleteDecks()
+                editingDeck = nil
             }
             .disabled(viewModel.selection.isEmpty)
             
-            Button("Cancelar", role: .cancel) { }
+            Button(NSLocalizedString("cancelar", bundle: .module, comment: ""), role: .cancel) { }
         }
         .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
         .navigationTitle(viewModel.detailTitle)
-        .sheet(isPresented: $presentDeckEdition) {
-            NewDeckView(collection: viewModel.selectedCollection, editingDeck: viewModel.editingDeck, editMode: $editMode)
-        }
     }
     
     @ViewBuilder
@@ -132,9 +133,10 @@ public struct DetailView: View {
         VStack {
             EmptyStateView(component: .deck)
             Button {
+                editingDeck = nil
                 presentDeckEdition = true
             } label: {
-                Text("Criar Baralho")
+                Text(NSLocalizedString("criar_baralho", bundle: .module, comment: ""))
             }
             .buttonStyle(LargeButtonStyle(isDisabled: false))
             .padding()
@@ -146,7 +148,7 @@ public struct DetailView: View {
     private var content: some View {
         if viewModel.detailType == .grid {
             DeckGridView { deck in
-                viewModel.updateEditingDeck(with: deck)
+                editingDeck = deck
                 presentDeckEdition = true
             }
         } else {

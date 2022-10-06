@@ -1,0 +1,21 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 03/10/22.
+  
+*/
+
+"icones" = "Ícones";
+"cores" = "Cores";
+"nome" = "Nome";
+"apagar_deck" = "Apagar Baralho";
+"fechar" = "Fechar";
+"alert_delete_deck" = "Tem certeza de que deseja deletar o baralho?";
+"alert_delete_deck_text" = "Você perderá permanentemente o conteúdo deste baralho.";
+"deletar" = "Apagar";
+"cancelar" = "Cancelar";
+"criar_deck" = "Criar Baralho";
+"editar_deck" = "Editar Baralho";
+"feito" = "Feito";
+"botao_feito" = "Botão de feito";

@@ -1,0 +1,26 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 03/10/22.
+  
+*/
+
+"clicar_em" = "Clicar em ";
+"muito_dificil" = "Muito Difícil";
+"dificil" = "Difícil";
+"facil" = "Fácil";
+"muito_facil" = "Muito Fácil";
+"atividade_concluida" = "Atividade diária concluída!";
+"arara_comemorando" = "Arara está comemorando com você";
+"atividade_concluida_text" = "Parabéns, você cumpriu sua meta de estudos diária desse baralho! Volte em breve para continuar seus estudos!";
+"go_back_to_deck" = "Voltar para o Baralho";
+"frente" = "Frente";
+"verso" = "Verso";
+"toque_virar" = "Toque para virar";
+"escolha_nivel" = "Escolha o nível de dificuldade.";
+"quatro_botoes" = "Quatro botões.";
+"sair" = "Sair";
+"fechar" = "Close";
+"intenso_concluido" = "Estudo intenso concluído!";
+"intenso_concluido_text" = "Parabéns, você concluiu uma sessão de estudo intenso!";

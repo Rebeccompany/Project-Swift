@@ -37,9 +37,9 @@ public struct StudyView: View {
             }
             
             if !isFlipped {
-                return "Frente: " + toString(card.front)
+                return NSLocalizedString("frente", bundle: .module, comment: "") + ": " + toString(card.front)
             } else {
-                return "Verso: " + toString(card.back)
+                return NSLocalizedString("verso", bundle: .module, comment: "") + ": " + toString(card.back)
             }
         }
         return ""
@@ -59,7 +59,6 @@ public struct StudyView: View {
                             .accessibilityLabel(generateAttributedLabel())
                             .accessibilityHidden(viewModel.cards.isEmpty)
                         
-                        
                         HStack(alignment: .top) {
                             ForEach(UserGrade.allCases) { userGrade in
                                 Spacer()
@@ -73,20 +72,21 @@ public struct StudyView: View {
                                         }
                                     }
                                 }
+                                .hoverEffect(.lift)
                                 Spacer()
                             }
                         }
                         .padding()
                         .accessibilityElement(children: .contain)
-                        .accessibilityHint("Escolha nível de dificuldade")
-                        .accessibilityLabel("Quatro Botões.")
+                        .accessibilityHint(NSLocalizedString("escolha_nivel", bundle: .module, comment: ""))
+                        .accessibilityLabel(NSLocalizedString("quatro_botoes", bundle: .module, comment: ""))
                     }
                     
                     
                 } else {
-                    EndOfStudyView {
+                    EndOfStudyView(mode: mode) {
                         do {
-                            try viewModel.saveChanges(deck: deck)
+                            try viewModel.saveChanges(deck: deck, mode: mode)
                             dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy
@@ -101,14 +101,16 @@ public struct StudyView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(role: .destructive) {
                         do {
-                            try viewModel.saveChanges(deck: deck)
+                            if mode == .spaced {
+                                try viewModel.saveChanges(deck: deck, mode: mode)
+                            }
                             dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy
                             showingErrorAlert = true
                         }
                     } label: {
-                        Text("Sair")
+                        Text("sair", bundle: .module)
                     }
                     .foregroundColor(.red)
                     
@@ -123,7 +125,7 @@ public struct StudyView: View {
             .alert(isPresented: $showingErrorAlert) {
                 Alert(title: Text(selectedErrorMessage.texts.title),
                       message: Text(selectedErrorMessage.texts.message),
-                      dismissButton: .default(Text("Fechar")))
+                      dismissButton: .default(Text("fechar", bundle: .module)))
             }
         }
         

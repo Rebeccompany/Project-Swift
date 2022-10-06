@@ -48,18 +48,18 @@ struct DeckTableView: View {
     @ViewBuilder
     private var table: some View {
         Table(sortedDecks, selection: $viewModel.selection, sortOrder: $viewModel.sortOrder) {
-            TableColumn("Nome", value: \.name) { deck in
+            TableColumn(NSLocalizedString("nome", bundle: .module, comment: ""), value: \.name) { deck in
                 cell(for: deck)
             }
             TableColumn("Flashcards", value: \.cardCount) { deck in
                 Text("\(deck.cardCount) flashcards")
             }
-            TableColumn("Último Acesso", value: \.datesLogs.lastAccess) { deck in
+            TableColumn(NSLocalizedString("ultimo_acesso", bundle: .module, comment: ""), value: \.datesLogs.lastAccess) { deck in
                 Text(deck.datesLogs.lastAccess, style: .date)
             }
-            TableColumn("Acessar") { deck in
+            TableColumn(NSLocalizedString("acessar", bundle: .module, comment: "")) { deck in
                 NavigationLink(value: StudyRoute.deck(deck)) {
-                    Text("Abrir")
+                    Text(NSLocalizedString("abrir", bundle: .module, comment: ""))
                 }
                 .tint(HBColor.color(for: deck.color))
                 .buttonStyle(.bordered)
