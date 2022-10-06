@@ -20,7 +20,7 @@ final class DeckViewModelTests: XCTestCase {
     var sut: DeckViewModel!
     var deckRepository: DeckRepositoryMock!
     var sessionCacher: SessionCacher!
-    var dateHandler: DateHandlerProtocol!
+    var dateHandler: DateHandlerMock!
     var cancellables: Set<AnyCancellable>!
     
     override func setUp() {
@@ -103,7 +103,6 @@ final class DeckViewModelTests: XCTestCase {
     }
     
     func testCanStudyFalse() {
-        
         sut = DeckViewModel()
         sut.startup(deckRepository.decks[2])
 
@@ -122,6 +121,13 @@ final class DeckViewModelTests: XCTestCase {
         sessionCacher.setCurrentSession(session: session)
         sut.startup(deckRepository.decks[2])
         XCTAssertFalse(sut.checkIfCanStudy(deckRepository.decks[2]))
+    }
+    
+    func testCheckIfLastAccessIsChanged() {
+        dateHandler.customToday = Date(timeIntervalSince1970: 1000)
+        sut.startup(deckRepository.decks[0])
+        
+        XCTAssertEqual(dateHandler.customToday, deckRepository.decks[0].datesLogs.lastAccess)
     }
 
 }

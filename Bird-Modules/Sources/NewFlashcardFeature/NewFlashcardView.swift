@@ -39,21 +39,21 @@ public struct NewFlashcardView: View {
                 VStack(alignment: .leading) {
                     FlashcardTextEditorView(
                         color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
-                        side: "Frente",
+                        side: NSLocalizedString("frente", bundle: .module, comment: ""),
                         cardText: $viewModel.flashcardFront
                     )
                     .focused($focus, equals: NewFlashcardFocus.front)
-                    .frame(minHeight: 200)
+                    .frame(minHeight: 280)
                     
                     FlashcardTextEditorView(
                         color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
-                        side: "Verso",
+                        side: NSLocalizedString("verso", bundle: .module, comment: ""),
                         cardText: $viewModel.flashcardBack
                     )
                     .focused($focus, equals: NewFlashcardFocus.back)
-                    .frame(minHeight: 200)
+                    .frame(minHeight: 280)
                     
-                    Text("Cores")
+                    Text("cores", bundle: .module)
                         .font(.callout)
                         .bold()
                         .padding(.top)
@@ -78,7 +78,7 @@ public struct NewFlashcardView: View {
                             activeAlert = .confirm
                             showingAlert = true
                         } label: {
-                            Text("Apagar Flashcard")
+                            Text("apagar_flashcard", bundle: .module)
                         }
                         .buttonStyle(DeleteButtonStyle())
                     }
@@ -90,7 +90,7 @@ public struct NewFlashcardView: View {
             .scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
             .viewBackgroundColor(HBColor.primaryBackground)
-            .navigationTitle(editingFlashcard != nil ? "Editar Flashcard" : "Criar Flashcard")
+            .navigationTitle(editingFlashcard == nil ? NSLocalizedString("criar_flashcard", bundle: .module, comment: "") : NSLocalizedString("editar_flashcard", bundle: .module, comment: ""))
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 viewModel.startUp(editingFlashcard: editingFlashcard)
@@ -100,11 +100,11 @@ public struct NewFlashcardView: View {
                 case .error:
                     return Alert(title: Text(selectedErrorMessage.texts.title),
                                  message: Text(selectedErrorMessage.texts.message),
-                                 dismissButton: .default(Text("Fechar")))
+                                 dismissButton: .default(Text("fechar", bundle: .module)))
                 case .confirm:
-                    return Alert(title: Text("Deseja apagar este flashcard?"),
-                                 message: Text("Você perderá permanentemente o conteúdo deste flashcard."),
-                                 primaryButton: .destructive(Text("Apagar")) {
+                    return Alert(title: Text("alert_delete_flashcard", bundle: .module),
+                                 message: Text("alert_delete_flashcard_text", bundle: .module),
+                                 primaryButton: .destructive(Text("deletar", bundle: .module)) {
                                     do {
                                         try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
                                         dismiss()
@@ -114,7 +114,7 @@ public struct NewFlashcardView: View {
                                         selectedErrorMessage = .deleteCard
                                     }
                                  },
-                                 secondaryButton: .cancel(Text("Cancelar"))
+                                 secondaryButton: .cancel(Text("cancelar", bundle: .module))
                     )
                 }
             }
@@ -128,7 +128,7 @@ public struct NewFlashcardView: View {
                     } label: {
                         Image(systemName: "chevron.up")
                     }.disabled(focus == .front)
-                        .accessibilityLabel(focus == .front ? "Subir foco do teclado desabilitado" : "Subir foco do teclado")
+                        .accessibilityLabel(focus == .front ? NSLocalizedString("moveup_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("moveup_focus", bundle: .module, comment: ""))
 
 
                     Button {
@@ -138,15 +138,15 @@ public struct NewFlashcardView: View {
                     } label: {
                         Image(systemName: "chevron.down")
                     }.disabled(focus == .back)
-                        .accessibilityLabel(focus == .back ? "Descer foco do teclado desabilitado" : "Descer foco do teclado")
+                        .accessibilityLabel(focus == .back ? NSLocalizedString("down_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("down_focus", bundle: .module, comment: ""))
 
-                    Button("Feito") {
+                    Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                         focus = nil
                     }
-                    .accessibilityLabel(Text("Botão de feito"))
+                    .accessibilityLabel(Text("botao_feito", bundle: .module))
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("OK") {
+                    Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                         if editingFlashcard == nil {
                             do {
                                 try viewModel.createFlashcard(for: deck)
@@ -167,11 +167,11 @@ public struct NewFlashcardView: View {
                         }
                     }
                     .disabled(!viewModel.canSubmit)
-                    .accessibilityLabel(!viewModel.canSubmit ? "OK desabilitado" : "OK")
+                    .accessibilityLabel(!viewModel.canSubmit ? NSLocalizedString("feito_disabled", bundle: .module, comment: "") : NSLocalizedString("feito", bundle: .module, comment: ""))
                 }
                 
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") {
+                    Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
                         dismiss()
                     }
                     .foregroundColor(.red)

@@ -144,14 +144,14 @@ public enum HBColor {
     public static var primaryBackground: Color {
         Color(
             light: "#F2F2F7",
-            dark: "#191F2D"
+            dark: "#121212"
         )
     }
     
     public static var secondaryBackground: Color {
         Color(
             light: "#FEFEFE",
-            dark: "#2B354C"
+            dark: "#222222"
         )
     }
     
@@ -172,14 +172,35 @@ public enum HBColor {
     public static var selectIconBackground: Color {
         Color(
             light: "F4F4F4",
-            dark: "191F2D"
+            dark: "121212"
         )
     }
     
     public static var selectIconGridColor: Color {
         Color(
             light: "FFFFFF",
-            dark: "2B354C"
+            dark: "222222"
+        )
+    }
+    
+    public static var disabledStudyButtonBackground: Color {
+        Color(
+            light: "FFFFFF",
+            dark: "000000"
+        )
+    }
+    
+    public static var disabledStudyButtonForeground: Color {
+        Color(
+            light: "8C8C8C",
+            dark: "959595"
+        )
+    }
+    
+    public static var intenseButtonBackground: Color {
+        Color(
+            light: "F2F2F7",
+            dark: "222222"
         )
     }
     
@@ -210,6 +231,7 @@ public enum HBColor {
             return Self.collectionGray
         case .darkBlue:
             return Self.collectionDarkBlue
+        
         }
     }
 }

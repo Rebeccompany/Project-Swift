@@ -19,10 +19,12 @@ public struct NewCollectionView: View {
     @State private var activeAlert: ActiveAlert = .error
     @State private var selectedErrorMessage: AlertText = .deleteCollection
     @FocusState private var selectedField: Int?
+    @Binding private var editMode: EditMode
     var editingCollection: DeckCollection?
     
-    public init(editingCollection: DeckCollection?) {
+    public init(editingCollection: DeckCollection?, editMode: Binding<EditMode>) {
         self.editingCollection = editingCollection
+        self._editMode = editMode
     }
     
     public var body: some View {
@@ -30,13 +32,13 @@ public struct NewCollectionView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading) {
-                    Text("Nome")
+                    Text("nome", bundle: .module)
                         .font(.callout)
                         .bold()
                     TextField("", text: $viewModel.collectionName)
                         .textFieldStyle(CollectionDeckTextFieldStyle())
                         .focused($selectedField, equals: 0)
-                    Text("Ícones")
+                    Text("icones", bundle: .module)
                         .font(.callout)
                         .bold()
                         .padding(.top)
@@ -63,7 +65,7 @@ public struct NewCollectionView: View {
                             activeAlert = .confirm
                             showingAlert = true
                         } label: {
-                            Text("Apagar Coleção")
+                            Text("apagar_colecao", bundle: .module)
                         }
                         .buttonStyle(DeleteButtonStyle())
                         
@@ -77,13 +79,14 @@ public struct NewCollectionView: View {
                     case .error:
                         return Alert(title: Text(selectedErrorMessage.texts.title),
                                      message: Text(selectedErrorMessage.texts.message),
-                                     dismissButton: .default(Text("Fechar")))
+                                     dismissButton: .default(Text("fechar", bundle: .module)))
                     case .confirm:
-                        return Alert(title: Text("Deseja apagar esta coleção?"),
-                                     message: Text("Você perderá permanentemente o conteúdo desta coleção."),
-                                     primaryButton: .destructive(Text("Apagar")) {
+                        return Alert(title: Text("alert_delete_collection", bundle: .module),
+                                     message: Text("alert_delete_collection_text", bundle: .module),
+                                     primaryButton: .destructive(Text("deletar", bundle: .module)) {
                                         do {
                                             try viewModel.deleteCollection(editingCollection: editingCollection)
+                                            editMode = .inactive
                                             dismiss()
                                         } catch {
                                             activeAlert = .error
@@ -91,29 +94,30 @@ public struct NewCollectionView: View {
                                             selectedErrorMessage = .deleteCollection
                                         }
                                      },
-                                     secondaryButton: .cancel(Text("Cancelar"))
+                                     secondaryButton: .cancel(Text("cancelar", bundle: .module))
                         )
                     }
                 }
-                .navigationTitle(editingCollection == nil ? "Criar Coleção" : "Editar Coleção")
+                .navigationTitle(editingCollection == nil ? NSLocalizedString("criar_colecao", bundle: .module, comment: "") : NSLocalizedString("editar_colecao", bundle: .module, comment: ""))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
                         Spacer()
-                        Button("Feito") {
+                        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                             selectedField = nil
                         }
-                        .accessibilityLabel(Text("Botão de feito"))
+                        .accessibilityLabel(Text("botao_feito", bundle: .module))
                     }
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancelar") {
+                        Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
+                            editMode = .inactive
                             dismiss()
                         }
                         .foregroundColor(Color.red)
                         
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("OK") {
+                        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                             
                             if editingCollection == nil {
                                 do {
@@ -127,6 +131,7 @@ public struct NewCollectionView: View {
                             } else {
                                 do {
                                     try viewModel.editCollection(editingCollection: editingCollection)
+                                    editMode = .inactive
                                     dismiss()
                                 } catch {
                                     activeAlert = .error
@@ -155,7 +160,7 @@ struct NewCollectionView_Previews: PreviewProvider {
     static var previews: some View {
         
         HabitatPreview {
-            NewCollectionView(editingCollection: nil)
+            NewCollectionView(editingCollection: nil, editMode: .constant(.active))
             .preferredColorScheme(.light)
         }
         

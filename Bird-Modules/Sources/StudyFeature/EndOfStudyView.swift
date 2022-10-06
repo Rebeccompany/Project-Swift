@@ -13,11 +13,17 @@ import Utils
 
 struct EndOfStudyView: View {
     @Environment(\.dismiss) private var dismiss
+    private let mode: StudyMode
     var action: () -> Void
+    
+    init(mode: StudyMode, action: @escaping () -> Void) {
+        self.mode = mode
+        self.action = action
+    }
     
     var body: some View {
         VStack {
-            Text("Atividade diária concluída!")
+            Text(mode == .spaced ? NSLocalizedString("atividade_concluida", bundle: .module, comment: "") : NSLocalizedString("intenso_concluido", bundle: .module, comment: ""))
                 .bold()
                 .font(.system(size: 32))
                 .multilineTextAlignment(.center)
@@ -27,9 +33,9 @@ struct EndOfStudyView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 300, height: 300)
-                .accessibilityLabel(Text("Arara está comemorando com você"))
+                .accessibilityLabel(Text("arara_comemorando", bundle: .module))
             
-            Text("Parabéns, você cumpriu sua meta de estudos diária desse baralho! Volte em breve para continuar seus estudos!")
+            Text(mode == .spaced ? NSLocalizedString("atividade_concluida_text", bundle: .module, comment: "") : NSLocalizedString("intenso_concluido_text", bundle: .module, comment: ""))
                 .foregroundColor(HBColor.collectionGray)
                 .font(.system(size: 16))
                 .multilineTextAlignment(.center)
@@ -39,9 +45,9 @@ struct EndOfStudyView: View {
                 action()
                 dismiss()
             } label: {
-                Text("Voltar para o Baralho")
+                Text("go_back_to_deck", bundle: .module)
             }
-            .buttonStyle(LargeButtonStyle(isDisabled: false))
+            .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
             .padding()
             
         }
@@ -50,8 +56,6 @@ struct EndOfStudyView: View {
 
 struct EndOfStudyView_Previews: PreviewProvider {
     static var previews: some View {
-        EndOfStudyView {
-            
-        }
+        EndOfStudyView(mode: .spaced) { }
     }
 }

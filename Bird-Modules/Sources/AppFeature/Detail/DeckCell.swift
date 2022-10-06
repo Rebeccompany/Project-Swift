@@ -32,7 +32,7 @@ struct DeckCell: View {
                     
             Text(info.name)
                 .lineLimit(2)
-            Text("\(info.numberOfCards) cartas")
+            Text("\(info.numberOfCards) " + NSLocalizedString("cartas", bundle: .module, comment: ""))
                 .foregroundColor(.secondary)
         }
         .padding(.top)
@@ -48,6 +48,19 @@ struct DeckCell: View {
                     .stroke(Color.white, lineWidth: 3)
             }
             .frame(height: 116)
+    }
+    
+    struct Style: ButtonStyle {
+        
+        private var color: CollectionColor
+        
+        init(color: CollectionColor) {
+            self.color = color
+        }
+        
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+        }
     }
 }
 

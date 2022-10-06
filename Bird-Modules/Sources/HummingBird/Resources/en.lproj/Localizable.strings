@@ -1,0 +1,19 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 03/10/22.
+  
+*/
+
+"sem_colecao" = "Sem Coleções";
+"sem_deck" = "Sem Baralhos";
+"sem_flashcards" = "Sem Flashards";
+"clicar_para_criar_colecao" = "Tap in + to create new collection";
+"clicar_para_criar_deck" = "Tap in + to create new deck";
+"clicar_para_criar_flashcard" = "Tap in + to create new flashcard";
+"piu" = "Cacaw! No ";
+"colecao" = "collection";
+"deck" = "deck";
+"verso" = "Back";
+"frente" = "Front";

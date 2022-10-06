@@ -1,0 +1,24 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 30/09/22.
+  
+*/
+
+"alert_delete_flashcard" = "An error occured when trying to delete flashcard";
+"alert_delete_flashcard_text" = "Something went wrong! Please try again.";
+"fechar" = "Close";
+"alert_delete_flashcard" = "Do you want to delete this flashcard?";
+"alert_delete_flashcard_text" = "You'll lose its content permanently.";
+"deletar" = "Delete";
+"cancelar" = "Cancel";
+"criar_flashcard" = "Create Flashcard";
+"no_study_allowed" = "You finished your daily activity for this deck! Come back soon to get back to your studies or use the intense mode";
+"intenso" = "Intense";
+"editar_flashcard" = "Edit Flashcard";
+"deletar_flashcard" = "Delete Flashcard";
+"frente" = "Front";
+"add" = "Add";
+"import"= "Import";
+"modos_de_estudo" = "Study Modes";

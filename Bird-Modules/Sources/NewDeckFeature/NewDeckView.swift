@@ -18,13 +18,15 @@ public struct NewDeckView: View {
     @State private var activeAlert: ActiveAlert = .error
     @Environment(\.dismiss) private var dismiss
     @FocusState private var selectedField: Int?
+    @Binding private var editMode: EditMode
     
     var editingDeck: Deck?
     var collection: DeckCollection?
     
-    public init(collection: DeckCollection?, editingDeck: Deck?) {
+    public init(collection: DeckCollection?, editingDeck: Deck?, editMode: Binding<EditMode>) {
         self.collection = collection
         self.editingDeck = editingDeck
+        self._editMode = editMode
     }
     
     public var body: some View {
@@ -32,7 +34,7 @@ public struct NewDeckView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading) {
-                    Text("Nome")
+                    Text("nome", bundle: .module)
                         .font(.callout)
                         .bold()
                     
@@ -42,7 +44,7 @@ public struct NewDeckView: View {
                         .focused($selectedField, equals: 0)
                         
                     
-                    Text("Cores")
+                    Text("cores", bundle: .module)
                         .font(.callout)
                         .bold()
                     
@@ -59,7 +61,7 @@ public struct NewDeckView: View {
                         }
                     }
                     
-                    Text("Ícones")
+                    Text("icones", bundle: .module)
                         .font(.callout)
                         .bold()
                         .padding(.top)
@@ -83,7 +85,7 @@ public struct NewDeckView: View {
                             activeAlert = .confirm
                             showingAlert = true
                         } label: {
-                            Text("Apagar Deck")
+                            Text("apagar_deck", bundle: .module)
                         }
                         .buttonStyle(DeleteButtonStyle())
                     }
@@ -95,13 +97,14 @@ public struct NewDeckView: View {
                     case .error:
                         return Alert(title: Text(selectedErrorMessage.texts.title),
                                      message: Text(selectedErrorMessage.texts.message),
-                                     dismissButton: .default(Text("Fechar")))
+                                     dismissButton: .default(Text("fechar", bundle: .module)))
                     case .confirm:
-                        return Alert(title: Text("Deseja apagar este baralho?"),
-                                     message: Text("Você perderá permanentemente o conteúdo deste baralho."),
-                                     primaryButton: .destructive(Text("Apagar")) {
+                        return Alert(title: Text("alert_delete_deck", bundle: .module),
+                                     message: Text("alert_delete_deck_text", bundle: .module),
+                                     primaryButton: .destructive(Text("deletar", bundle: .module)) {
                                         do {
                                             try viewModel.deleteDeck(editingDeck: editingDeck)
+                                            editMode = .inactive
                                             dismiss()
                                         } catch {
                                             activeAlert = .error
@@ -109,27 +112,27 @@ public struct NewDeckView: View {
                                             selectedErrorMessage = .deleteDeck
                                         }
                                      },
-                                     secondaryButton: .cancel(Text("Cancelar"))
+                                     secondaryButton: .cancel(Text("cancelar", bundle: .module))
                         )
                         
                     }
                     
                 }
-                .navigationTitle(editingDeck != nil ? "Editar baralho" : "Criar Baralho")
+                .navigationTitle(editingDeck == nil ? NSLocalizedString("criar_deck", bundle: .module, comment: "") : NSLocalizedString("editar_deck", bundle: .module, comment: ""))
                 .navigationBarTitleDisplayMode(.inline)
                 
             }
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button("Feito") {
+                    Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                         selectedField = nil
                     }
-                    .accessibilityLabel(Text("Botão de feito"))
+                    .accessibilityLabel(Text("botao_feito", bundle: .module))
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("OK") {
+                    Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                         
                         if editingDeck == nil {
                             do {
@@ -143,6 +146,7 @@ public struct NewDeckView: View {
                         } else {
                             do {
                                 try viewModel.editDeck(editingDeck: editingDeck)
+                                editMode = .inactive
                                 dismiss()
                             } catch {
                                 activeAlert = .error
@@ -155,7 +159,8 @@ public struct NewDeckView: View {
                 }
                 
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") {
+                    Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
+                        editMode = .inactive
                         dismiss()
                     }
                     .foregroundColor(.red)
@@ -177,7 +182,7 @@ public struct NewDeckView: View {
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
-            NewDeckView(collection: nil, editingDeck: nil)
+            NewDeckView(collection: nil, editingDeck: nil, editMode: .constant(.active))
                 .preferredColorScheme(.dark)
         }
     }

@@ -1,0 +1,21 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 03/10/22.
+  
+*/
+
+"icones" = "Icons";
+"cores" = "Colors";
+"nome" = "Name";
+"apagar_deck" = "Delete Deck";
+"fechar" = "Close";
+"alert_delete_deck" = "Are you sure you want to delete it?";
+"alert_delete_deck_text" = "You'll lose its content permanently.";
+"deletar" = "Delete";
+"cancelar" = "Cancel";
+"criar_deck" = "Create Deck";
+"editar_deck" = "Edit Deck";
+"feito" = "Done";
+"botao_feito" = "Done button";

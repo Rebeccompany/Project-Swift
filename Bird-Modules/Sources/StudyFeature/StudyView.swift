@@ -18,9 +18,11 @@ public struct StudyView: View {
     @State private var selectedErrorMessage: AlertText = .deleteCard
     
     var deck: Deck
+    let mode: StudyMode
     
-    public init(deck: Deck) {
+    public init(deck: Deck, mode: StudyMode) {
         self.deck = deck
+        self.mode = mode
     }
     
     private func toString(_ attributed: AttributedString) -> String {
@@ -35,9 +37,9 @@ public struct StudyView: View {
             }
             
             if !isFlipped {
-                return "Frente: " + toString(card.front)
+                return NSLocalizedString("frente", bundle: .module, comment: "") + ": " + toString(card.front)
             } else {
-                return "Verso: " + toString(card.back)
+                return NSLocalizedString("verso", bundle: .module, comment: "") + ": " + toString(card.back)
             }
         }
         return ""
@@ -64,27 +66,28 @@ public struct StudyView: View {
                                 DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in
                                     withAnimation {
                                         do {
-                                            try viewModel.pressedButton(for: userGrade, deck: deck)
+                                            try viewModel.pressedButton(for: userGrade, deck: deck, mode: mode)
                                         } catch {
                                             selectedErrorMessage = .gradeCard
                                             showingErrorAlert = true
                                         }
                                     }
                                 }
+                                .hoverEffect(.lift)
                                 Spacer()
                             }
                         }
                         .padding()
                         .accessibilityElement(children: .contain)
-                        .accessibilityHint("Escolha nível de dificuldade")
-                        .accessibilityLabel("Quatro Botões.")
+                        .accessibilityHint(NSLocalizedString("escolha_nivel", bundle: .module, comment: ""))
+                        .accessibilityLabel(NSLocalizedString("quatro_botoes", bundle: .module, comment: ""))
                     }
                     
                     
                 } else {
-                    EndOfStudyView {
+                    EndOfStudyView(mode: mode) {
                         do {
-                            try viewModel.saveChanges(deck: deck)
+                            try viewModel.saveChanges(deck: deck, mode: mode)
                             dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy
@@ -99,14 +102,16 @@ public struct StudyView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(role: .destructive) {
                         do {
-                            try viewModel.saveChanges(deck: deck)
+                            if mode == .spaced {
+                                try viewModel.saveChanges(deck: deck, mode: mode)
+                            }
                             dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy
                             showingErrorAlert = true
                         }
                     } label: {
-                        Text("Sair")
+                        Text("sair", bundle: .module)
                     }
                     .foregroundColor(.red)
                     
@@ -115,13 +120,13 @@ public struct StudyView: View {
             })
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                viewModel.startup(deck: deck)
+                viewModel.startup(deck: deck, mode: mode)
             }
             
             .alert(isPresented: $showingErrorAlert) {
                 Alert(title: Text(selectedErrorMessage.texts.title),
                       message: Text(selectedErrorMessage.texts.message),
-                      dismissButton: .default(Text("Fechar")))
+                      dismissButton: .default(Text("fechar", bundle: .module)))
             }
         }
         
@@ -132,6 +137,6 @@ struct StudyView_Previews: PreviewProvider {
     static var repo: DeckRepositoryMock { DeckRepositoryMock() }
     
     static var previews: some View {
-        StudyView(deck: repo.decks.first { $0.id == repo.deckWithCardsId }!)
+        StudyView(deck: repo.decks.first { $0.id == repo.deckWithCardsId }!, mode: .spaced)
     }
 }

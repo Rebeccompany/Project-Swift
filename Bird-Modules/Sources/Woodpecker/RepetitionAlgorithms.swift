@@ -7,13 +7,12 @@
 
 import Foundation
 import Models
+import Utils
 
 
 ///Woodpecker contains the algorithms used for Spaced Repetition
 public struct Woodpecker {
-    
-    
-        
+
     /**
      The scheduler static method is responsible for getting the cards to be displayed today, and the cards that have to have their dueDates modified.
      - Parameters:
@@ -48,10 +47,7 @@ public struct Woodpecker {
             .prefix(config.maxLearningCards))
         
         var cal = Calendar(identifier: .gregorian)
-        guard let timezone = TimeZone(identifier: "UTC") else {
-            throw WoodpeckerSchedulerErrors.timezoneError
-        }
-        cal.timeZone = timezone
+        cal.timeZone = TimeZone.gmt
         
         let reviewingDueTodayCards: [OrganizerCardInfo] = cardsInfo
             .filter { card in
@@ -74,6 +70,51 @@ public struct Woodpecker {
             toModify = []
         }
         return (todayReviewingCards.map { $0.id }, todayLearningCards.map { $0.id }, toModify.map { $0.id })
+    }
+    
+    /**
+     The dealWithLearningCard is the function that calls the stepper and modifies de card depending of the cards destiny.
+     - Parameters:
+     - card: the card to be ran by the stepper and modified.
+     - userGrade: The grade user gives to the difficulty of the card.
+     - numberOfSteps: The total number of steps. Must be greater than 1.
+     - timefromLastCard: The time that the last card was dismissed.
+     - dateHandler: the DateHandler to get a date.
+     - Returns: The modified card.
+     */
+    public static func dealWithLearningCard(card: Card, userGrade: UserGrade, numberOfSteps: Int, timefromLastCard: Date, dateHandler: DateHandlerProtocol) throws -> Card {
+        let cardDestiny = try Self.stepper(cardInfo: card.woodpeckerCardInfo, userGrade: userGrade, numberOfSteps: numberOfSteps)
+        
+        var modifiedCard = card
+        modifiedCard.woodpeckerCardInfo.hasBeenPresented = true
+        
+        switch cardDestiny {
+        case .back:
+            //update card and bumps to last position of the vector.
+            modifiedCard.woodpeckerCardInfo.step -= 1
+            modifiedCard.woodpeckerCardInfo.streak = 0
+        case .stay:
+            //update card and bumps to last position of the vector.
+            modifiedCard.woodpeckerCardInfo.streak = 0
+        case .foward:
+            //update card and bumps to last position of the vector.
+            modifiedCard.woodpeckerCardInfo.step += 1
+            modifiedCard.woodpeckerCardInfo.streak += 1
+        case .graduate:
+            //update card. Save it to toEdit. Remove from cards.
+            modifiedCard.history.append(CardSnapshot(
+                                            woodpeckerCardInfo: modifiedCard.woodpeckerCardInfo,
+                                            userGrade: userGrade,
+                                            timeSpend: dateHandler.today.timeIntervalSince1970 - timefromLastCard.timeIntervalSince1970,
+                                            date: dateHandler.today)
+                                        )
+            modifiedCard.woodpeckerCardInfo.streak += 1
+            modifiedCard.woodpeckerCardInfo.step = 0
+            modifiedCard.woodpeckerCardInfo.isGraduated = true
+            modifiedCard.woodpeckerCardInfo.interval = 1
+        }
+        
+        return modifiedCard
     }
     
     /**

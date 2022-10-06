@@ -10,6 +10,7 @@ import SwiftUI
 import Models
 import HummingBird
 import NewFlashcardFeature
+import ImportingFeature
 import StudyFeature
 import Storage
 import Flock
@@ -18,7 +19,9 @@ import Utils
 public struct DeckView: View {
     @StateObject private var viewModel: DeckViewModel = DeckViewModel()
     @State private var shouldDisplayNewFlashcard: Bool = false
+    @State private var shouldDisplayImport: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
+    @State private var studyMode: StudyMode = .spaced
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
@@ -35,58 +38,82 @@ public struct DeckView: View {
             if viewModel.cards.isEmpty {
                 emptyState
             } else {
-                list
+                grid
             }
         }
-        .viewBackgroundColor(HBColor.primaryBackground)
         .onAppear {
             viewModel.startup(deck)
         }
         .listStyle(.plain)
-        .searchable(text: $viewModel.searchFieldContent)
+        .searchable(text: $viewModel.searchFieldContent, placement: .navigationBarDrawer(displayMode: .always))
         .alert(isPresented: $showingAlert) {
             switch activeAlert {
             case .error:
-                return Alert(title: Text("Erro ao apagar flashcard."),
-                             message: Text("Algo deu errado! Por favor, tente novamente."),
-                             dismissButton: .default(Text("Fechar")))
+                return Alert(title: Text(NSLocalizedString("alert_delete_flashcard_error", bundle: .module, comment: "")),
+                             message: Text(NSLocalizedString("alert_delete_flashcard_error_text", bundle: .module, comment: "")),
+                             dismissButton: .default(Text(NSLocalizedString("fechar", bundle: .module, comment: ""))))
             case .confirm:
-                return Alert(title: Text("Deseja apagar este flashcard?"),
-                             message: Text("Você perderá permanentemente o conteúdo deste flashcard."),
-                             primaryButton: .destructive(Text("Apagar")) {
-                                do {
-                                    guard let deletedCard else { return }
-                                    try viewModel.deleteFlashcard(card: deletedCard)
-                                    self.deletedCard = nil
-                                } catch {
-                                    activeAlert = .error
-                                    showingAlert = true
-                                    selectedErrorMessage = .deleteCard
-                                }
+                return Alert(title: Text(NSLocalizedString("alert_delete_flashcard", bundle: .module, comment: "")),
+                             message: Text(NSLocalizedString("alert_delete_flashcard_text", bundle: .module, comment: "")),
+                             primaryButton: .destructive(Text(NSLocalizedString("deletar", bundle: .module, comment: ""))) {
+                    do {
+                        guard let deletedCard else { return }
+                        try viewModel.deleteFlashcard(card: deletedCard)
+                        self.deletedCard = nil
+                    } catch {
+                        activeAlert = .error
+                        showingAlert = true
+                        selectedErrorMessage = .deleteCard
+                    }
                              },
-                             secondaryButton: .cancel(Text("Cancelar"))
+                secondaryButton: .cancel(Text(NSLocalizedString("cancelar", bundle: .module, comment: "")))
                 )
             }
-                }
+        }
         .navigationTitle(deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button {
-                    viewModel.editingFlashcard = nil
-                    shouldDisplayNewFlashcard = true
+                Menu {
+                    Button {
+                        editingFlashcard = nil
+                        shouldDisplayNewFlashcard = true
+                    } label: {
+                        Label(
+                            NSLocalizedString("add", bundle: .module, comment: ""),
+                            systemImage: "plus"
+                        )
+                    }
+                    
+                    Button {
+                        shouldDisplayImport = true
+                    } label: {
+                        Label(
+                            NSLocalizedString("import", bundle: .module, comment: ""),
+                            systemImage: "arrow.down"
+                        )
+                    }
+                    
                 } label: {
-                    Image(systemName: "plus")
+                    Label(
+                        NSLocalizedString("add", bundle: .module, comment: ""),
+                        systemImage: "plus"
+                    )
                 }
                 .foregroundColor(HBColor.actionColor)
+                .popover(isPresented: $shouldDisplayNewFlashcard) {
+                    NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
+                        .frame(minWidth: 300, minHeight: 600)
+                }
             }
-        }
-        .sheet(isPresented: $shouldDisplayNewFlashcard) {
-            NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
-                deck: deck
+                deck: deck,
+                mode: studyMode
             )
+        }
+        .sheet(isPresented: $shouldDisplayImport) {
+            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
         }
     }
     
@@ -97,10 +124,10 @@ public struct DeckView: View {
                 VStack {
                     EmptyStateView(component: .flashcard)
                     Button {
-                        viewModel.editingFlashcard = nil
+                        editingFlashcard = nil
                         shouldDisplayNewFlashcard = true
                     } label: {
-                        Text("Criar Flashcard")
+                        Text("criar_flashcard", bundle: .module)
                     }
                     .buttonStyle(LargeButtonStyle(isDisabled: false))
                     .padding()
@@ -111,55 +138,84 @@ public struct DeckView: View {
     }
     
     @ViewBuilder
-    private var list: some View {
-        List {
-            if !viewModel.checkIfCanStudy(deck) && !viewModel.cards.isEmpty {
-                Text("Atividade diária concluída! Volte em breve para retornar com seus estudos!")
+    private var grid: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading) {
+                Text("modos_de_estudo", bundle: .module)
+                    .font(.title3)
                     .bold()
-                    .multilineTextAlignment(.center)
-                    .listRowBackground(Color.clear)
-            }
-            Button("Estudar Deck") {
-                shouldDisplayStudyView = true
-            }
-            
-            .disabled(!viewModel.checkIfCanStudy(deck))
-            .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck)))
-            .listRowInsets(.zero)
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            .padding()
-            
-            ForEach(viewModel.cardsSearched) { card in
-                FlashcardCell(card: card) {
-                    viewModel.editingFlashcard = card
-                    shouldDisplayNewFlashcard = true
+                    .padding(.leading)
+                    .padding(.bottom)
+                if !viewModel.checkIfCanStudy(deck) && !viewModel.cards.isEmpty {
+                    Text(NSLocalizedString("no_study_allowed", bundle: .module, comment: ""))
+                        .padding(.leading)
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                        .listRowBackground(Color.clear)
                 }
-                .padding(.bottom, 8)
-                .contextMenu {
-                    Button {
-                        editingFlashcard = card
-                        shouldDisplayNewFlashcard = true
-                    } label: {
-                        Label("Editar Flashcard",
-                              systemImage: "pencil")
-                    }
-                    
-                    Button(role: .destructive) {
-                        deletedCard = card
-                        activeAlert = .confirm
-                        showingAlert = true
-                    } label: {
-                        Label("Deletar Flashcard",
-                              systemImage: "trash.fill")
-                    }
-                    
+                
+                Button("Spixii") {
+                    studyMode = .spaced
+                    shouldDisplayStudyView = true
                 }
-            }
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+                .hoverEffect(.automatic)
+                .disabled(!viewModel.checkIfCanStudy(deck))
+                .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck), isFilled: true))
+                .listRowInsets(.zero)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .padding()
+
+                Button(NSLocalizedString("intenso", bundle: .module, comment: "")) {
+                    studyMode = .cramming
+                    shouldDisplayStudyView = true
+                }
+                .hoverEffect(.automatic)
+                .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
+                .listRowInsets(.zero)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .padding(.horizontal)
+                .padding(.bottom)
+                
+                Text("Flashcards")
+                    .font(.title3)
+                    .bold()
+                    .padding(.leading)
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 180), spacing: 12, alignment: .top)], spacing: 12) {
+                    ForEach(viewModel.cardsSearched) { card in
+                        FlashcardCell(card: card) {
+                            editingFlashcard = card
+                            shouldDisplayNewFlashcard = true
+                        }
+                        .contextMenu {
+                            Button {
+                                editingFlashcard = card
+                                shouldDisplayNewFlashcard = true
+                            } label: {
+                                Label(NSLocalizedString("editar_flashcard", bundle: .module, comment: ""),
+                                      systemImage: "pencil")
+                            }
+                            
+                            Button(role: .destructive) {
+                                deletedCard = card
+                                activeAlert = .confirm
+                                showingAlert = true
+                            } label: {
+                                Label(NSLocalizedString("deletar_flashcard", bundle: .module, comment: ""),
+                                      systemImage: "trash.fill")
+                            }
+                        }
+                        .frame(height: 230)
+                        .hoverEffect(.lift)
+                    }
+                    .listRowSeparator(.hidden)
+                }
+                .padding(.horizontal)
+            }.scrollContentBackground(.hidden)
+                
+                
         }
-        .scrollContentBackground(.hidden)
     }
 }
 
@@ -168,7 +224,7 @@ struct DeckView_Previews: PreviewProvider {
         NavigationView {
             DeckView(
                 deck: .constant(DeckRepositoryMock()
-                    .decks[0])
+                    .decks[1])
             )
         }
         .preferredColorScheme(.dark)

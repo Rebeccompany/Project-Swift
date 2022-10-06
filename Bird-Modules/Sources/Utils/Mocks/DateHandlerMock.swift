@@ -8,10 +8,16 @@
 import Foundation
 
 public class DateHandlerMock: DateHandlerProtocol {
+    public var customToday: Date?
+    
     public init() {}
     
     public var today: Date {
-        Date(timeIntervalSince1970: 0)
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone.gmt
+        let secondsFomGMT = cal.timeZone.secondsFromGMT()
+        let jan1stCurrent = Double(secondsFomGMT)
+        return customToday ?? Date(timeIntervalSince1970: jan1stCurrent)
     }
     
     public func isToday(date: Date) -> Bool {

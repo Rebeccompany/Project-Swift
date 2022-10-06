@@ -20,10 +20,6 @@ public final class ContentViewModel: ObservableObject {
     @Published var collections: [DeckCollection]
     @Published var decks: [Deck]
     
-    // MARK: CRUD Published
-    @Published var editingDeck: Deck?
-    @Published var editingCollection: DeckCollection?
-    
     // MARK: View Bindings
     @Published var sidebarSelection: SidebarRoute? = .allDecks
     @Published var selection: Set<Deck.ID>
@@ -41,7 +37,7 @@ public final class ContentViewModel: ObservableObject {
     var detailTitle: String {
         switch sidebarSelection ?? .allDecks {
         case .allDecks:
-            return "Todos os Baralhos"
+            return NSLocalizedString("todos_os_baralhos", bundle: .module, comment: "")
         case .decksFromCollection(let collection):
             return collection.name
         }
@@ -144,12 +140,6 @@ public final class ContentViewModel: ObservableObject {
         }
     }
     
-    private func handleEndEditing(_ isPresenting: Bool ) {
-        if !isPresenting {
-            self.editingCollection = nil
-        }
-    }
-    
     private func handleCompletion(_ completion: Subscribers.Completion<RepositoryError>) {
         switch completion {
         case .finished:
@@ -166,20 +156,10 @@ public final class ContentViewModel: ObservableObject {
         try collectionsToDelete.forEach { collection in
             try deleteCollection(collection)
         }
-        
-        editingCollection = nil
-    }
-    
-    func editCollection(_ collection: DeckCollection) {
-        editingCollection = collection
     }
     
     func deleteCollection(_ collection: DeckCollection) throws {
         try collectionRepository.deleteCollection(collection)
-    }
-    
-    func createCollection() {
-        editingCollection = nil
     }
     
     func deleteDecks() throws {
@@ -195,25 +175,17 @@ public final class ContentViewModel: ObservableObject {
             .forEach { deck in
                 try deckRepository.deleteDeck(deck)
             }
-        
-        editingDeck = nil
+            
+        selection = Set()
     }
     
-    func createDecks() {
-        editingDeck = nil
-    }
-    
-    func editDeck() {
+    func editDeck() -> Deck? {
         guard
             selection.count == 1,
             let deck = decks.first(where: { deck in deck.id == selection.first })
-        else { return }
+        else { return nil }
         
-        editingDeck = deck
-    }
-    
-    func updateEditingDeck(with deck: Deck) {
-        editingDeck = deck
+        return deck
     }
     
     func deleteDeck(_ deck: Deck) throws {
@@ -225,14 +197,12 @@ public final class ContentViewModel: ObservableObject {
             return
         }
         
-        editingDeck = nil
+        selection = Set()
     }
     
     func didCollectionPresentationStatusChanged(_ status: Bool) {
         guard status == false else {
             return
         }
-        
-        editingCollection = nil
     }
 }
