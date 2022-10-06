@@ -16,6 +16,7 @@ public struct StudyView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showingErrorAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     
     var deck: Deck
     let mode: StudyMode
@@ -50,39 +51,11 @@ public struct StudyView: View {
             ZStack {
                 if !viewModel.displayedCards.isEmpty {
                     
-                    VStack {
-                        FlashcardDeckView(cards: $viewModel.displayedCards)
-                            .zIndex(1)
-                            .padding(.vertical)
-                            .accessibilityElement(children: .ignore)
-                            .accessibilityAddTraits(.isButton)
-                            .accessibilityLabel(generateAttributedLabel())
-                            .accessibilityHidden(viewModel.cards.isEmpty)
-                        
-                        
-                        HStack(alignment: .top) {
-                            ForEach(UserGrade.allCases) { userGrade in
-                                Spacer()
-                                DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in
-                                    withAnimation {
-                                        do {
-                                            try viewModel.pressedButton(for: userGrade, deck: deck, mode: mode)
-                                        } catch {
-                                            selectedErrorMessage = .gradeCard
-                                            showingErrorAlert = true
-                                        }
-                                    }
-                                }
-                                .hoverEffect(.lift)
-                                Spacer()
-                            }
-                        }
-                        .padding()
-                        .accessibilityElement(children: .contain)
-                        .accessibilityHint(NSLocalizedString("escolha_nivel", bundle: .module, comment: ""))
-                        .accessibilityLabel(NSLocalizedString("quatro_botoes", bundle: .module, comment: ""))
+                    if horizontalSizeClass == .compact {
+                        compactView
+                    } else {
+                        regularView
                     }
-                    
                     
                 } else {
                     EndOfStudyView(mode: mode) {
@@ -130,6 +103,78 @@ public struct StudyView: View {
             }
         }
         
+    }
+    
+    @ViewBuilder
+    var compactView: some View {
+        VStack {
+            FlashcardDeckView(cards: $viewModel.displayedCards)
+                .zIndex(1)
+                .padding(.vertical)
+                .accessibilityElement(children: .ignore)
+                .accessibilityAddTraits(.isButton)
+                .accessibilityLabel(generateAttributedLabel())
+                .accessibilityHidden(viewModel.cards.isEmpty)
+            
+            
+            HStack(alignment: .top) {
+                ForEach(UserGrade.allCases) { userGrade in
+                    Spacer()
+                    DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in
+                        withAnimation {
+                            do {
+                                try viewModel.pressedButton(for: userGrade, deck: deck, mode: mode)
+                            } catch {
+                                selectedErrorMessage = .gradeCard
+                                showingErrorAlert = true
+                            }
+                        }
+                    }
+                    .hoverEffect(.lift)
+                    Spacer()
+                }
+            }
+            .padding()
+            .accessibilityElement(children: .contain)
+            .accessibilityHint(NSLocalizedString("escolha_nivel", bundle: .module, comment: ""))
+            .accessibilityLabel(NSLocalizedString("quatro_botoes", bundle: .module, comment: ""))
+        }
+    }
+    
+    @ViewBuilder
+    var regularView: some View {
+        HStack {
+            Spacer()
+            FlashcardDeckView(cards: $viewModel.displayedCards)
+                .zIndex(1)
+                .padding(.vertical)
+                .accessibilityElement(children: .ignore)
+                .accessibilityAddTraits(.isButton)
+                .accessibilityLabel(generateAttributedLabel())
+                .accessibilityHidden(viewModel.cards.isEmpty)
+            
+            VStack(alignment: .trailing) {
+                ForEach(UserGrade.allCases) { userGrade in
+                    DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in
+                        withAnimation {
+                            do {
+                                try viewModel.pressedButton(for: userGrade, deck: deck, mode: mode)
+                            } catch {
+                                selectedErrorMessage = .gradeCard
+                                showingErrorAlert = true
+                            }
+                        }
+                    }
+                    .padding()
+                    .hoverEffect(.lift)
+                }
+            }
+            .padding(.trailing, 32)
+            .accessibilityElement(children: .contain)
+            .accessibilityHint(NSLocalizedString("escolha_nivel", bundle: .module, comment: ""))
+            .accessibilityLabel(NSLocalizedString("quatro_botoes", bundle: .module, comment: ""))
+            Spacer()
+        }
     }
 }
 
