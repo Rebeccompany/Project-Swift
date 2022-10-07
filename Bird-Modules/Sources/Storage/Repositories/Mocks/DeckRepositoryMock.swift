@@ -126,7 +126,6 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
          } else {
              throw RepositoryError.couldNotEdit
          }
-         
      }
 
      public func removeCard(_ card: Card, from deck: Deck) throws {
@@ -188,26 +187,59 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
      }
     
     public func createSession(_ session: Session, for deck: Deck) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotCreate
+        }
         
+        guard let index = decks.firstIndex(of: deck) else { throw NSError() }
+       
+        decks[index].session = session
     }
     
     public func editSession(_ session: Session) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotEdit
+        }
         
+        guard let index = decks.firstIndex(where: { deck in
+            deck.session?.id == session.id
+        }) else { throw NSError() }
+        
+        decks[index].session = session
     }
     
     public func deleteSession(_ session: Session, for deck: Deck) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotDelete
+        }
         
+        guard let index = decks.firstIndex(of: deck) else { throw NSError() }
+        
+        decks[index].session = nil
     }
     
-    public func addCardsToSession(_ session: Models.Session, cards: [Models.Card]) throws {
+    public func addCardsToSession(_ session: Session, cards: [Card]) throws {
+        if shouldThrowError {
+            throw RepositoryError.internalError
+        }
         
+        var session = session
+        
+        session.cardIds.append(contentsOf: cards.map(\.id))
     }
     
-    public func removeCardsFromSession(_ session: Models.Session, cards: [Models.Card]) throws {
+    public func removeCardsFromSession(_ session: Session, cards: [Card]) throws {
+        if shouldThrowError {
+            throw RepositoryError.internalError
+        }
         
+        var session = session
+        
+        session.cardIds.removeAll { id in
+            cards.map(\.id).contains(id)
+        }
     }
-    
- }
+}
 
  fileprivate enum WoodpeckerState {
      case review, learn
