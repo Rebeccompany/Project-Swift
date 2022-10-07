@@ -15,20 +15,19 @@ public struct FlashcardTextEditorView: View {
     var side: String
     
     
-    @State var text = NSAttributedString(string: "")
+    @State private var text = NSAttributedString(string: "")
     
-    @Binding var context: RichTextContext
+    @State private var context: RichTextContext = .init()
 
     
-    public init(color: Color, side: String, cardText: Binding<String>, context: Binding<RichTextContext>) {
+    public init(color: Color, side: String, cardText: Binding<String>) {
         self.color = color
         self.side = side
         self._cardText = cardText
-        self._context = context
     }
     
     public var body: some View {
-        VStack() {
+        VStack {
             
             VStack(alignment: .leading) {
                 Text(side)
@@ -39,9 +38,6 @@ public struct FlashcardTextEditorView: View {
                 RichTextEditor(text: $text, context: context) {
                     $0.textContentInset = CGSize(width: 10, height: 20)
                 }
-                
-                
-                
                 .scrollDisabled(true)
             }
             .background(color)
@@ -60,9 +56,7 @@ public struct FlashcardTextEditorView: View {
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        FlashcardTextEditorView(color: .blue, side: "Frente", cardText: .constant("Ola"), context: .constant(RichTextContext()))
+        FlashcardTextEditorView(color: .blue, side: "Frente", cardText: .constant("Ola"))
             .environment(\.sizeCategory, .medium)
     }
 }
-
-

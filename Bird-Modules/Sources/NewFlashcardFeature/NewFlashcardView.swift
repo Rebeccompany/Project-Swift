@@ -19,26 +19,27 @@ public struct NewFlashcardView: View {
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
-    @State var context = RichTextContext()
     
-    @FocusState private var focus: NewFlashcardFocus?
+    @State private var context = RichTextContext()
+    
+    //    @FocusState private var focus: NewFlashcardFocus?
     
     var keyboardPublisher: AnyPublisher<Bool, Never> {
-      Publishers
-        .Merge(
-          NotificationCenter
-            .default
-            .publisher(for: UIResponder.keyboardWillShowNotification)
-            .map { _ in true },
-          NotificationCenter
-            .default
-            .publisher(for: UIResponder.keyboardWillHideNotification)
-            .map { _ in false })
-        .debounce(for: .seconds(0.1), scheduler: RunLoop.main)
-        .eraseToAnyPublisher()
+        Publishers
+            .Merge(
+                NotificationCenter
+                    .default
+                    .publisher(for: UIResponder.keyboardWillShowNotification)
+                    .map { _ in true },
+                NotificationCenter
+                    .default
+                    .publisher(for: UIResponder.keyboardWillHideNotification)
+                    .map { _ in false })
+            .debounce(for: .seconds(0.1), scheduler: RunLoop.main)
+            .eraseToAnyPublisher()
     }
     
-    @State var isKeyboardPrestented: Bool = false
+    @State private var isKeyboardPrestented: Bool = false
     
     
     @Environment(\.dismiss) private var dismiss
@@ -61,19 +62,17 @@ public struct NewFlashcardView: View {
                         FlashcardTextEditorView(
                             color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                             side: NSLocalizedString("frente", bundle: .module, comment: ""),
-                            cardText: $viewModel.flashcardFront,
-                            context: $context
+                            cardText: $viewModel.flashcardFront
                         )
-                        .focused($focus, equals: NewFlashcardFocus.front)
+                        //                        .focused($focus, equals: NewFlashcardFocus.front)
                         .frame(minHeight: 280)
                         
                         FlashcardTextEditorView(
                             color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                             side: NSLocalizedString("verso", bundle: .module, comment: ""),
-                            cardText: $viewModel.flashcardBack,
-                            context: $context
+                            cardText: $viewModel.flashcardBack
                         )
-                        .focused($focus, equals: NewFlashcardFocus.back)
+                        //                        .focused($focus, equals: NewFlashcardFocus.back)
                         .frame(minHeight: 280)
                         
                         Text("cores", bundle: .module)
@@ -142,32 +141,46 @@ public struct NewFlashcardView: View {
                     }
                 }
                 .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button {
-                            if focus == .back {
-                                focus = .front
-                            }
-                        } label: {
-                            Image(systemName: "chevron.up")
-                        }.disabled(focus == .front)
-                            .accessibilityLabel(focus == .front ? NSLocalizedString("moveup_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("moveup_focus", bundle: .module, comment: ""))
+                    ToolbarItemGroup(placement: .bottomBar) {
                         
                         
-                        Button {
-                            if focus == .front {
-                                focus = .back
-                            }
-                        } label: {
-                            Image(systemName: "chevron.down")
-                        }.disabled(focus == .back)
-                            .accessibilityLabel(focus == .back ? NSLocalizedString("down_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("down_focus", bundle: .module, comment: ""))
                         
-                        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
-                            focus = nil
-                        }
-                        .accessibilityLabel(Text("botao_feito", bundle: .module))
+                        button(for: .bold)
+                        button(for: .italic)
+                        button(for: .underlined)
+                        
+                        
+                        
+                        
                     }
+                    //                    ToolbarItemGroup(placement: .keyboard) {
+                    //                        Spacer()
+                    //                        Button {
+                    //                            if focus == .back {
+                    //                                focus = .front
+                    //                            }
+                    //                        } label: {
+                    //                            Image(systemName: "chevron.up")
+                    //                        }
+                    //                        .disabled(focus == .front)
+                    //                            .accessibilityLabel(focus == .front ? NSLocalizedString("moveup_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("moveup_focus", bundle: .module, comment: ""))
+                    //
+                    //
+                    //                        Button {
+                    //                            if focus == .front {
+                    //                                focus = .back
+                    //                            }
+                    //                        } label: {
+                    //                            Image(systemName: "chevron.down")
+                    //                        }
+                    //                        .disabled(focus == .back)
+                    //                            .accessibilityLabel(focus == .back ? NSLocalizedString("down_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("down_focus", bundle: .module, comment: ""))
+                    //
+                    //                        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
+                    //                            focus = nil
+                    //                        }
+                    //                        .accessibilityLabel(Text("botao_feito", bundle: .module))
+                    //                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                             if editingFlashcard == nil {
@@ -200,15 +213,12 @@ public struct NewFlashcardView: View {
                         .foregroundColor(.red)
                     }
                 }
-                if isKeyboardPrestented {
-                    HStack {
-                        button(for: .bold)
-                        button(for: .italic)
-                        button(for: .underlined)
-                    }
-                }
             }
             
+        }
+        .interactiveDismissDisabled(true)
+        .onReceive(keyboardPublisher) { value in
+            isKeyboardPrestented = value
         }
     }
     
