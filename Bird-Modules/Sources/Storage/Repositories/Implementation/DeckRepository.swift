@@ -15,8 +15,7 @@ public final class DeckRepository: DeckRepositoryProtocol {
     private let cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>
     private let sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>
     
-    init(deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>,
-         cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>, sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>) {
+    init(deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>, cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>, sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>) {
         self.deckRepository = deckRepository
         self.cardRepository = cardRepository
         self.sessionRepository = sessionRepository

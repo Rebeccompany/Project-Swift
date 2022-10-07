@@ -19,9 +19,9 @@ public class StudyViewModel: ObservableObject {
     
     // MARK: Dependencies
     @Dependency(\.deckRepository) var deckRepository
-    @Dependency(\.sessionCacher) var sessionCacher
     @Dependency(\.dateHandler) var dateHandler
     @Dependency(\.systemObserver) var systemObserver
+    @Dependency(\.uuidGenerator) var uuidGenerator
     
     // MARK: Logic Vars
     @Published var cards: [Card] = []
@@ -71,7 +71,9 @@ public class StudyViewModel: ObservableObject {
             .tryMap { [dateHandler] cards in
                 try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: dateHandler.today)
             }
-            .handleEvents(receiveOutput: { [weak self] in self?.saveCardIdsToCache(deck: deck, ids: $0) })
+            .handleEvents(receiveOutput: { [weak self] in
+                self?.saveCardIdsToCache(deck: deck, ids: $0)
+            })
             .mapError { _ in
                 RepositoryError.internalError
             }
@@ -128,7 +130,7 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func startupForSpaced(deck: Deck, cardSortingFunc: @escaping (Card, Card) -> Bool) {
-        if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
+        if let session = deck.session, dateHandler.isToday(date: session.date) {
             sessionPublisher(cardIds: session.cardIds, cardSortingFunc: cardSortingFunc)
                 .assign(to: &$cards)
             
@@ -184,13 +186,20 @@ public class StudyViewModel: ObservableObject {
         try cardsToEdit.forEach { card in
             try deckRepository.editCard(card)
         }
-        sessionCacher.setCurrentSession(session: Session(cardIds: cards.map(\.id), date: dateHandler.today, deckId: deck.id, id: UUID()))
         
+        try saveToCache(deck: deck, ids: cards.map(\.id))
     }
     
-    private func saveCardIdsToCache(deck: Deck, ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) ) {
-        let session = Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id, id: UUID())
-        sessionCacher.setCurrentSession(session: session)
+    private func saveToCache(deck: Deck, ids: [UUID]) throws {
+        if let session = deck.session {
+            try deckRepository.deleteSession(session, for: deck)
+        }
+        
+        try deckRepository.createSession(Session(cardIds: ids, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
+    }
+    
+    private func saveCardIdsToCache(deck: Deck, ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID])) {
+        try? saveToCache(deck: deck, ids: ids.todayReviewingCards + ids.todayLearningCards)
     }
     
     // MARK: - Study Logic

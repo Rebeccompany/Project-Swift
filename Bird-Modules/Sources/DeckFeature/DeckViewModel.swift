@@ -23,7 +23,6 @@ public class DeckViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
-    @Dependency(\.sessionCacher) private var sessionCacher: SessionCacher
     
     public init() {
         self.searchFieldContent = ""
@@ -63,7 +62,7 @@ public class DeckViewModel: ObservableObject {
     func checkIfCanStudy(_ deck: Deck) -> Bool {
         
         do {
-            if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
+            if let session = deck.session, dateHandler.isToday(date: session.date) {
                 return !session.cardIds.isEmpty
             }
             

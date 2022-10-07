@@ -12,7 +12,7 @@ import CoreData
 extension SessionEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<SessionEntity> {
-        return NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
+        NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
     }
 
     @NSManaged public var date: Date?

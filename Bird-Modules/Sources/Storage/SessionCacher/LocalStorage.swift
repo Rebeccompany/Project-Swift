@@ -19,7 +19,7 @@ public protocol LocalStorageService {
 extension UserDefaults: LocalStorageService {}
 
 
-public final class SessionCacher {
+//public final class SessionCacher {
 //    private let repository: SessionRepositoryProtocol
 //
 //    public init(repository: SessionRepositoryProtocol = SessionRepository.shared) {
@@ -40,4 +40,4 @@ public final class SessionCacher {
 //
 //    }
     
-}
+//}

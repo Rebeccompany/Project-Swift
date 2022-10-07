@@ -19,15 +19,15 @@ final class DeckViewModelTests: XCTestCase {
     
     var sut: DeckViewModel!
     var deckRepository: DeckRepositoryMock!
-    var sessionCacher: SessionCacher!
     var dateHandler: DateHandlerMock!
+    var uuidGenerator: UUIDGeneratorProtocol!
     var cancellables: Set<AnyCancellable>!
     
     override func setUp() {
         deckRepository = DeckRepositoryMock()
-        sessionCacher = SessionCacher(storage: LocalStorageMock())
         dateHandler = DateHandlerMock()
-        setupHabitatForIsolatedTesting(deckRepository: deckRepository, dateHandler: dateHandler, sessionCacher: sessionCacher)
+        uuidGenerator = UUIDHandlerMock()
+        setupHabitatForIsolatedTesting(deckRepository: deckRepository, dateHandler: dateHandler, uuidGenerator: uuidGenerator)
         sut = DeckViewModel()
         cancellables = .init()
         sut.startup(deckRepository.decks[0])
@@ -109,16 +109,16 @@ final class DeckViewModelTests: XCTestCase {
         XCTAssertFalse(sut.checkIfCanStudy(deckRepository.decks[2]))
     }
     
-    func testCheckIfcanStudyWithSession() {
-        let session = Session(cardIds: deckRepository.decks[0].cardsIds, date: dateHandler.today, deckId: deckRepository.decks[0].id, id: UUID())
-        sessionCacher.setCurrentSession(session: session)
+    func testCheckIfcanStudyWithSession() throws {
+        let session = Session(cardIds: deckRepository.decks[0].cardsIds, date: dateHandler.today, deckId: deckRepository.decks[0].id, id: uuidGenerator.newId())
+        try deckRepository.createSession(session, for: deckRepository.decks[0])
         sut.startup(deckRepository.decks[0])
         XCTAssertTrue(sut.checkIfCanStudy(deckRepository.decks[0]))
     }
     
-    func testCheckIfcanStudyWithEmptySession() {
-        let session = Session(cardIds: deckRepository.decks[2].cardsIds, date: dateHandler.today, deckId: deckRepository.decks[2].id, id: UUID())
-        sessionCacher.setCurrentSession(session: session)
+    func testCheckIfcanStudyWithEmptySession() throws {
+        let session = Session(cardIds: deckRepository.decks[2].cardsIds, date: dateHandler.today, deckId: deckRepository.decks[2].id, id: uuidGenerator.newId())
+        try deckRepository.createSession(session, for: deckRepository.decks[2])
         sut.startup(deckRepository.decks[2])
         XCTAssertFalse(sut.checkIfCanStudy(deckRepository.decks[2]))
     }

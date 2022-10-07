@@ -15,7 +15,6 @@ public func setupHabitatForProduction() {
     Habitat[\.dateHandler] = DateHandler()
     Habitat[\.uuidGenerator] = UUIDGenerator()
     Habitat[\.systemObserver] = SystemObserver.shared
-    Habitat[\.sessionCacher] = SessionCacher()
     Habitat[\.displayCacher] = DisplayCacher()
 }
 
@@ -25,7 +24,6 @@ public func setupHabitatForIsolatedTesting(
     dateHandler: DateHandlerProtocol = DateHandlerMock(),
     uuidGenerator: UUIDGeneratorProtocol = UUIDHandlerMock(),
     systemObserver: SystemObserverProtocol = SystemObserverMock(),
-    sessionCacher: SessionCacher = SessionCacher(storage: LocalStorageMock()),
     displayCacher: DisplayCacherProtocol = DisplayCacher(localStorage: LocalStorageMock())
 ) {
     Habitat[\.deckRepository] = deckRepository
@@ -34,7 +32,6 @@ public func setupHabitatForIsolatedTesting(
     Habitat[\.uuidGenerator] = uuidGenerator
     Habitat[\.systemObserver] = systemObserver
     Habitat[\.displayCacher] = displayCacher
-    Habitat[\.sessionCacher] = sessionCacher
 }
 
 public func setupHabitatForIntegrationTesting() {
@@ -43,8 +40,6 @@ public func setupHabitatForIntegrationTesting() {
     Habitat[\.dateHandler] = DateHandlerMock()
     Habitat[\.uuidGenerator] = UUIDHandlerMock()
     Habitat[\.systemObserver] = SystemObserver.shared
-    Habitat[\.sessionCacher] = SessionCacher()
     Habitat[\.systemObserver] = SystemObserver.shared
-    Habitat[\.sessionCacher] = SessionCacher(storage: LocalStorageMock())
     Habitat[\.displayCacher] = DisplayCacher(localStorage: LocalStorageMock())
 }

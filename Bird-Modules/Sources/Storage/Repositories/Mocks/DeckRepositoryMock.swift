@@ -182,7 +182,6 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
              throw RepositoryError.couldNotEdit
          }
          
-         
          cardSubject.send(cards)
      }
     
@@ -191,7 +190,9 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
             throw RepositoryError.couldNotCreate
         }
         
-        guard let index = decks.firstIndex(of: deck) else { throw NSError() }
+        guard let index = decks.firstIndex(of: deck) else {
+            throw NSError()
+        }
        
         decks[index].session = session
     }
