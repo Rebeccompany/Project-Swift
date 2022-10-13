@@ -9,6 +9,7 @@ import XCTest
 @testable import Storage
 import Combine
 import Models
+import Utils
 
 final class DeckRepositoryTests: XCTestCase {
     
@@ -18,6 +19,7 @@ final class DeckRepositoryTests: XCTestCase {
     var sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>! = nil
     var sessionTransformer: SessionModelEntityTransformer! = nil
     var dataStorage: DataStorage! = nil
+    var dateHandler: DateHandlerProtocol!
     
     var cancellables: Set<AnyCancellable>! = nil
     
@@ -27,8 +29,9 @@ final class DeckRepositoryTests: XCTestCase {
         self.deckRepository = Repository(transformer: DeckModelEntityTransformer(), dataStorage)
         self.cardRepository = Repository(transformer: CardModelEntityTransformer(), dataStorage)
         self.sessionRepository = Repository(transformer: sessionTransformer, dataStorage)
-        self.sut = DeckRepository(deckRepository: deckRepository, cardRepository: cardRepository, sessionRepository: sessionRepository)
+        self.sut = DeckRepository(deckRepository: deckRepository, cardRepository: cardRepository, sessionRepository: sessionRepository, cardSnapshotRepository: CardSnapshotRepository(transformer: CardSnapshotTransformer(), dataStorage: dataStorage))
         self.cancellables = .init()
+        dateHandler = DateHandlerMock()
     }
     
     override func tearDown() {
@@ -39,6 +42,7 @@ final class DeckRepositoryTests: XCTestCase {
         self.cardRepository = nil
         self.deckRepository = nil
         self.dataStorage = nil
+        dateHandler = nil
     }
     
     func testFetchDeckById() throws {
@@ -676,5 +680,33 @@ final class DeckRepositoryTests: XCTestCase {
         let result = sessionTransformer.entityToModel(entity)
         
         return result!
+    }
+    
+    func testAddHistory() throws {
+        let expectation = expectation(description: "fetch card by id")
+        let dummy = DeckDummy.dummy
+        let card = CardDummy.dummy
+        try sut.createDeck(dummy, cards: [card])
+        let snap = CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), userGrade: .correctEasy, timeSpend: 10, date: dateHandler.today)
+        
+        try sut.addHistory(snap, to: card)
+        sut.fetchCardById(card.id)
+            .replaceError(with: card)
+            .sink { sucess in
+                switch sucess {
+                case .finished:
+                    print("finished")
+                case .failure(let error):
+                    print(error)
+                }
+        } receiveValue: { card in
+
+            XCTAssertEqual(card.history.last, snap)
+            XCTAssertEqual(card.history.count, 1)
+            expectation.fulfill()
+        }
+            .store(in: &cancellables)
+
+        wait(for: [expectation], timeout: 1)
     }
 }

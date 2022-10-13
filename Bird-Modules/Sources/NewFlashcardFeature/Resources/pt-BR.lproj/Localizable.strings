@@ -1,0 +1,26 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 03/10/22.
+  
+*/
+
+"frente" = "Frente";
+"verso" = "Verso";
+"cores" = "Cores";
+"apagar_flashcard" = "Apagar Flashcard";
+"fechar" = "Fechar";
+"alert_delete_flashcard" = "Tem certeza de que deseja deletar o flashcard?";
+"alert_delete_flashcard_text" = "Você perderá permanentemente o conteúdo deste flashcard.";
+"deletar" = "Apagar";
+"cancelar" = "Cancelar";
+"criar_flashcard" = "Criar Flashcard";
+"editar_flashcard" = "Editar Flashcard";
+"feito" = "Feito";
+"botao_feito" = "Botão de feito";
+"moveup_focus_disabled" = "Subir foco do teclado desabilitado";
+"moveup_focus" = "Subir foco do teclado";
+"down_focus_disabled" = "Descer foco do teclado desabilitado";
+"down_focus" = "Descer foco do teclado";
+"feito_disabled" = "Feito desabilitado";

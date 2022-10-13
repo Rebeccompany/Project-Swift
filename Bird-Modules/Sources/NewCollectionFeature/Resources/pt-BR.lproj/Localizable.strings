@@ -1,0 +1,20 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 03/10/22.
+  
+*/
+
+"icones" = "Ícones";
+"nome" = "Nome";
+"apagar_colecao" = "Apagar Coleção";
+"fechar" = "Fechar";
+"alert_delete_collection" = "Tem certeza de que deseja deletar a coleção?";
+"alert_delete_collection_text" = "Você perderá permanentemente o conteúdo desta coleção.";
+"deletar" = "Apagar";
+"cancelar" = "Cancelar";
+"criar_colecao" = "Criar Coleção";
+"editar_colecao" = "Editar Coleção";
+"feito" = "Feito";
+"botao_feito" = "Botão de feito";

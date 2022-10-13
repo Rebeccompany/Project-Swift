@@ -180,25 +180,28 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
     
     public func addCardsToSession(_ session: Session, cards: [Card]) throws {
         
-        
-        
-        
         var session = session
         
         session.cardIds.append(contentsOf: cards.map(\.id))
     }
     
     public func removeCardsFromSession(_ session: Session, cards: [Card]) throws {
-        
-        
-        
-        
+
         var session = session
         
         session.cardIds.removeAll { id in
             cards.map(\.id).contains(id)
         }
     }
+
+    func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
+        guard let index = cards.firstIndex(of: card) else { throw NSError() }
+        var card = card
+        card.history.append(snapshot)
+        
+        cards[index] = card
+    }
+    
     
 }
 

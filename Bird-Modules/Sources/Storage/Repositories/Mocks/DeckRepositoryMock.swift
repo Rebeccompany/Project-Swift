@@ -117,8 +117,9 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
          }
          
          if let i = decks.firstIndex(where: { d in d.id == deck.id }) {
-             var deck = deck
+             var deck = decks[i]
              deck.cardsIds.append(card.id)
+             
              decks[i] = deck
              cards.append(card)
              subject.send(decks)
@@ -240,7 +241,16 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
             cards.map(\.id).contains(id)
         }
     }
-}
+
+    public func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
+        guard let i = cards.firstIndex(of: card) else {
+            throw NSError()
+        }
+        cards[i].history.append(snapshot)
+    }
+
+
+ }
 
  fileprivate enum WoodpeckerState {
      case review, learn

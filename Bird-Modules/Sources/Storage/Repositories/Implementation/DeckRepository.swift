@@ -14,11 +14,16 @@ public final class DeckRepository: DeckRepositoryProtocol {
     private let deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>
     private let cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>
     private let sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>
+    private let cardSnapshotRepository: CardSnapshotRepository
     
-    init(deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>, cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>, sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>) {
+    init(deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>,
+         cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>,
+         sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>,
+         cardSnapshotRepository: CardSnapshotRepository) {
         self.deckRepository = deckRepository
         self.cardRepository = cardRepository
         self.sessionRepository = sessionRepository
+        self.cardSnapshotRepository = cardSnapshotRepository
     }
     
     public static let shared: DeckRepositoryProtocol = {
@@ -29,7 +34,7 @@ public final class DeckRepository: DeckRepositoryProtocol {
         let deckRepository = Repository(transformer: DeckModelEntityTransformer(collectionIds: collectionId), .shared)
         let cardRepository = Repository(transformer: CardModelEntityTransformer(), .shared)
         let sessionRepository = Repository(transformer: SessionModelEntityTransformer(), .shared)
-        self.init(deckRepository: deckRepository, cardRepository: cardRepository, sessionRepository: sessionRepository)
+        self.init(deckRepository: deckRepository, cardRepository: cardRepository, sessionRepository: sessionRepository, cardSnapshotRepository: CardSnapshotRepository(transformer: CardSnapshotTransformer()))
     }
     
     public func fetchDeckById(_ id: UUID) -> AnyPublisher<Deck, RepositoryError> {
@@ -191,6 +196,13 @@ public final class DeckRepository: DeckRepositoryProtocol {
         }
         
         try sessionRepository.save()
+    }
+    
+    public func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
+        let entity = try cardRepository.fetchEntityById(card.id)
+        let snapshotEntity = cardSnapshotRepository.create(snapshot: snapshot)
+        entity.addToHistory(snapshotEntity)
+        try cardRepository.save()
     }
     
 }

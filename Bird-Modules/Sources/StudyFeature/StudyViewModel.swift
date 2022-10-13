@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  StudyViewModel.swift
 //  
 //
 //  Created by Marcos Chevis on 05/09/22.
@@ -185,6 +185,8 @@ public class StudyViewModel: ObservableObject {
         guard mode == .spaced else { return }
         try cardsToEdit.forEach { card in
             try deckRepository.editCard(card)
+            guard let lastSnapshot = card.history.last else { return }
+            try deckRepository.addHistory(lastSnapshot, to: card)
         }
         
         try saveToCache(deck: deck, ids: cards.map(\.id))
