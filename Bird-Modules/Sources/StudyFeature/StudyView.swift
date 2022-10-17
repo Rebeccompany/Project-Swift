@@ -91,7 +91,7 @@ public struct StudyView: View {
                                     .foregroundColor(HBColor.actionColor)
                             }
                             .popover(isPresented: $shouldDisplaySessionProgress) {
-                                StudyProgressView(numOfTotalSeen: viewModel.getSessionTotalSeenCards(), numOfTotalCards: viewModel.getSessionTotalCards(), numOfReviewingSeen: viewModel.getSessionReviewingSeenCards(), numOfReviewingCards: viewModel.getSessionReviewingCards(), numOfLearningSeen: viewModel.getSessionLearningSeenCards(mode: mode), numOfLearningCards: viewModel.getSessionLearningCards(mode: mode), studyMode: mode)
+                                StudyProgressView(numOfTotalSeen: viewModel.getSessionTotalSeenCards(), numOfTotalCards: viewModel.getSessionTotalCards(), numOfReviewingSeen: viewModel.getSessionReviewingSeenCards(mode: mode), numOfReviewingCards: viewModel.getSessionReviewingCards(mode: mode), numOfLearningSeen: viewModel.getSessionLearningSeenCards(mode: mode), numOfLearningCards: viewModel.getSessionLearningCards(mode: mode), studyMode: mode)
                                 .frame(minWidth: 300, minHeight: 600)
                             }
                         }

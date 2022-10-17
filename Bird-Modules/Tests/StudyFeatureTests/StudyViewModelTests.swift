@@ -430,33 +430,233 @@ class StudyViewModelTests: XCTestCase {
     
     // MARK: - Tests SessionProgress
     
-    func testGetSessionCardsWhen0() {
+    // There are 0 cards in a Spaced session
+    func testGetSessionCardsSpacedWhen0() {
         XCTAssertEqual(sut.cards, [])
         self.deck = deckRepository.decks[1]
         deckRepository.cards = []
         sut.startup(deck: deck, mode: .spaced)
         XCTAssertEqual(sut.getSessionTotalCards(), 0)
-        XCTAssertEqual(sut.getSessionReviewingCards(), 0)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .spaced), 0)
         XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .spaced), 0)
+    }
+    
+    // There are 0 cards in a Cramming session
+    func testGetSessionCardsCrammingWhen0() {
+        XCTAssertEqual(sut.cards, [])
+        self.deck = deckRepository.decks[1]
+        deckRepository.cards = []
         
         sut.startup(deck: deck, mode: .cramming)
         XCTAssertEqual(sut.getSessionTotalCards(), 0)
-        XCTAssertEqual(sut.getSessionReviewingCards(), 0)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .cramming), 0)
         XCTAssertEqual(sut.getSessionLearningCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .cramming), 0)
     }
     
-    func testGetSessionCardsWhen2() {
+    // There are 2 unseen cards in a Spaced session
+    func testGetSessionCardsSpacedWhen2() {
         XCTAssertEqual(sut.cards, [])
-        self.deck = deckRepository.decks[3]
+        self.deck = deckRepository.decks[4]
 
         sut.startup(deck: deck, mode: .spaced)
         XCTAssertEqual(sut.getSessionTotalCards(), 2)
-        XCTAssertEqual(sut.getSessionReviewingCards(), 2)
-        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 2)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .spaced), 1)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 1)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .spaced), 0)
+    }
+    
+    // There are 2 unseen cards in a Cramming session
+    func testGetSessionCardsCrammingWhen2() {
+        XCTAssertEqual(sut.cards, [])
+        self.deck = deckRepository.decks[4]
         
         sut.startup(deck: deck, mode: .cramming)
         XCTAssertEqual(sut.getSessionTotalCards(), 2)
-        XCTAssertEqual(sut.getSessionReviewingCards(), 2)
-        XCTAssertEqual(sut.getSessionLearningCards(mode: .cramming), 2)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .cramming), 0)
     }
+    
+    // Progress in a Cramming session after seeing 1 out of 4 cards (clicked correct easy)
+    func testProgressWhen1DoneCramming() throws {
+        XCTAssertEqual(sut.cards, [])
+        self.deck = deckRepository.decks[2]
+        
+        sut.startup(deck: deck, mode: .cramming)
+        XCTAssertEqual(sut.getSessionTotalCards(), 4)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .cramming), 0)
+        
+        try sut.pressedButton(for: .correctEasy, deck: deck, mode: .cramming)
+        try sut.saveChanges(deck: deck, mode: .cramming)
+        
+        XCTAssertEqual(sut.getSessionTotalCards(), 4)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 1)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .cramming), 0)
+    }
+    
+    // Progress in a Cramming session after seeing 0 out of 4 cards (clicked wrong)
+    func testProgressWhenClickedHardCramming() throws {
+        XCTAssertEqual(sut.cards, [])
+        self.deck = deckRepository.decks[2]
+        
+        sut.startup(deck: deck, mode: .cramming)
+        XCTAssertEqual(sut.getSessionTotalCards(), 4)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .cramming), 0)
+        
+        try sut.pressedButton(for: .wrong, deck: deck, mode: .cramming)
+        try sut.saveChanges(deck: deck, mode: .cramming)
+        
+        XCTAssertEqual(sut.getSessionTotalCards(), 4)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .cramming), 0)
+    }
+    
+    // Progress in a Cramming session after seeing 2 out of 4 cards (clicked correct easy)
+    func testProgressWhen2SeenCramming() throws {
+        XCTAssertEqual(sut.cards, [])
+        self.deck = deckRepository.decks[2]
+        
+        sut.startup(deck: deck, mode: .cramming)
+        XCTAssertEqual(sut.getSessionTotalCards(), 4)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .cramming), 0)
+        
+        try sut.pressedButton(for: .correctEasy, deck: deck, mode: .cramming)
+        try sut.saveChanges(deck: deck, mode: .cramming)
+        try sut.pressedButton(for: .correctEasy, deck: deck, mode: .cramming)
+        try sut.saveChanges(deck: deck, mode: .cramming)
+        
+        XCTAssertEqual(sut.getSessionTotalCards(), 4)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 2)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .cramming), 0)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .cramming), 0)
+    }
+    
+    // Progress in a Spaced session after seeing 1 reviewing out of 2 cards (clicked wrong)
+    func testProgressWhen1ReviewingDoneSpaced() throws {
+        XCTAssertEqual(sut.cards, [])
+        self.deck = deckRepository.decks[3]
+        
+        sut.startup(deck: deck, mode: .spaced)
+        XCTAssertEqual(sut.getSessionTotalCards(), 2)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .spaced), 2)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .spaced), 0)
+        
+        try sut.pressedButton(for: .wrong, deck: deck, mode: .spaced)
+        try sut.saveChanges(deck: deck, mode: .spaced)
+        
+        XCTAssertEqual(sut.getSessionTotalCards(), 2)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 1)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .spaced), 2)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .spaced), 1)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .spaced), 0)
+    }
+    
+    // Progress in a Spaced session after seeing 1 learning out of 2 cards (clicked correct easy)
+    func testProgressWhen1LearningDoneSpaced() throws {
+        XCTAssertEqual(sut.cards, [])
+        self.deck = deckRepository.decks[5]
+        
+        sut.startup(deck: deck, mode: .spaced)
+        XCTAssertEqual(sut.getSessionTotalCards(), 2)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 2)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .spaced), 0)
+        
+        try sut.pressedButton(for: .correctEasy, deck: deck, mode: .spaced)
+        try sut.saveChanges(deck: deck, mode: .spaced)
+        
+        XCTAssertEqual(sut.getSessionTotalCards(), 2)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 1)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 2)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .spaced), 1)
+    }
+    
+    // Progress in a Spaced session after rating 1 learning out of 2 cards, not counting as Seen (clicked wrong)
+    func testProgressWhen0LearningDoneSpaced() throws {
+        XCTAssertEqual(sut.cards, [])
+        self.deck = deckRepository.decks[5]
+        
+        sut.startup(deck: deck, mode: .spaced)
+        XCTAssertEqual(sut.getSessionTotalCards(), 2)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 2)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .spaced), 0)
+        
+        try sut.pressedButton(for: .wrongHard, deck: deck, mode: .spaced)
+        try sut.saveChanges(deck: deck, mode: .spaced)
+        
+        XCTAssertEqual(sut.getSessionTotalCards(), 2)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 2)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .spaced), 0)
+    }
+    
+    // Progress in a Spaced session after rating 1 learning and 1 reviewing out of 2 cards
+    func testProgressWhenLearningAndReviewingDoneSpaced() throws {
+        XCTAssertEqual(sut.cards, [])
+        self.deck = deckRepository.decks[4]
+        
+        sut.startup(deck: deck, mode: .spaced)
+        XCTAssertEqual(sut.getSessionTotalCards(), 2)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .spaced), 1)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .spaced), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 1)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .spaced), 0)
+        
+        try sut.pressedButton(for: .correctEasy, deck: deck, mode: .spaced)
+        try sut.saveChanges(deck: deck, mode: .spaced)
+        try sut.pressedButton(for: .correctEasy, deck: deck, mode: .spaced)
+        try sut.saveChanges(deck: deck, mode: .spaced)
+        
+        XCTAssertEqual(sut.getSessionTotalCards(), 2)
+        XCTAssertEqual(sut.getSessionTotalSeenCards(), 2)
+        XCTAssertEqual(sut.getSessionReviewingCards(mode: .spaced), 1)
+        XCTAssertEqual(sut.getSessionReviewingSeenCards(mode: .spaced), 1)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 1)
+        XCTAssertEqual(sut.getSessionLearningSeenCards(mode: .spaced), 1)
+    }
+    
 }

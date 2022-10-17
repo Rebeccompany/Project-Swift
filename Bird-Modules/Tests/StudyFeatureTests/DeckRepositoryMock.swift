@@ -22,7 +22,11 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
                                    cardsIds: Array(cards.filter { $0.deckID == UUID(uuidString: "4e56be0a-bc7c-4497-aec9-c30482e82496") }.map(\.id)),
                                    spacedConfig: SpacedRepetitionConfig(maxLearningCards: 20, maxReviewingCards: 3)),
                               Deck(id: "3947217b-2f55-4f16-ae59-10017d291579",
-                                   cardsIds: cards.filter { $0.deckID == UUID(uuidString: "3947217b-2f55-4f16-ae59-10017d291579") }.map(\.id))
+                                   cardsIds: cards.filter { $0.deckID == UUID(uuidString: "3947217b-2f55-4f16-ae59-10017d291579") }.map(\.id)),
+                              Deck(id: "941aa8f2-4e50-11ed-bdc3-0242ac120002",
+                                   cardsIds: cards.filter { $0.deckID == UUID(uuidString: "941aa8f2-4e50-11ed-bdc3-0242ac120002") }.map(\.id)),
+                              Deck(id: "e710f512-4e59-11ed-bdc3-0242ac120002",
+                                   cardsIds: cards.filter { $0.deckID == UUID(uuidString: "e710f512-4e59-11ed-bdc3-0242ac120002") }.map(\.id))
                          
     ]
     
@@ -51,7 +55,13 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
         Card(id: "cd3cc305-e80e-4c84-b1e5-e27fda8a9cfe", deckId: "a498bc3c-85a3-4784-b560-a33a272a0a92", state: .learn), //16
         
         Card(id: "5896cc41-ce48-44af-80f0-844dd24bca0b", deckId: "3947217b-2f55-4f16-ae59-10017d291579", state: .review), //17
-        Card(id: "df6dcb79-28a4-4aae-8c6e-7656e4e79d2e", deckId: "3947217b-2f55-4f16-ae59-10017d291579", state: .review) //18
+        Card(id: "df6dcb79-28a4-4aae-8c6e-7656e4e79d2e", deckId: "3947217b-2f55-4f16-ae59-10017d291579", state: .review), //18
+        
+        Card(id: "7c2dca20-4e51-11ed-bdc3-0242ac120002", deckId: "941aa8f2-4e50-11ed-bdc3-0242ac120002", state: .review), //19
+        Card(id: "831cb95e-4e51-11ed-bdc3-0242ac120002", deckId: "941aa8f2-4e50-11ed-bdc3-0242ac120002", state: .learn), //20
+        
+        Card(id: "05671348-4e5a-11ed-bdc3-0242ac120002", deckId: "e710f512-4e59-11ed-bdc3-0242ac120002", state: .learn), //21
+        Card(id: "0c082cf0-4e5a-11ed-bdc3-0242ac120002", deckId: "e710f512-4e59-11ed-bdc3-0242ac120002", state: .learn), //22
         
     ]
     

@@ -37,13 +37,13 @@ public struct StudyProgressView: View {
                         .frame(width: 250)
                         .padding()
                     
-                    if numOfReviewingCards > 0 && studyMode == .spaced {
+                    if numOfReviewingCards > 0 {
                         GraphView(title: NSLocalizedString("titulo_grafico_revisao", bundle: .module, comment: ""), numOfCardsSeen: numOfReviewingSeen, numOfTotalCards: numOfReviewingCards, color: HBColor.progressGraphReviewing, backgroundColor: HBColor.progressGraphReviewingBackground)
                             .frame(width: 250)
                             .padding()
                     }
                     
-                    if numOfLearningCards > 0 && studyMode == .spaced {
+                    if numOfLearningCards > 0 {
                         GraphView(title: NSLocalizedString("titulo_grafico_aprendizado", bundle: .module, comment: ""), numOfCardsSeen: numOfLearningSeen, numOfTotalCards: numOfLearningCards, color: HBColor.progressGraphLearning, backgroundColor: HBColor.progressGraphLearningBackground)
                             .frame(width: 250)
                             .padding()
