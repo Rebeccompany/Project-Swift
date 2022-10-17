@@ -34,6 +34,7 @@ struct CollectionsSidebar: View {
             .listRowBackground(
                 isCompact ? HBColor.secondaryBackground : nil
             )
+            .accessibilityIdentifier("All_Decks")
             
             Section {
                 if viewModel.collections.isEmpty {
@@ -59,6 +60,7 @@ struct CollectionsSidebar: View {
                         .listRowBackground(
                             isCompact ? HBColor.secondaryBackground : nil
                         )
+                        .accessibilityIdentifier("collection_\(collection.id.uuidString)")
                         .contextMenu {
                             Button {
                                 editingCollection = collection
@@ -66,6 +68,7 @@ struct CollectionsSidebar: View {
                             } label: {
                                 Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
                             }
+                            .accessibilityIdentifier("collection_\(collection.id.uuidString)_edit")
                             
                             Button(role: .destructive) {
                                 try? viewModel.deleteCollection(collection)
@@ -73,6 +76,7 @@ struct CollectionsSidebar: View {
                             } label: {
                                 Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
                             }
+                            .accessibilityIdentifier("collection_\(collection.id.uuidString)_delete")
                         }
                     }
                     .onDelete {
@@ -98,6 +102,7 @@ struct CollectionsSidebar: View {
                         )
                         .frame(minWidth: 300, minHeight: 600)
                     }
+                    .accessibilityIdentifier("Edit_Button_Collection")
             }
             ToolbarItem {
                 Button {
@@ -106,6 +111,7 @@ struct CollectionsSidebar: View {
                 } label: {
                     Image(systemName: "plus")
                 }
+                .accessibilityIdentifier("Add_Button_Collection")
                 .popover(isPresented: $presentCollectionCreation) {
                     NewCollectionView(
                         editingCollection: editingCollection, editMode: $editMode

@@ -128,6 +128,7 @@ public struct DetailView: View {
                 editingDeck = nil
             }
             .disabled(viewModel.selection.isEmpty)
+            .accessibilityIdentifier("Delete_Button_Confirm")
             
             Button(NSLocalizedString("cancelar", bundle: .module, comment: ""), role: .cancel) { }
         }
@@ -145,6 +146,7 @@ public struct DetailView: View {
             } label: {
                 Text(NSLocalizedString("criar_baralho", bundle: .module, comment: ""))
             }
+            .accessibilityIdentifier("Empty_State_Add_Button")
             .buttonStyle(LargeButtonStyle(isDisabled: false))
             .padding()
         }

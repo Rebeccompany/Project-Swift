@@ -8,19 +8,27 @@
 import XCTest
 
 final class Project_BirdUITests: XCTestCase {
+    
+    var sut: XCUIApplication!
+
+    override func setUp() {
+        sut = .init()
+        sut.launchArguments.append("UITEST")
+        sut.launch()
+    }
+    
+    override func tearDown() {
+        sut = nil
+    }
 
     func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-
-        app.buttons["Adicionar"].tap()
+        sut.buttons["Plus_Deck"].tap()
         
-        XCTAssertTrue(app.buttons["Cancelar"].exists)
+        XCTAssertTrue(sut.buttons["Cancel"].exists)
         
-        app.buttons["Cancelar"].tap()
+        sut.buttons["Cancel"].tap()
         
-        XCTAssertFalse(app.buttons["Cancelar"].exists)
+        XCTAssertFalse(sut.buttons["Cancel"].exists)
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 }

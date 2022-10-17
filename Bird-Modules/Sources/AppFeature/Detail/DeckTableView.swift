@@ -64,6 +64,7 @@ struct DeckTableView: View {
                 .tint(HBColor.color(for: deck.color))
                 .buttonStyle(.bordered)
                 .buttonBorderShape(.capsule)
+                .accessibility(identifier: "Table_Open_Deck_\(deck.id)")
             }.width(90)
         }
         .animation(.linear, value: viewModel.sortOrder)
@@ -86,6 +87,5 @@ struct DeckTableView: View {
             Text(deck.name)
                 .foregroundColor(.primary)
         }
-        .padding(.leading, 4)
     }
 }
