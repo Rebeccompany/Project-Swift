@@ -37,13 +37,13 @@ public struct StudyProgressView: View {
                         .frame(width: 250)
                         .padding()
                     
-                    if (numOfReviewingCards > 0 && studyMode == .spaced) {
+                    if numOfReviewingCards > 0 && studyMode == .spaced {
                         GraphView(title: NSLocalizedString("titulo_grafico_revisao", bundle: .module, comment: ""), numOfCardsSeen: numOfReviewingSeen, numOfTotalCards: numOfReviewingCards, color: HBColor.progressGraphReviewing, backgroundColor: HBColor.progressGraphReviewingBackground)
                             .frame(width: 250)
                             .padding()
                     }
                     
-                    if (numOfLearningCards > 0 && studyMode == .spaced) {
+                    if numOfLearningCards > 0 && studyMode == .spaced {
                         GraphView(title: NSLocalizedString("titulo_grafico_aprendizado", bundle: .module, comment: ""), numOfCardsSeen: numOfLearningSeen, numOfTotalCards: numOfLearningCards, color: HBColor.progressGraphLearning, backgroundColor: HBColor.progressGraphLearningBackground)
                             .frame(width: 250)
                             .padding()
@@ -118,9 +118,9 @@ struct GraphView: View {
                 ProgressGraphBackground(backgroundColor: backgroundColor)
                 ProgressGraph(completedPercentage: CGFloat(numOfCardsSeen * 100) / CGFloat(numOfTotalCards), color: color)
                 VStack {
-                    Text("\(numOfCardsSeen) cartas estudadas")
+                    Text("\(numOfCardsSeen) " + NSLocalizedString("cartas_estudadas", bundle: .module, comment: ""))
                         .font(.title3)
-                    Text("de \(numOfTotalCards) cartas")
+                    Text(NSLocalizedString("de", bundle: .module, comment: "") + " \(numOfTotalCards) " + NSLocalizedString("cartas", bundle: .module, comment: ""))
                         .foregroundColor(.gray)
                 }
             }

@@ -427,4 +427,36 @@ class StudyViewModelTests: XCTestCase {
         
         wait(for: [expectation], timeout: 1)
     }
+    
+    // MARK: - Tests SessionProgress
+    
+    func testGetSessionCardsWhen0() {
+        XCTAssertEqual(sut.cards, [])
+        self.deck = deckRepository.decks[1]
+        deckRepository.cards = []
+        sut.startup(deck: deck, mode: .spaced)
+        XCTAssertEqual(sut.getSessionTotalCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 0)
+        
+        sut.startup(deck: deck, mode: .cramming)
+        XCTAssertEqual(sut.getSessionTotalCards(), 0)
+        XCTAssertEqual(sut.getSessionReviewingCards(), 0)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .cramming), 0)
+    }
+    
+    func testGetSessionCardsWhen2() {
+        XCTAssertEqual(sut.cards, [])
+        self.deck = deckRepository.decks[3]
+
+        sut.startup(deck: deck, mode: .spaced)
+        XCTAssertEqual(sut.getSessionTotalCards(), 2)
+        XCTAssertEqual(sut.getSessionReviewingCards(), 2)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .spaced), 2)
+        
+        sut.startup(deck: deck, mode: .cramming)
+        XCTAssertEqual(sut.getSessionTotalCards(), 2)
+        XCTAssertEqual(sut.getSessionReviewingCards(), 2)
+        XCTAssertEqual(sut.getSessionLearningCards(mode: .cramming), 2)
+    }
 }
