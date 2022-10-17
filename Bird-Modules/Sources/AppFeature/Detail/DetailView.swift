@@ -91,6 +91,7 @@ public struct DetailView: View {
             
             ToolbarItem {
                 EditButton()
+                    .keyboardShortcut("e", modifiers: .command)
                     .foregroundColor(HBColor.actionColor)
             }
             
