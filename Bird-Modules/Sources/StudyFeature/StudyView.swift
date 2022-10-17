@@ -60,7 +60,6 @@ public struct StudyView: View {
                             .accessibilityLabel(generateAttributedLabel())
                             .accessibilityHidden(viewModel.cards.isEmpty)
                         
-                        
                         HStack(alignment: .top) {
                             ForEach(UserGrade.allCases) { userGrade in
                                 Spacer()
