@@ -151,6 +151,7 @@ public struct NewCollectionView: View {
             .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
         }
         .navigationViewStyle(.stack)
+        .interactiveDismissDisabled(selectedField != nil ? true : false)
         
     }
     
