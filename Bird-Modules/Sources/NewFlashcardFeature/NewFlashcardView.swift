@@ -179,6 +179,7 @@ public struct NewFlashcardView: View {
             }
             
         }
+        .interactiveDismissDisabled(focus != nil ? true : false)
     }
 }
 
