@@ -152,7 +152,10 @@ public struct DetailView: View {
                 presentDeckEdition = true
             }
         } else {
-            DeckTableView(editingDeck: $editingDeck, presentDeckEdition: $presentDeckEdition, editMode: $editMode)
+            DeckTableView { deck in
+                editingDeck = deck
+                presentDeckEdition = true
+            }
         }
     }
 }

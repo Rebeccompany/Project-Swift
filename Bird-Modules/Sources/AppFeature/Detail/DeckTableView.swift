@@ -13,18 +13,11 @@ import NewDeckFeature
 struct DeckTableView: View {
     @EnvironmentObject private var viewModel: ContentViewModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Binding private var editingDeck: Deck?
-    @Binding private var presentDeckEdition: Bool
-    @Binding private var editMode: EditMode
+    
+    var editAction: (Deck) -> Void
     
     private var sortedDecks: [Deck] {
         viewModel.decks.sorted(using: viewModel.sortOrder)
-    }
-    
-    init(editingDeck: Binding<Deck?>, presentDeckEdition: Binding<Bool>, editMode: Binding<EditMode>) {
-        self._editingDeck = editingDeck
-        self._presentDeckEdition = presentDeckEdition
-        self._editMode = editMode
     }
     
     var body: some View {
@@ -52,21 +45,15 @@ struct DeckTableView: View {
             }
             .swipeActions {
                 Button {
-                    editingDeck = deck
-                    presentDeckEdition = true
+                    editAction(deck)
                 } label: {
                     Text("Editar")
                 }
                 .tint(HBColor.actionColor)
-                .popover(isPresented: $presentDeckEdition) {
-                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
-                    .frame(minWidth: 300, minHeight: 600)
-                }
             }
             .contextMenu {
                 Button {
-                    editingDeck = deck
-                    presentDeckEdition = true
+                    editAction(deck)
                 } label: {
                     Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
                 }
