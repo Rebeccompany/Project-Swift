@@ -154,12 +154,9 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
         }
         
         decks[index].session = session
-        print(decks[index].session)
     }
     
     public func editSession(_ session: Session) throws {
-        
-        
         
         guard let index = decks.firstIndex(where: { deck in
             deck.session?.id == session.id
@@ -169,7 +166,6 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
     }
     
     public func deleteSession(_ session: Session, for deck: Deck) throws {
-        
         
         guard let index = decks.firstIndex(of: deck) else {
             throw NSError()
