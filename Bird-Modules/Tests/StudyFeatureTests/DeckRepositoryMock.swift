@@ -23,7 +23,7 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
                                    spacedConfig: SpacedRepetitionConfig(maxLearningCards: 20, maxReviewingCards: 3)),
                               Deck(id: "3947217b-2f55-4f16-ae59-10017d291579",
                                    cardsIds: cards.filter { $0.deckID == UUID(uuidString: "3947217b-2f55-4f16-ae59-10017d291579") }.map(\.id))
-                         
+                              
     ]
     
     lazy var subject: CurrentValueSubject<[Deck], RepositoryError> = .init(decks)
@@ -147,6 +147,49 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
         }
     }
     
+    public func createSession(_ session: Session, for deck: Deck) throws {
+        
+        guard let index = decks.firstIndex(where:  {deck.id == $0.id}) else {
+            throw NSError()
+        }
+        
+        decks[index].session = session
+    }
+    
+    public func editSession(_ session: Session) throws {
+        
+        guard let index = decks.firstIndex(where: { deck in
+            deck.session?.id == session.id
+        }) else { throw NSError() }
+        
+        decks[index].session = session
+    }
+    
+    public func deleteSession(_ session: Session, for deck: Deck) throws {
+        
+        guard let index = decks.firstIndex(of: deck) else {
+            throw NSError()
+        }
+        
+        decks[index].session = nil
+    }
+    
+    public func addCardsToSession(_ session: Session, cards: [Card]) throws {
+        
+        var session = session
+        
+        session.cardIds.append(contentsOf: cards.map(\.id))
+    }
+    
+    public func removeCardsFromSession(_ session: Session, cards: [Card]) throws {
+
+        var session = session
+        
+        session.cardIds.removeAll { id in
+            cards.map(\.id).contains(id)
+        }
+    }
+
     func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
         guard let index = cards.firstIndex(of: card) else { throw NSError() }
         var card = card

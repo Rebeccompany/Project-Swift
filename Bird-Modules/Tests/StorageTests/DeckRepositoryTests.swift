@@ -16,16 +16,20 @@ final class DeckRepositoryTests: XCTestCase {
     var sut: DeckRepository! = nil
     var deckRepository: Repository<Deck, DeckEntity, DeckModelEntityTransformer>! = nil
     var cardRepository: Repository<Card, CardEntity, CardModelEntityTransformer>! = nil
+    var sessionRepository: Repository<Session, SessionEntity, SessionModelEntityTransformer>! = nil
+    var sessionTransformer: SessionModelEntityTransformer! = nil
     var dataStorage: DataStorage! = nil
     var dateHandler: DateHandlerProtocol!
     
     var cancellables: Set<AnyCancellable>! = nil
     
     override func setUp() {
+        self.sessionTransformer = .init()
         self.dataStorage = DataStorage(.inMemory)
         self.deckRepository = Repository(transformer: DeckModelEntityTransformer(), dataStorage)
         self.cardRepository = Repository(transformer: CardModelEntityTransformer(), dataStorage)
-        self.sut = DeckRepository(deckRepository: deckRepository, cardRepository: cardRepository, cardSnapshotRepository: CardSnapshotRepository(transformer: CardSnapshotTransformer(), dataStorage: dataStorage))
+        self.sessionRepository = Repository(transformer: sessionTransformer, dataStorage)
+        self.sut = DeckRepository(deckRepository: deckRepository, cardRepository: cardRepository, sessionRepository: sessionRepository, cardSnapshotRepository: CardSnapshotRepository(transformer: CardSnapshotTransformer(), dataStorage: dataStorage))
         self.cancellables = .init()
         dateHandler = DateHandlerMock()
     }
@@ -542,6 +546,140 @@ final class DeckRepositoryTests: XCTestCase {
         let entity = try cardRepository.fetchEntityById(newDummy.id)
         let transformer = CardModelEntityTransformer()
         assertCard(card1: newDummy, card2: transformer.entityToModel(entity)!)
+    }
+    
+    func testCreateSession() throws {
+        var deck = DeckDummy.dummy
+        let cards = createMultipleCardsSorted(into: deck)
+        
+        try sut.createDeck(deck, cards: cards)
+        
+        deck.cardsIds = cards.map(\.id)
+        
+        var session = createDummySession(deck: deck)
+        var result = try addSessionToStorage(session: session, deck: deck)
+        
+        session.cardIds.sort { u1, u2 in
+            u1.uuidString < u2.uuidString
+        }
+        
+        result.cardIds.sort { u1, u2 in
+            u1.uuidString < u2.uuidString
+        }
+        
+        XCTAssertEqual(result, session)
+    }
+    
+    func testEditSession() throws {
+        var deck = DeckDummy.dummy
+        let cards = createMultipleCardsSorted(into: deck)
+        
+        try sut.createDeck(deck, cards: cards)
+        
+        deck.cardsIds = cards.map(\.id)
+        
+        let session = createDummySession(deck: deck)
+        
+        var newSession = SessionDummy.dummy
+        newSession.deckId = deck.id
+        newSession.cardIds = deck.cardsIds
+        newSession.date = Date(timeIntervalSince1970: 67865)
+        
+        try sut.createSession(session, for: deck)
+        try sut.editSession(newSession)
+        
+        let entity = try sessionRepository.fetchEntityById(session.id)
+        var result = sessionTransformer.entityToModel(entity)
+        
+        newSession.cardIds.sort { u1, u2 in
+            u1.uuidString < u2.uuidString
+        }
+        
+        result!.cardIds.sort { u1, u2 in
+            u1.uuidString < u2.uuidString
+        }
+        
+        XCTAssertEqual(result, newSession)
+    }
+    
+    func testDeleteSession() throws {
+        var deck = DeckDummy.dummy
+        let cards = createMultipleCardsSorted(into: deck)
+        
+        try sut.createDeck(deck, cards: cards)
+        
+        deck.cardsIds = cards.map(\.id)
+        
+        let session = createDummySession(deck: deck)
+        
+        try sut.createSession(session, for: deck)
+        
+        let initialCount = try dataStorage.mainContext.count(for: SessionEntity.fetchRequest())
+        XCTAssertEqual(1, initialCount)
+        
+        try sut.deleteSession(session, for: deck)
+        
+        let result = try dataStorage.mainContext.count(for: SessionEntity.fetchRequest())
+        XCTAssertEqual(0, result)
+    }
+    
+    func testAddCardsToSession() throws {
+        var deck = DeckDummy.dummy
+        let cards = createMultipleCardsSorted(into: deck)
+        
+        try sut.createDeck(deck, cards: cards)
+        
+        let session = createDummySession(deck: deck)
+        
+        try sut.createSession(session, for: deck)
+        
+        let entity = try sessionRepository.fetchEntityById(session.id)
+        
+        XCTAssertEqual(entity.cards?.count, 0)
+        
+        try sut.addCardsToSession(session, cards: cards)
+        
+        XCTAssertNotEqual(entity.cards?.count, 0)
+    }
+    
+    func testRemoveCardsFromSession() throws {
+        var deck = DeckDummy.dummy
+        let cards = createMultipleCardsSorted(into: deck)
+        
+        try sut.createDeck(deck, cards: cards)
+        
+        deck.cardsIds = cards.map(\.id)
+        
+        let session = createDummySession(deck: deck)
+        
+        try sut.createSession(session, for: deck)
+        
+        let entity = try sessionRepository.fetchEntityById(session.id)
+        
+        XCTAssertNotEqual(entity.cards?.count, 0)
+        
+        try sut.removeCardsFromSession(session, cards: cards)
+        
+        XCTAssertEqual(entity.cards?.count, 0)
+    }
+    
+    private func createDummySession(deck: Deck) -> Session {
+        
+        var session = SessionDummy.dummy
+        session.deckId = deck.id
+        session.cardIds = deck.cardsIds
+        
+        return session
+    }
+    
+    private func addSessionToStorage(session: Session, deck: Deck) throws -> Session {
+        
+        try sut.createSession(session, for: deck)
+        
+        let entity = try sessionRepository.fetchEntityById(session.id)
+        let result = sessionTransformer.entityToModel(entity)
+        
+        return result!
     }
     
     func testAddHistory() throws {

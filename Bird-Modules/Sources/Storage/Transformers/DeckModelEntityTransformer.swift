@@ -51,6 +51,13 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
         let dateLogs = DateLogs(lastAccess: lastAccess, lastEdit: lastEdit, createdAt: createdAt)
         let collectionIds = collection?.id
         let cardsIds = cards.compactMap(\.id)
+        let session: Session?
+        
+        if let sessionEntity = entity.session {
+            session = Session(entity: sessionEntity)
+        } else {
+            session = nil
+        }
         
         return Deck(
                     id: id,
@@ -60,7 +67,8 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
                     datesLogs: dateLogs,
                     collectionId: collectionIds,
                     cardsIds: cardsIds,
-                    spacedRepetitionConfig: spacedRepetitionConfig
+                    spacedRepetitionConfig: spacedRepetitionConfig,
+                    session: session
         )
     }
     
