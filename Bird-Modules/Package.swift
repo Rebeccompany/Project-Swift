@@ -113,7 +113,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/Rebeccompany/RichTextKit",
-            from: "0.1.2"
+            from: "0.1.4"
         )
     ],
     

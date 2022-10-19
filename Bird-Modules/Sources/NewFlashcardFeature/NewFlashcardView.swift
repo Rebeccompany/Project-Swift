@@ -34,6 +34,7 @@ public struct NewFlashcardView: View {
     public init(deck: Deck, editingFlashcard: Card? = nil) {
         self.deck = deck
         self.editingFlashcard = editingFlashcard
+        print(NSAttributedString(editingFlashcard!.front).string, ";pppp ", NSAttributedString(editingFlashcard!.back).string)
     }
     
     public var body: some View {
@@ -43,7 +44,7 @@ public struct NewFlashcardView: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         FlashcardTextEditorView(
-                            color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
+                            text: $viewModel.flashcardFront, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                             side: NSLocalizedString("frente", bundle: .module, comment: ""),
                             context: frontContext
                         )
@@ -51,7 +52,7 @@ public struct NewFlashcardView: View {
                         .frame(minHeight: 360)
                         
                         FlashcardTextEditorView(
-                            color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
+                            text: $viewModel.flashcardBack, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                             side: NSLocalizedString("verso", bundle: .module, comment: ""),
                             context: backContext
                         )

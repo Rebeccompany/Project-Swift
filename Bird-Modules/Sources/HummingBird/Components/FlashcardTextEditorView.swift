@@ -16,13 +16,12 @@ public struct FlashcardTextEditorView: View {
     
     @State private var isPhotoPickerPresented = false
     @State private var photoSelection: PhotosPickerItem?
-    @State private var text = NSAttributedString(string: "")
+    @Binding private var text: NSAttributedString
     
     @ObservedObject private var context: RichTextContext
-    
-    
-    
-    public init(color: Color, side: String, context: RichTextContext) {
+
+    public init(text: Binding<NSAttributedString>, color: Color,side: String, context: RichTextContext) {
+        self._text = text
         self.color = color
         self.side = side
         self.context = context
@@ -81,14 +80,15 @@ public struct FlashcardTextEditorView: View {
                         .buttonStyle(.bordered)
                         .padding(.horizontal, 4)
                         
-                        
-                        
+                        sizeTools(for: $context.fontSize)
+                            .frame(width: 115)
+                            .padding(.horizontal, 4)
+                            .background(.regularMaterial)
+                            .cornerRadius(8)
                     }
-                    HStack {
+                    VStack {
                         ColorPicker("Text", selection: context.foregroundColorBinding)
                         ColorPicker("Background", selection: context.backgroundColorBinding)
-                        
-                        
                     }
                 }
                 .padding()
@@ -115,9 +115,8 @@ public struct FlashcardTextEditorView: View {
                 }
             }
         }
-        
     }
-    
+
     @ViewBuilder
     private var circle: some View {
         Circle()
@@ -125,11 +124,30 @@ public struct FlashcardTextEditorView: View {
                 AngularGradient(colors: [.red, .orange, .yellow, .green, .blue, .cyan, .purple], center: .center)
             )
     }
+    
+    func sizeTools(for size: Binding<CGFloat>) -> some View {
+        HStack {
+            Button {
+                context.decrementFontSize()
+            } label: {
+                Image(systemName: "minus")
+                    .frame(width: 10, height: 10)
+            }
+            FontSizePicker(selection: size)
+                .labelsHidden()
+            Button {
+                context.incrementFontSize()
+            } label: {
+                Image(systemName: "plus")
+                    .frame(width: 10, height: 10)
+            }
+        }
+    }
 }
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        FlashcardTextEditorView(color: .blue, side: "Frente", context: RichTextContext())
+        FlashcardTextEditorView(text: .constant(NSAttributedString("")), color: .blue, side: "Frente", context: RichTextContext())
             .environment(\.sizeCategory, .medium)
     }
 }

@@ -14,8 +14,8 @@ import Combine
 import Habitat
 
 public class NewFlashcardViewModel: ObservableObject {
-    @Published var flashcardFront: String = ""
-    @Published var flashcardBack: String = ""
+    @Published var flashcardFront: NSAttributedString = NSAttributedString(string: "pum")
+    @Published var flashcardBack: NSAttributedString = NSAttributedString(string: "")
     @Published var currentSelectedColor: CollectionColor? = CollectionColor.red
     @Published var canSubmit: Bool = false
     @Published var showingErrorAlert: Bool = false
@@ -28,15 +28,15 @@ public class NewFlashcardViewModel: ObservableObject {
     
 
     private func setupDeckContentIntoFields(_ card: Card) {
-        flashcardFront = NSAttributedString(card.front).string
-        flashcardBack = NSAttributedString(card.back).string
+        flashcardFront = NSAttributedString(card.front)
+        flashcardBack = NSAttributedString(card.back)
         currentSelectedColor = card.color
     }
     
     private var canSubmitPublisher: AnyPublisher<Bool, Never> {
         Publishers.CombineLatest3($flashcardFront, $flashcardBack, $currentSelectedColor)
             .map { front, back, currentSelectedColor in
-                !front.isEmpty && !back.isEmpty && currentSelectedColor != nil
+                !front.string.isEmpty && !back.string.isEmpty && currentSelectedColor != nil
             }
             .eraseToAnyPublisher()
     }
@@ -57,8 +57,8 @@ public class NewFlashcardViewModel: ObservableObject {
         
         try deckRepository.addCard(
             Card(id: uuidGenerator.newId(),
-                 front: AttributedString(stringLiteral: flashcardFront),
-                 back: AttributedString(stringLiteral: flashcardBack),
+                 front: AttributedString(flashcardFront),
+                 back: AttributedString(flashcardBack),
                  color: selectedColor,
                  datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
                  deckID: deck.id,
@@ -72,8 +72,8 @@ public class NewFlashcardViewModel: ObservableObject {
             return
         }
         
-        editingFlashcard.front = AttributedString(stringLiteral: flashcardFront)
-        editingFlashcard.back = AttributedString(stringLiteral: flashcardBack)
+        editingFlashcard.front = AttributedString(flashcardFront)
+        editingFlashcard.back = AttributedString(flashcardBack)
         editingFlashcard.color = selectedColor
         editingFlashcard.datesLogs.lastAccess = dateHandler.today
         editingFlashcard.datesLogs.lastEdit = dateHandler.today

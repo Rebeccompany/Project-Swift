@@ -35,9 +35,6 @@ public struct FlashcardCell: View {
     }
     
     private func cardText(_ content: AttributedString) -> AttributedString {
-        var content = content
-        content.swiftUI.font = .body
-        content.swiftUI.foregroundColor = .white
         
         return content
     }
