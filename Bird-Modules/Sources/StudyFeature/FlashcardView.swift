@@ -29,9 +29,17 @@ struct FlashcardView: View {
             cardFace(content: viewModel.card.front, face: NSLocalizedString("frente", bundle: .module, comment: ""), description: NSLocalizedString("toque_virar", bundle: .module, comment: ""))
                 .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0.0001))
         }
+        .background(
+            Button {
+                flip()
+            } label: {
+                EmptyView()
+            }
+            .keyboardShortcut(.space, modifiers: [])
+        )
         .onTapGesture(perform: flip)
         .onChange(of: viewModel.isFlipped) { newValue in
-                flipWithAnimation(newValue)
+            flipWithAnimation(newValue)
         }
         .transaction { transaction in
             if index == 0 && !viewModel.isFlipped && cardCount > 1 {
@@ -48,6 +56,7 @@ struct FlashcardView: View {
         }
         
     }
+    
     private func flipWithoutAnimation(_ newValue: Bool) {
         if newValue {
             frontDegree = 90

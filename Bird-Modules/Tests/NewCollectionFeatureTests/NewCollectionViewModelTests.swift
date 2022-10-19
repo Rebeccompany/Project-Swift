@@ -11,6 +11,7 @@ import Storage
 import Combine
 import Models
 import Habitat
+import Utils
 
 @MainActor
 class NewCollectionViewModelTests: XCTestCase {
