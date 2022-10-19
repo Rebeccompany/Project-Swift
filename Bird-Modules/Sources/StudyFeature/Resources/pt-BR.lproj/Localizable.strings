@@ -24,3 +24,10 @@
 "fechar" = "Close";
 "intenso_concluido" = "Estudo intenso concluído!";
 "intenso_concluido_text" = "Parabéns, você concluiu uma sessão de estudo intenso!";
+"progress_view" = "Progresso da Sessão";
+"titulo_grafico_total" = "Total da Sessão";
+"titulo_grafico_aprendizado" = "Aprendizado";
+"titulo_grafico_revisao" = "Revisão";
+"cartas_estudadas" = "cartas estudadas";
+"de" = "de";
+"cartas" = "cartas";
