@@ -264,14 +264,16 @@ let package = Package(
         .target(
             name: "OnboardingFeature",
             dependencies: [
-                "HummingBird"
+                "HummingBird",
+                "Models"
             ]
         ),
         
         .target(
             name: "FlashcardsOnboardingFeature",
             dependencies: [
-                "HummingBird"
+                "HummingBird",
+                "Models"
             ]
         ),
         

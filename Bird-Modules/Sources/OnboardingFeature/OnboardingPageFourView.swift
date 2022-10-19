@@ -7,6 +7,7 @@
 
 import SwiftUI
 import HummingBird
+import Models
 
 struct OnboardingPageFourView: View {
     var body: some View {
@@ -16,34 +17,34 @@ struct OnboardingPageFourView: View {
                 .frame(width: 180, height: 180)
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Modo Spixii")
+                    Text(NSLocalizedString("modo_spixii", bundle: .module, comment: ""))
                         .font(.title)
                         .fontWeight(.semibold)
                         .foregroundColor(HBColor.actionColor)
                         .padding(.top)
                         .padding(.bottom)
-                    Text("Modo de estudo para aprendizado a longo prazo baseado no método de repetição espaçada.")
+                    Text(NSLocalizedString("pagina_quatro_um", bundle: .module, comment: ""))
                         .font(.body)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)
                         .padding(.bottom)
-                    Text("Nele, o app cria as sessões de estudo e controla quantos e quais cartões você deve estudar no dia.")
+                    Text(NSLocalizedString("pagina_quatro_dois", bundle: .module, comment: ""))
                         .font(.body)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)
                         .padding(.bottom)
-                    Text("Modo Intenso")
+                    Text(NSLocalizedString("modo_intenso", bundle: .module, comment: ""))
                         .font(.title)
                         .fontWeight(.semibold)
                         .foregroundColor(HBColor.actionColor)
                         .padding(.top)
                         .padding(.bottom)
-                    Text("Modo de estudo para memorização a curto prazo de grande volume de conteúdo.")
+                    Text(NSLocalizedString("pagina_quatro_tres", bundle: .module, comment: ""))
                         .font(.body)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)
                         .padding(.bottom)
-                    Text("Nele, é possível estudar todos os cartões quando quiser.")
+                    Text(NSLocalizedString("pagina_quatro_quatro", bundle: .module, comment: ""))
                         .font(.body)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)

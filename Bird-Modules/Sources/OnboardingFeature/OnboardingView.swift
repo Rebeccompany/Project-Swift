@@ -7,6 +7,7 @@
 
 import SwiftUI
 import HummingBird
+import Models
 
 public struct OnboardingView: View {
     @Environment(\.dismiss) private var dismiss
@@ -26,7 +27,7 @@ public struct OnboardingView: View {
             .indexViewStyle(.page(backgroundDisplayMode: .always))
             .animation(.linear, value: tab)
             .toolbar {
-                Button(tab == 3 ? "Começar" : "Pular") {
+                Button(tab == 3 ? NSLocalizedString("comecar",bundle: .module, comment: "") : NSLocalizedString("pular",bundle: .module, comment: "")) {
                     dismiss()
                 }
                 .foregroundColor(HBColor.actionColor)

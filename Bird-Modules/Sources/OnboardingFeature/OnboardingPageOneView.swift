@@ -7,6 +7,7 @@
 
 import SwiftUI
 import HummingBird
+import Models
 
 struct OnboardingPageOneView: View {
     var body: some View {
@@ -16,7 +17,7 @@ struct OnboardingPageOneView: View {
                 .frame(width: 250, height: 250)
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Aqui você pode estudar através de flashcards e potencializar seu aprendizado e memorização")
+                    Text(NSLocalizedString("pagina_um", bundle: .module, comment: ""))
                         .font(.title3)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)

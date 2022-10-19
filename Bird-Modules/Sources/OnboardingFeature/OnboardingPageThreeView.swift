@@ -7,6 +7,7 @@
 
 import SwiftUI
 import HummingBird
+import Models
 
 struct OnboardingPageThreeView: View {
     var body: some View {
@@ -16,17 +17,17 @@ struct OnboardingPageThreeView: View {
                 .frame(width: 180, height: 180)
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Baralhos")
+                    Text(NSLocalizedString("baralhos", bundle: .module, comment: ""))
                         .font(.title)
                         .fontWeight(.semibold)
                         .foregroundColor(HBColor.actionColor)
                         .padding(.bottom)
-                    Text("Os flashcards pertencem a um baralho!")
+                    Text(NSLocalizedString("pagina_tres_um", bundle: .module, comment: ""))
                         .font(.body)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)
                         .padding(.bottom)
-                    Text("Exemplo: baralho chamado ”Animais”")
+                    Text(NSLocalizedString("pagina_tres_dois", bundle: .module, comment: ""))
                         .font(.body)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)
@@ -39,17 +40,17 @@ struct OnboardingPageThreeView: View {
                 .frame(width: 150, height: 67)
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Coleções")
+                    Text(NSLocalizedString("colecoes", bundle: .module, comment: ""))
                         .font(.title)
                         .fontWeight(.semibold)
                         .foregroundColor(HBColor.actionColor)
                         .padding(.bottom)
-                    Text("Os baralhos podem ser agrupados em coleções.")
+                    Text(NSLocalizedString("pagina_tres_tres", bundle: .module, comment: ""))
                         .font(.body)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)
                         .padding(.bottom)
-                    Text("Exemplo: coleção chamada ”Língua Inglesa”")
+                    Text(NSLocalizedString("pagina_tres_quatro", bundle: .module, comment: ""))
                         .font(.body)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import HummingBird
+import Models
 
 public struct FlashcardsOnboardingView: View {
     @Environment(\.dismiss) private var dismiss
@@ -19,17 +20,17 @@ public struct FlashcardsOnboardingView: View {
                 VStack {
                     HStack {
                         Text("1")
-                            .font(.title)
+                            .font(.custom("SF Pro Text", size: 84, relativeTo: .largeTitle))
                             .fontWeight(.bold)
                             .foregroundColor(HBColor.actionColor)
                             .padding(.leading)
                         VStack(alignment: .leading) {
-                            Text("Frente")
+                            Text(NSLocalizedString("frente",bundle: .module, comment: ""))
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .foregroundColor(HBColor.collectionTextColor)
                                 .padding(.all)
-                            Text("Ao iniciar o estudo, pense na resposta da pergunta do seu cartão e, em seguida, toque nele ou aperte barra de espaço para ver o verso")
+                            Text(NSLocalizedString("instrucao_um",bundle: .module, comment: ""))
                                 .font(.title3)
                                 .fontWeight(.regular)
                                 .foregroundColor(HBColor.collectionTextColor)
@@ -38,17 +39,17 @@ public struct FlashcardsOnboardingView: View {
                     }
                     HStack {
                         Text("2")
-                            .font(.title)
+                            .font(.custom("SF Pro Text", size: 84, relativeTo: .largeTitle))
                             .fontWeight(.bold)
                             .foregroundColor(HBColor.actionColor)
                             .padding(.leading)
                         VStack(alignment: .leading) {
-                            Text("Verso")
+                            Text(NSLocalizedString("verso",bundle: .module, comment: ""))
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .foregroundColor(HBColor.collectionTextColor)
                                 .padding(.all)
-                            Text("Ao ver a resposta, classifique o nível de dificuldade do cartão através dos botões, tocando neles ou apertando os números 1, 2, 3 e 4 no teclado, para avançar para os próximos cartões")
+                            Text(NSLocalizedString("instrucao_dois",bundle: .module, comment: ""))
                                 .font(.title3)
                                 .fontWeight(.regular)
                                 .foregroundColor(HBColor.collectionTextColor)
@@ -58,12 +59,12 @@ public struct FlashcardsOnboardingView: View {
                     
                 }
             }
-            .navigationTitle("Como estudar")
+            .navigationTitle(NSLocalizedString("como_estudar",bundle: .module, comment: ""))
             .toolbar {
                 Button {
                     dismiss()
                 } label: {
-                    Text("Voltar")
+                    Text(NSLocalizedString("voltar",bundle: .module, comment: ""))
                         .foregroundColor(HBColor.actionColor)
                 }
 
