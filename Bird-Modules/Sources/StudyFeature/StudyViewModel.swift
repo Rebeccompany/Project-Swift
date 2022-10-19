@@ -235,6 +235,7 @@ public class StudyViewModel: ObservableObject {
         case .foward:
             newCard.woodpeckerCardInfo.step += 1
         case .graduate:
+            cardsToEdit.append(newCard)
             removeCard()
             return
         }
@@ -284,4 +285,41 @@ public class StudyViewModel: ObservableObject {
             cards.remove(at: 0)
         }
     }
+    
+    // MARK: - Study Progress
+    func getSessionTotalCards() -> Int {
+        cards.count + cardsToEdit.count
+    }
+    
+    func getSessionTotalSeenCards() -> Int {
+        cardsToEdit.count
+    }
+    
+    func getSessionReviewingCards(mode: StudyMode) -> Int {
+        guard mode == .spaced else { return 0 }
+        
+        let graduatedCardCount = cards.filter { $0.woodpeckerCardInfo.isGraduated }.count
+        let cardsToEditCount = cardsToEdit.filter { $0.history.last?.woodpeckerCardInfo.isGraduated ?? false }.count
+        return graduatedCardCount + cardsToEditCount
+    }
+    
+    func getSessionReviewingSeenCards(mode: StudyMode) -> Int {
+        guard mode == .spaced else { return 0 }
+        
+        return cardsToEdit.filter { $0.history.last?.woodpeckerCardInfo.isGraduated ?? false }.count
+    }
+    
+    func getSessionLearningCards(mode: StudyMode) -> Int {
+        guard mode == .spaced else { return 0 }
+        
+        let notGraduatedCardCount = cards.filter { !$0.woodpeckerCardInfo.isGraduated }.count
+        let cardsToEditCount = cardsToEdit.filter { !($0.history.last?.woodpeckerCardInfo.isGraduated ?? true) }.count
+        return notGraduatedCardCount + cardsToEditCount
+    }
+    
+    func getSessionLearningSeenCards(mode: StudyMode) -> Int {
+        guard mode == .spaced else { return 0 }
+        return cardsToEdit.filter { !($0.history.last?.woodpeckerCardInfo.isGraduated ?? true) }.count
+    }
+    
 }
