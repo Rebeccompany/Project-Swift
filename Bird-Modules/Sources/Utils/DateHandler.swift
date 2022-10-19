@@ -9,7 +9,7 @@ import Foundation
 
 public protocol DateHandlerProtocol {
     var today: Date { get }
-    func isToday(date: Date) -> Bool
+    func isToday(date: Date) throws -> Bool
     func dayAfterToday(_ count: Int) -> Date
 }
 // swiftlint:disable no_extension_access_modifier
@@ -27,11 +27,24 @@ public struct DateHandler: DateHandlerProtocol {
         Date()
     }
     
-    public func isToday(date: Date) -> Bool {
+    public func isToday(date: Date) throws -> Bool {
         var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = TimeZone.gmt
+        cal.timeZone = try TimeZone.getGmt()
         
         
         return cal.dateComponents([.day], from: date) == cal.dateComponents([.day], from: today)
     }
 }
+
+
+extension TimeZone {
+    static func getGmt() throws -> TimeZone {
+#if os(macOS)
+        guard let timezone = TimeZone(identifier: "GMT") else { throw NSError() }
+#else
+        let timezone = TimeZone.gmt
+#endif
+        return timezone
+    }
+}
+

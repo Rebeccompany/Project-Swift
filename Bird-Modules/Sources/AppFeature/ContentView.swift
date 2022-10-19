@@ -17,13 +17,14 @@ import Storage
 
 public struct ContentView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
+    @State private var path: NavigationPath = .init()
+    #if os(iOS)
     @State private var editModeForCollection: EditMode = .inactive
     @State private var editModeForDeck: EditMode = .inactive
-    @State private var path: NavigationPath = .init()
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
     
     @StateObject private var viewModel: ContentViewModel = ContentViewModel()
-    
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     public init() {}
     
@@ -42,6 +43,7 @@ public struct ContentView: View {
     
     @ViewBuilder
     private var sidebar: some View {
+        #warning("Provavelmente criar um CollectionSideBar para mac")
         CollectionsSidebar(
             selection: $viewModel.sidebarSelection,
             isCompact: horizontalSizeClass == .compact,
@@ -54,6 +56,7 @@ public struct ContentView: View {
     @ViewBuilder
     private var detail: some View {
         Router(path: $path) {
+            #warning("Provavelmente criar uma DetailView para mac")
             DetailView(editMode: $editModeForDeck)
             .environmentObject(viewModel)
             .environment(\.editMode, $editModeForDeck)

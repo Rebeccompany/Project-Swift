@@ -130,7 +130,7 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func startupForSpaced(deck: Deck, cardSortingFunc: @escaping (Card, Card) -> Bool) {
-        if let session = deck.session, dateHandler.isToday(date: session.date) {
+        if let session = deck.session, let isToday = try? dateHandler.isToday(date: session.date), isToday {
             sessionPublisher(cardIds: session.cardIds, cardSortingFunc: cardSortingFunc)
                 .assign(to: &$cards)
             

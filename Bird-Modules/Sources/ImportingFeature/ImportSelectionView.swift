@@ -46,7 +46,7 @@ struct ImportSelectionView: View {
             .padding()
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .destructiveAction) {
                 Button(role: .cancel) {
                     isPresenting = false
                 } label: {

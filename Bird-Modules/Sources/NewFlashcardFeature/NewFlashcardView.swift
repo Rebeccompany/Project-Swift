@@ -91,7 +91,9 @@ public struct NewFlashcardView: View {
             .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(editingFlashcard == nil ? NSLocalizedString("criar_flashcard", bundle: .module, comment: "") : NSLocalizedString("editar_flashcard", bundle: .module, comment: ""))
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .onAppear {
                 viewModel.startUp(editingFlashcard: editingFlashcard)
             }
@@ -145,7 +147,7 @@ public struct NewFlashcardView: View {
                     }
                     .accessibilityLabel(Text("botao_feito", bundle: .module))
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                         if editingFlashcard == nil {
                             do {

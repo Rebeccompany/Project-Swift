@@ -61,7 +61,7 @@ public class DeckViewModel: ObservableObject {
     
     func checkIfCanStudy(_ deck: Deck) -> Bool {
         do {
-            if let session = deck.session, dateHandler.isToday(date: session.date) {
+            if let session = deck.session, let isToday = try? dateHandler.isToday(date: session.date), isToday {
                 return !session.cardIds.isEmpty
             }
             

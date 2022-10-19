@@ -73,7 +73,9 @@ public struct StudyView: View {
                                         }
                                     }
                                 }
+                                #if os(iOS)
                                 .hoverEffect(.lift)
+                                #endif
                                 Spacer()
                             }
                         }
@@ -112,7 +114,23 @@ public struct StudyView: View {
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(deck.name)
             .toolbar(content: {
+<<<<<<< Updated upstream
                 ToolbarItem(placement: .navigationBarLeading) {
+=======
+                ToolbarItem {
+                    Button {
+                        flashcardsOnboarding = true
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(HBColor.actionColor)
+                            .accessibility(addTraits: .isButton)
+                    }
+                    .sheet(isPresented:  $flashcardsOnboarding) {
+                        FlashcardsOnboardingView()
+                    }
+                }
+                ToolbarItem(placement: .destructiveAction) {
+>>>>>>> Stashed changes
                     Button(role: .destructive) {
                         do {
                             if mode == .spaced {
@@ -130,7 +148,9 @@ public struct StudyView: View {
                 }
                 
             })
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .onAppear {
                 viewModel.startup(deck: deck, mode: mode)
             }

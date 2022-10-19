@@ -19,17 +19,15 @@ public struct NewCollectionView: View {
     @State private var activeAlert: ActiveAlert = .error
     @State private var selectedErrorMessage: AlertText = .deleteCollection
     @FocusState private var selectedField: Int?
-    @Binding private var editMode: EditMode
     var editingCollection: DeckCollection?
     
-    public init(editingCollection: DeckCollection?, editMode: Binding<EditMode>) {
+    public init(editingCollection: DeckCollection?) {
         self.editingCollection = editingCollection
-        self._editMode = editMode
     }
     
     public var body: some View {
         
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
                     Text("nome", bundle: .module)
@@ -86,7 +84,7 @@ public struct NewCollectionView: View {
                                      primaryButton: .destructive(Text("deletar", bundle: .module)) {
                                         do {
                                             try viewModel.deleteCollection(editingCollection: editingCollection)
-                                            editMode = .inactive
+                                            //editMode = .inactive
                                             dismiss()
                                         } catch {
                                             activeAlert = .error
@@ -99,7 +97,9 @@ public struct NewCollectionView: View {
                     }
                 }
                 .navigationTitle(editingCollection == nil ? NSLocalizedString("criar_colecao", bundle: .module, comment: "") : NSLocalizedString("editar_colecao", bundle: .module, comment: ""))
+                #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
+                #endif
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
                         Spacer()
@@ -110,12 +110,13 @@ public struct NewCollectionView: View {
                     }
                     ToolbarItem(placement: .cancellationAction) {
                         Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
-                            editMode = .inactive
+                            //editMode = .inactive
                             dismiss()
                         }
                         .foregroundColor(Color.red)
                         
                     }
+                    #if os(iOS)
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                             
@@ -142,6 +143,34 @@ public struct NewCollectionView: View {
                         }
                         .disabled(!viewModel.canSubmit)
                     }
+                    #elseif os(macOS)
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
+                            
+                            if editingCollection == nil {
+                                do {
+                                    try viewModel.createCollection()
+                                    dismiss()
+                                } catch {
+                                    activeAlert = .error
+                                    showingAlert = true
+                                    selectedErrorMessage = .createCollection
+                                }
+                            } else {
+                                do {
+                                    try viewModel.editCollection(editingCollection: editingCollection)
+                                    //editMode = .inactive
+                                    dismiss()
+                                } catch {
+                                    activeAlert = .error
+                                    showingAlert = true
+                                    selectedErrorMessage = .editCollection
+                                }
+                            }
+                        }
+                        .disabled(!viewModel.canSubmit)
+                    }
+                    #endif
                     
                 }
                 
@@ -150,7 +179,6 @@ public struct NewCollectionView: View {
             .scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
         }
-        .navigationViewStyle(.stack)
         .interactiveDismissDisabled(selectedField != nil ? true : false)
         
     }
@@ -161,7 +189,7 @@ struct NewCollectionView_Previews: PreviewProvider {
     static var previews: some View {
         
         HabitatPreview {
-            NewCollectionView(editingCollection: nil, editMode: .constant(.active))
+            NewCollectionView(editingCollection: nil)
             .preferredColorScheme(.light)
         }
         

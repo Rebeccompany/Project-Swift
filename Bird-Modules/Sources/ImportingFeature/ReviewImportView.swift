@@ -45,7 +45,7 @@ struct ReviewImportView: View {
 
             }
             
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .destructiveAction) {
                 Button(role: .cancel) {
                     isPresentingSheet = false
                 } label: {

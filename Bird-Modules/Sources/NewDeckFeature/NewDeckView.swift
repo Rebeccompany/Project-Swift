@@ -18,15 +18,15 @@ public struct NewDeckView: View {
     @State private var activeAlert: ActiveAlert = .error
     @Environment(\.dismiss) private var dismiss
     @FocusState private var selectedField: Int?
-    @Binding private var editMode: EditMode
+    //@Binding private var editMode: EditMode
     
     var editingDeck: Deck?
     var collection: DeckCollection?
     
-    public init(collection: DeckCollection?, editingDeck: Deck?, editMode: Binding<EditMode>) {
+    public init(collection: DeckCollection?, editingDeck: Deck?) {
         self.collection = collection
         self.editingDeck = editingDeck
-        self._editMode = editMode
+        //self._editMode = editMode
     }
     
     public var body: some View {
@@ -104,7 +104,7 @@ public struct NewDeckView: View {
                                      primaryButton: .destructive(Text("deletar", bundle: .module)) {
                                         do {
                                             try viewModel.deleteDeck(editingDeck: editingDeck)
-                                            editMode = .inactive
+                                            //editMode = .inactive
                                             dismiss()
                                         } catch {
                                             activeAlert = .error
@@ -119,7 +119,9 @@ public struct NewDeckView: View {
                     
                 }
                 .navigationTitle(editingDeck == nil ? NSLocalizedString("criar_deck", bundle: .module, comment: "") : NSLocalizedString("editar_deck", bundle: .module, comment: ""))
+                #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
+                #endif
                 
             }
             .toolbar {
@@ -131,7 +133,7 @@ public struct NewDeckView: View {
                     .accessibilityLabel(Text("botao_feito", bundle: .module))
                 }
                 
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                         
                         if editingDeck == nil {
@@ -146,7 +148,7 @@ public struct NewDeckView: View {
                         } else {
                             do {
                                 try viewModel.editDeck(editingDeck: editingDeck)
-                                editMode = .inactive
+                                //editMode = .inactive
                                 dismiss()
                             } catch {
                                 activeAlert = .error
@@ -160,7 +162,7 @@ public struct NewDeckView: View {
                 
                 ToolbarItem(placement: .cancellationAction) {
                     Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
-                        editMode = .inactive
+                        //editMode = .inactive
                         dismiss()
                     }
                     .foregroundColor(.red)
@@ -183,7 +185,7 @@ public struct NewDeckView: View {
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
-            NewDeckView(collection: nil, editingDeck: nil, editMode: .constant(.active))
+            NewDeckView(collection: nil, editingDeck: nil)
                 .preferredColorScheme(.dark)
         }
     }

@@ -11,7 +11,13 @@ import NewCollectionFeature
 import HummingBird
 
 struct CollectionsSidebar: View {
+<<<<<<< Updated upstream
+=======
+    @State private var onboarding: Bool = false
+    #if os(iOS)
+>>>>>>> Stashed changes
     @Binding private var editMode: EditMode
+    #endif
     @EnvironmentObject private var viewModel: ContentViewModel
     @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
@@ -19,11 +25,18 @@ struct CollectionsSidebar: View {
     @State private var editingCollection: DeckCollection?
     private var isCompact: Bool
     
+    #if os(iOS)
     init(selection: Binding<SidebarRoute?>, isCompact: Bool, editMode: Binding<EditMode>) {
         self._selection = selection
         self._editMode = editMode
         self.isCompact = isCompact
     }
+    #elseif os(macOS)
+    init(selection: Binding<SidebarRoute?>, isCompact: Bool) {
+        self._selection = selection
+        self.isCompact = isCompact
+    }
+    #endif
     
     var body: some View {
         
@@ -45,6 +58,7 @@ struct CollectionsSidebar: View {
                             HStack {
                                 Label(collection.name, systemImage: collection.icon.rawValue)
                                 Spacer()
+                                #if os(iOS)
                                 if editMode.isEditing {
                                     Image(systemName: "info.circle")
                                         .foregroundColor(HBColor.actionColor)
@@ -54,6 +68,7 @@ struct CollectionsSidebar: View {
                                         }
                                         .accessibility(addTraits: .isButton)
                                 }
+                                #endif
                             }
                         }
                         .listRowBackground(
@@ -91,14 +106,32 @@ struct CollectionsSidebar: View {
         .navigationTitle("Spixii")
         .toolbar {
             ToolbarItem {
+<<<<<<< Updated upstream
+=======
+                Button {
+                    onboarding = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .foregroundColor(HBColor.actionColor)
+                        .accessibility(addTraits: .isButton)
+                }
+                .sheet(isPresented: $onboarding, content: {
+                    OnboardingView()
+                })
+                
+            }
+            #if os(iOS)
+            ToolbarItem {
+>>>>>>> Stashed changes
                 EditButton()
                     .popover(isPresented: $presentCollectionEdition) {
                         NewCollectionView(
-                            editingCollection: editingCollection, editMode: $editMode
+                            editingCollection: editingCollection
                         )
                         .frame(minWidth: 300, minHeight: 600)
                     }
             }
+            #endif
             ToolbarItem {
                 Button {
                     editingCollection = nil
@@ -108,7 +141,7 @@ struct CollectionsSidebar: View {
                 }
                 .popover(isPresented: $presentCollectionCreation) {
                     NewCollectionView(
-                        editingCollection: editingCollection, editMode: $editMode
+                        editingCollection: editingCollection
                     )
                     .frame(minWidth: 300, minHeight: 600)
                 }
