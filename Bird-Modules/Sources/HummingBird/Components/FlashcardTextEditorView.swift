@@ -8,16 +8,19 @@
 import SwiftUI
 import RichTextKit
 import Combine
+import PhotosUI
 
 public struct FlashcardTextEditorView: View {
     var color: Color
     var side: String
     
-    
+    @State private var isPhotoPickerPresented = false
+    @State private var photoSelection: PhotosPickerItem?
     @State private var text = NSAttributedString(string: "")
     
     @ObservedObject private var context: RichTextContext
-
+    
+    
     
     public init(color: Color, side: String, context: RichTextContext) {
         self.color = color
@@ -47,53 +50,74 @@ public struct FlashcardTextEditorView: View {
             )
             
             if context.isEditingText {
-                HStack {
-                    Button { context.isItalic.toggle() } label: {
-                        Image.richTextStyleItalic
-                            .frame(height: 18)
-                    }
-                    .frame(width: 32, height: 32)
-                    .buttonStyle(.bordered)
-                    .tint(context.isItalic ? HBColor.actionColor : nil)
-                    .padding(.horizontal, 4)
-                    
-                    Button { context.isBold.toggle() } label: {
-                        Image.richTextStyleBold
-                            .frame(height: 18)
-                    }
-                    .frame(width: 32, height: 32)
-                    .buttonStyle(.bordered)
-                    .tint(context.isBold ? HBColor.actionColor : nil)
-                    .padding(.horizontal, 4)
-                    
-                    Button { context.isUnderlined.toggle() } label: {
-                        Image.richTextStyleUnderline
-                            .frame(height: 18)
-                    }
-                    .frame(width: 32, height: 32)
-                    .buttonStyle(.bordered)
-                    .tint(context.isUnderlined ? HBColor.actionColor : nil)
-                    .padding(.horizontal, 4)
-                    ColorPicker("Text", selection: context.foregroundColorBinding)
-                    ColorPicker("Background", selection: context.backgroundColorBinding)
-                    
-                    Menu {
+                VStack {
+                    HStack {
+                        Button { context.isItalic.toggle() } label: {
+                            Image.richTextStyleItalic
+                                .frame(width: 18, height: 18)
+                        }
+                        .frame(width: 32, height: 32)
+                        .buttonStyle(.bordered)
+                        .tint(context.isItalic ? HBColor.actionColor : nil)
+                        .padding(.horizontal, 4)
                         
-                    } label: {
-                        circle
-                            .frame(width: 32, height: 32)
+                        Button { context.isBold.toggle() } label: {
+                            Image.richTextStyleBold
+                                .frame(width: 18, height: 18)
+                        }
+                        .frame(width: 32, height: 32)
+                        .buttonStyle(.bordered)
+                        .tint(context.isBold ? HBColor.actionColor : nil)
+                        .padding(.horizontal, 4)
+                        
+                        Button { context.isUnderlined.toggle() } label: {
+                            Image.richTextStyleUnderline
+                                .frame(width: 18, height: 18)
+                        }
+                        .frame(width: 32, height: 32)
+                        .buttonStyle(.bordered)
+                        .tint(context.isUnderlined ? HBColor.actionColor : nil)
+                        .padding(.horizontal, 4)
+                        
+                        Button {
+                            isPhotoPickerPresented = true
+                        } label: {
+                            Image(systemName: "photo.on.rectangle")
+                                .frame(width: 18, height: 18)
+                        }
+                        .frame(width: 32, height: 32)
+                        .buttonStyle(.bordered)
+                        .padding(.horizontal, 4)
+                        
+                        
+                        
                     }
-                    .frame(width: 32, height: 32)
-                    .padding(.horizontal, 4)
-
-                    Spacer()
+                    HStack {
+                        ColorPicker("Text", selection: context.foregroundColorBinding)
+                        ColorPicker("Background", selection: context.backgroundColorBinding)
+                        
+                        
+                    }
                 }
                 .padding()
                 .background(.thinMaterial)
                 
             }
             
-        }.cornerRadius(16)
+        }
+        .cornerRadius(16)
+        .photosPicker(isPresented: $isPhotoPickerPresented,
+                      selection: $photoSelection,
+                      matching: .all(of: [.images, .not(.livePhotos)]))
+        .onChange(of: photoSelection) { newValue in
+            Task {
+                if let selectedPhotoData = try? await newValue?.loadTransferable(type: Data.self),
+                   let image = ImageRepresentable(data: selectedPhotoData) {
+                    let lowerBound = context.selectedRange.lowerBound
+                    context.pasteImage(image, at: lowerBound)
+                }
+            }
+        }
         
     }
     
