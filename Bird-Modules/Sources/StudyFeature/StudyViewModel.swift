@@ -287,63 +287,30 @@ public class StudyViewModel: ObservableObject {
     }
     
     func getSessionReviewingCards(mode: StudyMode) -> Int {
-        if mode == .spaced {
-            return cards.filter { card in
-                card.woodpeckerCardInfo.isGraduated == true
-            }.count + cardsToEdit.filter { card in
-                if let isGraduated = card.history.last?.woodpeckerCardInfo.isGraduated {
-                    return isGraduated
-                } else {
-                    return false
-                }
-            }.count
-        } else {
-            return 0
-        }
+        guard mode == .spaced else { return 0 }
+        
+        let graduatedCardCount = cards.filter { $0.woodpeckerCardInfo.isGraduated }.count
+        let cardsToEditCount = cardsToEdit.filter { $0.history.last?.woodpeckerCardInfo.isGraduated ?? false }.count
+        return graduatedCardCount + cardsToEditCount
     }
     
     func getSessionReviewingSeenCards(mode: StudyMode) -> Int {
-        if mode == .spaced {
-            return cardsToEdit.filter { card in
-                if let isGraduated = card.history.last?.woodpeckerCardInfo.isGraduated {
-                    return isGraduated
-                } else {
-                    return false
-                }
-            }.count
-        } else {
-            return 0
-        }
+        guard mode == .spaced else { return 0 }
+        
+        return cardsToEdit.filter { $0.history.last?.woodpeckerCardInfo.isGraduated ?? false }.count
     }
     
     func getSessionLearningCards(mode: StudyMode) -> Int {
-        if mode == .spaced {
-            return cards.filter { card in
-                card.woodpeckerCardInfo.isGraduated == false
-            }.count + cardsToEdit.filter { card in
-                if let isGraduated = card.history.last?.woodpeckerCardInfo.isGraduated {
-                    return !isGraduated
-                } else {
-                    return false
-                }
-            }.count
-        } else {
-            return 0
-        }
+        guard mode == .spaced else { return 0 }
+        
+        let notGraduatedCardCount = cards.filter { !$0.woodpeckerCardInfo.isGraduated }.count
+        let cardsToEditCount = cardsToEdit.filter { !($0.history.last?.woodpeckerCardInfo.isGraduated ?? true) }.count
+        return notGraduatedCardCount + cardsToEditCount
     }
     
     func getSessionLearningSeenCards(mode: StudyMode) -> Int {
-        if mode == .spaced {
-            return cardsToEdit.filter { card in
-                if let isGraduated = card.history.last?.woodpeckerCardInfo.isGraduated {
-                    return !isGraduated
-                } else {
-                    return false
-                }
-            }.count
-        } else {
-            return 0
-        }
+        guard mode == .spaced else { return 0 }
+        return cardsToEdit.filter { !($0.history.last?.woodpeckerCardInfo.isGraduated ?? true) }.count
     }
     
 }
