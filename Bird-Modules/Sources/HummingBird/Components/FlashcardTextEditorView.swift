@@ -29,7 +29,7 @@ public struct FlashcardTextEditorView: View {
     }
     
     public var body: some View {
-        ZStack(alignment: .bottom) {
+        VStack {
             VStack(alignment: .leading) {
                 Text(side)
                     .foregroundColor(.white)
@@ -40,14 +40,6 @@ public struct FlashcardTextEditorView: View {
                     $0.textContentInset = CGSize(width: 10, height: 20)
                 }
             }
-            .background(color)
-            .clipShape(
-                RoundedRectangle(cornerRadius: 16)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(.white, lineWidth: 3)
-            )
             
             if context.isEditingText {
                 VStack {
@@ -105,6 +97,11 @@ public struct FlashcardTextEditorView: View {
             }
             
         }
+        .background(color)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(.white, lineWidth: 3)
+        )
         .cornerRadius(16)
         .photosPicker(isPresented: $isPhotoPickerPresented,
                       selection: $photoSelection,
