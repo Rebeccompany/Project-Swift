@@ -100,9 +100,9 @@ struct CollectionsSidebar: View {
                         .foregroundColor(HBColor.actionColor)
                         .accessibility(addTraits: .isButton)
                 }
-                .sheet(isPresented: $onboarding, content: {
+                .sheet(isPresented: $onboarding) {
                     OnboardingView()
-                })
+                }
                 
             }
             ToolbarItem {

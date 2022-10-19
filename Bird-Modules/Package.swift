@@ -111,7 +111,7 @@ let package = Package(
         .library(
             name: "FlashcardsOnboardingFeature",
             targets: ["FlashcardsOnboardingFeature"]
-        ),
+        )
     ],
     
     dependencies: [
