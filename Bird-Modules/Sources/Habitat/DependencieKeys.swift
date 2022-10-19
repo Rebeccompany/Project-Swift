@@ -30,10 +30,6 @@ private struct SystemObserverKey: HabitatKey {
     static var currentValue: SystemObserverProtocol = SystemObserver.shared
 }
 
-private struct SessionCacherKey: HabitatKey {
-    static var currentValue: SessionCacher = SessionCacher()
-}
-
 private struct DisplayCacherKey: HabitatKey {
     static var currentValue: DisplayCacherProtocol = DisplayCacher()
 }
@@ -63,11 +59,6 @@ extension Habitat {
     public var systemObserver: SystemObserverProtocol {
         get { Self[SystemObserverKey.self] }
         set { Self[SystemObserverKey.self] = newValue }
-    }
-    
-    public var sessionCacher: SessionCacher {
-        get { Self[SessionCacherKey.self] }
-        set { Self[SessionCacherKey.self] = newValue }
     }
     
     public var displayCacher: DisplayCacherProtocol {

@@ -19,29 +19,28 @@ class StudyViewModelTests: XCTestCase {
     var localStorage: LocalStorageMock!
     var deckRepository: DeckRepositoryMock!
     var deck: Deck!
-    var sessionCacher: SessionCacher!
     var dateHandler: DateHandlerProtocol!
     var systemObserver: SystemObserverMock!
+    var uuidGenerator: UUIDGeneratorProtocol!
     var cancellables: Set<AnyCancellable>!
     
     
     override func setUpWithError() throws {
         deckRepository = DeckRepositoryMock()
         localStorage = LocalStorageMock()
-        sessionCacher = SessionCacher(storage: localStorage)
         deck = deckRepository.decks.first
         dateHandler = DateHandlerMock()
         systemObserver = SystemObserverMock()
-        setupHabitatForIsolatedTesting(deckRepository: deckRepository, collectionRepository: CollectionRepositoryMock(), dateHandler: dateHandler, uuidGenerator: UUIDHandlerMock(), systemObserver: systemObserver, sessionCacher: sessionCacher)
+        setupHabitatForIsolatedTesting(deckRepository: deckRepository, collectionRepository: CollectionRepositoryMock(), dateHandler: dateHandler, uuidGenerator: UUIDHandlerMock(), systemObserver: systemObserver)
         
         sut = .init()
+        uuidGenerator = UUIDHandlerMock()
         cancellables = .init()
     }
     
     override func tearDownWithError() throws {
         deckRepository = nil
         localStorage = nil
-        sessionCacher = nil
         deck = nil
         sut = nil
         cancellables.forEach { $0.cancel() }
@@ -65,12 +64,12 @@ class StudyViewModelTests: XCTestCase {
         
     }
     
-    func testRepetitionStartupWithExistingSession() {
+    func testRepetitionStartupWithExistingSession() throws {
         let cardIds = Array(deckRepository.cards.prefix(3).map(\.id))
-        let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id)
-        sessionCacher.setCurrentSession(session: session)
+        let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId())
+        try deckRepository.createSession(session, for: deck)
         
-        sut.startup(deck: deck, mode: .spaced)
+    sut.startup(deck: deckRepository.decks.first!, mode: .spaced)
         let expectation = expectation(description: "fetch cards")
         sut.$cards.sink { [unowned self] cards in
             let first3Cards = Array(self.deckRepository.cards.prefix(3))
@@ -83,18 +82,20 @@ class StudyViewModelTests: XCTestCase {
     }
     
     func testDidCreateNewSessionOnStartup() {
-        XCTAssertNil(sessionCacher.currentSession(for: deck.id))
+        XCTAssertNil(deck.session)
         sut.startup(deck: deck, mode: .spaced)
         
         let expectation = expectation(description: "did handle events correctly")
         
-        let expectedSession = Session(cardIds: deck.cardsIds.sorted(by: { $0.uuidString > $1.uuidString } ), date: dateHandler.today, deckId: deck.id)
+        let expectedSession = Session(cardIds: deck.cardsIds.sorted(by: { $0.uuidString > $1.uuidString } ), date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId())
         
         sut.$cards.sink {[unowned self] cards in
-            var session = self.sessionCacher.currentSession(for: self.deck.id)
+//            XCTAssertNotNil(deck.session)
+            var session = deckRepository.decks.first!.session
             let ids = session?.cardIds ?? []
             session?.cardIds = ids.sorted(by: { $0.uuidString > $1.uuidString })
-            XCTAssertEqual(expectedSession, session)
+            XCTAssertEqual(expectedSession.cardIds.sorted(by: sortIds), session?.cardIds.sorted(by: sortIds))
+            XCTAssertEqual(expectedSession.date, session?.date)
             expectation.fulfill()
         }
         .store(in: &cancellables)
@@ -393,12 +394,12 @@ class StudyViewModelTests: XCTestCase {
     }
     
     
-    func testIsVOOn() {
+    func testIsVOOn() throws {
         let cardIds = Array(deckRepository.cards.prefix(3).map(\.id))
-        let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id)
-        sessionCacher.setCurrentSession(session: session)
+        let session = Session(cardIds: cardIds, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId())
+        try deckRepository.createSession(session, for: deckRepository.decks.first!)
         
-        sut.startup(deck: deck, mode: .spaced)
+        sut.startup(deck: deckRepository.decks.first!, mode: .spaced)
         XCTAssertFalse(sut.isVOOn)
         systemObserver.voiceOverDidChangeSubject.send(true)
         XCTAssertTrue(sut.isVOOn)
@@ -408,14 +409,14 @@ class StudyViewModelTests: XCTestCase {
         let expectation = expectation(description: "receive card for id")
         self.deck = deckRepository.decks[1]
         
-        sut.startup(deck: deck, mode: .spaced)
+        sut.startup(deck: deckRepository.decks[1], mode: .spaced)
         let card = sut.cards.first!
         XCTAssertEqual(card.woodpeckerCardInfo.interval, 0)
-        try sut.pressedButton(for: .correctEasy, deck: deck, mode: .spaced)
-        try sut.saveChanges(deck: deck, mode: .spaced)
+        try sut.pressedButton(for: .correctEasy, deck: deckRepository.decks[1], mode: .spaced)
+        try sut.saveChanges(deck: deckRepository.decks[1], mode: .spaced)
       
         deckRepository.fetchCardById(deckRepository.decks[1].cardsIds.first!)
-            .assertNoFailure()
+            .replaceError(with: deckRepository.cards.first!)
             .sink { receivedCard in
                 XCTAssertEqual(receivedCard.woodpeckerCardInfo.interval, 1)
                 expectation.fulfill()

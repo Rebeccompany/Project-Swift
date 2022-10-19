@@ -24,12 +24,14 @@ public struct Deck: Identifiable, Equatable, Hashable {
     public var cardsIds: [UUID]
     /// Configurantion for Spaced repetition.
     public var spacedRepetitionConfig: SpacedRepetitionConfig
+    /// Current active session
+    public var session: Session?
     
     public var cardCount: Int {
         cardsIds.count
     }
     
-    public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs = DateLogs(), collectionId: UUID?, cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig = SpacedRepetitionConfig()) {
+    public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs = DateLogs(), collectionId: UUID?, cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig = SpacedRepetitionConfig(), session: Session? = nil) {
         self.id = id
         self.name = name
         self.icon = icon
@@ -38,5 +40,6 @@ public struct Deck: Identifiable, Equatable, Hashable {
         self.collectionId = collectionId
         self.cardsIds = cardsIds
         self.spacedRepetitionConfig = spacedRepetitionConfig
+        self.session = session
     }
 }

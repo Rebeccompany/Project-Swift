@@ -27,6 +27,7 @@ struct EndOfStudyView: View {
                 .bold()
                 .font(.system(size: 32))
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding()
             
             HBAssets.endOfStudy
