@@ -40,7 +40,6 @@ public struct ContentView: View {
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
-        
         .sheet(isPresented: $onboarding) {
             OnboardingView()
         }

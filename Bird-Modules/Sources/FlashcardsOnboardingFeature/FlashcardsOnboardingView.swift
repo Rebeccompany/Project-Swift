@@ -56,7 +56,6 @@ public struct FlashcardsOnboardingView: View {
                                 .padding(.all)
                         }
                     }
-                    
                 }
             }
             .navigationTitle(NSLocalizedString("como_estudar",bundle: .module, comment: ""))
@@ -67,7 +66,6 @@ public struct FlashcardsOnboardingView: View {
                     Text(NSLocalizedString("voltar",bundle: .module, comment: ""))
                         .foregroundColor(HBColor.actionColor)
                 }
-
             }
         }
         Spacer()

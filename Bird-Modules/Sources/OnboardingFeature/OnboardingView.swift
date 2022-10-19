@@ -31,9 +31,7 @@ public struct OnboardingView: View {
                     dismiss()
                 }
                 .foregroundColor(HBColor.actionColor)
-                
             }
-            
         }
     }
 }

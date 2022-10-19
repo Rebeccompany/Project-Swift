@@ -124,9 +124,7 @@ public struct StudyView: View {
                     }
                     .sheet(isPresented:  $flashcardsOnboarding) {
                         FlashcardsOnboardingView()
-                        
                     }
-                    
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(role: .destructive) {
