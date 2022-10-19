@@ -1,5 +1,5 @@
 //
-//  CardSnapshotEntity+CoreDataClass.swift
+//  SessionEntity+CoreDataClass.swift
 //  Project-Bird
 //
 //  Created by Nathalia do Valle Papst on 06/10/22.
@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-
-public class CardSnapshotEntity: NSManagedObject {
+@objc(SessionEntity)
+public class SessionEntity: NSManagedObject {
 
 }

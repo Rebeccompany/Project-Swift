@@ -7,15 +7,17 @@
 
 import Foundation
 
-public struct Session: Equatable, Codable {
+public struct Session: Identifiable, Equatable, Codable, Hashable {
 
     public var cardIds: [UUID]
     public var date: Date
     public var deckId: UUID
+    public var id: UUID
     
-    public init(cardIds: [UUID], date: Date, deckId: UUID) {
+    public init(cardIds: [UUID], date: Date, deckId: UUID, id: UUID) {
         self.cardIds = cardIds
         self.date = date
         self.deckId = deckId
+        self.id = id
     }
 }
