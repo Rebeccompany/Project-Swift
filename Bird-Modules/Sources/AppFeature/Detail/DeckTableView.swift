@@ -8,10 +8,13 @@
 import SwiftUI
 import Models
 import HummingBird
+import NewDeckFeature
 
 struct DeckTableView: View {
     @EnvironmentObject private var viewModel: ContentViewModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    var editAction: (Deck) -> Void
     
     private var sortedDecks: [Deck] {
         viewModel.decks.sorted(using: viewModel.sortOrder)
@@ -39,6 +42,27 @@ struct DeckTableView: View {
         List(sortedDecks, selection: $viewModel.selection) { deck in
             NavigationLink(value: StudyRoute.deck(deck)) {
                 cell(for: deck)
+            }
+            .swipeActions {
+                Button {
+                    editAction(deck)
+                } label: {
+                    Text("Editar")
+                }
+                .tint(HBColor.actionColor)
+            }
+            .contextMenu {
+                Button {
+                    editAction(deck)
+                } label: {
+                    Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
+                }
+                
+                Button(role: .destructive) {
+                    try? viewModel.deleteDeck(deck)
+                } label: {
+                    Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
+                }
             }
         }
         .animation(.linear, value: viewModel.sortOrder)
