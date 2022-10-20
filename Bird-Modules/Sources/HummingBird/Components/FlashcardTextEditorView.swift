@@ -115,6 +115,9 @@ public struct FlashcardTextEditorView: View {
                 }
             }
         }
+        .onAppear {
+            context.shouldUpdateTextField()
+        }
     }
 
     @ViewBuilder
