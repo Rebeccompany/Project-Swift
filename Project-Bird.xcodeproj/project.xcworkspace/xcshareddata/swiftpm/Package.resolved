@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Rebeccompany/RichTextKit",
       "state" : {
-        "revision" : "4eba9a538f4f332c516ecafeef301f8ab54e34b9",
-        "version" : "0.1.4"
+        "revision" : "800f334a468c2d280a984414e2478b33bbb95eda",
+        "version" : "0.1.5"
       }
     }
   ],
