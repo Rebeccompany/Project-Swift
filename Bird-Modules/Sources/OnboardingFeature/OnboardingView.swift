@@ -27,7 +27,7 @@ public struct OnboardingView: View {
             .indexViewStyle(.page(backgroundDisplayMode: .always))
             .animation(.linear, value: tab)
             .toolbar {
-                Button(tab == 3 ? NSLocalizedString("comecar",bundle: .module, comment: "") : NSLocalizedString("pular",bundle: .module, comment: "")) {
+                Button(tab == 3 ? NSLocalizedString("comecar", bundle: .module, comment: "") : NSLocalizedString("pular", bundle: .module, comment: "")) {
                     dismiss()
                 }
                 .foregroundColor(HBColor.actionColor)
