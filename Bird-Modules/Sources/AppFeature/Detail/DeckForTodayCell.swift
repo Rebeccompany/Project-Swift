@@ -12,7 +12,7 @@ struct DeckForTodayCell: View {
         VStack {
             IconCircle(radius: 80, angle: 90, offset: 5) {
                 ForEach(0..<3) { idx in
-                                RoundedRectangle(cornerRadius: 8)
+                                Circle()
                                     .fill(Color.red)
                                     .frame(width: 70, height: 70)
                                     }
