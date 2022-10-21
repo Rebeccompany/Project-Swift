@@ -14,8 +14,10 @@ import Flock
 import NewCollectionFeature
 import Habitat
 import Storage
+import OnboardingFeature
 
 public struct ContentView: View {
+    @AppStorage("com.projectbird.birdmodules.appfeature.onboarding") private var onboarding: Bool = true
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @State private var path: NavigationPath = .init()
     #if os(iOS)
@@ -39,6 +41,9 @@ public struct ContentView: View {
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
+        .sheet(isPresented: $onboarding) {
+            OnboardingView()
+        }
     }
     
     @ViewBuilder

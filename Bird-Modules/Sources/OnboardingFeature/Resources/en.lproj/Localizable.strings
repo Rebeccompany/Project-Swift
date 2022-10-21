@@ -1,0 +1,26 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Claudia Fiorentino on 19/10/22.
+  
+*/
+
+"comecar" = "Start";
+"pular" = "Skip";
+"modo_spixii"= "Spixii Mode";
+"modo_intenso"= "Intense Mode";
+"colecoes" = "Collections";
+"baralhos" = "Decks";
+"flashcards" = "Flashcards";
+"pagina_um" = "Welcome to Spixii! Here you can study through flashcards and enhance your learning and memorization.";
+"pagina_dois_um" = "This are made to test memory! It keeps a question or term on the front, and the answer or definition on the back.";
+"pagina_dois_dois" = "Example: a flashcard has “Gato” on the front and “Cat” on the back.";
+"pagina_tres_um" = "Flashcards belong in a deck!";
+"pagina_tres_dois" = "Exemplo: deck called ”Animals”";
+"pagina_tres_tres" = "Decks can be grouped into collections.";
+"pagina_tres_quatro" = "Example: collection called ”Brazilian Portuguese Language”";
+"pagina_quatro_um" = "Study mode for long-term learning based on spaced repetition method.";
+"pagina_quatro_dois" = "In it, the app creates study sessions and controls how many and which cards you should study during the day.";
+"pagina_quatro_tres" = "Study mode for short-term memorization of large volume of content.";
+"pagina_quatro_quatro" = "In it, you can study all the cards whenever you want.";

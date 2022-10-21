@@ -101,7 +101,17 @@ let package = Package(
         .library(
             name: "Habitat",
             targets: ["Habitat"]
-        )
+        ),
+        
+        .library(
+            name: "OnboardingFeature",
+            targets: ["OnboardingFeature"]
+        ),
+        
+        .library(
+            name: "FlashcardsOnboardingFeature",
+            targets: ["FlashcardsOnboardingFeature"]
+        ),
     ],
     
     dependencies: [
@@ -128,7 +138,8 @@ let package = Package(
                 "Models",
                 "Flock",
                 "Habitat",
-                "NewFlashcardFeature"
+                "NewFlashcardFeature",
+                "OnboardingFeature"
             ]
         ),
         
@@ -155,7 +166,8 @@ let package = Package(
                      "Woodpecker",
                      "Storage",
                      "Utils",
-                     "Habitat"
+                     "Habitat",
+                     "FlashcardsOnboardingFeature"
                 ]
         ),
         
@@ -246,6 +258,22 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Utils"
+            ]
+        ),
+        
+        .target(
+            name: "OnboardingFeature",
+            dependencies: [
+                "HummingBird",
+                "Models"
+            ]
+        ),
+        
+        .target(
+            name: "FlashcardsOnboardingFeature",
+            dependencies: [
+                "HummingBird",
+                "Models"
             ]
         ),
         

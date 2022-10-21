@@ -9,15 +9,14 @@ import SwiftUI
 import Models
 import NewCollectionFeature
 import HummingBird
+import OnboardingFeature
 
 struct CollectionsSidebar: View {
-<<<<<<< Updated upstream
-=======
     @State private var onboarding: Bool = false
-    #if os(iOS)
->>>>>>> Stashed changes
+    @State private var onboarding: Bool = false
+#if os(iOS)
     @Binding private var editMode: EditMode
-    #endif
+#endif
     @EnvironmentObject private var viewModel: ContentViewModel
     @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
@@ -106,8 +105,6 @@ struct CollectionsSidebar: View {
         .navigationTitle("Spixii")
         .toolbar {
             ToolbarItem {
-<<<<<<< Updated upstream
-=======
                 Button {
                     onboarding = true
                 } label: {
@@ -120,9 +117,8 @@ struct CollectionsSidebar: View {
                 })
                 
             }
-            #if os(iOS)
+
             ToolbarItem {
->>>>>>> Stashed changes
                 EditButton()
                     .popover(isPresented: $presentCollectionEdition) {
                         NewCollectionView(
@@ -131,7 +127,6 @@ struct CollectionsSidebar: View {
                         .frame(minWidth: 300, minHeight: 600)
                     }
             }
-            #endif
             ToolbarItem {
                 Button {
                     editingCollection = nil
