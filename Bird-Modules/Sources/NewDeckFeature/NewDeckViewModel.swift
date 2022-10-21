@@ -65,7 +65,8 @@ public class NewDeckViewModel: ObservableObject {
                         datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
                         collectionId: collection?.id,
                         cardsIds: [],
-                        spacedRepetitionConfig: SpacedRepetitionConfig(), category: DeckCategory.arts)
+                        spacedRepetitionConfig: SpacedRepetitionConfig(),
+                        category: DeckCategory.others)
         
         try deckRepository.createDeck(deck, cards: [])
         
