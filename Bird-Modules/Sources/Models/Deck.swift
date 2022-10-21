@@ -30,8 +30,10 @@ public struct Deck: Identifiable, Equatable, Hashable {
     public var cardCount: Int {
         cardsIds.count
     }
+
+    public var category: DeckCategory
     
-    public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs = DateLogs(), collectionId: UUID?, cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig = SpacedRepetitionConfig(), session: Session? = nil) {
+    public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs = DateLogs(), collectionId: UUID?, cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig = SpacedRepetitionConfig(), session: Session? = nil, category: DeckCategory) {
         self.id = id
         self.name = name
         self.icon = icon
@@ -41,5 +43,6 @@ public struct Deck: Identifiable, Equatable, Hashable {
         self.cardsIds = cardsIds
         self.spacedRepetitionConfig = spacedRepetitionConfig
         self.session = session
+        self.category = category
     }
 }

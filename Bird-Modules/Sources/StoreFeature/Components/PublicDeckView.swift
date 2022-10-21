@@ -16,7 +16,7 @@ struct PublicDeckView: View {
     var author: String
     var copies: Int
     
-    public init(color: Color, deckName: String, icon: IconNames, author: String, copies: Int) {
+    init(color: Color, deckName: String, icon: IconNames, author: String, copies: Int) {
         self.color = color
         self.deckName = deckName
         self.icon = icon
