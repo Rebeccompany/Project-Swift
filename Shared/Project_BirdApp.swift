@@ -10,7 +10,12 @@ import AppFeature
 
 @main
 struct Project_BirdApp: App {
+    #if os(iOS)
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    #elseif os(macOS)
+    
+    #endif
+    
     
     var body: some Scene {
         WindowGroup {

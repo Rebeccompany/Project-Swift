@@ -39,7 +39,9 @@ struct DeckGridView: View {
                             }
                         }
                     }
+                    #if os(iOS)
                     .hoverEffect(.lift)
+                    #endif
                 }
             }
             .animation(.linear, value: viewModel.sortOrder)

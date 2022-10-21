@@ -11,7 +11,12 @@ import Habitat
 //swiftlint: disable discouraged_optional_collection
 
 #if os(macOS)
-
+public final class AppDelegate: NSObject, NSApplicationDelegate {
+    
+    public func applicationDidFinishLaunching(_ notification: Notification) {
+        setupHabitatForProduction()
+    }
+}
 
 #else
 public final class AppDelegate: NSObject, UIApplicationDelegate {

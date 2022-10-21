@@ -15,16 +15,17 @@ import Habitat
 
 
 public struct DetailView: View {
-    
     @EnvironmentObject private var viewModel: ContentViewModel
-    @Binding private var editMode: EditMode
     @State private var presentDeckEdition = false
     @State private var shouldDisplayAlert = false
     @State private var editingDeck: Deck?
+    #if os(iOS)
+    @Binding private var editMode: EditMode
     
     init(editMode: Binding<EditMode>) {
         self._editMode = editMode
     }
+    #endif
     
     public var body: some View {
         Group {
@@ -34,10 +35,13 @@ public struct DetailView: View {
                 content
             }
         }
+        #if os(macOS)
+        .searchable(text: $viewModel.searchText)
+        #elseif os(iOS)
         .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
         .toolbar(editMode.isEditing ? .visible : .hidden,
-                 for: .bottomBar)
-        .toolbar {
+                 for: .bottomBar) {
+            
             ToolbarItem(placement: .bottomBar) {
                 Button {
                     editingDeck = viewModel.editDeck()
@@ -46,7 +50,6 @@ public struct DetailView: View {
                     Text(NSLocalizedString("editar", bundle: .module, comment: ""))
                 }
                 .disabled(viewModel.selection.count != 1)
-                
             }
             
             ToolbarItem(placement: .bottomBar) {
@@ -55,7 +58,9 @@ public struct DetailView: View {
                 }
                 .foregroundColor(.red)
             }
-            
+        }
+        #endif
+        .toolbar {
             
             ToolbarItem {
                 Menu {
@@ -64,7 +69,9 @@ public struct DetailView: View {
                     } label: {
                         Label(NSLocalizedString("icones", bundle: .module, comment: ""), systemImage: "rectangle.grid.2x2")
                     }
+                    #if os(iOS)
                     .disabled(editMode.isEditing)
+                    #endif
                     
                     Button {
                         viewModel.changeDetailType(for: .table)
@@ -89,11 +96,13 @@ public struct DetailView: View {
                 }
             }
             
+            #if os(iOS)
             ToolbarItem {
                 EditButton()
                     .keyboardShortcut("e", modifiers: .command)
                     .foregroundColor(HBColor.actionColor)
             }
+            #endif
             
             ToolbarItem {
                 Button {
@@ -104,17 +113,24 @@ public struct DetailView: View {
                         .foregroundColor(HBColor.actionColor)
                 }
                 .popover(isPresented: $presentDeckEdition) {
+                    #if os(iOS)
                     NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
-                    .frame(minWidth: 300, minHeight: 600)
+                        .frame(minWidth: 300, minHeight: 600)
+                    #elseif os(macOS)
+                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck)
+                        .frame(minWidth: 300, minHeight: 600)
+                    #endif
                 }
             }
         }
+        #if os(iOS)
         .onChange(of: editMode) { newValue in
             if newValue == .active {
                 viewModel.detailType = .table
                 viewModel.changeDetailType(for: .table)
             }
         }
+        #endif
         .alert(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""), isPresented: $shouldDisplayAlert) {
             Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
                 try? viewModel.deleteDecks()

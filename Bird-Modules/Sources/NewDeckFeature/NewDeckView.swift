@@ -16,18 +16,29 @@ public struct NewDeckView: View {
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteDeck
     @State private var activeAlert: ActiveAlert = .error
+    
     @Environment(\.dismiss) private var dismiss
+    
     @FocusState private var selectedField: Int?
-    //@Binding private var editMode: EditMode
     
     var editingDeck: Deck?
     var collection: DeckCollection?
     
+    #if os(iOS)
+    @Binding private var editMode: EditMode
+    
+    public init(collection: DeckCollection?, editingDeck: Deck?, editMode: Binding<EditMode>) {
+        self.collection = collection
+        self.editingDeck = editingDeck
+        self._editMode = editMode
+    }
+    
+    #elseif os(macOS)
     public init(collection: DeckCollection?, editingDeck: Deck?) {
         self.collection = collection
         self.editingDeck = editingDeck
-        //self._editMode = editMode
     }
+    #endif
     
     public var body: some View {
         
@@ -75,7 +86,6 @@ public struct NewDeckView: View {
                                     .frame(width: 45, height: 45)
                             }
                             .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
-                            
                         }
                     }
                     Spacer()
@@ -104,7 +114,9 @@ public struct NewDeckView: View {
                                      primaryButton: .destructive(Text("deletar", bundle: .module)) {
                                         do {
                                             try viewModel.deleteDeck(editingDeck: editingDeck)
-                                            //editMode = .inactive
+                                            #if os(iOS)
+                                            editMode = .inactive
+                                            #endif
                                             dismiss()
                                         } catch {
                                             activeAlert = .error
@@ -125,6 +137,7 @@ public struct NewDeckView: View {
                 
             }
             .toolbar {
+                #if os(iOS)
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
@@ -132,6 +145,7 @@ public struct NewDeckView: View {
                     }
                     .accessibilityLabel(Text("botao_feito", bundle: .module))
                 }
+                #endif
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
@@ -148,7 +162,9 @@ public struct NewDeckView: View {
                         } else {
                             do {
                                 try viewModel.editDeck(editingDeck: editingDeck)
-                                //editMode = .inactive
+                                #if os(iOS)
+                                editMode = .inactive
+                                #endif
                                 dismiss()
                             } catch {
                                 activeAlert = .error
@@ -162,7 +178,9 @@ public struct NewDeckView: View {
                 
                 ToolbarItem(placement: .cancellationAction) {
                     Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
-                        //editMode = .inactive
+                        #if os(iOS)
+                        editMode = .inactive
+                        #endif
                         dismiss()
                     }
                     .foregroundColor(.red)

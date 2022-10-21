@@ -44,11 +44,14 @@ public struct ContentView: View {
         .sheet(isPresented: $onboarding) {
             OnboardingView()
         }
+        #if os(macOS)
+        .frame(minWidth: 600, minHeight: 500)
+        #endif
     }
     
     @ViewBuilder
     private var sidebar: some View {
-        #warning("Provavelmente criar um CollectionSideBar para mac")
+        #if os(iOS)
         CollectionsSidebar(
             selection: $viewModel.sidebarSelection,
             isCompact: horizontalSizeClass == .compact,
@@ -56,15 +59,24 @@ public struct ContentView: View {
         )
         .environmentObject(viewModel)
         .environment(\.editMode, $editModeForCollection)
+        #elseif os(macOS)
+        CollectionsSidebar(selection: $viewModel.sidebarSelection)
+            .environmentObject(viewModel)
+            .frame(minWidth: 250)
+        #endif
     }
     
     @ViewBuilder
     private var detail: some View {
         Router(path: $path) {
-            #warning("Provavelmente criar uma DetailView para mac")
+            #if os(iOS)
             DetailView(editMode: $editModeForDeck)
             .environmentObject(viewModel)
             .environment(\.editMode, $editModeForDeck)
+            #elseif os(macOS)
+            DetailView()
+                .environmentObject(viewModel)
+            #endif
         } destination: { (route: StudyRoute) in
             StudyRoutes.destination(for: route, viewModel: viewModel)
         }

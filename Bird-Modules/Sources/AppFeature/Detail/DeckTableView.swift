@@ -32,11 +32,15 @@ struct DeckTableView: View {
     
     @ViewBuilder
     private var content: some View {
+        #if os(iOS)
         if horizontalSizeClass == .compact {
             list
         } else {
             table
         }
+        #elseif os(macOS)
+        table
+        #endif
     }
     
     @ViewBuilder
@@ -89,7 +93,9 @@ struct DeckTableView: View {
                 }
                 .tint(HBColor.color(for: deck.color))
                 .buttonStyle(.bordered)
+                #if os(iOS)
                 .buttonBorderShape(.capsule)
+                #endif
             }.width(90)
         }
         .animation(.linear, value: viewModel.sortOrder)

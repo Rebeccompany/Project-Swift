@@ -13,16 +13,15 @@ import OnboardingFeature
 
 struct CollectionsSidebar: View {
     @State private var onboarding: Bool = false
-    @State private var onboarding: Bool = false
-#if os(iOS)
+    #if os(iOS)
     @Binding private var editMode: EditMode
-#endif
+    private var isCompact: Bool
+    #endif
     @EnvironmentObject private var viewModel: ContentViewModel
     @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
     @State private var presentCollectionCreation = false
     @State private var editingCollection: DeckCollection?
-    private var isCompact: Bool
     
     #if os(iOS)
     init(selection: Binding<SidebarRoute?>, isCompact: Bool, editMode: Binding<EditMode>) {
@@ -31,9 +30,8 @@ struct CollectionsSidebar: View {
         self.isCompact = isCompact
     }
     #elseif os(macOS)
-    init(selection: Binding<SidebarRoute?>, isCompact: Bool) {
+    init(selection: Binding<SidebarRoute?>) {
         self._selection = selection
-        self.isCompact = isCompact
     }
     #endif
     
@@ -43,9 +41,11 @@ struct CollectionsSidebar: View {
             NavigationLink(value: SidebarRoute.allDecks) {
                 Label(NSLocalizedString("todos_os_baralhos", bundle: .module, comment: ""), systemImage: "square.stack")
             }
+            #if os(iOS)
             .listRowBackground(
                 isCompact ? HBColor.secondaryBackground : nil
             )
+            #endif
             
             Section {
                 if viewModel.collections.isEmpty {
@@ -70,9 +70,11 @@ struct CollectionsSidebar: View {
                                 #endif
                             }
                         }
+                        #if os(iOS)
                         .listRowBackground(
                             isCompact ? HBColor.secondaryBackground : nil
                         )
+                        #endif
                         .contextMenu {
                             Button {
                                 editingCollection = collection
@@ -117,7 +119,8 @@ struct CollectionsSidebar: View {
                 })
                 
             }
-
+            
+            #if os(iOS)
             ToolbarItem {
                 EditButton()
                     .popover(isPresented: $presentCollectionEdition) {
@@ -127,6 +130,7 @@ struct CollectionsSidebar: View {
                         .frame(minWidth: 300, minHeight: 600)
                     }
             }
+            
             ToolbarItem {
                 Button {
                     editingCollection = nil
@@ -141,7 +145,20 @@ struct CollectionsSidebar: View {
                     .frame(minWidth: 300, minHeight: 600)
                 }
             }
+            #endif
         }
+        
+        #if os(macOS)
+        Button {
+            print("oi")
+        } label: {
+            Label {
+                Text("Nova Coleção")
+            } icon: {
+                Image(systemName: "plus.circle")
+            }
+        }
+        #endif
     }
     
     @ViewBuilder
