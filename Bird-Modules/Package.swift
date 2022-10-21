@@ -111,7 +111,11 @@ let package = Package(
         .library(
             name: "FlashcardsOnboardingFeature",
             targets: ["FlashcardsOnboardingFeature"]
-        )
+        ),
+        .library(
+            name: "StoreFeature",
+            targets: ["StoreFeature"]
+        ),
     ],
     
     dependencies: [
@@ -274,6 +278,14 @@ let package = Package(
             dependencies: [
                 "HummingBird",
                 "Models"
+            ]
+        ),
+        
+        .target(
+            name: "StoreFeature",
+            dependencies: [
+                "Models",
+                "HummingBird"
             ]
         ),
         
