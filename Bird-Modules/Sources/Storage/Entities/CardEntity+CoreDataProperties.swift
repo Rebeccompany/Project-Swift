@@ -2,17 +2,18 @@
 //  CardEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Nathalia do Valle Papst on 06/10/22.
+//  Created by Rebecca Mello on 21/10/22.
 //
 //
 
 import Foundation
 import CoreData
+import Storage
 
 extension CardEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CardEntity> {
-        NSFetchRequest<CardEntity>(entityName: "CardEntity")
+        return NSFetchRequest<CardEntity>(entityName: "CardEntity")
     }
 
     @NSManaged public var back: Data?
