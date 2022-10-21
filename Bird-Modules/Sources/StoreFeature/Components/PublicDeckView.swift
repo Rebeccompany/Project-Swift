@@ -27,13 +27,14 @@ struct PublicDeckView: View {
     var body: some View {
         VStack {
             Image(systemName: icon.rawValue)
-                .resizable()
                 .foregroundColor(.white)
-                .frame(width: 70, height: 50)
+                .font(.system(size: 40))
                 
             Text(deckName)
                 .bold()
-                .padding()
+                .padding(10)
+                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.center)
                 .foregroundColor(.white)
                 .font(.system(size: 20))
             HStack {
@@ -47,6 +48,7 @@ struct PublicDeckView: View {
                 .padding(1)
                 .foregroundColor(.white)
         }
+        .padding(10)
         .viewBackgroundColor(color)
     }
 }
@@ -54,5 +56,6 @@ struct PublicDeckView: View {
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         PublicDeckView(color: .red, deckName: "Jogos de Switch", icon: .gamecontroller, author: "Spixii", copies: 20)
+            .frame(width: 180, height: 220)
     }
 }
