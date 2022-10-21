@@ -115,7 +115,7 @@ let package = Package(
         .library(
             name: "StoreFeature",
             targets: ["StoreFeature"]
-        ),
+        )
     ],
     
     dependencies: [
