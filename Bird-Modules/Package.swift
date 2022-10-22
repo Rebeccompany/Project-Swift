@@ -285,7 +285,8 @@ let package = Package(
             name: "StoreFeature",
             dependencies: [
                 "Models",
-                "HummingBird"
+                "HummingBird",
+                "DeckFeature"
             ]
         ),
         

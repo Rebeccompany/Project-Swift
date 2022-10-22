@@ -10,13 +10,13 @@ import Models
 import HummingBird
 
 struct PublicDeckView: View {
-    var color: Color
+    var color: CollectionColor
     var deckName: String
-    var icon: IconNames
+    var icon: String
     var author: String
     var copies: Int
     
-    init(color: Color, deckName: String, icon: IconNames, author: String, copies: Int) {
+    init(color: CollectionColor, deckName: String, icon: String, author: String, copies: Int) {
         self.color = color
         self.deckName = deckName
         self.icon = icon
@@ -26,7 +26,7 @@ struct PublicDeckView: View {
     
     var body: some View {
         VStack {
-            Image(systemName: icon.rawValue)
+            Image(systemName: icon)
                 .foregroundColor(.white)
                 .font(.system(size: 40))
                 
@@ -49,13 +49,13 @@ struct PublicDeckView: View {
                 .foregroundColor(.white)
         }
         .padding(10)
-        .viewBackgroundColor(color)
+        .viewBackgroundColor(HBColor.color(for: color))
     }
 }
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        PublicDeckView(color: .red, deckName: "Jogos de Switch", icon: .gamecontroller, author: "Spixii", copies: 20)
+        PublicDeckView(color: .red, deckName: "Jogos de Switch", icon: IconNames.gamecontroller.rawValue, author: "Spixii", copies: 20)
             .frame(width: 180, height: 220)
     }
 }
