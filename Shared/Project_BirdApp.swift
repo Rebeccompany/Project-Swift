@@ -12,14 +12,15 @@ import AppFeature
 struct Project_BirdApp: App {
     #if os(iOS)
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    #elseif os(macOS)
-    
     #endif
-    
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            #if os(iOS)
+            ContentViewiOS()
+            #elseif os(macOS)
+            ContentViewMacOS()
+            #endif
         }
     }
 }

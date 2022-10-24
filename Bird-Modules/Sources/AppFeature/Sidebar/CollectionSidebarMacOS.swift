@@ -1,8 +1,8 @@
 //
-//  SwiftUIView.swift
+//  CollectionSidebarMacOS.swift
 //  
 //
-//  Created by Gabriel Ferreira de Carvalho on 14/09/22.
+//  Created by Nathalia do Valle Papst on 24/10/22.
 //
 
 import SwiftUI
@@ -11,29 +11,18 @@ import NewCollectionFeature
 import HummingBird
 import OnboardingFeature
 
-struct CollectionsSidebar: View {
+#if os(macOS)
+struct CollectionsSidebarMacOS: View {
     @State private var onboarding: Bool = false
-    #if os(iOS)
-    @Binding private var editMode: EditMode
-    private var isCompact: Bool
-    #endif
     @EnvironmentObject private var viewModel: ContentViewModel
     @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
     @State private var presentCollectionCreation = false
     @State private var editingCollection: DeckCollection?
     
-    #if os(iOS)
-    init(selection: Binding<SidebarRoute?>, isCompact: Bool, editMode: Binding<EditMode>) {
-        self._selection = selection
-        self._editMode = editMode
-        self.isCompact = isCompact
-    }
-    #elseif os(macOS)
     init(selection: Binding<SidebarRoute?>) {
         self._selection = selection
     }
-    #endif
     
     var body: some View {
         
@@ -41,11 +30,6 @@ struct CollectionsSidebar: View {
             NavigationLink(value: SidebarRoute.allDecks) {
                 Label(NSLocalizedString("todos_os_baralhos", bundle: .module, comment: ""), systemImage: "square.stack")
             }
-            #if os(iOS)
-            .listRowBackground(
-                isCompact ? HBColor.secondaryBackground : nil
-            )
-            #endif
             
             Section {
                 if viewModel.collections.isEmpty {
@@ -57,24 +41,8 @@ struct CollectionsSidebar: View {
                             HStack {
                                 Label(collection.name, systemImage: collection.icon.rawValue)
                                 Spacer()
-                                #if os(iOS)
-                                if editMode.isEditing {
-                                    Image(systemName: "info.circle")
-                                        .foregroundColor(HBColor.actionColor)
-                                        .onTapGesture {
-                                            editingCollection = collection
-                                            presentCollectionEdition = true
-                                        }
-                                        .accessibility(addTraits: .isButton)
-                                }
-                                #endif
                             }
                         }
-                        #if os(iOS)
-                        .listRowBackground(
-                            isCompact ? HBColor.secondaryBackground : nil
-                        )
-                        #endif
                         .contextMenu {
                             Button {
                                 editingCollection = collection
@@ -103,7 +71,6 @@ struct CollectionsSidebar: View {
         }
         .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
         .scrollContentBackground(.hidden)
-        .viewBackgroundColor(HBColor.primaryBackground)
         .navigationTitle("Spixii")
         .toolbar {
             ToolbarItem {
@@ -116,49 +83,29 @@ struct CollectionsSidebar: View {
                 }
                 .sheet(isPresented: $onboarding, content: {
                     OnboardingView()
+                        .frame(minWidth: 400, minHeight: 700)
                 })
                 
             }
-            
-            #if os(iOS)
-            ToolbarItem {
-                EditButton()
-                    .popover(isPresented: $presentCollectionEdition) {
-                        NewCollectionView(
-                            editingCollection: editingCollection
-                        )
-                        .frame(minWidth: 300, minHeight: 600)
-                    }
-            }
-            
-            ToolbarItem {
-                Button {
-                    editingCollection = nil
-                    presentCollectionCreation = true
-                } label: {
-                    Image(systemName: "plus")
-                }
-                .popover(isPresented: $presentCollectionCreation) {
-                    NewCollectionView(
-                        editingCollection: editingCollection
-                    )
-                    .frame(minWidth: 300, minHeight: 600)
-                }
-            }
-            #endif
         }
-        
-        #if os(macOS)
-        Button {
-            print("oi")
-        } label: {
-            Label {
-                Text("Nova Coleção")
-            } icon: {
-                Image(systemName: "plus.circle")
+    
+        HStack {
+            Button {
+                print("oi")
+            } label: {
+                Label {
+                    Text("Nova Coleção")
+                } icon: {
+                    Image(systemName: "plus.circle")
+                }
+                .font(.system(size: 14))
             }
+            .buttonStyle(PlainButtonStyle())
+            .tint(HBColor.newCollectionSidebar)
+            
+            Spacer()
         }
-        #endif
+        .padding([.bottom, .leading], 12)
     }
     
     @ViewBuilder
@@ -176,3 +123,4 @@ struct CollectionsSidebar: View {
         }
     }
 }
+#endif

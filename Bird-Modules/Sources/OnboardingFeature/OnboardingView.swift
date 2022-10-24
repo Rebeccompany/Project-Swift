@@ -16,7 +16,7 @@ public struct OnboardingView: View {
         
     }
     public var body: some View {
-        NavigationView {
+        NavigationStack {
             TabView(selection: $tab) {
                 OnboardingPageOneView().tag(0)
                 OnboardingPageTwoView().tag(1)
@@ -29,7 +29,7 @@ public struct OnboardingView: View {
             #endif
             .animation(.linear, value: tab)
             .toolbar {
-                Button(tab == 3 ? NSLocalizedString("comecar",bundle: .module, comment: "") : NSLocalizedString("pular",bundle: .module, comment: "")) {
+                Button(tab == 3 ? NSLocalizedString("comecar", bundle: .module, comment: "") : NSLocalizedString("pular", bundle: .module, comment: "")) {
                     dismiss()
                 }
                 .foregroundColor(HBColor.actionColor)
