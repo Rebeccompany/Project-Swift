@@ -42,17 +42,7 @@ struct DeckForTodayCell: View {
     
 }
 
-
-struct DeckForTodayCell_Previews: PreviewProvider {
-    static var previews: some View {
-        DeckForTodayCell(deck: Deck(id: UUID(), name: "Palavras em Inglês", icon: "flame", color: CollectionColor.darkPurple, datesLogs: DateLogs(), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(), session: Session(cardIds: [UUID(), UUID()], date: Date(), deckId: UUID(), id: UUID()), category: .others))
-            .frame(width: 300, height: 100)
-            .previewLayout(.sizeThatFits)
-            .viewBackgroundColor(Color.blue)
-    }
-}
-
-struct IconCircleView: View {
+private struct IconCircleView: View {
     let angle: [Angle] = [Angle(degrees: 180), Angle(degrees: 300), Angle(degrees: 60)]
     let opacity: [Double] = [0.5, 0.7, 0.3]
     let iconName: String
@@ -71,7 +61,7 @@ struct IconCircleView: View {
     }
 }
 
-struct IconCircle: Layout {
+private struct IconCircle: Layout {
     let radius: CGFloat
     let angle: CGFloat
     
@@ -93,9 +83,16 @@ struct IconCircle: Layout {
             point.x += bounds.midX
             point.y += bounds.midY
             
-            
             subview.place(at: point, anchor: .center, proposal: .unspecified)
         }
     }
-    
+}
+
+struct DeckForTodayCell_Previews: PreviewProvider {
+    static var previews: some View {
+        DeckForTodayCell(deck: Deck(id: UUID(), name: "Palavras em Inglês", icon: "flame", color: CollectionColor.darkPurple, datesLogs: DateLogs(), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(), session: Session(cardIds: [UUID(), UUID()], date: Date(), deckId: UUID(), id: UUID()), category: .others))
+            .frame(width: 300, height: 100)
+            .previewLayout(.sizeThatFits)
+            .viewBackgroundColor(Color.blue)
+    }
 }
