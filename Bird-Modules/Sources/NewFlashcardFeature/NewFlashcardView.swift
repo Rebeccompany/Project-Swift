@@ -64,30 +64,14 @@ public struct NewFlashcardView: View {
                             .padding(.top)
                         
                         IconColorGridView {
-                            ForEach(viewModel.colors, id: \.self) { color in
-                                Button {
-                                    viewModel.currentSelectedColor = color
-                                } label: {
-                                    HBColor.color(for: color)
-                                        .frame(width: 45, height: 45)
-                                }
-                                .accessibility(label: Text(CollectionColor.getColorString(color)))
-                                .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
-                            }
+                           colorGridItems
                         }
                         
                         Spacer()
                         
                         if editingFlashcard != nil {
-                            Button {
-                                activeAlert = .confirm
-                                showingAlert = true
-                            } label: {
-                                Text("apagar_flashcard", bundle: .module)
-                            }
-                            .buttonStyle(DeleteButtonStyle())
+                            deleteButton
                         }
-                        
                     }
                     .padding()
                     
@@ -101,80 +85,14 @@ public struct NewFlashcardView: View {
                     viewModel.startUp(editingFlashcard: editingFlashcard)
                 }
                 .alert(isPresented: $showingAlert) {
-                    switch activeAlert {
-                    case .error:
-                        return Alert(title: Text(selectedErrorMessage.texts.title),
-                                     message: Text(selectedErrorMessage.texts.message),
-                                     dismissButton: .default(Text("fechar", bundle: .module)))
-                    case .confirm:
-                        return Alert(title: Text("alert_delete_flashcard", bundle: .module),
-                                     message: Text("alert_delete_flashcard_text", bundle: .module),
-                                     primaryButton: .destructive(Text("deletar", bundle: .module)) {
-                                do {
-                                    try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
-                                    dismiss()
-                                } catch {
-                                    activeAlert = .error
-                                    showingAlert = true
-                                    selectedErrorMessage = .deleteCard
-                                }
-                                     },
-                            secondaryButton: .cancel(Text("cancelar", bundle: .module))
-                        )
-                    }
+                    customAlert()
                 }
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button {
-                            if focus == .back {
-                                focus = .front
-                            }
-                        } label: {
-                            Image(systemName: "chevron.up")
-                        }
-                        .disabled(focus == .front)
-                        .accessibilityLabel(focus == .front ? NSLocalizedString("moveup_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("moveup_focus", bundle: .module, comment: ""))
-                        
-                        
-                        Button {
-                            if focus == .front {
-                                focus = .back
-                            }
-                        } label: {
-                            Image(systemName: "chevron.down")
-                        }
-                        .disabled(focus == .back)
-                        .accessibilityLabel(focus == .back ? NSLocalizedString("down_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("down_focus", bundle: .module, comment: ""))
-                        
-                        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
-                            focus = nil
-                        }
-                        .accessibilityLabel(Text("botao_feito", bundle: .module))
+                        customrightToolbarItemGroup
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
-                            if editingFlashcard == nil {
-                                do {
-                                    try viewModel.createFlashcard(for: deck)
-                                    dismiss()
-                                } catch {
-                                    selectedErrorMessage = .createCard
-                                    showingAlert = true
-                                }
-                                
-                            } else {
-                                do {
-                                    try viewModel.editFlashcard(editingFlashcard: editingFlashcard)
-                                    dismiss()
-                                } catch {
-                                    selectedErrorMessage = .editCard
-                                    showingAlert = true
-                                }
-                            }
-                        }
-                        .disabled(!viewModel.canSubmit)
-                        .accessibilityLabel(!viewModel.canSubmit ? NSLocalizedString("feito_disabled", bundle: .module, comment: "") : NSLocalizedString("feito", bundle: .module, comment: ""))
+                        customNavigationToolbar
                     }
                     
                     ToolbarItem(placement: .cancellationAction) {
@@ -203,6 +121,117 @@ public struct NewFlashcardView: View {
         }
         .interactiveDismissDisabled(true)
     }
+    
+    @ViewBuilder
+    private var colorGridItems: some View {
+        ForEach(viewModel.colors, id: \.self) { color in
+            Button {
+                viewModel.currentSelectedColor = color
+            } label: {
+                HBColor.color(for: color)
+                    .frame(width: 45, height: 45)
+            }
+            .accessibility(label: Text(CollectionColor.getColorString(color)))
+            .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
+        }
+    }
+    
+    @ViewBuilder
+    private var deleteButton: some View {
+        Button {
+            activeAlert = .confirm
+            showingAlert = true
+        } label: {
+            Text("apagar_flashcard", bundle: .module)
+        }
+        .buttonStyle(DeleteButtonStyle())
+
+    }
+    
+    private func customAlert() -> Alert {
+        switch activeAlert {
+        case .error:
+            return Alert(title: Text(selectedErrorMessage.texts.title),
+                         message: Text(selectedErrorMessage.texts.message),
+                         dismissButton: .default(Text("fechar", bundle: .module)))
+        case .confirm:
+            return Alert(title: Text("alert_delete_flashcard", bundle: .module),
+                         message: Text("alert_delete_flashcard_text", bundle: .module),
+                         primaryButton: .destructive(Text("deletar", bundle: .module)) {
+                    do {
+                        try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
+                        dismiss()
+                    } catch {
+                        activeAlert = .error
+                        showingAlert = true
+                        selectedErrorMessage = .deleteCard
+                    }
+                         },
+                secondaryButton: .cancel(Text("cancelar", bundle: .module))
+            )
+        }
+    }
+    
+    @ViewBuilder
+    private var customrightToolbarItemGroup: some View {
+        Spacer()
+        Button {
+            if focus == .back {
+                focus = .front
+            }
+        } label: {
+            Image(systemName: "chevron.up")
+        }
+        .disabled(focus == .front)
+        .accessibilityLabel(focus == .front ? NSLocalizedString("moveup_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("moveup_focus", bundle: .module, comment: ""))
+        
+        
+        Button {
+            if focus == .front {
+                focus = .back
+            }
+        } label: {
+            Image(systemName: "chevron.down")
+        }
+        .disabled(focus == .back)
+        .accessibilityLabel(focus == .back ? NSLocalizedString("down_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("down_focus", bundle: .module, comment: ""))
+        
+        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
+            focus = nil
+        }
+        .accessibilityLabel(Text("botao_feito", bundle: .module))
+    }
+    
+    @ViewBuilder
+    private var customNavigationToolbar: some View {
+            Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
+                if editingFlashcard == nil {
+                    do {
+                        try viewModel.createFlashcard(for: deck)
+                        dismiss()
+                    } catch {
+                        selectedErrorMessage = .createCard
+                        showingAlert = true
+                    }
+                    
+                } else {
+                    do {
+                        try viewModel.editFlashcard(editingFlashcard: editingFlashcard)
+                        dismiss()
+                    } catch {
+                        selectedErrorMessage = .editCard
+                        showingAlert = true
+                    }
+                }
+            }
+            .disabled(!viewModel.canSubmit)
+            .accessibilityLabel(!viewModel.canSubmit ? NSLocalizedString("feito_disabled",
+                                                                         bundle: .module,
+                                                                         comment: "") : NSLocalizedString("feito",
+                                                                                                          bundle: .module,
+                                                                                                          comment: ""))
+    }
+    
 }
 
 extension View {

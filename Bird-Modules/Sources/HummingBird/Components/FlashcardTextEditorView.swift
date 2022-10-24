@@ -41,83 +41,10 @@ public struct FlashcardTextEditorView: View {
             }
             
             if context.isEditingText {
-                VStack {
-                    HStack {
-                        Button { context.isItalic.toggle() } label: {
-                            Image.richTextStyleItalic
-                                .frame(width: 18, height: 18)
-                        }
-                        .frame(width: 32, height: 32)
-                        .buttonStyle(.bordered)
-                        .tint(context.isItalic ? HBColor.actionColor : nil)
-                        .padding(.horizontal, 4)
-                        
-                        Button { context.isBold.toggle() } label: {
-                            Image.richTextStyleBold
-                                .frame(width: 18, height: 18)
-                        }
-                        .frame(width: 32, height: 32)
-                        .buttonStyle(.bordered)
-                        .tint(context.isBold ? HBColor.actionColor : nil)
-                        .padding(.horizontal, 4)
-                        
-                        Button { context.isUnderlined.toggle() } label: {
-                            Image.richTextStyleUnderline
-                                .frame(width: 18, height: 18)
-                        }
-                        .frame(width: 32, height: 32)
-                        .buttonStyle(.bordered)
-                        .tint(context.isUnderlined ? HBColor.actionColor : nil)
-                        .padding(.horizontal, 4)
-                        
-                        Button {
-                            isPhotoPickerPresented = true
-                        } label: {
-                            Image(systemName: "photo.on.rectangle")
-                                .frame(width: 18, height: 18)
-                        }
-                        .frame(width: 32, height: 32)
-                        .buttonStyle(.bordered)
-                        .padding(.horizontal, 4)
-                        
-                        sizeTools(for: $context.fontSize)
-                            .frame(width: 115)
-                            .padding(.horizontal, 4)
-                            .background(.regularMaterial)
-                            .cornerRadius(8)
-                    }
-                    VStack {
-                        Menu {
-                            ForEach(RichTextAlignment.allCases) { alignment in
-                                Button {
-                                    context.alignment = alignment
-                                } label: {
-                                    Label {
-                                        Text(alignment.rawValue)
-                                    } icon: {
-                                        alignment.icon
-                                    }
-                                }
-                            }
-                            
-                        } label: {
-                            context.alignment.icon
-                                .frame(width: 32, height: 32)
-                                .padding(.horizontal, 4)
-                                .background(.regularMaterial)
-                                .cornerRadius(8)
-                        }
-                        
-
-                        ColorPicker("Text", selection: context.foregroundColorBinding)
-                        ColorPicker("Background", selection: context.backgroundColorBinding)
-                    }
-                }
-                .padding()
-                .background(.thinMaterial)
-                
+                styleStack
+                    .padding()
+                    .background(.thinMaterial)
             }
-            
         }
         .background(color)
         .overlay(
@@ -130,13 +57,7 @@ public struct FlashcardTextEditorView: View {
                       matching: .all(of: [.images, .not(.livePhotos)]))
         .onChange(of: photoSelection) { newValue in
             Task {
-                if let selectedPhotoData = try? await newValue?.loadTransferable(type: Data.self),
-                   let rawImageData = UIImage(data: selectedPhotoData)?.aspectFittedToHeight(150),
-                   let compressedImage = rawImageData.jpegData(compressionQuality: 0.5),
-                   let image = ImageRepresentable(data: compressedImage) {
-                    let lowerBound = context.selectedRange.lowerBound
-                    context.pasteImage(image, at: lowerBound)
-                }
+                await updateFromPhotoSelection(newValue)
             }
         }
         .onAppear {
@@ -145,11 +66,92 @@ public struct FlashcardTextEditorView: View {
     }
 
     @ViewBuilder
-    private var circle: some View {
-        Circle()
-            .fill(
-                AngularGradient(colors: [.red, .orange, .yellow, .green, .blue, .cyan, .purple], center: .center)
-            )
+    private var styleStack: some View {
+        VStack {
+            HStack {
+                Button { context.isItalic.toggle() } label: {
+                    Image.richTextStyleItalic
+                        .frame(width: 18, height: 18)
+                }
+                .frame(width: 32, height: 32)
+                .buttonStyle(.bordered)
+                .tint(context.isItalic ? HBColor.actionColor : nil)
+                .padding(.horizontal, 4)
+                
+                Button { context.isBold.toggle() } label: {
+                    Image.richTextStyleBold
+                        .frame(width: 18, height: 18)
+                }
+                .frame(width: 32, height: 32)
+                .buttonStyle(.bordered)
+                .tint(context.isBold ? HBColor.actionColor : nil)
+                .padding(.horizontal, 4)
+                
+                Button { context.isUnderlined.toggle() } label: {
+                    Image.richTextStyleUnderline
+                        .frame(width: 18, height: 18)
+                }
+                .frame(width: 32, height: 32)
+                .buttonStyle(.bordered)
+                .tint(context.isUnderlined ? HBColor.actionColor : nil)
+                .padding(.horizontal, 4)
+                
+                Button {
+                    isPhotoPickerPresented = true
+                } label: {
+                    Image(systemName: "photo.on.rectangle")
+                        .frame(width: 18, height: 18)
+                }
+                .frame(width: 32, height: 32)
+                .buttonStyle(.bordered)
+                .padding(.horizontal, 4)
+                
+                sizeTools(for: $context.fontSize)
+                    .frame(width: 115)
+                    .padding(.horizontal, 4)
+                    .background(.regularMaterial)
+                    .cornerRadius(8)
+            }
+            VStack {
+                alignmentMenu
+                ColorPicker("Text", selection: context.foregroundColorBinding)
+                ColorPicker("Background", selection: context.backgroundColorBinding)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var alignmentMenu: some View {
+        Menu {
+            ForEach(RichTextAlignment.allCases) { alignment in
+                Button {
+                    context.alignment = alignment
+                } label: {
+                    Label {
+                        Text(alignment.rawValue)
+                    } icon: {
+                        alignment.icon
+                    }
+                }
+            }
+            
+        } label: {
+            context.alignment.icon
+                .frame(width: 32, height: 32)
+                .padding(.horizontal, 4)
+                .background(.regularMaterial)
+                .cornerRadius(8)
+        }
+    }
+    
+    private func updateFromPhotoSelection(_ photoPickerItem: PhotosPickerItem?) async {
+        if let selectedPhotoData = try? await photoPickerItem?.loadTransferable(type: Data.self),
+           let rawImageData = UIImage(data: selectedPhotoData)?.aspectFittedToHeight(150),
+           let compressedImage = rawImageData.jpegData(compressionQuality: 0.5),
+           let image = ImageRepresentable(data: compressedImage) {
+            let lowerBound = context.selectedRange.lowerBound
+            context.pasteImage(image, at: lowerBound)
+        }
     }
     
     func sizeTools(for size: Binding<CGFloat>) -> some View {
