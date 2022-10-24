@@ -25,6 +25,7 @@ struct DeckForTodayCell: View {
             
             HStack {
                 IconCircleView(iconName: deck.icon)
+                    .padding(.leading)
                 VStack(alignment: .leading) {
                     Text(deck.name)
                         .font(.title3)
@@ -45,6 +46,9 @@ struct DeckForTodayCell: View {
 struct DeckForTodayCell_Previews: PreviewProvider {
     static var previews: some View {
         DeckForTodayCell(deck: Deck(id: UUID(), name: "Palavras em Inglês", icon: "flame", color: CollectionColor.darkPurple, datesLogs: DateLogs(), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(), session: Session(cardIds: [UUID(), UUID()], date: Date(), deckId: UUID(), id: UUID())))
+            .frame(width: 300, height: 100)
+            .previewLayout(.sizeThatFits)
+            .viewBackgroundColor(Color.blue)
     }
 }
 
