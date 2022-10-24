@@ -7,6 +7,7 @@
 
 import SwiftUI
 import HummingBird
+import Habitat
 import Models
 
 struct StoreView: View {
@@ -24,18 +25,16 @@ struct StoreView: View {
                 .padding()
                  
             ScrollView(.horizontal) {
-                HStack(spacing: 5) {
+                HStack(spacing: 8) {
                     ForEach(sortedDecks) { deck in
-                        PublicDeckView(color: deck.color,
-                                       deckName: deck.name,
-                                       icon: deck.icon,
-                                       author: "Spixii",
-                                       copies: 20)
+                        PublicDeckView(deck: deck,
+                                       copies: 20,
+                                       author: "Spixii")
                         .frame(width: 180, height: 210)
                         .cornerRadius(13)
                     }
-                    .padding()
                 }
+                .padding(.leading)
             }
         }
         .onAppear(perform: viewModel.startup)
@@ -47,8 +46,10 @@ struct StoreView: View {
 
 struct StoreView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            StoreView()
+        HabitatPreview {
+            NavigationStack {
+                StoreView()
+            }
         }
     }
 }

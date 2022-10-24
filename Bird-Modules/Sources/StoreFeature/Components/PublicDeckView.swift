@@ -10,27 +10,23 @@ import Models
 import HummingBird
 
 struct PublicDeckView: View {
-    var color: CollectionColor
-    var deckName: String
-    var icon: String
-    var author: String
+    var deck: Deck
     var copies: Int
+    var author: String
     
-    init(color: CollectionColor, deckName: String, icon: String, author: String, copies: Int) {
-        self.color = color
-        self.deckName = deckName
-        self.icon = icon
-        self.author = author
+    init(deck: Deck, copies: Int, author: String) {
+        self.deck = deck
         self.copies = copies
+        self.author = author
     }
     
     var body: some View {
         VStack {
-            Image(systemName: icon)
+            Image(systemName: deck.icon)
                 .foregroundColor(.white)
                 .font(.system(size: 40))
                 
-            Text(deckName)
+            Text(deck.name)
                 .bold()
                 .padding(10)
                 .fixedSize(horizontal: false, vertical: true)
@@ -49,13 +45,12 @@ struct PublicDeckView: View {
                 .foregroundColor(.white)
         }
         .padding(10)
-        .viewBackgroundColor(HBColor.color(for: color))
+        .viewBackgroundColor(HBColor.color(for: deck.color))
     }
 }
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        PublicDeckView(color: .red, deckName: "Jogos de Switch", icon: IconNames.gamecontroller.rawValue, author: "Spixii", copies: 20)
-            .frame(width: 180, height: 220)
+        PublicDeckView(deck: Deck(id: UUID(), name: "Jogos", icon: IconNames.gamecontroller.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: DeckCategory.humanities), copies: 20, author: "Spixii")
     }
 }
