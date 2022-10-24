@@ -7,7 +7,7 @@
 
 import Foundation
  
-public enum DeckCategory: String {
+public enum DeckCategory: String, Codable {
     case languages
     case stem
     case humanities
