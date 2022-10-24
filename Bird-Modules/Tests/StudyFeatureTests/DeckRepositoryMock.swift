@@ -266,6 +266,7 @@ extension Deck {
                                       createdAt: Date(timeIntervalSince1970: 0)),
                   collectionId: nil,
                   cardsIds: cardsIds,
-                  spacedRepetitionConfig: spacedConfig)
+                  spacedRepetitionConfig: spacedConfig,
+                  category: DeckCategory.arts)
     }
 }

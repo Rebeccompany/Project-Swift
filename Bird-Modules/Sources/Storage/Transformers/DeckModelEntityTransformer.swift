@@ -41,7 +41,9 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
             let lastAccess = entity.lastAccess,
             let createdAt = entity.createdAt,
             let lastEdit = entity.lastEdit,
-            let cards = entity.cards?.allObjects as? [CardEntity]
+            let cards = entity.cards?.allObjects as? [CardEntity],
+            let rawCategory = entity.category,
+            let category = DeckCategory(rawValue: rawCategory)
         else { return nil }
         let collection = entity.collection
         
@@ -68,7 +70,8 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
                     collectionId: collectionIds,
                     cardsIds: cardsIds,
                     spacedRepetitionConfig: spacedRepetitionConfig,
-                    session: session
+                    session: session,
+                    category: category
         )
     }
     
@@ -84,6 +87,7 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
         deck.maxLearningCards = Int32(model.spacedRepetitionConfig.maxLearningCards)
         deck.maxReviewingCards = Int32(model.spacedRepetitionConfig.maxReviewingCards)
         deck.numberOfSteps = Int16(model.spacedRepetitionConfig.numberOfSteps)
+        deck.category = model.category.rawValue
         return deck
     }
 }

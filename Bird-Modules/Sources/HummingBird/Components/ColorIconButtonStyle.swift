@@ -15,7 +15,6 @@ public struct ColorIconButtonStyle: ButtonStyle {
     }
     
     public func makeBody(configuration: Configuration) -> some View {
-        
         configuration.label
             .foregroundColor(HBColor.collectionTextColor)
             .font(.headline)
