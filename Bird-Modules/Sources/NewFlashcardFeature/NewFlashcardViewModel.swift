@@ -14,7 +14,7 @@ import Combine
 import Habitat
 
 public class NewFlashcardViewModel: ObservableObject {
-    @Published var flashcardFront: NSAttributedString = NSAttributedString(string: "pum")
+    @Published var flashcardFront: NSAttributedString = NSAttributedString(string: "")
     @Published var flashcardBack: NSAttributedString = NSAttributedString(string: "")
     @Published var currentSelectedColor: CollectionColor? = CollectionColor.red
     @Published var canSubmit: Bool = false
@@ -28,8 +28,8 @@ public class NewFlashcardViewModel: ObservableObject {
     
 
     private func setupDeckContentIntoFields(_ card: Card) {
-        flashcardFront = NSAttributedString(card.front)
-        flashcardBack = NSAttributedString(card.back)
+        flashcardFront = card.front
+        flashcardBack = card.back
         currentSelectedColor = card.color
     }
     
@@ -57,8 +57,8 @@ public class NewFlashcardViewModel: ObservableObject {
         
         try deckRepository.addCard(
             Card(id: uuidGenerator.newId(),
-                 front: AttributedString(flashcardFront),
-                 back: AttributedString(flashcardBack),
+                 front: flashcardFront,
+                 back: flashcardBack,
                  color: selectedColor,
                  datesLogs: DateLogs(lastAccess: dateHandler.today, lastEdit: dateHandler.today, createdAt: dateHandler.today),
                  deckID: deck.id,
@@ -72,8 +72,8 @@ public class NewFlashcardViewModel: ObservableObject {
             return
         }
         
-        editingFlashcard.front = AttributedString(flashcardFront)
-        editingFlashcard.back = AttributedString(flashcardBack)
+        editingFlashcard.front = flashcardFront
+        editingFlashcard.back = flashcardBack
         editingFlashcard.color = selectedColor
         editingFlashcard.datesLogs.lastAccess = dateHandler.today
         editingFlashcard.datesLogs.lastEdit = dateHandler.today

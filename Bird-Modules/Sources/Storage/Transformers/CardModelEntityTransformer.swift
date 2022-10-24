@@ -27,9 +27,9 @@ struct CardModelEntityTransformer: ModelEntityTransformer {
     func entityToModel(_ entity: CardEntity) -> Card? {
         guard
             let frontData = entity.front,
-            let frontNSAttributedString = frontData.toRtf(),
+            let frontNSAttributedString = createNSAttributedString(from: frontData),
             let backData = entity.back,
-            let backNSAttributedString = backData.toRtf(),
+            let backNSAttributedString = createNSAttributedString(from: backData),
             let id = entity.id,
             let createdAt = entity.createdAt,
             let lastAccess = entity.lastAccess,
@@ -48,8 +48,8 @@ struct CardModelEntityTransformer: ModelEntityTransformer {
         let history = snapshotsEntities.compactMap(CardSnapshot.init)
         
         return Card(id: id,
-                    front: AttributedString(frontNSAttributedString),
-                    back: AttributedString(backNSAttributedString),
+                    front: frontNSAttributedString,
+                    back: backNSAttributedString,
                     color: CollectionColor(rawValue: Int(entity.color)) ?? .red,
                     datesLogs: dateLog,
                     deckID: deckId,
@@ -57,11 +57,25 @@ struct CardModelEntityTransformer: ModelEntityTransformer {
                     history: history)
     }
     
+    private func createNSAttributedString(from data: Data) -> NSAttributedString? {
+        let nsAttrStr: NSAttributedString
+        
+        if let rtfd = data.toRtfd() {
+            nsAttrStr = rtfd
+        } else if let rtf = data.toRtf() {
+            nsAttrStr = rtf
+        } else {
+            return nil
+        }
+        
+        return nsAttrStr
+    }
+    
     func modelToEntity(_ model: Card, on context: NSManagedObjectContext) -> CardEntity {
         let card = CardEntity(context: context)
         
-        card.front = NSAttributedString(model.front).rtfData()
-        card.back = NSAttributedString(model.back).rtfData()
+        card.front = model.front.rtfdData()
+        card.back = model.back.rtfdData()
         card.createdAt = model.datesLogs.createdAt
         card.lastEdit = model.datesLogs.lastEdit
         card.lastAccess = model.datesLogs.lastAccess

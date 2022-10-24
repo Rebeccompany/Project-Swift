@@ -34,7 +34,6 @@ public struct NewFlashcardView: View {
     public init(deck: Deck, editingFlashcard: Card? = nil) {
         self.deck = deck
         self.editingFlashcard = editingFlashcard
-        print(NSAttributedString(editingFlashcard!.front).string, ";pppp ", NSAttributedString(editingFlashcard!.back).string)
     }
     
     public var body: some View {

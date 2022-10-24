@@ -88,7 +88,7 @@ public class DeckViewModel: ObservableObject {
         if searchFieldContent.isEmpty {
             return cards
         } else {
-            return cards.filter { NSAttributedString($0.front).string.contains(searchFieldContent) || NSAttributedString($0.back).string.contains(searchFieldContent) }
+            return cards.filter { $0.front.string.contains(searchFieldContent) || $0.back.string.contains(searchFieldContent) }
         }
     }
     

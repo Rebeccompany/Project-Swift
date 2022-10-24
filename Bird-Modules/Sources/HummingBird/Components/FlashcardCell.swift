@@ -28,15 +28,12 @@ public struct FlashcardCell: View {
                     Spacer()
                 }
                 Spacer()
-                Text(cardText(isFront ? card.front : card.back))
+                #warning("arruma")
+                Text(isFront ? card.front.attributedString.string : card.back.attributedString.string)
+//                Text(isFront ? card.front.attributedString : card.back.attributedString)
                 Spacer()
             }
         }.buttonStyle(Style(color: card.color))
-    }
-    
-    private func cardText(_ content: AttributedString) -> AttributedString {
-        
-        return content
     }
     
     private struct Style: ButtonStyle {
@@ -63,6 +60,6 @@ public struct FlashcardCell: View {
 
 struct FlashcardCell_Previews: PreviewProvider {
     static var previews: some View {
-        FlashcardCell(card: Card(id: UUID(), front: "frentee", back: "tras", color: CollectionColor.lightPurple, datesLogs: DateLogs(), deckID: UUID(), woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: true), history: [])) {}
+        FlashcardCell(card: Card(id: UUID(), front: NSAttributedString(string: "frentee"), back: NSAttributedString(string: "tras"), color: CollectionColor.lightPurple, datesLogs: DateLogs(), deckID: UUID(), woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: true), history: [])) {}
     }
 }

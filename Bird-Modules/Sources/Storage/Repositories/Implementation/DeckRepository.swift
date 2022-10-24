@@ -127,8 +127,8 @@ public final class DeckRepository: DeckRepositoryProtocol {
         let entity = try cardRepository.fetchEntityById(card.id)
         
         guard
-            let frontData = NSAttributedString(card.front).rtfData(),
-            let backData = NSAttributedString(card.back).rtfData()
+            let frontData = card.front.rtfdData(),
+            let backData = card.back.rtfdData()
         else {
             throw RepositoryError.couldNotEdit
         }

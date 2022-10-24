@@ -20,7 +20,7 @@ public struct FlashcardTextEditorView: View {
     
     @ObservedObject private var context: RichTextContext
 
-    public init(text: Binding<NSAttributedString>, color: Color,side: String, context: RichTextContext) {
+    public init(text: Binding<NSAttributedString>, color: Color, side: String, context: RichTextContext) {
         self._text = text
         self.color = color
         self.side = side
@@ -87,6 +87,28 @@ public struct FlashcardTextEditorView: View {
                             .cornerRadius(8)
                     }
                     VStack {
+                        Menu {
+                            ForEach(RichTextAlignment.allCases) { alignment in
+                                Button {
+                                    context.alignment = alignment
+                                } label: {
+                                    Label {
+                                        Text(alignment.rawValue)
+                                    } icon: {
+                                        alignment.icon
+                                    }
+                                }
+                            }
+                            
+                        } label: {
+                            context.alignment.icon
+                                .frame(width: 32, height: 32)
+                                .padding(.horizontal, 4)
+                                .background(.regularMaterial)
+                                .cornerRadius(8)
+                        }
+                        
+
                         ColorPicker("Text", selection: context.foregroundColorBinding)
                         ColorPicker("Background", selection: context.backgroundColorBinding)
                     }
@@ -109,7 +131,9 @@ public struct FlashcardTextEditorView: View {
         .onChange(of: photoSelection) { newValue in
             Task {
                 if let selectedPhotoData = try? await newValue?.loadTransferable(type: Data.self),
-                   let image = ImageRepresentable(data: selectedPhotoData) {
+                   let rawImageData = UIImage(data: selectedPhotoData)?.aspectFittedToHeight(150),
+                   let compressedImage = rawImageData.jpegData(compressionQuality: 0.5),
+                   let image = ImageRepresentable(data: compressedImage) {
                     let lowerBound = context.selectedRange.lowerBound
                     context.pasteImage(image, at: lowerBound)
                 }
@@ -152,5 +176,18 @@ struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         FlashcardTextEditorView(text: .constant(NSAttributedString("")), color: .blue, side: "Frente", context: RichTextContext())
             .environment(\.sizeCategory, .medium)
+    }
+}
+
+extension UIImage {
+    func aspectFittedToHeight(_ newHeight: CGFloat) -> UIImage {
+        let scale = newHeight / self.size.height
+        let newWidth = self.size.width * scale
+        let newSize = CGSize(width: newWidth, height: newHeight)
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+
+        return renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: newSize))
+        }
     }
 }

@@ -34,8 +34,8 @@ enum ImportedCardInfoTransformer {
         
         return Card(
             id: uuidHandler.newId(),
-            front: AttributedString(front),
-            back: AttributedString(back),
+            front: front,
+            back: back,
             color: cardColor,
             datesLogs: dateLog,
             deckID: deckID,
