@@ -24,17 +24,17 @@ struct StoreView: View {
                 .bold()
                 .padding()
                  
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
+            ScrollView(.vertical) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 220), spacing: 16, alignment: .top)], spacing: 16) {
                     ForEach(sortedDecks) { deck in
                         PublicDeckView(deck: deck,
                                        copies: 20,
                                        author: "Spixii")
-                        .frame(width: 180, height: 210)
+                        .frame(width: 160, height: 210)
                         .cornerRadius(13)
                     }
                 }
-                .padding(.leading)
+                .padding(.horizontal)
             }
         }
         .onAppear(perform: viewModel.startup)
