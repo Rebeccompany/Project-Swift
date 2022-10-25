@@ -14,17 +14,32 @@ struct StoreView: View {
     @StateObject private var viewModel: StoreViewModel = StoreViewModel()
     
     var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading) {
-                ForEach(viewModel.decks) { section in
-                    PublicSection(section: section)
+        Group {
+            switch viewModel.viewState {
+            case .loaded:
+                ScrollView {
+                    LazyVStack(alignment: .leading) {
+                        ForEach(viewModel.sections) { section in
+                            PublicSection(section: section)
+                        }
+                    }
                 }
+            case .error:
+                Text("Error")
+            case .loading:
+                ProgressView()
             }
         }
+        .navigationTitle(NSLocalizedString("baralhos_publicos", bundle: .module, comment: ""))
         .onAppear(perform: viewModel.startup)
-        .navigationTitle("Baralhos Públicos")
         .viewBackgroundColor(HBColor.primaryBackground)
     }
+}
+
+enum ViewState {
+    case loading
+    case loaded
+    case error
 }
 
 struct StoreView_Previews: PreviewProvider {

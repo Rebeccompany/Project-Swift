@@ -15,42 +15,34 @@ import SwiftUI
 import Puffins
 
 public class StoreViewModel: ObservableObject {
-    @Published var searchFieldContent: String
-    @Published var decks: [ExternalSection]
-    @Published var sortOrder: [KeyPathComparator<Deck>]
+    
+    @Published var sections: [ExternalSection] = []
+    @Published var viewState: ViewState = .loading
     
     private var externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock()
     
     public init() {
-        self.searchFieldContent = ""
-        self.decks = []
-        self.sortOrder = [KeyPathComparator(\Deck.name)]
+    }
+    
+    func startup() {
+        externalDeckService
+            .getDeckFeed()
+            .delay(for: .seconds(3), scheduler: RunLoop.main)
+            .handleEvents(receiveOutput: {[weak self] _ in
+                self?.viewState = .loaded
+            }, receiveCompletion: {[weak self] completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(_):
+                    self?.viewState = .error
+                }
+            })
+            .replaceError(with: [])
+            .assign(to: &$sections)
     }
     
     private var deckListener: AnyPublisher<[ExternalSection], URLError> {
         externalDeckService.getDeckFeed()
-    }
-    
-    func startup() {
-        deckListener
-            .assertNoFailure()
-            .assign(to: &$decks)
-    }
-    
-    private func filterDecksBySearchText(_ decks: [Deck], searchText: String) -> [Deck] {
-        if searchText.isEmpty {
-            return decks
-        } else {
-            return decks.filter { $0.name.capitalized.contains(searchText.capitalized) }
-        }
-    }
-    
-    private func handleCompletion(_ completion: Subscribers.Completion<RepositoryError>) {
-        switch completion {
-        case .finished:
-            print("finished")
-        case .failure(let error):
-            print(error)
-        }
     }
 }
