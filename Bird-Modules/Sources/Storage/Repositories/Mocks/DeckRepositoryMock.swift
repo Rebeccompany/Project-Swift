@@ -332,6 +332,7 @@ extension Card {
                    spacedRepetitionConfig: .init(maxLearningCards: 20,
                                                  maxReviewingCards: 200,
                                                  numberOfSteps: 4),
-                                                 category: DeckCategory.arts)
+                                                 category: DeckCategory.arts,
+                                                 storeId: nil)
      }
  }
