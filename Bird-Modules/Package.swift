@@ -290,7 +290,8 @@ let package = Package(
             dependencies: [
                 "Models",
                 "HummingBird",
-                "DeckFeature"
+                "DeckFeature",
+                "Puffins"
             ]
         ),
         

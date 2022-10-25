@@ -8,10 +8,19 @@
 import Foundation
 
 public struct ExternalDeck: Identifiable, Codable {
+    public init(id: String, name: String, description: String, icon: IconNames, color: CollectionColor, category: DeckCategory) {
+        self.id = id
+        self.name = name
+        self.description = description
+        self.icon = icon
+        self.color = color
+        self.category = category
+    }
+    
     public let id: String
-    let name: String
-    let description: String
-    let icon: IconNames
-    let color: CollectionColor
-    let category: DeckCategory
+    public let name: String
+    public let description: String
+    public let icon: IconNames
+    public let color: CollectionColor
+    public let category: DeckCategory
 }

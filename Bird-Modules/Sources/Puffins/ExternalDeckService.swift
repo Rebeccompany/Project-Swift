@@ -9,15 +9,15 @@ import Foundation
 import Combine
 import Models
 
-final class ExternalDeckService: ExternalDeckServiceProtocol {
+public final class ExternalDeckService: ExternalDeckServiceProtocol {
     //HANDLER DE URL
     private let session: URLSession
     
-    init(session: URLSession = .shared) {
+    public init(session: URLSession = .shared) {
         self.session = session
     }
     
-    func getDeckFeed() -> AnyPublisher<[DeckCategory : [ExternalDeck]], URLError> {
+    public func getDeckFeed() -> AnyPublisher<[DeckCategory : [ExternalDeck]], URLError> {
         session.dataTaskPublisher(for: URL(string: "https://www.google.com.br")!)
             .map(\.data)
             .decode(type: [DeckCategory: [ExternalDeck]].self, decoder: JSONDecoder())

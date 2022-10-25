@@ -9,6 +9,6 @@ import Foundation
 import Combine
 import Models
 
-protocol ExternalDeckServiceProtocol {
+public protocol ExternalDeckServiceProtocol {
     func getDeckFeed() -> AnyPublisher<[DeckCategory: [ExternalDeck]], URLError>
 }

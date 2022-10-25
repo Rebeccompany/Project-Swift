@@ -12,35 +12,28 @@ import DeckFeature
 import Storage
 import Habitat
 import SwiftUI
+import Puffins
 
 public class StoreViewModel: ObservableObject {
     @Published var searchFieldContent: String
-    @Published var decks: [Deck]
+    @Published var decks: [DeckCategory: [ExternalDeck]]
     @Published var sortOrder: [KeyPathComparator<Deck>]
     
-    @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
+    private var externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock()
     
     public init() {
         self.searchFieldContent = ""
-        self.decks = []
+        self.decks = [:]
         self.sortOrder = [KeyPathComparator(\Deck.name)]
     }
     
-    private var deckListener: AnyPublisher<[Deck], Never> {
-        deckRepository
-            .deckListener()
-            .handleEvents(receiveCompletion: { [weak self] completion in self?.handleCompletion(completion) })
-            .replaceError(with: [])
-            .combineLatest($searchFieldContent)
-            .compactMap { [weak self] decks, searchFieldContent in
-                self?.filterDecksBySearchText(decks, searchText: searchFieldContent)
-            }
-            .replaceNil(with: [])
-            .eraseToAnyPublisher()
+    private var deckListener: AnyPublisher<[DeckCategory: [ExternalDeck]], URLError> {
+        externalDeckService.getDeckFeed()
     }
     
     func startup() {
         deckListener
+            .assertNoFailure()
             .assign(to: &$decks)
     }
     

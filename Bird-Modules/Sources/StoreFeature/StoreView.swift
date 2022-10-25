@@ -13,33 +13,26 @@ import Models
 struct StoreView: View {
     @StateObject private var viewModel: StoreViewModel = StoreViewModel()
     @State private var searchText = ""
-    private var sortedDecks: [Deck] {
-        viewModel.decks.sorted(using: viewModel.sortOrder)
-    }
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Por Spixii")
-                .font(.title3)
-                .bold()
-                .padding()
-                 
-            ScrollView(.vertical) {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 220), spacing: 16, alignment: .top)], spacing: 16) {
-                    ForEach(sortedDecks) { deck in
-                        PublicDeckView(deck: deck,
-                                       copies: 20,
-                                       author: "Spixii")
-                        .frame(width: 160, height: 210)
-                        .cornerRadius(13)
+        ScrollView {
+            LazyVStack(alignment: .leading) {
+                ForEach(viewModel.decks.keys.map {$0}, id: \.self) { (key: DeckCategory) in
+                    Section("\(key.rawValue)") {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)]) {
+                            ForEach(viewModel.decks[key] ?? []) { deck in
+                                PublicDeckView(deck: deck, copies: 10, author: "Spixii")
+                            }
+                            .cornerRadius(8)
+                        }
                     }
+                    .bold()
+                    .padding([.bottom, .leading, .trailing], 12)
                 }
-                .padding(.horizontal)
             }
         }
         .onAppear(perform: viewModel.startup)
         .navigationTitle("Baralhos Públicos")
-        .searchable(text: $viewModel.searchFieldContent, placement: .navigationBarDrawer(displayMode: .always))
         .viewBackgroundColor(HBColor.primaryBackground)
     }
 }
