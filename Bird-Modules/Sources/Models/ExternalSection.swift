@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ExternalSection: Codable, Identifiable {
+public struct ExternalSection: Codable, Identifiable, Equatable {
     public var id: String {
         title
     }

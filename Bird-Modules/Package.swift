@@ -413,6 +413,14 @@ let package = Package(
                 "Utils",
                 "Habitat"
             ]
+        ),
+        
+        .testTarget(
+            name: "StoreFeatureTests",
+            dependencies: [
+                "Puffins",
+                "StoreFeature"
+            ]
         )
     ]
 )
