@@ -11,7 +11,9 @@ import Models
 struct HBColorPicker: View {
     var systemImage: String
     @Binding var selection: Color
-    @State var present = false
+    @State private var _color: Color = .white
+    @State private var present = false
+    
     
 #if os(iOS)
     @Environment(\.horizontalSizeClass)
@@ -20,8 +22,8 @@ struct HBColorPicker: View {
     
     private let colors: [Color] = {
         var colors = CollectionColor.allCases.map(HBColor.color(for:))
-        colors.insert(.black, at: 0)
-        colors.insert(.white, at: 0)
+        colors.insert(HBColor.black, at: 0)
+        colors.insert(HBColor.white, at: 0)
         return colors
     }()
     
@@ -35,8 +37,12 @@ struct HBColorPicker: View {
                     .frame(width: 17, height: 5)
             }
             .font(.body)
+            .frame(width: 18, height: 18)
         }
-        .buttonStyle(.bordered)
+        
+        .onAppear {
+            _color = selection
+        }
         .popover(isPresented: $present) {
             colorGrid
                 .frame(minWidth: 180, minHeight: 160)
@@ -58,13 +64,16 @@ struct HBColorPicker: View {
             ScrollView(.horizontal, showsIndicators: true) {
                 LazyHGrid(rows: [GridItem(.adaptive(minimum: 44))]) {
                     ForEach(colors, id: \.self) { color in
-                        Button { selection = color } label: {
+                        Button {
+                            selection = color
+                            _color = color
+                        } label: {
                             color
                                 .clipShape(Circle())
                                 .padding(4)
                                 .overlay {
                                     Circle()
-                                        .stroke(color == selection ? HBColor.actionColor : Color.gray, lineWidth: color == selection ? 4 : 2)
+                                        .stroke(_color == color ? HBColor.actionColor : Color.gray, lineWidth: color == _color ? 4 : 2)
                                 }
                                 .frame(width: 56, height: 56)
                                 .clipShape(Circle())

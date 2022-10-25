@@ -67,7 +67,7 @@ public struct FlashcardTextEditorView: View {
 
     @ViewBuilder
     private var styleStack: some View {
-        VStack {
+        VStack(alignment: .center) {
             HStack {
                 Button { context.isItalic.toggle() } label: {
                     Image.richTextStyleItalic
@@ -95,28 +95,35 @@ public struct FlashcardTextEditorView: View {
                 .buttonStyle(.bordered)
                 .tint(context.isUnderlined ? HBColor.actionColor : nil)
                 .padding(.horizontal, 4)
-                
-                Button {
-                    isPhotoPickerPresented = true
-                } label: {
-                    Image(systemName: "photo.on.rectangle")
-                        .frame(width: 18, height: 18)
-                }
-                .frame(width: 32, height: 32)
-                .buttonStyle(.bordered)
-                .padding(.horizontal, 4)
-                
+//                Button {
+//                    isPhotoPickerPresented = true
+//                } label: {
+//                    Image(systemName: "photo.on.rectangle")
+//                        .frame(width: 18, height: 18)
+//                }
+//                .frame(width: 32, height: 32)
+//                .buttonStyle(.bordered)
+//                .padding(.horizontal, 4)
+                alignmentMenu
+                HBColorPicker(systemImage: "character", selection: context.foregroundColorBinding)
+                    .frame(width: 32, height: 32)
+                    .buttonStyle(.bordered)
+                    .padding(.horizontal, 4)
+                HBColorPicker(systemImage: "pencil.circle", selection: context.backgroundColorBinding)
+                    .frame(width: 32, height: 32)
+                    .buttonStyle(.bordered)
+                    .padding(.horizontal, 4)
+            }
+            HStack {
+                Spacer()
                 sizeTools(for: $context.fontSize)
                     .frame(width: 115)
                     .padding(.horizontal, 4)
                     .background(.regularMaterial)
                     .cornerRadius(8)
+                Spacer()
             }
-            VStack {
-                alignmentMenu
-                ColorPicker("Text", selection: context.foregroundColorBinding)
-                ColorPicker("Background", selection: context.backgroundColorBinding)
-            }
+            
         }
     }
     
