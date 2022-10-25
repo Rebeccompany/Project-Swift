@@ -45,7 +45,9 @@ public struct ContentViewMacOS: View {
     
     @ViewBuilder
     private var sidebar: some View {
-        CollectionsSidebarMacOS(selection: $viewModel.sidebarSelection)
+        CollectionsSidebarMacOS(
+            selection: $viewModel.sidebarSelection
+        )
             .environmentObject(viewModel)
             .frame(minWidth: 250)
     }

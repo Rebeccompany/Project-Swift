@@ -40,7 +40,8 @@ public struct DetailView: View {
         #elseif os(iOS)
         .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
         .toolbar(editMode.isEditing ? .visible : .hidden,
-                 for: .bottomBar) {
+                 for: .bottomBar)
+        .toolbar {
             
             ToolbarItem(placement: .bottomBar) {
                 Button {

@@ -15,12 +15,12 @@ import OnboardingFeature
 struct CollectionsSidebariOS: View {
     @State private var onboarding: Bool = false
     @Binding private var editMode: EditMode
-    private var isCompact: Bool
     @EnvironmentObject private var viewModel: ContentViewModel
     @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
     @State private var presentCollectionCreation = false
     @State private var editingCollection: DeckCollection?
+    private var isCompact: Bool
     
     init(selection: Binding<SidebarRoute?>, isCompact: Bool, editMode: Binding<EditMode>) {
         self._selection = selection
@@ -101,17 +101,16 @@ struct CollectionsSidebariOS: View {
                         .foregroundColor(HBColor.actionColor)
                         .accessibility(addTraits: .isButton)
                 }
-                .sheet(isPresented: $onboarding, content: {
+                .sheet(isPresented: $onboarding) {
                     OnboardingView()
-                })
-                
+                }
             }
             
             ToolbarItem {
                 EditButton()
                     .popover(isPresented: $presentCollectionEdition) {
-                        NewCollectionView(
-                            editingCollection: editingCollection
+                        NewCollectionViewiOS(
+                            editingCollection: editingCollection, editMode: $editMode
                         )
                         .frame(minWidth: 300, minHeight: 600)
                     }
@@ -125,8 +124,8 @@ struct CollectionsSidebariOS: View {
                     Image(systemName: "plus")
                 }
                 .popover(isPresented: $presentCollectionCreation) {
-                    NewCollectionView(
-                        editingCollection: editingCollection
+                    NewCollectionViewiOS(
+                        editingCollection: editingCollection, editMode: $editMode
                     )
                     .frame(minWidth: 300, minHeight: 600)
                 }

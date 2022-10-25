@@ -203,8 +203,10 @@ public struct NewDeckView: View {
 struct NewDeckView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
-            NewDeckView(collection: nil, editingDeck: nil)
+            #if os(iOS)
+            NewDeckView(collection: nil, editingDeck: nil, editMode: .constant(.active))
                 .preferredColorScheme(.dark)
+            #endif
         }
     }
 }

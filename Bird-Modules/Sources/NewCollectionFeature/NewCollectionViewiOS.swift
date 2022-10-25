@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  NewCollectionViewiOS.swift
 //  
 //
 //  Created by Caroline Taus on 06/09/22.
@@ -11,7 +11,8 @@ import Models
 import Storage
 import Habitat
 
-public struct NewCollectionView: View {
+#if os(iOS)
+public struct NewCollectionViewiOS: View {
     
     @StateObject private var viewModel: NewCollectionViewModel = NewCollectionViewModel()
     @Environment(\.dismiss) private var dismiss
@@ -20,9 +21,11 @@ public struct NewCollectionView: View {
     @State private var selectedErrorMessage: AlertText = .deleteCollection
     @FocusState private var selectedField: Int?
     var editingCollection: DeckCollection?
-    
-    public init(editingCollection: DeckCollection?) {
+    @Binding private var editMode: EditMode
+
+    public init(editingCollection: DeckCollection?, editMode: Binding<EditMode>) {
         self.editingCollection = editingCollection
+        self._editMode = editMode
     }
     
     public var body: some View {
@@ -84,7 +87,7 @@ public struct NewCollectionView: View {
                                      primaryButton: .destructive(Text("deletar", bundle: .module)) {
                                         do {
                                             try viewModel.deleteCollection(editingCollection: editingCollection)
-                                            //editMode = .inactive
+                                            editMode = .inactive
                                             dismiss()
                                         } catch {
                                             activeAlert = .error
@@ -97,9 +100,7 @@ public struct NewCollectionView: View {
                     }
                 }
                 .navigationTitle(editingCollection == nil ? NSLocalizedString("criar_colecao", bundle: .module, comment: "") : NSLocalizedString("editar_colecao", bundle: .module, comment: ""))
-                #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
-                #endif
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
                         Spacer()
@@ -110,13 +111,13 @@ public struct NewCollectionView: View {
                     }
                     ToolbarItem(placement: .cancellationAction) {
                         Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
-                            //editMode = .inactive
+                            editMode = .inactive
                             dismiss()
                         }
                         .foregroundColor(Color.red)
                         
                     }
-                    #if os(iOS)
+                    
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
                             
@@ -143,37 +144,7 @@ public struct NewCollectionView: View {
                         }
                         .disabled(!viewModel.canSubmit)
                     }
-                    #elseif os(macOS)
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
-                            
-                            if editingCollection == nil {
-                                do {
-                                    try viewModel.createCollection()
-                                    dismiss()
-                                } catch {
-                                    activeAlert = .error
-                                    showingAlert = true
-                                    selectedErrorMessage = .createCollection
-                                }
-                            } else {
-                                do {
-                                    try viewModel.editCollection(editingCollection: editingCollection)
-                                    //editMode = .inactive
-                                    dismiss()
-                                } catch {
-                                    activeAlert = .error
-                                    showingAlert = true
-                                    selectedErrorMessage = .editCollection
-                                }
-                            }
-                        }
-                        .disabled(!viewModel.canSubmit)
-                    }
-                    #endif
-                    
                 }
-                
             }
             .viewBackgroundColor(HBColor.primaryBackground)
             .scrollContentBackground(.hidden)
@@ -185,15 +156,13 @@ public struct NewCollectionView: View {
     
 }
 
-struct NewCollectionView_Previews: PreviewProvider {
+struct NewCollectionViewiOS_Previews: PreviewProvider {
     static var previews: some View {
         
         HabitatPreview {
-            NewCollectionView(editingCollection: nil)
+            NewCollectionViewiOS(editingCollection: nil, editMode: .constant(.active))
             .preferredColorScheme(.light)
         }
-        
-        
-        
     }
 }
+#endif
