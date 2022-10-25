@@ -1,0 +1,15 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 25/10/22.
+  
+*/
+
+"idiomas" = "Languages";
+"humanas" = "Humanities";
+"exatas" = "Stem";
+"artes" = "Arts";
+"medicina" = "Medicine";
+"direito" = "Law";
+"outros" = "Others";

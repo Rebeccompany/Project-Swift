@@ -36,12 +36,6 @@ struct StoreView: View {
     }
 }
 
-enum ViewState {
-    case loading
-    case loaded
-    case error
-}
-
 struct StoreView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
