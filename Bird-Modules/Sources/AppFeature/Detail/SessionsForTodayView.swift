@@ -17,15 +17,19 @@ struct SessionsForTodayView: View {
     
     var body: some View {
         ScrollView(.horizontal) {
-            ForEach(todayDecks) { deck in
-                DeckForTodayCell(deck: deck)
+            HStack(spacing: 8) {
+                ForEach(todayDecks) { deck in
+                    DeckForTodayCell(deck: deck)
+                }
             }
+            .padding(.leading)
         }
     }
 }
 
 struct SessionsForTodayView_Previews: PreviewProvider {
     static var previews: some View {
+        
         SessionsForTodayView()
     }
 }

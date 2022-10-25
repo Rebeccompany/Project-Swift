@@ -11,6 +11,7 @@ import Combine
 import Storage
 import DeckFeature
 import Habitat
+import Utils
 import SwiftUI
 
 //swiftlint:disable trailing_closure
@@ -31,6 +32,7 @@ public final class ContentViewModel: ObservableObject {
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
+    @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
     
     private var cancellables: Set<AnyCancellable>
     
@@ -50,6 +52,10 @@ public final class ContentViewModel: ObservableObject {
         case .decksFromCollection(let collection):
             return collection
         }
+    }
+    
+    var todayDecks: [Deck] {
+        decks.filter { _ in true }
     }
     
     public init() {

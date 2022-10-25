@@ -146,9 +146,16 @@ public struct DetailView: View {
     
     @ViewBuilder
     private var content: some View {
-        VStack {
-            
+        VStack(alignment: .leading) {
+            Text("Sessões Para Hoje")
+                .padding(.leading)
+                .font(.title3)
+                .bold()
+            SessionsForTodayView()
             Text("Baralhos")
+                .padding(.leading)
+                .font(.title3)
+                .bold()
             if viewModel.detailType == .grid {
                 DeckGridView { deck in
                     editingDeck = deck

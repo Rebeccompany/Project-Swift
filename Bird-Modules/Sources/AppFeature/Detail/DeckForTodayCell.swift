@@ -12,32 +12,30 @@ import Models
 
 struct DeckForTodayCell: View {
     var deck: Deck
-
+    
     var body: some View {
-        ZStack {
+        
+        HStack {
+            IconCircleView(iconName: deck.icon)
+                .padding(.vertical, 4)
+            VStack(alignment: .leading) {
+                Text(deck.name)
+                    .font(.title3)
+                    .bold()
+                
+                Text("X cartas para hoje")
+                    .font(.subheadline)
+            }
+            .foregroundColor(Color.white)
+            Spacer()
+        }
+        .padding(.horizontal)
+        .frame(height: 80)
+        .background {
             RoundedRectangle(cornerRadius: 8)
                 .fill(HBColor.color(for: deck.color))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.white, lineWidth: 0)
-                }
-                .frame(height: 100)
-            
-            HStack {
-                IconCircleView(iconName: deck.icon)
-                    .padding(.leading)
-                VStack(alignment: .leading) {
-                    Text(deck.name)
-                        .font(.title3)
-                        .bold()
-                    
-                    Text("X cartas para hoje")
-                        .font(.subheadline)
-                }
-                .foregroundColor(Color.white)
-                Spacer()
-            }
         }
+        
     }
     
 }
@@ -48,12 +46,11 @@ private struct IconCircleView: View {
     let iconName: String
     
     var body: some View {
-        IconCircle(radius: 25, angle: 90) {
+        IconCircle(radius: 20, angle: 90) {
             ForEach(0..<3) { icon in
                 Image(systemName: iconName)
                     .foregroundColor(Color.white)
-                    .font(.title)
-                    .bold()
+                    .font(.title2)
                     .opacity(opacity[icon])
                     .rotationEffect(angle[icon])
             }
@@ -71,7 +68,7 @@ private struct IconCircle: Layout {
         }
         
         return CGSize(width: (maxSize.width / 2 + radius) * 2,
-                    height: (maxSize.height / 2 + radius) * 2)
+                      height: (maxSize.height / 2 + radius) * 2)
     }
     
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
