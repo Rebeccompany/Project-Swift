@@ -45,7 +45,7 @@ struct PublicDeckView: View {
                 .foregroundColor(.white)
         }
         .cornerRadius(8)
-        .padding(10)
+        .padding(12)
         .viewBackgroundColor(HBColor.color(for: deck.color))
     }
 }

@@ -19,15 +19,15 @@ struct StoreView: View {
             LazyVStack(alignment: .leading) {
                 ForEach(viewModel.decks.keys.map {$0}, id: \.self) { (key: DeckCategory) in
                     Section("\(key.rawValue)") {
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)]) {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 16, alignment: .top)], spacing: 16) {
                             ForEach(viewModel.decks[key] ?? []) { deck in
                                 PublicDeckView(deck: deck, copies: 10, author: "Spixii")
                             }
-                            .cornerRadius(8)
+                            .cornerRadius(12)
                         }
                     }
                     .bold()
-                    .padding([.bottom, .leading, .trailing], 12)
+                    .padding([.bottom, .leading, .trailing], 16)
                 }
             }
         }
