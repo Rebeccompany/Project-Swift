@@ -61,6 +61,7 @@ public struct FlashcardTextEditorView: View {
             }
         }
         .onAppear {
+            context.foregroundColor = ColorRepresentable.black
             context.shouldUpdateTextField()
         }
     }
@@ -109,7 +110,8 @@ public struct FlashcardTextEditorView: View {
                     .frame(width: 32, height: 32)
                     .buttonStyle(.bordered)
                     .padding(.horizontal, 4)
-                HBColorPicker(systemImage: "pencil.circle", selection: context.backgroundColorBinding)
+                    
+                HBColorPicker(systemImage: "highlighter", selection: context.backgroundColorBinding)
                     .frame(width: 32, height: 32)
                     .buttonStyle(.bordered)
                     .padding(.horizontal, 4)

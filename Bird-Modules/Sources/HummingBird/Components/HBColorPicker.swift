@@ -32,9 +32,11 @@ struct HBColorPicker: View {
             present = true
         } label: {
             VStack {
+                Spacer()
                 Image(systemName: systemImage)
                 selection
                     .frame(width: 17, height: 5)
+                    .padding(.bottom, 2)
             }
             .font(.body)
             .frame(width: 18, height: 18)
