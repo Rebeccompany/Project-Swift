@@ -122,7 +122,7 @@ public struct StudyView: View {
                             .foregroundColor(HBColor.actionColor)
                             .accessibility(addTraits: .isButton)
                     }
-                    .sheet(isPresented:  $flashcardsOnboarding) {
+                    .sheet(isPresented: $flashcardsOnboarding) {
                         FlashcardsOnboardingView()
                     }
                 }

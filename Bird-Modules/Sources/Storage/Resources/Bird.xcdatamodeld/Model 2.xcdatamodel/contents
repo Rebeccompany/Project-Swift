@@ -40,6 +40,7 @@
         <relationship name="decks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DeckEntity" inverseName="collection" inverseEntity="DeckEntity"/>
     </entity>
     <entity name="DeckEntity" representedClassName="Storage.DeckEntity" syncable="YES">
+        <attribute name="category" optional="YES" attributeType="String" defaultValueString="others"/>
         <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="icon" optional="YES" attributeType="String"/>

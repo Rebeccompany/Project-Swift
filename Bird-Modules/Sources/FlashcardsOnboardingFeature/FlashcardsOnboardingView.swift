@@ -25,12 +25,12 @@ public struct FlashcardsOnboardingView: View {
                             .foregroundColor(HBColor.actionColor)
                             .padding(.leading)
                         VStack(alignment: .leading) {
-                            Text(NSLocalizedString("frente",bundle: .module, comment: ""))
+                            Text(NSLocalizedString("frente", bundle: .module, comment: ""))
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .foregroundColor(HBColor.collectionTextColor)
                                 .padding(.all)
-                            Text(NSLocalizedString("instrucao_um",bundle: .module, comment: ""))
+                            Text(NSLocalizedString("instrucao_um", bundle: .module, comment: ""))
                                 .font(.title3)
                                 .fontWeight(.regular)
                                 .foregroundColor(HBColor.collectionTextColor)
@@ -44,12 +44,12 @@ public struct FlashcardsOnboardingView: View {
                             .foregroundColor(HBColor.actionColor)
                             .padding(.leading)
                         VStack(alignment: .leading) {
-                            Text(NSLocalizedString("verso",bundle: .module, comment: ""))
+                            Text(NSLocalizedString("verso", bundle: .module, comment: ""))
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .foregroundColor(HBColor.collectionTextColor)
                                 .padding(.all)
-                            Text(NSLocalizedString("instrucao_dois",bundle: .module, comment: ""))
+                            Text(NSLocalizedString("instrucao_dois", bundle: .module, comment: ""))
                                 .font(.title3)
                                 .fontWeight(.regular)
                                 .foregroundColor(HBColor.collectionTextColor)
@@ -58,12 +58,12 @@ public struct FlashcardsOnboardingView: View {
                     }
                 }
             }
-            .navigationTitle(NSLocalizedString("como_estudar",bundle: .module, comment: ""))
+            .navigationTitle(NSLocalizedString("como_estudar", bundle: .module, comment: ""))
             .toolbar {
                 Button {
                     dismiss()
                 } label: {
-                    Text(NSLocalizedString("voltar",bundle: .module, comment: ""))
+                    Text(NSLocalizedString("voltar", bundle: .module, comment: ""))
                         .foregroundColor(HBColor.actionColor)
                 }
             }
