@@ -115,6 +115,10 @@ let package = Package(
         .library(
             name: "StoreFeature",
             targets: ["StoreFeature"]
+        ),
+        .library(
+            name: "PublicDeckFeature",
+            targets: ["PublicDeckFeature"]
         )
     ],
     
@@ -287,6 +291,15 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "DeckFeature"
+            ]
+        ),
+        
+        .target(
+            name: "PublicDeckFeature",
+            dependencies: [
+                "Models",
+                "HummingBird",
+                "StoreFeature"
             ]
         ),
         

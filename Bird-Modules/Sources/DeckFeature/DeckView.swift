@@ -213,8 +213,6 @@ public struct DeckView: View {
                 }
                 .padding(.horizontal)
             }.scrollContentBackground(.hidden)
-                
-                
         }
     }
 }
