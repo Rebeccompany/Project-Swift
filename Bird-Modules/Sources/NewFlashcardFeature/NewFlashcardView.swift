@@ -34,7 +34,7 @@ public struct NewFlashcardView: View {
     
     public var body: some View {
         
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
                     FlashcardTextEditorView(

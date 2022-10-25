@@ -12,23 +12,31 @@ import Models
 struct OnboardingPageTwoView: View {
     var body: some View {
         VStack {
-            HBImages.BirdOneOnboarding
-                .resizable()
-                .frame(width: 200, height: 200)
+            ZStack(alignment: .bottom) {
+                Circle()
+                    .fill(HBColor.secondaryBackground)
+                    .frame(width: 200, height: 200)
+                HBImages.BirdTwoOnboarding
+                    .resizable()
+                    .frame(width: 190, height: 180)
+            }
             HStack {
                 VStack(alignment: .leading) {
                     Text(NSLocalizedString("flashcards", bundle: .module, comment: ""))
+                        .lineLimit(nil)
                         .font(.title)
                         .fontWeight(.semibold)
                         .foregroundColor(HBColor.actionColor)
                         .padding(.top)
                         .padding(.bottom)
                     Text(NSLocalizedString("pagina_dois_um", bundle: .module, comment: ""))
+                        .lineLimit(nil)
                         .font(.body)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)
                         .padding(.bottom)
                     Text(NSLocalizedString("pagina_dois_dois", bundle: .module, comment: ""))
+                        .lineLimit(nil)
                         .font(.body)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)
@@ -39,6 +47,7 @@ struct OnboardingPageTwoView: View {
             HBImages.cardsOnboarding
         }
         .padding()
+        .viewBackgroundColor(HBColor.primaryBackground)
     }
 }
 

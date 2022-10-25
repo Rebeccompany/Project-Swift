@@ -14,15 +14,15 @@ public enum HBImages {
     }
     
     public static var BirdTwoOnboarding: Image {
-        Image("FotoOnboarding", bundle: .module)
+        Image("FotoOnboardingDois", bundle: .module)
     }
     
     public static var BirdThreeOnboarding: Image {
-        Image("FotoOnboarding", bundle: .module)
+        Image("FotoOnboardingTres", bundle: .module)
     }
     
     public static var BirdFourOnboarding: Image {
-        Image("FotoOnboarding", bundle: .module)
+        Image("FotoOnboardingQuatro", bundle: .module)
     }
     
     public static var cardsOnboarding: Image {
