@@ -10,5 +10,5 @@ import Combine
 import Models
 
 public protocol ExternalDeckServiceProtocol {
-    func getDeckFeed() -> AnyPublisher<[DeckCategory: [ExternalDeck]], URLError>
+    func getDeckFeed() -> AnyPublisher<[ExternalSection], URLError>
 }

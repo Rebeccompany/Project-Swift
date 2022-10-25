@@ -17,10 +17,10 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         self.session = session
     }
     
-    public func getDeckFeed() -> AnyPublisher<[DeckCategory : [ExternalDeck]], URLError> {
+    public func getDeckFeed() -> AnyPublisher<[ExternalSection], URLError> {
         session.dataTaskPublisher(for: URL(string: "https://www.google.com.br")!)
             .map(\.data)
-            .decode(type: [DeckCategory: [ExternalDeck]].self, decoder: JSONDecoder())
+            .decode(type: [ExternalSection].self, decoder: JSONDecoder())
             .mapError { error in
                 if let error = error as? URLError {
                     return error

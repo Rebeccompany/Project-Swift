@@ -16,18 +16,18 @@ import Puffins
 
 public class StoreViewModel: ObservableObject {
     @Published var searchFieldContent: String
-    @Published var decks: [DeckCategory: [ExternalDeck]]
+    @Published var decks: [ExternalSection]
     @Published var sortOrder: [KeyPathComparator<Deck>]
     
     private var externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock()
     
     public init() {
         self.searchFieldContent = ""
-        self.decks = [:]
+        self.decks = []
         self.sortOrder = [KeyPathComparator(\Deck.name)]
     }
     
-    private var deckListener: AnyPublisher<[DeckCategory: [ExternalDeck]], URLError> {
+    private var deckListener: AnyPublisher<[ExternalSection], URLError> {
         externalDeckService.getDeckFeed()
     }
     
