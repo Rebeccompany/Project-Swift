@@ -12,14 +12,9 @@ import Models
 struct OnboardingPageThreeView: View {
     var body: some View {
         VStack {
-            ZStack(alignment: .bottom) {
-                Circle()
-                    .fill(HBColor.secondaryBackground)
-                    .frame(width: 140, height: 140)
-                HBImages.BirdThreeOnboarding
-                    .resizable()
-                    .frame(width: 210, height: 200)
-            }
+            HBImages.BirdThreeOnboarding
+                .resizable()
+                .frame(width: 180, height: 180)
             HStack {
                 VStack(alignment: .leading) {
                     Text(NSLocalizedString("baralhos", bundle: .module, comment: ""))

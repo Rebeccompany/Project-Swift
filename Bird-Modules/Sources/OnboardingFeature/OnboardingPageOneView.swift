@@ -12,13 +12,9 @@ import Models
 struct OnboardingPageOneView: View {
     var body: some View {
         VStack {
-            ZStack {
-                Circle()
-                    .fill(HBColor.secondaryBackground)
-                HBImages.BirdOneOnboarding
-                    .resizable()
-            }
-            .frame(width: 250, height: 250)
+            HBImages.BirdOneOnboarding
+                .resizable()
+                .frame(width: 250, height: 250)
             HStack {
                 VStack(alignment: .leading) {
                     Text(NSLocalizedString("pagina_um", bundle: .module, comment: ""))

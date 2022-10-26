@@ -12,13 +12,9 @@ import Models
 struct OnboardingPageFourView: View {
     var body: some View {
         VStack {
-            ZStack {
-                Circle()
-                    .fill(HBColor.secondaryBackground)
-                HBImages.BirdFourOnboarding
-                    .resizable()
-            }
-            .frame(width: 180, height: 180)
+            HBImages.BirdFourOnboarding
+                .resizable()
+                .frame(width: 180, height: 180)
             HStack {
                 VStack(alignment: .leading) {
                     Text(NSLocalizedString("modo_spixii", bundle: .module, comment: ""))

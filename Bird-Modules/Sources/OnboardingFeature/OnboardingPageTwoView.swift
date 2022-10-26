@@ -12,14 +12,9 @@ import Models
 struct OnboardingPageTwoView: View {
     var body: some View {
         VStack {
-            ZStack(alignment: .bottom) {
-                Circle()
-                    .fill(HBColor.secondaryBackground)
-                    .frame(width: 200, height: 200)
-                HBImages.BirdTwoOnboarding
-                    .resizable()
-                    .frame(width: 190, height: 180)
-            }
+            HBImages.BirdTwoOnboarding
+                .resizable()
+                .frame(width: 180, height: 180)
             HStack {
                 VStack(alignment: .leading) {
                     Text(NSLocalizedString("flashcards", bundle: .module, comment: ""))
