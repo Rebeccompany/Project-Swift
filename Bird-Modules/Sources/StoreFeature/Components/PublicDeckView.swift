@@ -51,6 +51,6 @@ struct PublicDeckView: View {
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        PublicDeckView(deck: Deck(id: UUID(), name: "Jogos", icon: IconNames.gamecontroller.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: DeckCategory.humanities), copies: 20, author: "Spixii")
+        PublicDeckView(deck: Deck(id: UUID(), name: "Jogos", icon: IconNames.gamecontroller.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: DeckCategory.humanities, storeId: nil), copies: 20, author: "Spixii")
     }
 }
