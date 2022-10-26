@@ -267,6 +267,7 @@ extension Deck {
                   collectionId: nil,
                   cardsIds: cardsIds,
                   spacedRepetitionConfig: spacedConfig,
-                  category: DeckCategory.arts)
+                  category: DeckCategory.arts,
+                  storeId: nil)
     }
 }

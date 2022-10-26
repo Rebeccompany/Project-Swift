@@ -71,7 +71,8 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
                     cardsIds: cardsIds,
                     spacedRepetitionConfig: spacedRepetitionConfig,
                     session: session,
-                    category: category
+                    category: category,
+                    storeId: entity.storeId
         )
     }
     
@@ -88,6 +89,7 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
         deck.maxReviewingCards = Int32(model.spacedRepetitionConfig.maxReviewingCards)
         deck.numberOfSteps = Int16(model.spacedRepetitionConfig.numberOfSteps)
         deck.category = model.category.rawValue
+        deck.storeId = model.storeId
         return deck
     }
 }
