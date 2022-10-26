@@ -29,9 +29,7 @@ public struct FlashcardCell: View {
                 }
                 Spacer()
                 #warning("arruma")
-                LabelViewRepresentable(text: isFront ? card.front.attributedString : card.back.attributedString)
-//                Text(isFront ? card.front.attributedString.string : card.back.attributedString.string)
-//                Text(isFront ? card.front.attributedString : card.back.attributedString)
+                TextViewRepresentable(text: isFront ? card.front.attributedString : card.back.attributedString)
                 Spacer()
             }
         }

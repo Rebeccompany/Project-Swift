@@ -31,7 +31,7 @@ struct FlashcardView: View {
         }
         .onTapGesture(perform: flip)
         .onChange(of: viewModel.isFlipped) { newValue in
-                flipWithAnimation(newValue)
+            flipWithAnimation(newValue)
         }
         .transaction { transaction in
             if index == 0 && !viewModel.isFlipped && cardCount > 1 {
@@ -89,8 +89,7 @@ struct FlashcardView: View {
             }
             
             Spacer()
-            #warning("arrumar")
-            Text(content.string)
+            TextViewRepresentable(text: content)
                 .minimumScaleFactor(0.01)
             Spacer()
             
