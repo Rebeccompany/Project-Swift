@@ -11,12 +11,12 @@ import HummingBird
 
 struct PublicDeckView: View {
     var deck: ExternalDeck
-    var copies: Int
+    var numberOfCopies: Int
     var author: String
     
-    init(deck: ExternalDeck, copies: Int, author: String) {
+    init(deck: ExternalDeck, numberOfCopies: Int, author: String) {
         self.deck = deck
-        self.copies = copies
+        self.numberOfCopies = numberOfCopies
         self.author = author
     }
     
@@ -39,7 +39,7 @@ struct PublicDeckView: View {
                 Image(systemName: "rectangle.portrait.on.rectangle.portrait.fill")
                     .foregroundColor(.white)
                     .font(.system(size: 11))
-                Text(String(copies))
+                Text(String(numberOfCopies))
                     .foregroundColor(.white)
                     .bold()
             }
@@ -54,6 +54,6 @@ struct PublicDeckView: View {
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        PublicDeckView(deck: ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem), copies: 20, author: "BAHIAAAAA")
+        PublicDeckView(deck: ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem), numberOfCopies: 20, author: "BAHIAAAAA")
     }
 }
