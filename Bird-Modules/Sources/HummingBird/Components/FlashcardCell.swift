@@ -28,7 +28,6 @@ public struct FlashcardCell: View {
                     Spacer()
                 }
                 Spacer()
-                #warning("arruma")
                 TextViewRepresentable(text: isFront ? card.front.attributedString : card.back.attributedString)
                 Spacer()
             }

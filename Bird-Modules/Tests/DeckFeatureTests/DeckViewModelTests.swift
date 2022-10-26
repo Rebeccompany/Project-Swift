@@ -43,7 +43,7 @@ final class DeckViewModelTests: XCTestCase {
     func testStartup() throws {
         let cardExpectation = expectation(description: "card reacting to Repository Action")
         
-        try deckRepository.addCard(Card(id: UUID(), front: AttributedString(), back: AttributedString(), color: .red, datesLogs: DateLogs(), deckID: deckRepository.decks.first!.id, woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), history: []), to: deckRepository.decks.first!)
+        try deckRepository.addCard(Card(id: UUID(), front: NSAttributedString(), back: NSAttributedString(), color: .red, datesLogs: DateLogs(), deckID: deckRepository.decks.first!.id, woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), history: []), to: deckRepository.decks.first!)
         
         sut.$cards
             .sink {[unowned self] cards in

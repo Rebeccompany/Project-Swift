@@ -474,8 +474,8 @@ final class DeckRepositoryTests: XCTestCase {
         XCTAssertEqual(card2.deckID, card2.deckID)
         XCTAssertEqual(card1.history, card2.history)
         
-        XCTAssertEqual(NSAttributedString(card1.front).string, NSAttributedString(card2.front).string)
-        XCTAssertEqual(NSAttributedString(card1.back).string, NSAttributedString(card2.back).string)
+        XCTAssertEqual(card1.front.string, card2.front.string)
+        XCTAssertEqual(card1.back.string, card2.back.string)
         
     }
     
