@@ -265,7 +265,8 @@ let package = Package(
             name: "Habitat",
             dependencies: [
                 "Storage",
-                "Utils"
+                "Utils",
+                "Puffins"
             ]
         ),
         
@@ -291,7 +292,8 @@ let package = Package(
                 "Models",
                 "HummingBird",
                 "DeckFeature",
-                "Puffins"
+                "Puffins",
+                "Habitat"
             ]
         ),
         
@@ -419,7 +421,8 @@ let package = Package(
             name: "StoreFeatureTests",
             dependencies: [
                 "Puffins",
-                "StoreFeature"
+                "StoreFeature",
+                "Habitat"
             ]
         )
     ]

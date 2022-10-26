@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ExternalDeck: Identifiable, Codable {
+public struct ExternalDeck: Identifiable, Codable, Equatable {
     public init(id: String, name: String, description: String, icon: IconNames, color: CollectionColor, category: DeckCategory) {
         self.id = id
         self.name = name

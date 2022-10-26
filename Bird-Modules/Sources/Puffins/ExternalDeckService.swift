@@ -13,6 +13,8 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     //HANDLER DE URL
     private let session: URLSession
     
+    public static let shared: ExternalDeckService = .init()
+    
     public init(session: URLSession = .shared) {
         self.session = session
     }

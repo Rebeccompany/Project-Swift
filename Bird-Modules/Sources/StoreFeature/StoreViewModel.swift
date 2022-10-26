@@ -6,12 +6,9 @@
 //
 
 import Models
-import HummingBird
+import Foundation
 import Combine
-import DeckFeature
-import Storage
 import Habitat
-import SwiftUI
 import Puffins
 
 public class StoreViewModel: ObservableObject {
@@ -19,7 +16,7 @@ public class StoreViewModel: ObservableObject {
     @Published var sections: [ExternalSection] = []
     @Published var viewState: ViewState = .loading
     
-    private var externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock()
+    @Dependency(\.externalDeckService) private var externalDeckService: ExternalDeckServiceProtocol
     
     public init() {
     }
@@ -27,7 +24,6 @@ public class StoreViewModel: ObservableObject {
     func startup() {
         externalDeckService
             .getDeckFeed()
-            .delay(for: .seconds(3), scheduler: RunLoop.main)
             .handleEvents(receiveOutput: {[weak self] _ in
                 self?.viewState = .loaded
             }, receiveCompletion: {[weak self] completion in

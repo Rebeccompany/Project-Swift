@@ -11,6 +11,8 @@ import Combine
 
 public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     
+    public var shouldError = false
+    
     public var feed: [ExternalSection] = [
         ExternalSection(title: getCategoryString(category: .stem), decks: [ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem), ExternalDeck(id: "2", name: "Stem 2", description: "Stem Desc 2", icon: .abc, color: .darkBlue, category: .stem), ExternalDeck(id: "3", name: "Stem 3", description: "Stem Desc 3", icon: .atom, color: .gray, category: .stem)]),
         
@@ -28,6 +30,11 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     }
     
     public func getDeckFeed() -> AnyPublisher<[ExternalSection], URLError> {
-        Just(feed).setFailureType(to: URLError.self).eraseToAnyPublisher()
+        if shouldError {
+            return Fail<[ExternalSection], URLError>(error: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()
+        } else {
+            return Just(feed).setFailureType(to: URLError.self).eraseToAnyPublisher()
+        }
+       
     }
 }
