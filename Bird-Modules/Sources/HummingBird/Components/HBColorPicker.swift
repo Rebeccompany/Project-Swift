@@ -8,11 +8,16 @@
 import SwiftUI
 import Models
 
-struct HBColorPicker: View {
-    var systemImage: String
+struct HBColorPicker<Label: View>: View {
     @Binding var selection: Color
     @State private var _color: Color = .white
     @State private var present = false
+    private var labelBuilder: () -> Label
+    
+    init(selection: Binding<Color>, @ViewBuilder label: @escaping () -> Label) {
+        self._selection = selection
+        self.labelBuilder = label
+    }
     
     
 #if os(iOS)
@@ -32,16 +37,14 @@ struct HBColorPicker: View {
             present = true
         } label: {
             VStack {
-                Spacer()
-                Image(systemName: systemImage)
+                labelBuilder()
                 selection
-                    .frame(width: 17, height: 5)
-                    .padding(.bottom, 2)
+                    .frame(width: 17, height: 4)
             }
             .font(.body)
             .frame(width: 18, height: 18)
         }
-        
+        .buttonStyle(.bordered)
         .onAppear {
             _color = selection
         }
@@ -91,7 +94,14 @@ struct HBColorPicker: View {
 struct HBColorPicker_Preview: PreviewProvider {
     static var previews: some View {
         VStack {
-            HBColorPicker(systemImage: "character", selection: .constant(HBColor.collectionRed))
+            HBColorPicker(selection: .constant(HBColor.collectionRed)) {
+                Image(systemName: "character")
+                    .font(.system(size: 18))
+            }
+            HBColorPicker(selection: .constant(HBColor.collectionRed)) {
+                Image(systemName: "highlighter")
+                    .font(.system(size: 14))
+            }
         }
     }
 }

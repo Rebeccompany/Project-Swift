@@ -69,33 +69,27 @@ public struct FlashcardTextEditorView: View {
     @ViewBuilder
     private var styleStack: some View {
         VStack(alignment: .center) {
-            HStack {
+            HStack(alignment: .top, spacing: 16) {
                 Button { context.isItalic.toggle() } label: {
                     Image.richTextStyleItalic
                         .frame(width: 18, height: 18)
                 }
-                .frame(width: 32, height: 32)
                 .buttonStyle(.bordered)
                 .tint(context.isItalic ? HBColor.actionColor : nil)
-                .padding(.horizontal, 4)
                 
                 Button { context.isBold.toggle() } label: {
                     Image.richTextStyleBold
                         .frame(width: 18, height: 18)
                 }
-                .frame(width: 32, height: 32)
                 .buttonStyle(.bordered)
                 .tint(context.isBold ? HBColor.actionColor : nil)
-                .padding(.horizontal, 4)
                 
                 Button { context.isUnderlined.toggle() } label: {
                     Image.richTextStyleUnderline
                         .frame(width: 18, height: 18)
                 }
-                .frame(width: 32, height: 32)
                 .buttonStyle(.bordered)
                 .tint(context.isUnderlined ? HBColor.actionColor : nil)
-                .padding(.horizontal, 4)
 //                Button {
 //                    isPhotoPickerPresented = true
 //                } label: {
@@ -106,15 +100,17 @@ public struct FlashcardTextEditorView: View {
 //                .buttonStyle(.bordered)
 //                .padding(.horizontal, 4)
                 alignmentMenu
-                HBColorPicker(systemImage: "character", selection: context.foregroundColorBinding)
-                    .frame(width: 32, height: 32)
+                HBColorPicker(selection: context.foregroundColorBinding){
+                    Image(systemName: "character")
+                        .font(.system(size: 18))
+                }
                     .buttonStyle(.bordered)
-                    .padding(.horizontal, 4)
                     
-                HBColorPicker(systemImage: "highlighter", selection: context.backgroundColorBinding)
-                    .frame(width: 32, height: 32)
+                HBColorPicker(selection: context.backgroundColorBinding) {
+                    Image(systemName: "highlighter")
+                        .font(.system(size: 14))
+                }
                     .buttonStyle(.bordered)
-                    .padding(.horizontal, 4)
             }
             HStack {
                 Spacer()
@@ -146,11 +142,8 @@ public struct FlashcardTextEditorView: View {
             
         } label: {
             context.alignment.icon
-                .frame(width: 32, height: 32)
-                .padding(.horizontal, 4)
-                .background(.regularMaterial)
-                .cornerRadius(8)
-        }
+                .frame(width: 18, height: 18)        }
+        .buttonStyle(.bordered)
     }
     
     private func updateFromPhotoSelection(_ photoPickerItem: PhotosPickerItem?) async {
