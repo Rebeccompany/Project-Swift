@@ -25,11 +25,13 @@ public class StoreViewModel: ObservableObject {
         self.decks = []
         self.sortOrder = [KeyPathComparator(\Deck.name)]
     }
-    
+    // swiftlint:disable trailing_closure
     private var deckListener: AnyPublisher<[Deck], Never> {
         deckRepository
             .deckListener()
-            .handleEvents(receiveCompletion: { [weak self] completion in self?.handleCompletion(completion) })
+            .handleEvents(receiveCompletion: { [weak self] completion in
+                self?.handleCompletion(completion)
+            })
             .replaceError(with: [])
             .combineLatest($searchFieldContent)
             .compactMap { [weak self] decks, searchFieldContent in
@@ -55,9 +57,9 @@ public class StoreViewModel: ObservableObject {
     private func handleCompletion(_ completion: Subscribers.Completion<RepositoryError>) {
         switch completion {
         case .finished:
-            print("finished")
-        case .failure(let error):
-            print(error)
+            break
+        case .failure(_):
+            break
         }
     }
 }

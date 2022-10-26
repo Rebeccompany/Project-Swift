@@ -100,7 +100,7 @@ public struct FlashcardTextEditorView: View {
 //                .buttonStyle(.bordered)
 //                .padding(.horizontal, 4)
                 alignmentMenu
-                HBColorPicker(selection: context.foregroundColorBinding){
+                HBColorPicker(selection: context.foregroundColorBinding) {
                     Image(systemName: "character")
                         .font(.system(size: 18))
                 }
@@ -142,7 +142,8 @@ public struct FlashcardTextEditorView: View {
             
         } label: {
             context.alignment.icon
-                .frame(width: 18, height: 18)        }
+                .frame(width: 18, height: 18)
+        }
         .buttonStyle(.bordered)
     }
     

@@ -116,11 +116,10 @@ public struct NewFlashcardView: View {
                             proxy.scrollTo(NewFlashcardFocus.back, anchor: UnitPoint(x: 0.5, y: 0.8))
                         }
                     }
-                }
-                .interactiveDismissDisabled(focus != nil ? true : false)
+                }     
             }
         }
-        .interactiveDismissDisabled(true)
+        .interactiveDismissDisabled(focus != nil ? true : false)
     }
     
     @ViewBuilder
