@@ -19,14 +19,25 @@ struct DifficultyButtonView: View {
 
     @Binding var isVOOn: Bool
 
-
-
     init(userGrade: UserGrade, isDisabled: Binding<Bool>, isVOOn: Binding<Bool>, action: @escaping (UserGrade) -> Void) {
         self.userGrade = userGrade
         self.content = DifficultyButtonContent.getbuttonContent(for: userGrade)
         self._isDisabled = isDisabled
         self.action = action
         self._isVOOn = isVOOn
+    }
+    
+    func shortcutValue() -> KeyboardShortcut {
+        switch userGrade {
+        case .wrongHard:
+            return .init("1")
+        case .wrong:
+            return .init("2")
+        case .correct:
+            return .init("3")
+        case .correctEasy:
+            return .init("4")
+        }
     }
     
     var body: some View {
@@ -47,6 +58,7 @@ struct DifficultyButtonView: View {
                             .shadow(color: isDisabled ? .gray : content.color, radius: 1, x: 0, y: 2)
                     )
             }
+            .keyboardShortcut(shortcutValue())
             .disabled(isDisabled)
             
             Text(content.label)
@@ -58,7 +70,6 @@ struct DifficultyButtonView: View {
                 
         }
         .accessibilityLabel(NSLocalizedString("clicar_em", bundle: .module, comment: "") + content.label.finilized)
-        
     }
     
 }

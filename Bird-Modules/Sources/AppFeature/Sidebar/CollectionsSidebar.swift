@@ -9,8 +9,10 @@ import SwiftUI
 import Models
 import NewCollectionFeature
 import HummingBird
+import OnboardingFeature
 
 struct CollectionsSidebar: View {
+    @State private var onboarding: Bool = false
     @Binding private var editMode: EditMode
     @EnvironmentObject private var viewModel: ContentViewModel
     @Binding private var selection: SidebarRoute?
@@ -90,6 +92,19 @@ struct CollectionsSidebar: View {
         .viewBackgroundColor(HBColor.primaryBackground)
         .navigationTitle("Spixii")
         .toolbar {
+            ToolbarItem {
+                Button {
+                    onboarding = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .foregroundColor(HBColor.actionColor)
+                        .accessibility(addTraits: .isButton)
+                }
+                .sheet(isPresented: $onboarding) {
+                    OnboardingView()
+                }
+                
+            }
             ToolbarItem {
                 EditButton()
                     .popover(isPresented: $presentCollectionEdition) {

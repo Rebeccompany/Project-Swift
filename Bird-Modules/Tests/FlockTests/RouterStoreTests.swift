@@ -32,7 +32,9 @@ final class RouterStoreTests: XCTestCase {
             color: .darkBlue,
             datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0), lastEdit: Date(timeIntervalSince1970: 0), createdAt: Date(timeIntervalSince1970: 0)),
             collectionId: nil,
-            cardsIds: []
+            cardsIds: [],
+            category: DeckCategory.arts,
+            storeId: nil
         )
         return StudyRoute.deck(dummyDeck)
     }

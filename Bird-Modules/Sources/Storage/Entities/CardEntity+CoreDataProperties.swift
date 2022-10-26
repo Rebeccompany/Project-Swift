@@ -2,17 +2,18 @@
 //  CardEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Marcos Chevis on 20/09/22.
+//  Created by Rebecca Mello on 25/10/22.
 //
 //
 
 import Foundation
 import CoreData
+import Storage
 
 extension CardEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CardEntity> {
-        NSFetchRequest<CardEntity>(entityName: "CardEntity")
+        return NSFetchRequest<CardEntity>(entityName: "CardEntity")
     }
 
     @NSManaged public var back: Data?
@@ -30,6 +31,7 @@ extension CardEntity {
     @NSManaged public var wpStreak: Int32
     @NSManaged public var deck: DeckEntity?
     @NSManaged public var history: NSSet?
+    @NSManaged public var sessions: NSSet?
 
 }
 
@@ -47,5 +49,22 @@ extension CardEntity {
 
     @objc(removeHistory:)
     @NSManaged public func removeFromHistory(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for sessions
+extension CardEntity {
+
+    @objc(addSessionsObject:)
+    @NSManaged public func addToSessions(_ value: SessionEntity)
+
+    @objc(removeSessionsObject:)
+    @NSManaged public func removeFromSessions(_ value: SessionEntity)
+
+    @objc(addSessions:)
+    @NSManaged public func addToSessions(_ values: NSSet)
+
+    @objc(removeSessions:)
+    @NSManaged public func removeFromSessions(_ values: NSSet)
 
 }

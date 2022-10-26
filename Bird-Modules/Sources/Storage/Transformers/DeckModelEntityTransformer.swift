@@ -41,7 +41,9 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
             let lastAccess = entity.lastAccess,
             let createdAt = entity.createdAt,
             let lastEdit = entity.lastEdit,
-            let cards = entity.cards?.allObjects as? [CardEntity]
+            let cards = entity.cards?.allObjects as? [CardEntity],
+            let rawCategory = entity.category,
+            let category = DeckCategory(rawValue: rawCategory)
         else { return nil }
         let collection = entity.collection
         
@@ -51,6 +53,13 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
         let dateLogs = DateLogs(lastAccess: lastAccess, lastEdit: lastEdit, createdAt: createdAt)
         let collectionIds = collection?.id
         let cardsIds = cards.compactMap(\.id)
+        let session: Session?
+        
+        if let sessionEntity = entity.session {
+            session = Session(entity: sessionEntity)
+        } else {
+            session = nil
+        }
         
         return Deck(
                     id: id,
@@ -60,7 +69,10 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
                     datesLogs: dateLogs,
                     collectionId: collectionIds,
                     cardsIds: cardsIds,
-                    spacedRepetitionConfig: spacedRepetitionConfig
+                    spacedRepetitionConfig: spacedRepetitionConfig,
+                    session: session,
+                    category: category,
+                    storeId: entity.storeId
         )
     }
     
@@ -76,6 +88,8 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
         deck.maxLearningCards = Int32(model.spacedRepetitionConfig.maxLearningCards)
         deck.maxReviewingCards = Int32(model.spacedRepetitionConfig.maxReviewingCards)
         deck.numberOfSteps = Int16(model.spacedRepetitionConfig.numberOfSteps)
+        deck.category = model.category.rawValue
+        deck.storeId = model.storeId
         return deck
     }
 }

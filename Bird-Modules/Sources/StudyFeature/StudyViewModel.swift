@@ -19,9 +19,9 @@ public class StudyViewModel: ObservableObject {
     
     // MARK: Dependencies
     @Dependency(\.deckRepository) var deckRepository
-    @Dependency(\.sessionCacher) var sessionCacher
     @Dependency(\.dateHandler) var dateHandler
     @Dependency(\.systemObserver) var systemObserver
+    @Dependency(\.uuidGenerator) var uuidGenerator
     
     // MARK: Logic Vars
     @Published var cards: [Card] = []
@@ -71,7 +71,9 @@ public class StudyViewModel: ObservableObject {
             .tryMap { [dateHandler] cards in
                 try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: dateHandler.today)
             }
-            .handleEvents(receiveOutput: { [weak self] in self?.saveCardIdsToCache(deck: deck, ids: $0) })
+            .handleEvents(receiveOutput: { [weak self] in
+                self?.saveCardIdsToCache(deck: deck, ids: $0)
+            })
             .mapError { _ in
                 RepositoryError.internalError
             }
@@ -128,7 +130,7 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func startupForSpaced(deck: Deck, cardSortingFunc: @escaping (Card, Card) -> Bool) {
-        if let session = sessionCacher.currentSession(for: deck.id), dateHandler.isToday(date: session.date) {
+        if let session = deck.session, dateHandler.isToday(date: session.date) {
             sessionPublisher(cardIds: session.cardIds, cardSortingFunc: cardSortingFunc)
                 .assign(to: &$cards)
             
@@ -186,13 +188,20 @@ public class StudyViewModel: ObservableObject {
             guard let lastSnapshot = card.history.last else { return }
             try deckRepository.addHistory(lastSnapshot, to: card)
         }
-        sessionCacher.setCurrentSession(session: Session(cardIds: cards.map(\.id), date: dateHandler.today, deckId: deck.id))
         
+        try saveToCache(deck: deck, ids: cards.map(\.id))
     }
     
-    private func saveCardIdsToCache(deck: Deck, ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]) ) {
-        let session = Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id)
-        sessionCacher.setCurrentSession(session: session)
+    private func saveToCache(deck: Deck, ids: [UUID]) throws {
+        if let session = deck.session {
+            try deckRepository.deleteSession(session, for: deck)
+        }
+        
+        try deckRepository.createSession(Session(cardIds: ids, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
+    }
+    
+    private func saveCardIdsToCache(deck: Deck, ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID])) {
+        try? saveToCache(deck: deck, ids: ids.todayReviewingCards + ids.todayLearningCards)
     }
     
     // MARK: - Study Logic
@@ -226,6 +235,7 @@ public class StudyViewModel: ObservableObject {
         case .foward:
             newCard.woodpeckerCardInfo.step += 1
         case .graduate:
+            cardsToEdit.append(newCard)
             removeCard()
             return
         }
@@ -275,4 +285,41 @@ public class StudyViewModel: ObservableObject {
             cards.remove(at: 0)
         }
     }
+    
+    // MARK: - Study Progress
+    func getSessionTotalCards() -> Int {
+        cards.count + cardsToEdit.count
+    }
+    
+    func getSessionTotalSeenCards() -> Int {
+        cardsToEdit.count
+    }
+    
+    func getSessionReviewingCards(mode: StudyMode) -> Int {
+        guard mode == .spaced else { return 0 }
+        
+        let graduatedCardCount = cards.filter { $0.woodpeckerCardInfo.isGraduated }.count
+        let cardsToEditCount = cardsToEdit.filter { $0.history.last?.woodpeckerCardInfo.isGraduated ?? false }.count
+        return graduatedCardCount + cardsToEditCount
+    }
+    
+    func getSessionReviewingSeenCards(mode: StudyMode) -> Int {
+        guard mode == .spaced else { return 0 }
+        
+        return cardsToEdit.filter { $0.history.last?.woodpeckerCardInfo.isGraduated ?? false }.count
+    }
+    
+    func getSessionLearningCards(mode: StudyMode) -> Int {
+        guard mode == .spaced else { return 0 }
+        
+        let notGraduatedCardCount = cards.filter { !$0.woodpeckerCardInfo.isGraduated }.count
+        let cardsToEditCount = cardsToEdit.filter { !($0.history.last?.woodpeckerCardInfo.isGraduated ?? true) }.count
+        return notGraduatedCardCount + cardsToEditCount
+    }
+    
+    func getSessionLearningSeenCards(mode: StudyMode) -> Int {
+        guard mode == .spaced else { return 0 }
+        return cardsToEdit.filter { !($0.history.last?.woodpeckerCardInfo.isGraduated ?? true) }.count
+    }
+    
 }

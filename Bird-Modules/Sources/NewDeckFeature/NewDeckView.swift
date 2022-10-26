@@ -174,6 +174,7 @@ public struct NewDeckView: View {
             .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
             .viewBackgroundColor(HBColor.primaryBackground)
         }
+        .interactiveDismissDisabled(selectedField != nil ? true : false)
         
     }
 }

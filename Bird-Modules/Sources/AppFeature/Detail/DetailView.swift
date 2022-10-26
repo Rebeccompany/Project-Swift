@@ -91,6 +91,7 @@ public struct DetailView: View {
             
             ToolbarItem {
                 EditButton()
+                    .keyboardShortcut("e", modifiers: .command)
                     .foregroundColor(HBColor.actionColor)
             }
             
@@ -151,7 +152,10 @@ public struct DetailView: View {
                 presentDeckEdition = true
             }
         } else {
-            DeckTableView()
+            DeckTableView { deck in
+                editingDeck = deck
+                presentDeckEdition = true
+            }
         }
     }
 }

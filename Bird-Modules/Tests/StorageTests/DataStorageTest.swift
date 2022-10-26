@@ -39,5 +39,4 @@ class DataStorageTest: XCTestCase {
         let result = try sut.mainContext.count(for: request)
         XCTAssertEqual(1, result)
     }
-
 }

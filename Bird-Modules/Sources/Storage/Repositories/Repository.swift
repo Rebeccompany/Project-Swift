@@ -132,6 +132,29 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
         return first
     }
     
+    func fetchMultipleEntitiesByIds(_ ids: [UUID]) throws -> [Entity] {
+        let fetchRequest = transformer.requestForAll()
+        fetchRequest.predicate = NSPredicate(format: "id IN %@", ids)
+        
+        let data = try dataStorage.mainContext.fetch(fetchRequest)
+        
+        return data
+    }
+    
+    func fetchByPredicate(_ predicate: NSPredicate) throws -> Model? {
+        let fetchRequest = transformer.requestForAll()
+        fetchRequest.predicate = predicate
+        
+        let data = try dataStorage.mainContext.fetch(fetchRequest)
+        
+        guard let first = data.first
+        else {
+            throw RepositoryError.failedFetching
+        }
+        
+        return transformer.entityToModel(first)
+    }
+    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         guard let data = controller.fetchedObjects as? [Entity]
         else { return }

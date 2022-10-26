@@ -10,12 +10,15 @@ import Storage
 import Models
 import HummingBird
 import Utils
+import FlashcardsOnboardingFeature
 
 public struct StudyView: View {
+    @State private var flashcardsOnboarding: Bool = false
     @StateObject private var viewModel: StudyViewModel = StudyViewModel()
     @Environment(\.dismiss) private var dismiss
     @State private var showingErrorAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
+    @State private var shouldDisplaySessionProgress: Bool = false
     
     var deck: Deck
     let mode: StudyMode
@@ -55,7 +58,6 @@ public struct StudyView: View {
                             .accessibilityLabel(generateAttributedLabel())
                             .accessibilityHidden(viewModel.cards.isEmpty)
                         
-                        
                         HStack(alignment: .top) {
                             ForEach(UserGrade.allCases) { userGrade in
                                 Spacer()
@@ -78,8 +80,21 @@ public struct StudyView: View {
                         .accessibilityHint(NSLocalizedString("escolha_nivel", bundle: .module, comment: ""))
                         .accessibilityLabel(NSLocalizedString("quatro_botoes", bundle: .module, comment: ""))
                     }
-                    
-                    
+                    .toolbar {
+                        ToolbarItem {
+                            Button {
+                                shouldDisplaySessionProgress = true
+                            } label: {
+                                Image(systemName: "chart.line.uptrend.xyaxis")
+                                    .foregroundColor(HBColor.actionColor)
+                            }
+                            .popover(isPresented: $shouldDisplaySessionProgress) {
+                                StudyProgressView(numOfTotalSeen: viewModel.getSessionTotalSeenCards(), numOfTotalCards: viewModel.getSessionTotalCards(), numOfReviewingSeen: viewModel.getSessionReviewingSeenCards(mode: mode), numOfReviewingCards: viewModel.getSessionReviewingCards(mode: mode), numOfLearningSeen: viewModel.getSessionLearningSeenCards(mode: mode), numOfLearningCards: viewModel.getSessionLearningCards(mode: mode), studyMode: mode)
+                                .frame(minWidth: 300, minHeight: 600)
+                            }
+                        }
+                    }
+    
                 } else {
                     EndOfStudyView(mode: mode) {
                         do {
@@ -95,6 +110,18 @@ public struct StudyView: View {
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(deck.name)
             .toolbar(content: {
+                ToolbarItem {
+                    Button {
+                        flashcardsOnboarding = true
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(HBColor.actionColor)
+                            .accessibility(addTraits: .isButton)
+                    }
+                    .sheet(isPresented: $flashcardsOnboarding) {
+                        FlashcardsOnboardingView()
+                    }
+                }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(role: .destructive) {
                         do {
@@ -110,9 +137,8 @@ public struct StudyView: View {
                         Text("sair", bundle: .module)
                     }
                     .foregroundColor(.red)
-                    
-                    
                 }
+                
             })
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {

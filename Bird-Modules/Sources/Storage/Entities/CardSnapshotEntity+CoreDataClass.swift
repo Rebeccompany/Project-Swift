@@ -2,7 +2,7 @@
 //  CardSnapshotEntity+CoreDataClass.swift
 //  Project-Bird
 //
-//  Created by Marcos Chevis on 20/09/22.
+//  Created by Rebecca Mello on 25/10/22.
 //
 //
 

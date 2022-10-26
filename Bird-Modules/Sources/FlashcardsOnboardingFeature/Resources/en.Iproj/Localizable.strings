@@ -1,0 +1,15 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Claudia Fiorentino on 19/10/22.
+  
+*/
+
+
+"como_estudar" = "How to Study";
+"frente" = "Front";
+"verso" = "Back";
+"instrucao_um" = "When starting the study, think about the answer to the question on your card, then tap it or press spacebar to see the back";
+"instrucao_dois" = "When you see the answer, rate the difficulty level of the card through the buttons, tapping them or pressing the numbers 1, 2, 3 and 4 on the keyboard, to advance to the next cards";
+"voltar" = "Back";
