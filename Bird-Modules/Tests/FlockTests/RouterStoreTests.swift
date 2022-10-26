@@ -42,8 +42,8 @@ final class RouterStoreTests: XCTestCase {
     var cardRoute: StudyRoute {
         let dummyCard = Card(
             id: UUID(uuidString: "a498bc3c-85a3-4784-b560-a33a272a0a92")!,
-            front: AttributedString(stringLiteral: "front"),
-            back: AttributedString(stringLiteral: "back"),
+            front: NSAttributedString(string: "front"),
+            back: NSAttributedString(string: "back"),
             color: .darkBlue,
             datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0), lastEdit: Date(timeIntervalSince1970: 0), createdAt: Date(timeIntervalSince1970: 0)),
             deckID: UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!,

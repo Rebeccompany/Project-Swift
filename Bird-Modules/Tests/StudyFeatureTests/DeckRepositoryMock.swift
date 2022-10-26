@@ -242,8 +242,8 @@ extension Card {
             h = []
         }
         self.init(id: UUID(uuidString: id)!,
-                  front: "",
-                  back: "",
+                  front: NSAttributedString(string: ""),
+                  back: NSAttributedString(string: ""),
                   color: .red,
                   datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                       lastEdit: Date(timeIntervalSince1970: 0),

@@ -8,12 +8,11 @@
 
 import Foundation
 import CoreData
-import Storage
 
 extension DeckEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<DeckEntity> {
-        return NSFetchRequest<DeckEntity>(entityName: "DeckEntity")
+        NSFetchRequest<DeckEntity>(entityName: "DeckEntity")
     }
 
     @NSManaged public var category: String?
