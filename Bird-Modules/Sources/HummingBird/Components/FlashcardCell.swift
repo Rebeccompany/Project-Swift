@@ -29,11 +29,13 @@ public struct FlashcardCell: View {
                 }
                 Spacer()
                 #warning("arruma")
-                Text(isFront ? card.front.attributedString.string : card.back.attributedString.string)
+                LabelViewRepresentable(text: isFront ? card.front.attributedString : card.back.attributedString)
+//                Text(isFront ? card.front.attributedString.string : card.back.attributedString.string)
 //                Text(isFront ? card.front.attributedString : card.back.attributedString)
                 Spacer()
             }
-        }.buttonStyle(Style(color: card.color))
+        }
+        .buttonStyle(Style(color: card.color))
     }
     
     private struct Style: ButtonStyle {
