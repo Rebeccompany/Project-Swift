@@ -251,6 +251,7 @@ let package = Package(
             name: "HummingBird",
             dependencies: [
                 "Models",
+                "Utils",
                 "RichTextKit"
             ]
         ),

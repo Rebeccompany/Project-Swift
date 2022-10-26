@@ -9,6 +9,7 @@ import SwiftUI
 import RichTextKit
 import Combine
 import PhotosUI
+import Utils
 
 public struct FlashcardTextEditorView: View {
     var color: Color
@@ -61,7 +62,7 @@ public struct FlashcardTextEditorView: View {
             }
         }
         .onAppear {
-            context.foregroundColor = ColorRepresentable.black
+            context.foregroundColor = ColorRepresentable.white
             context.shouldUpdateTextField()
         }
     }
@@ -181,18 +182,5 @@ struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         FlashcardTextEditorView(text: .constant(NSAttributedString("")), color: .blue, side: "Frente", context: RichTextContext())
             .environment(\.sizeCategory, .medium)
-    }
-}
-
-extension UIImage {
-    func aspectFittedToHeight(_ newHeight: CGFloat) -> UIImage {
-        let scale = newHeight / self.size.height
-        let newWidth = self.size.width * scale
-        let newSize = CGSize(width: newWidth, height: newHeight)
-        let renderer = UIGraphicsImageRenderer(size: newSize)
-
-        return renderer.image { _ in
-            self.draw(in: CGRect(origin: .zero, size: newSize))
-        }
     }
 }
