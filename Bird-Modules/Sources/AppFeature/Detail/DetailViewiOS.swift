@@ -1,5 +1,5 @@
 //
-//  DetailView.swift
+//  DetailViewiOS.swift
 //  
 //
 //  Created by Nathalia do Valle Papst on 15/09/22.
@@ -13,19 +13,17 @@ import DeckFeature
 import Storage
 import Habitat
 
-
-public struct DetailView: View {
+#if os(iOS)
+public struct DetailViewiOS: View {
     @EnvironmentObject private var viewModel: ContentViewModel
     @State private var presentDeckEdition = false
     @State private var shouldDisplayAlert = false
     @State private var editingDeck: Deck?
-    #if os(iOS)
     @Binding private var editMode: EditMode
     
     init(editMode: Binding<EditMode>) {
         self._editMode = editMode
     }
-    #endif
     
     public var body: some View {
         Group {
@@ -35,9 +33,6 @@ public struct DetailView: View {
                 content
             }
         }
-        #if os(macOS)
-        .searchable(text: $viewModel.searchText)
-        #elseif os(iOS)
         .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
         .toolbar(editMode.isEditing ? .visible : .hidden,
                  for: .bottomBar)
@@ -60,7 +55,6 @@ public struct DetailView: View {
                 .foregroundColor(.red)
             }
         }
-        #endif
         .toolbar {
             
             ToolbarItem {
@@ -70,9 +64,7 @@ public struct DetailView: View {
                     } label: {
                         Label(NSLocalizedString("icones", bundle: .module, comment: ""), systemImage: "rectangle.grid.2x2")
                     }
-                    #if os(iOS)
                     .disabled(editMode.isEditing)
-                    #endif
                     
                     Button {
                         viewModel.changeDetailType(for: .table)
@@ -85,7 +77,7 @@ public struct DetailView: View {
                         Text(NSLocalizedString("quantidade", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.cardCount)])
                         Text(NSLocalizedString("ultimo_acesso", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.datesLogs.lastAccess, order: .reverse)])
                     } label: {
-                        Text(NSLocalizedString("opcoes_ordenacao", bundle: .module, comment: ""))
+                        Text(NSLocalizedString("opcoes_organizacao", bundle: .module, comment: ""))
                     }
                     
                 } label: {
@@ -97,13 +89,11 @@ public struct DetailView: View {
                 }
             }
             
-            #if os(iOS)
             ToolbarItem {
                 EditButton()
                     .keyboardShortcut("e", modifiers: .command)
                     .foregroundColor(HBColor.actionColor)
             }
-            #endif
             
             ToolbarItem {
                 Button {
@@ -114,24 +104,17 @@ public struct DetailView: View {
                         .foregroundColor(HBColor.actionColor)
                 }
                 .popover(isPresented: $presentDeckEdition) {
-                    #if os(iOS)
                     NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
                         .frame(minWidth: 300, minHeight: 600)
-                    #elseif os(macOS)
-                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck)
-                        .frame(minWidth: 300, minHeight: 600)
-                    #endif
                 }
             }
         }
-        #if os(iOS)
         .onChange(of: editMode) { newValue in
             if newValue == .active {
                 viewModel.detailType = .table
                 viewModel.changeDetailType(for: .table)
             }
         }
-        #endif
         .alert(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""), isPresented: $shouldDisplayAlert) {
             Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
                 try? viewModel.deleteDecks()
@@ -176,3 +159,4 @@ public struct DetailView: View {
         }
     }
 }
+#endif

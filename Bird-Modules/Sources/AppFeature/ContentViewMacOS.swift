@@ -45,9 +45,7 @@ public struct ContentViewMacOS: View {
     
     @ViewBuilder
     private var sidebar: some View {
-        CollectionsSidebarMacOS(
-            selection: $viewModel.sidebarSelection
-        )
+        CollectionsSidebarMacOS(selection: viewModel.macOSSidebarSelection)
             .environmentObject(viewModel)
             .frame(minWidth: 250)
     }
@@ -55,7 +53,7 @@ public struct ContentViewMacOS: View {
     @ViewBuilder
     private var detail: some View {
         Router(path: $path) {
-            DetailView()
+            DetailViewMacOS()
                 .environmentObject(viewModel)
         } destination: { (route: StudyRoute) in
             StudyRoutes.destination(for: route, viewModel: viewModel)

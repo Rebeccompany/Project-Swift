@@ -16,16 +16,16 @@ struct CollectionsSidebariOS: View {
     @State private var onboarding: Bool = false
     @Binding private var editMode: EditMode
     @EnvironmentObject private var viewModel: ContentViewModel
-    @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
     @State private var presentCollectionCreation = false
     @State private var editingCollection: DeckCollection?
+    @Binding private var selection: SidebarRoute?
     private var isCompact: Bool
     
-    init(selection: Binding<SidebarRoute?>, isCompact: Bool, editMode: Binding<EditMode>) {
-        self._selection = selection
+    init(isCompact: Bool, editMode: Binding<EditMode>, selection: Binding<SidebarRoute?>) {
         self._editMode = editMode
         self.isCompact = isCompact
+        self._selection = selection
     }
     
     var body: some View {
@@ -73,6 +73,7 @@ struct CollectionsSidebariOS: View {
                             Button(role: .destructive) {
                                 try? viewModel.deleteCollection(collection)
                                 editingCollection = nil
+                                selection = .allDecks
                             } label: {
                                 Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
                             }
@@ -81,6 +82,7 @@ struct CollectionsSidebariOS: View {
                     .onDelete {
                         try? viewModel.deleteCollection(at: $0)
                         editingCollection = nil
+                        selection = .allDecks
                     }
                 }
                 

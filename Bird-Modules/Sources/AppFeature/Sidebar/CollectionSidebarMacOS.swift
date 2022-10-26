@@ -15,13 +15,11 @@ import OnboardingFeature
 struct CollectionsSidebarMacOS: View {
     @State private var onboarding: Bool = false
     @EnvironmentObject private var viewModel: ContentViewModel
-    @Binding private var selection: SidebarRoute?
-//    @State private var defaultSelection = Set([UserDefaults.standard.object(forKey: "Selected") as? String ?? "Second View"])
-// Perguntar pro bahia como selecionar por padrão todas os baralhos
     @State private var presentCollectionCreation = false
     @State private var editingCollection: DeckCollection?
+    @Binding private var selection: SidebarRoute
     
-    init(selection: Binding<SidebarRoute?>) {
+    init(selection: Binding<SidebarRoute>) {
         self._selection = selection
     }
     
@@ -31,14 +29,9 @@ struct CollectionsSidebarMacOS: View {
             List(selection: $selection) {
                 NavigationLink(value: SidebarRoute.allDecks) {
                     Label(NSLocalizedString("todos_os_baralhos", bundle: .module, comment: ""), systemImage: "square.stack")
-
                 }
                 
                 Section {
-                    if viewModel.collections.isEmpty {
-                        emptyState
-                            .listRowBackground(Color.clear)
-                    } else {
                         ForEach(viewModel.collections) { collection in
                             NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
                                 HStack {
@@ -58,16 +51,12 @@ struct CollectionsSidebarMacOS: View {
                                     try? viewModel.deleteCollection(collection)
                                     editingCollection = nil
                                     selection = .allDecks
+
                                 } label: {
                                     Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
                                 }
                             }
                         }
-                        .onDelete {
-                            try? viewModel.deleteCollection(at: $0)
-                            editingCollection = nil
-                        }
-                    }
                     
                 } header: {
                     Text(NSLocalizedString("colecoes", bundle: .module, comment: ""))
@@ -97,6 +86,11 @@ struct CollectionsSidebarMacOS: View {
                 Spacer()
             }
             .padding([.bottom, .leading], 12)
+        }
+        .overlay {
+            if viewModel.collections.isEmpty {
+                emptyState
+            }
         }
         .onChange(of: presentCollectionCreation, perform: viewModel.didCollectionPresentationStatusChanged)
         .scrollContentBackground(.hidden)

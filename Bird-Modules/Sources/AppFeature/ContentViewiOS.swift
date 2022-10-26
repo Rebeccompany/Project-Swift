@@ -47,10 +47,8 @@ public struct ContentViewiOS: View {
     
     @ViewBuilder
     private var sidebar: some View {
-        CollectionsSidebariOS(
-            selection: $viewModel.sidebarSelection,
-            isCompact: horizontalSizeClass == .compact,
-            editMode: $editModeForCollection
+        CollectionsSidebariOS( isCompact: horizontalSizeClass == .compact,
+                               editMode: $editModeForCollection, selection: $viewModel.sidebarSelection
         )
         .environmentObject(viewModel)
         .environment(\.editMode, $editModeForCollection)
@@ -59,7 +57,7 @@ public struct ContentViewiOS: View {
     @ViewBuilder
     private var detail: some View {
         Router(path: $path) {
-            DetailView(editMode: $editModeForDeck)
+            DetailViewiOS(editMode: $editModeForDeck)
             .environmentObject(viewModel)
             .environment(\.editMode, $editModeForDeck)
         } destination: { (route: StudyRoute) in

@@ -34,6 +34,16 @@ public final class ContentViewModel: ObservableObject {
     
     private var cancellables: Set<AnyCancellable>
     
+    #if os(macOS)
+    var macOSSidebarSelection: Binding<SidebarRoute> {
+        Binding<SidebarRoute> { [weak self] in
+            self?.sidebarSelection ?? .allDecks
+        } set: {[weak self] route in
+            self?.sidebarSelection = route
+        }
+    }
+    #endif
+    
     var detailTitle: String {
         switch sidebarSelection ?? .allDecks {
         case .allDecks:
