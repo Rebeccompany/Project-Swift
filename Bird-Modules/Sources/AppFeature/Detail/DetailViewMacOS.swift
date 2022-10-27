@@ -32,19 +32,19 @@ public struct DetailViewMacOS: View {
         .toolbar {
             ToolbarItem {
                 Button {
-                    print("oi")
+                    viewModel.changeDetailType(for: .grid)
                 } label: {
                     Label {
                         Text(NSLocalizedString("visualizacao", bundle: .module, comment: ""))
                     } icon: {
-                        Image(systemName: viewModel.detailType == .grid ? "rectangle.grid.2x2" : "list.bullet")
+                        Image(systemName: "rectangle.grid.2x2")
                     }
                 }
             }
             
             ToolbarItem {
                 Button {
-                    print("tchau")
+                    viewModel.changeDetailType(for: .table)
                 } label: {
                     Image(systemName: "list.bullet")
                 }
