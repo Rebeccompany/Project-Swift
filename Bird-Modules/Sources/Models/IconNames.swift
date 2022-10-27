@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-public enum IconNames: String, CaseIterable {
+public enum IconNames: String, CaseIterable, Codable {
     case gamecontroller
     case paintpalette
     case abc

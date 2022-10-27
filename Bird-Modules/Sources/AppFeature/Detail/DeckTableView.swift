@@ -8,10 +8,13 @@
 import SwiftUI
 import Models
 import HummingBird
+import NewDeckFeature
 
 struct DeckTableView: View {
     @EnvironmentObject private var viewModel: ContentViewModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    var editAction: (Deck) -> Void
     
     private var sortedDecks: [Deck] {
         viewModel.decks.sorted(using: viewModel.sortOrder)
@@ -40,6 +43,27 @@ struct DeckTableView: View {
             NavigationLink(value: StudyRoute.deck(deck)) {
                 cell(for: deck)
             }
+            .swipeActions {
+                Button {
+                    editAction(deck)
+                } label: {
+                    Text("Editar")
+                }
+                .tint(HBColor.actionColor)
+            }
+            .contextMenu {
+                Button {
+                    editAction(deck)
+                } label: {
+                    Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
+                }
+                
+                Button(role: .destructive) {
+                    try? viewModel.deleteDeck(deck)
+                } label: {
+                    Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
+                }
+            }
         }
         .animation(.linear, value: viewModel.sortOrder)
         .listStyle(.plain)
@@ -48,8 +72,20 @@ struct DeckTableView: View {
     @ViewBuilder
     private var table: some View {
         Table(sortedDecks, selection: $viewModel.selection, sortOrder: $viewModel.sortOrder) {
+            TableColumn("") { deck in
+                Image(systemName: deck.icon)
+                    .font(.system(size: 14))
+                    .foregroundColor(HBColor.color(for: deck.color))
+                    .background {
+                        Circle()
+                            .fill(HBColor.color(for: deck.color).opacity(0.2))
+                            .frame(width: 35, height: 35)
+                    }
+                    .frame(width: 35, height: 35)
+            }.width(35)
             TableColumn(NSLocalizedString("nome", bundle: .module, comment: ""), value: \.name) { deck in
-                cell(for: deck)
+                Text(deck.name)
+                    .foregroundColor(.primary)
             }
             TableColumn("Flashcards", value: \.cardCount) { deck in
                 Text("\(deck.cardCount) flashcards")

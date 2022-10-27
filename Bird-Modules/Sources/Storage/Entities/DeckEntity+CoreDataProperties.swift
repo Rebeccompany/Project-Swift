@@ -2,7 +2,7 @@
 //  DeckEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Marcos Chevis on 20/09/22.
+//  Created by Rebecca Mello on 25/10/22.
 //
 //
 
@@ -15,6 +15,7 @@ extension DeckEntity {
         NSFetchRequest<DeckEntity>(entityName: "DeckEntity")
     }
 
+    @NSManaged public var category: String?
     @NSManaged public var color: Int16
     @NSManaged public var createdAt: Date?
     @NSManaged public var icon: String?
@@ -25,8 +26,10 @@ extension DeckEntity {
     @NSManaged public var maxReviewingCards: Int32
     @NSManaged public var name: String?
     @NSManaged public var numberOfSteps: Int16
+    @NSManaged public var storeId: String?
     @NSManaged public var cards: NSSet?
     @NSManaged public var collection: CollectionEntity?
+    @NSManaged public var session: SessionEntity?
 
 }
 

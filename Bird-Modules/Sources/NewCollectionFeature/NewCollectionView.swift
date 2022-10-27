@@ -29,7 +29,7 @@ public struct NewCollectionView: View {
     
     public var body: some View {
         
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
                     Text("nome", bundle: .module)
@@ -151,6 +151,7 @@ public struct NewCollectionView: View {
             .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
         }
         .navigationViewStyle(.stack)
+        .interactiveDismissDisabled(selectedField != nil ? true : false)
         
     }
     

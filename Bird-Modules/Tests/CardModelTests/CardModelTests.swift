@@ -15,7 +15,7 @@ class CardModelTests: XCTestCase {
     let secondsInADay: TimeInterval = 86400
     
     override func setUpWithError() throws {
-        sut = Card(id: UUID(), front: "", back: "", color: .red, datesLogs: DateLogs(lastAccess: Date(), lastEdit: Date(), createdAt: Date()), deckID: UUID(), woodpeckerCardInfo: WoodpeckerCardInfo(step: 2, isGraduated: true, easeFactor: 2.5, streak: 2, interval: 0, hasBeenPresented: true), history: [])   
+        sut = Card(id: UUID(), front: NSAttributedString(string: ""), back: NSAttributedString(string: ""), color: .red, datesLogs: DateLogs(lastAccess: Date(), lastEdit: Date(), createdAt: Date()), deckID: UUID(), woodpeckerCardInfo: WoodpeckerCardInfo(step: 2, isGraduated: true, easeFactor: 2.5, streak: 2, interval: 0, hasBeenPresented: true), history: [])
     }
 
     override func tearDownWithError() throws {

@@ -1,0 +1,26 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Claudia Fiorentino on 19/10/22.
+  
+*/
+
+"comecar" = "Começar";
+"pular" = "Pular";
+"modo_spixii"= "Modo Spixii";
+"modo_intenso"= "Modo Intenso";
+"colecoes" = "Coleções";
+"baralhos" = "Baralhos";
+"flashcards" = "Flashcards";
+"pagina_um" = "Bem vindo ao Spixii! Aqui você pode estudar através de flashcards e potencializar seu aprendizado e memorização.";
+"pagina_dois_um" = "São feitos para testar a memória! Eles guardam uma pergunta ou termo na frente, e em seu verso, a resposta ou definição.";
+"pagina_dois_dois" = "Exemplo: um flashcard tem ”Gato” na frente e ”Cat” no verso.";
+"pagina_tres_um" = "Os flashcards pertencem a um baralho!";
+"pagina_tres_dois" = "Exemplo: baralho chamado ”Animais”";
+"pagina_tres_tres" = "Os baralhos podem ser agrupados em coleções.";
+"pagina_tres_quatro" = "Exemplo: coleção chamada ”Língua Inglesa”";
+"pagina_quatro_um" = "Modo de estudo para aprendizado a longo prazo baseado no método de repetição espaçada.";
+"pagina_quatro_dois" = "Nele, o app cria as sessões de estudo e controla quantos e quais cartões você deve estudar no dia.";
+"pagina_quatro_tres" = "Modo de estudo para memorização a curto prazo de grande volume de conteúdo.";
+"pagina_quatro_quatro" = "Nele, é possível estudar todos os cartões quando quiser.";

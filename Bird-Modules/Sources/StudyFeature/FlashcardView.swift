@@ -29,14 +29,6 @@ struct FlashcardView: View {
             cardFace(content: viewModel.card.front, face: NSLocalizedString("frente", bundle: .module, comment: ""), description: NSLocalizedString("toque_virar", bundle: .module, comment: ""))
                 .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0.0001))
         }
-        .background(
-            Button {
-                flip()
-            } label: {
-                EmptyView()
-            }
-            .keyboardShortcut(.space, modifiers: [])
-        )
         .onTapGesture(perform: flip)
         .onChange(of: viewModel.isFlipped) { newValue in
             flipWithAnimation(newValue)
@@ -88,15 +80,8 @@ struct FlashcardView: View {
         }
     }
     
-    private func prepareAttrStringToDisplay(_ attr: AttributedString) -> AttributedString {
-        var attr = attr
-        attr.swiftUI.font = .body
-        attr.swiftUI.foregroundColor = .white
-        return attr
-    }
-    
     @ViewBuilder
-    private func cardFace(content: AttributedString, face: String, description: String) -> some View {
+    private func cardFace(content: NSAttributedString, face: String, description: String) -> some View {
         VStack {
             HStack {
                 Text(face)
@@ -105,7 +90,7 @@ struct FlashcardView: View {
             }
             
             Spacer()
-            Text(prepareAttrStringToDisplay(content))
+            TextViewRepresentable(text: content)
                 .minimumScaleFactor(0.01)
             Spacer()
             
@@ -145,7 +130,7 @@ struct FlashcardView_Previews: PreviewProvider {
                                     interval: 1,
                                     hasBeenPresented: true)
         
-        return Card(id: id, front: AttributedString(frontNSAttributedString), back: AttributedString(backNSAttributedString), color: .red, datesLogs: dateLog, deckID: deckId, woodpeckerCardInfo: wp, history: [])
+        return Card(id: id, front: frontNSAttributedString, back: backNSAttributedString, color: .red, datesLogs: dateLog, deckID: deckId, woodpeckerCardInfo: wp, history: [])
     }
     
     static var previews: some View {

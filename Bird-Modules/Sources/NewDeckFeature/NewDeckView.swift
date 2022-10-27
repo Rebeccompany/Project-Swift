@@ -31,7 +31,7 @@ public struct NewDeckView: View {
     
     public var body: some View {
         
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
                     Text("nome", bundle: .module)
@@ -174,6 +174,7 @@ public struct NewDeckView: View {
             .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
             .viewBackgroundColor(HBColor.primaryBackground)
         }
+        .interactiveDismissDisabled(selectedField != nil ? true : false)
         
     }
 }

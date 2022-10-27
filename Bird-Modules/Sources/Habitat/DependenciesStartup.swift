@@ -7,6 +7,7 @@
 
 import Foundation
 import Storage
+import Puffins
 import Utils
 
 public func setupHabitatForProduction() {
@@ -15,8 +16,8 @@ public func setupHabitatForProduction() {
     Habitat[\.dateHandler] = DateHandler()
     Habitat[\.uuidGenerator] = UUIDGenerator()
     Habitat[\.systemObserver] = SystemObserver.shared
-    Habitat[\.sessionCacher] = SessionCacher()
     Habitat[\.displayCacher] = DisplayCacher()
+    Habitat[\.externalDeckService] = ExternalDeckService.shared
 }
 
 public func setupHabitatForIsolatedTesting(
@@ -25,8 +26,8 @@ public func setupHabitatForIsolatedTesting(
     dateHandler: DateHandlerProtocol = DateHandlerMock(),
     uuidGenerator: UUIDGeneratorProtocol = UUIDHandlerMock(),
     systemObserver: SystemObserverProtocol = SystemObserverMock(),
-    sessionCacher: SessionCacher = SessionCacher(storage: LocalStorageMock()),
-    displayCacher: DisplayCacherProtocol = DisplayCacher(localStorage: LocalStorageMock())
+    displayCacher: DisplayCacherProtocol = DisplayCacher(localStorage: LocalStorageMock()),
+    externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock()
 ) {
     Habitat[\.deckRepository] = deckRepository
     Habitat[\.collectionRepository] = collectionRepository
@@ -34,7 +35,7 @@ public func setupHabitatForIsolatedTesting(
     Habitat[\.uuidGenerator] = uuidGenerator
     Habitat[\.systemObserver] = systemObserver
     Habitat[\.displayCacher] = displayCacher
-    Habitat[\.sessionCacher] = sessionCacher
+    Habitat[\.externalDeckService] = externalDeckService
 }
 
 public func setupHabitatForIntegrationTesting() {
@@ -43,8 +44,7 @@ public func setupHabitatForIntegrationTesting() {
     Habitat[\.dateHandler] = DateHandlerMock()
     Habitat[\.uuidGenerator] = UUIDHandlerMock()
     Habitat[\.systemObserver] = SystemObserver.shared
-    Habitat[\.sessionCacher] = SessionCacher()
     Habitat[\.systemObserver] = SystemObserver.shared
-    Habitat[\.sessionCacher] = SessionCacher(storage: LocalStorageMock())
     Habitat[\.displayCacher] = DisplayCacher(localStorage: LocalStorageMock())
+    Habitat[\.externalDeckService] = ExternalDeckServiceMock()
 }

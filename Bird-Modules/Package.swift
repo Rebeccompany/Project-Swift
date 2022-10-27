@@ -101,6 +101,24 @@ let package = Package(
         .library(
             name: "Habitat",
             targets: ["Habitat"]
+        ),
+        
+        .library(
+            name: "OnboardingFeature",
+            targets: ["OnboardingFeature"]
+        ),
+        
+        .library(
+            name: "FlashcardsOnboardingFeature",
+            targets: ["FlashcardsOnboardingFeature"]
+        ),
+        .library(
+            name: "StoreFeature",
+            targets: ["StoreFeature"]
+        ),
+        .library(
+            name: "Puffins",
+            targets: ["Puffins"]
         )
     ],
     
@@ -110,6 +128,10 @@ let package = Package(
         .package(
             url: "https://github.com/Rebeccompany/Owl.git",
             from: "1.0.2"
+        ),
+        .package(
+            url: "https://github.com/Rebeccompany/RichTextKit",
+            branch: "main"
         )
     ],
     
@@ -128,7 +150,8 @@ let package = Package(
                 "Models",
                 "Flock",
                 "Habitat",
-                "NewFlashcardFeature"
+                "NewFlashcardFeature",
+                "OnboardingFeature"
             ]
         ),
         
@@ -155,7 +178,8 @@ let package = Package(
                      "Woodpecker",
                      "Storage",
                      "Utils",
-                     "Habitat"
+                     "Habitat",
+                     "FlashcardsOnboardingFeature"
                 ]
         ),
         
@@ -203,7 +227,8 @@ let package = Package(
                 "HummingBird",
                 "Storage",
                 "Utils",
-                "Habitat"
+                "Habitat",
+                "RichTextKit"
             ]
         ),
         
@@ -229,7 +254,9 @@ let package = Package(
         .target(
             name: "HummingBird",
             dependencies: [
-                "Models"
+                "Models",
+                "Utils",
+                "RichTextKit"
             ]
         ),
         
@@ -245,7 +272,42 @@ let package = Package(
             name: "Habitat",
             dependencies: [
                 "Storage",
-                "Utils"
+                "Utils",
+                "Puffins"
+            ]
+        ),
+        
+        .target(
+            name: "OnboardingFeature",
+            dependencies: [
+                "HummingBird",
+                "Models"
+            ]
+        ),
+        
+        .target(
+            name: "FlashcardsOnboardingFeature",
+            dependencies: [
+                "HummingBird",
+                "Models"
+            ]
+        ),
+        
+        .target(
+            name: "StoreFeature",
+            dependencies: [
+                "Models",
+                "HummingBird",
+                "DeckFeature",
+                "Puffins",
+                "Habitat"
+            ]
+        ),
+        
+        .target(
+            name: "Puffins",
+            dependencies: [
+                "Models"
             ]
         ),
         
@@ -358,6 +420,15 @@ let package = Package(
                 "HummingBird",
                 "Woodpecker",
                 "Utils",
+                "Habitat"
+            ]
+        ),
+        
+        .testTarget(
+            name: "StoreFeatureTests",
+            dependencies: [
+                "Puffins",
+                "StoreFeature",
                 "Habitat"
             ]
         )

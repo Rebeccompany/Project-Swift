@@ -6,12 +6,17 @@
 //
 import Foundation
 import Storage
+import Puffins
 import Utils
 
 // MARK: Keys
 
 private struct DeckRepositoryKey: HabitatKey {
     static var currentValue: DeckRepositoryProtocol = DeckRepository.shared
+}
+
+private struct ExternalDeckServiceKey: HabitatKey {
+    static var currentValue: ExternalDeckServiceProtocol = ExternalDeckService.shared
 }
 
 private struct CollectionRepositoryKey: HabitatKey {
@@ -28,10 +33,6 @@ private struct UUIDGeneratorKey: HabitatKey {
 
 private struct SystemObserverKey: HabitatKey {
     static var currentValue: SystemObserverProtocol = SystemObserver.shared
-}
-
-private struct SessionCacherKey: HabitatKey {
-    static var currentValue: SessionCacher = SessionCacher()
 }
 
 private struct DisplayCacherKey: HabitatKey {
@@ -65,13 +66,13 @@ extension Habitat {
         set { Self[SystemObserverKey.self] = newValue }
     }
     
-    public var sessionCacher: SessionCacher {
-        get { Self[SessionCacherKey.self] }
-        set { Self[SessionCacherKey.self] = newValue }
-    }
-    
     public var displayCacher: DisplayCacherProtocol {
         get { Self[DisplayCacherKey.self] }
         set { Self[DisplayCacherKey.self] = newValue }
+    }
+    
+    public var externalDeckService: ExternalDeckServiceProtocol {
+        get { Self[ExternalDeckServiceKey.self] }
+        set { Self[ExternalDeckServiceKey.self] = newValue }
     }
 }

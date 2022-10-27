@@ -59,11 +59,11 @@ class CardModelEntityTransformerTests: XCTestCase {
         XCTAssertEqual(entity.deck, nil)
         XCTAssertEqual(entity.history?.allObjects.isEmpty, true)
         
-        let frontNS = try! NSAttributedString(data: entity.front!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
-        let backNS = try! NSAttributedString(data: entity.back!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
+        let frontNS = try! NSAttributedString(data: entity.front!, options: [.documentType: NSAttributedString.DocumentType.rtfd], documentAttributes: nil)
+        let backNS = try! NSAttributedString(data: entity.back!, options: [.documentType: NSAttributedString.DocumentType.rtfd], documentAttributes: nil)
         
-        XCTAssertEqual(NSAttributedString(model.front).string, frontNS.string)
-        XCTAssertEqual(NSAttributedString(model.back).string, backNS.string)
+        XCTAssertEqual(model.front.string, frontNS.string)
+        XCTAssertEqual(model.back.string, backNS.string)
     }
     
     private func assertEntity(model: Card, entity: CardEntity) {
@@ -78,11 +78,11 @@ class CardModelEntityTransformerTests: XCTestCase {
         XCTAssertEqual(entity.deck!.id, model.deckID)
         XCTAssertEqual(entity.history?.allObjects.isEmpty, true)
         
-        let frontNS = try! NSAttributedString(data: entity.front!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
-        let backNS = try! NSAttributedString(data: entity.back!, options: [.documentType: NSAttributedString.DocumentType.rtf], documentAttributes: nil)
+        let frontNS = try! NSAttributedString(data: entity.front!, options: [.documentType: NSAttributedString.DocumentType.rtfd], documentAttributes: nil)
+        let backNS = try! NSAttributedString(data: entity.back!, options: [.documentType: NSAttributedString.DocumentType.rtfd], documentAttributes: nil)
         
-        XCTAssertEqual(NSAttributedString(model.front).string, frontNS.string)
-        XCTAssertEqual(NSAttributedString(model.back).string, backNS.string)
+        XCTAssertEqual(model.front.string, frontNS.string)
+        XCTAssertEqual(model.back.string, backNS.string)
     }
 
 }

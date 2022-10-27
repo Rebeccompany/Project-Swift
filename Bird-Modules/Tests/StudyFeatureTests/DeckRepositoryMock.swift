@@ -22,7 +22,11 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
                                    cardsIds: Array(cards.filter { $0.deckID == UUID(uuidString: "4e56be0a-bc7c-4497-aec9-c30482e82496") }.map(\.id)),
                                    spacedConfig: SpacedRepetitionConfig(maxLearningCards: 20, maxReviewingCards: 3)),
                               Deck(id: "3947217b-2f55-4f16-ae59-10017d291579",
-                                   cardsIds: cards.filter { $0.deckID == UUID(uuidString: "3947217b-2f55-4f16-ae59-10017d291579") }.map(\.id))
+                                   cardsIds: cards.filter { $0.deckID == UUID(uuidString: "3947217b-2f55-4f16-ae59-10017d291579") }.map(\.id)),
+                              Deck(id: "941aa8f2-4e50-11ed-bdc3-0242ac120002",
+                                   cardsIds: cards.filter { $0.deckID == UUID(uuidString: "941aa8f2-4e50-11ed-bdc3-0242ac120002") }.map(\.id)),
+                              Deck(id: "e710f512-4e59-11ed-bdc3-0242ac120002",
+                                   cardsIds: cards.filter { $0.deckID == UUID(uuidString: "e710f512-4e59-11ed-bdc3-0242ac120002") }.map(\.id))
                          
     ]
     
@@ -51,7 +55,13 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
         Card(id: "cd3cc305-e80e-4c84-b1e5-e27fda8a9cfe", deckId: "a498bc3c-85a3-4784-b560-a33a272a0a92", state: .learn), //16
         
         Card(id: "5896cc41-ce48-44af-80f0-844dd24bca0b", deckId: "3947217b-2f55-4f16-ae59-10017d291579", state: .review), //17
-        Card(id: "df6dcb79-28a4-4aae-8c6e-7656e4e79d2e", deckId: "3947217b-2f55-4f16-ae59-10017d291579", state: .review) //18
+        Card(id: "df6dcb79-28a4-4aae-8c6e-7656e4e79d2e", deckId: "3947217b-2f55-4f16-ae59-10017d291579", state: .review), //18
+        
+        Card(id: "7c2dca20-4e51-11ed-bdc3-0242ac120002", deckId: "941aa8f2-4e50-11ed-bdc3-0242ac120002", state: .review), //19
+        Card(id: "831cb95e-4e51-11ed-bdc3-0242ac120002", deckId: "941aa8f2-4e50-11ed-bdc3-0242ac120002", state: .learn), //20
+        
+        Card(id: "05671348-4e5a-11ed-bdc3-0242ac120002", deckId: "e710f512-4e59-11ed-bdc3-0242ac120002", state: .learn), //21
+        Card(id: "0c082cf0-4e5a-11ed-bdc3-0242ac120002", deckId: "e710f512-4e59-11ed-bdc3-0242ac120002", state: .learn), //22
         
     ]
     
@@ -147,6 +157,49 @@ class DeckRepositoryMock: DeckRepositoryProtocol {
         }
     }
     
+    public func createSession(_ session: Session, for deck: Deck) throws {
+        
+        guard let index = decks.firstIndex(where:  {deck.id == $0.id}) else {
+            throw NSError()
+        }
+        
+        decks[index].session = session
+    }
+    
+    public func editSession(_ session: Session) throws {
+        
+        guard let index = decks.firstIndex(where: { deck in
+            deck.session?.id == session.id
+        }) else { throw NSError() }
+        
+        decks[index].session = session
+    }
+    
+    public func deleteSession(_ session: Session, for deck: Deck) throws {
+        
+        guard let index = decks.firstIndex(of: deck) else {
+            throw NSError()
+        }
+        
+        decks[index].session = nil
+    }
+    
+    public func addCardsToSession(_ session: Session, cards: [Card]) throws {
+        
+        var session = session
+        
+        session.cardIds.append(contentsOf: cards.map(\.id))
+    }
+    
+    public func removeCardsFromSession(_ session: Session, cards: [Card]) throws {
+
+        var session = session
+        
+        session.cardIds.removeAll { id in
+            cards.map(\.id).contains(id)
+        }
+    }
+
     func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
         guard let index = cards.firstIndex(of: card) else { throw NSError() }
         var card = card
@@ -189,8 +242,8 @@ extension Card {
             h = []
         }
         self.init(id: UUID(uuidString: id)!,
-                  front: "",
-                  back: "",
+                  front: NSAttributedString(string: ""),
+                  back: NSAttributedString(string: ""),
                   color: .red,
                   datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                       lastEdit: Date(timeIntervalSince1970: 0),
@@ -213,6 +266,8 @@ extension Deck {
                                       createdAt: Date(timeIntervalSince1970: 0)),
                   collectionId: nil,
                   cardsIds: cardsIds,
-                  spacedRepetitionConfig: spacedConfig)
+                  spacedRepetitionConfig: spacedConfig,
+                  category: DeckCategory.arts,
+                  storeId: nil)
     }
 }

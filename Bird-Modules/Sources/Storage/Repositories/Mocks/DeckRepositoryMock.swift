@@ -127,7 +127,6 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
          } else {
              throw RepositoryError.couldNotEdit
          }
-         
      }
 
      public func removeCard(_ card: Card, from deck: Deck) throws {
@@ -184,10 +183,65 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
              throw RepositoryError.couldNotEdit
          }
          
-         
          cardSubject.send(cards)
      }
     
+    public func createSession(_ session: Session, for deck: Deck) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotCreate
+        }
+        
+        guard let index = decks.firstIndex(of: deck) else {
+            throw NSError()
+        }
+       
+        decks[index].session = session
+    }
+    
+    public func editSession(_ session: Session) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotEdit
+        }
+        
+        guard let index = decks.firstIndex(where: { deck in
+            deck.session?.id == session.id
+        }) else { throw NSError() }
+        
+        decks[index].session = session
+    }
+    
+    public func deleteSession(_ session: Session, for deck: Deck) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotDelete
+        }
+        
+        guard let index = decks.firstIndex(of: deck) else { throw NSError() }
+        
+        decks[index].session = nil
+    }
+    
+    public func addCardsToSession(_ session: Session, cards: [Card]) throws {
+        if shouldThrowError {
+            throw RepositoryError.internalError
+        }
+        
+        var session = session
+        
+        session.cardIds.append(contentsOf: cards.map(\.id))
+    }
+    
+    public func removeCardsFromSession(_ session: Session, cards: [Card]) throws {
+        if shouldThrowError {
+            throw RepositoryError.internalError
+        }
+        
+        var session = session
+        
+        session.cardIds.removeAll { id in
+            cards.map(\.id).contains(id)
+        }
+    }
+
     public func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
         guard let i = cards.firstIndex(of: card) else {
             throw NSError()
@@ -221,7 +275,7 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
 
 extension Card {
     
-    fileprivate init(id: String, deckId: String, state: WoodpeckerState, front: AttributedString, back: AttributedString) {
+    fileprivate init(id: String, deckId: String, state: WoodpeckerState, front: NSAttributedString, back: NSAttributedString) {
         let h: [CardSnapshot]
         switch state {
         case .review:
@@ -252,8 +306,8 @@ extension Card {
              h = []
          }
          self.init(id: UUID(uuidString: id)!,
-                   front: "Parte da frente",
-                   back: "Parte de tras",
+                   front: NSAttributedString(string: "Parte da frente"),
+                   back: NSAttributedString(string: "Parte de tras"),
                    color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),
@@ -277,6 +331,8 @@ extension Card {
                    cardsIds: cardsIds,
                    spacedRepetitionConfig: .init(maxLearningCards: 20,
                                                  maxReviewingCards: 200,
-                                                 numberOfSteps: 4))
+                                                 numberOfSteps: 4),
+                                                 category: DeckCategory.arts,
+                                                 storeId: nil)
      }
  }

@@ -8,6 +8,15 @@
         "revision" : "2ee76e4bd5c263fa40220890eefe03eabd181bd2",
         "version" : "1.0.2"
       }
+    },
+    {
+      "identity" : "richtextkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Rebeccompany/RichTextKit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "81a5ff084abe7516ae989d27dba39e8ac3c3ab32"
+      }
     }
   ],
   "version" : 2
