@@ -77,6 +77,7 @@ public struct FlashcardTextEditorView: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(context.isItalic ? HBColor.actionColor : nil)
+                .keyboardShortcut("i", modifiers: .command)
                 
                 Button { context.isBold.toggle() } label: {
                     Image.richTextStyleBold
@@ -84,6 +85,7 @@ public struct FlashcardTextEditorView: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(context.isBold ? HBColor.actionColor : nil)
+                .keyboardShortcut("b", modifiers: .command)
                 
                 Button { context.isUnderlined.toggle() } label: {
                     Image.richTextStyleUnderline
@@ -91,6 +93,7 @@ public struct FlashcardTextEditorView: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(context.isUnderlined ? HBColor.actionColor : nil)
+                .keyboardShortcut("u", modifiers: .command)
 //                Button {
 //                    isPhotoPickerPresented = true
 //                } label: {
@@ -166,15 +169,23 @@ public struct FlashcardTextEditorView: View {
                 Image(systemName: "minus")
                     .frame(width: 10, height: 10)
             }
+            .keyboardShortcut("-", modifiers: .command)
             FontSizePicker(selection: size)
                 .labelsHidden()
+                .frame(minWidth: 50)
             Button {
                 context.incrementFontSize()
             } label: {
                 Image(systemName: "plus")
                     .frame(width: 10, height: 10)
             }
+            .keyboardShortcut("+", modifiers: .command)
         }
+    }
+    
+    func text(for fontSize: CGFloat) -> some View {
+        Text("\(Int(fontSize))")
+            .fixedSize(horizontal: true, vertical: false)
     }
 }
 
