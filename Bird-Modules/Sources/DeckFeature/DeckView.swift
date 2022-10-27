@@ -100,9 +100,8 @@ public struct DeckView: View {
                     )
                 }
                 .foregroundColor(HBColor.actionColor)
-                .popover(isPresented: $shouldDisplayNewFlashcard) {
+                .fullScreenCover(isPresented: $shouldDisplayNewFlashcard) {
                     NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
-                        .frame(minWidth: 300, minHeight: 600)
                 }
             }
         }

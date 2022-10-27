@@ -8,7 +8,7 @@
 import Foundation
 
 /// Configuration of Spaced Repetition.
-public struct SpacedRepetitionConfig: Equatable, Hashable {
+public struct SpacedRepetitionConfig: Equatable, Hashable, Codable {
     
     /// The maximum number of cards for the learning stage.
     public var maxLearningCards: Int

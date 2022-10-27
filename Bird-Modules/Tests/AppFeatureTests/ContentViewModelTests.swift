@@ -200,7 +200,7 @@ final class ContentViewModelTests: XCTestCase {
     }
     
     func testEditDeckWithWrongDeck() {
-        let deck = Deck(id: UUID.init(), name: "deck", icon: "flame", color: .beigeBrown, collectionId: UUID.init(), cardsIds: [], category: DeckCategory.arts)
+        let deck = Deck(id: UUID.init(), name: "deck", icon: "flame", color: .beigeBrown, collectionId: UUID.init(), cardsIds: [], category: DeckCategory.arts, storeId: nil)
         
         sut.selection.insert(deck.id)
         

@@ -46,8 +46,8 @@ class NewFlashcardFeatureTests: XCTestCase {
     }
     
     func testCreateFlashcardSuccessfully() throws {
-        sut.flashcardFront = "Frente do card"
-        sut.flashcardBack = "Verso do flashard"
+        sut.flashcardFront = NSAttributedString(string: "Frente do card")
+        sut.flashcardBack = NSAttributedString(string: "Verso do flashard")
         sut.currentSelectedColor = CollectionColor.red
         try sut.createFlashcard(for: deckRepository.decks[0])
         
@@ -59,8 +59,8 @@ class NewFlashcardFeatureTests: XCTestCase {
     }
     
     func testCreateFlashcardError() throws {
-        sut.flashcardFront = "frente"
-        sut.flashcardBack = "tras"
+        sut.flashcardFront = NSAttributedString(string: "frente")
+        sut.flashcardBack = NSAttributedString(string: "tras")
         sut.currentSelectedColor = CollectionColor.red
         deckRepository.shouldThrowError = true
         XCTAssertThrowsError(try sut.createFlashcard(for: deckRepository.decks[0]))
@@ -74,8 +74,8 @@ class NewFlashcardFeatureTests: XCTestCase {
     
     func testCanSubmitBindingSuccessfully() {
         let expectations = expectation(description: "Can submit binding")
-        sut.flashcardFront = "frente"
-        sut.flashcardBack = "tras"
+        sut.flashcardFront = NSAttributedString(string: "frente")
+        sut.flashcardBack = NSAttributedString(string: "tras")
         sut.currentSelectedColor = CollectionColor.red
         sut.$canSubmit.sink { canSubmit in
             XCTAssertTrue(canSubmit)
@@ -87,7 +87,7 @@ class NewFlashcardFeatureTests: XCTestCase {
     
     func testCanSubmitBindingErrorNoFront() {
         let expectations = expectation(description: "Can submit binding")
-        sut.flashcardBack = "tras"
+        sut.flashcardBack = NSAttributedString(string: "tras")
         sut.currentSelectedColor = CollectionColor.red
         sut.$canSubmit.sink { canSubmit in
             XCTAssertFalse(canSubmit)
@@ -99,7 +99,7 @@ class NewFlashcardFeatureTests: XCTestCase {
     
     func testCanSubmitBindingErrorNoBack() {
         let expectations = expectation(description: "Can submit binding")
-        sut.flashcardFront = "frente"
+        sut.flashcardFront = NSAttributedString(string: "frente")
         sut.currentSelectedColor = CollectionColor.red
         sut.$canSubmit.sink { canSubmit in
             XCTAssertFalse(canSubmit)
@@ -111,8 +111,8 @@ class NewFlashcardFeatureTests: XCTestCase {
     
     func testCanSubmitBindingErrorNoColor() {
         let expectations = expectation(description: "Can submit binding")
-        sut.flashcardFront = "frente"
-        sut.flashcardBack = "tras"
+        sut.flashcardFront = NSAttributedString(string: "frente")
+        sut.flashcardBack = NSAttributedString(string: "tras")
         sut.currentSelectedColor = nil
         sut.$canSubmit.sink { canSubmit in
             XCTAssertFalse(canSubmit)
@@ -124,7 +124,7 @@ class NewFlashcardFeatureTests: XCTestCase {
     
     func testCanSubmitBindingErrorNoColorAndFront() {
         let expectations = expectation(description: "Can submit binding")
-        sut.flashcardBack = "tras"
+        sut.flashcardBack = NSAttributedString(string: "tras")
         sut.$canSubmit.sink { canSubmit in
             XCTAssertFalse(canSubmit)
             expectations.fulfill()
@@ -135,7 +135,7 @@ class NewFlashcardFeatureTests: XCTestCase {
     
     func testCanSubmitBindingErrorNoColorAndBack() {
         let expectations = expectation(description: "Can submit binding")
-        sut.flashcardFront = "frente"
+        sut.flashcardFront = NSAttributedString(string: "frente")
         sut.$canSubmit.sink { canSubmit in
             XCTAssertFalse(canSubmit)
             expectations.fulfill()
@@ -166,21 +166,21 @@ class NewFlashcardFeatureTests: XCTestCase {
     }
     
     func testEditFlashcardFront() throws {
-        XCTAssertEqual(deckRepository.cards[0].front, "Parte da frente")
+        XCTAssertEqual(deckRepository.cards[0].front, NSAttributedString(string: "Parte da frente"))
         
-        sut.flashcardFront = "Novo texto"
+        sut.flashcardFront = NSAttributedString(string: "Novo texto")
         try sut.editFlashcard(editingFlashcard: deckRepository.cards[0])
 
-        XCTAssertEqual(deckRepository.cards[0].front, "Novo texto")
+        XCTAssertEqual(deckRepository.cards[0].front, NSAttributedString(string: "Novo texto"))
     }
     
     func testEditFlashcardBack() throws {
-        XCTAssertEqual(deckRepository.cards[0].back, "Parte de tras")
+        XCTAssertEqual(deckRepository.cards[0].back, NSAttributedString(string: "Parte de tras"))
         
-        sut.flashcardBack = "Novo texto"
+        sut.flashcardBack = NSAttributedString(string: "Novo texto")
         try sut.editFlashcard(editingFlashcard: deckRepository.cards[0])
 
-        XCTAssertEqual(deckRepository.cards[0].back, "Novo texto")
+        XCTAssertEqual(deckRepository.cards[0].back, NSAttributedString(string: "Novo texto"))
     }
     
     func testEditFlashcardColor() throws {
