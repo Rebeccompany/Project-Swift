@@ -40,6 +40,10 @@ public struct DetailViewMacOS: View {
                         Image(systemName: "rectangle.grid.2x2")
                     }
                 }
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color.white.opacity(viewModel.detailType == .grid ? 0.05 : 0))
+                )
             }
             
             ToolbarItem {
@@ -47,7 +51,10 @@ public struct DetailViewMacOS: View {
                     viewModel.changeDetailType(for: .table)
                 } label: {
                     Image(systemName: "list.bullet")
-                }
+                }.background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color.white.opacity(viewModel.detailType == .table ? 0.05 : 0))
+                )
             }
             
             ToolbarItem {
