@@ -7,31 +7,41 @@
 
 import SwiftUI
 import HummingBird
+import Habitat
+import Models
 
 struct StoreView: View {
-    @State private var searchText = ""
+    @StateObject private var viewModel: StoreViewModel = StoreViewModel()
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Por Spixii")
-                .font(.title3)
-                .bold()
-                 
-            PublicDeckView(color: .red, deckName: "Jogos de Switch", icon: .gamecontroller, author: "Spixii", copies: 30)
-                .frame(width: 180, height: 210)
-                .cornerRadius(13)
-                .navigationTitle("Baralhos Públicos")
-                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
-                
+        Group {
+            switch viewModel.viewState {
+            case .loaded:
+                ScrollView {
+                    LazyVStack(alignment: .leading) {
+                        ForEach(viewModel.sections) { section in
+                            PublicSection(section: section)
+                        }
+                    }
+                }
+            case .error:
+                Text("Error")
+            case .loading:
+                ProgressView()
+            }
         }
+        .navigationTitle(NSLocalizedString("baralhos_publicos", bundle: .module, comment: ""))
+        .onAppear(perform: viewModel.startup)
         .viewBackgroundColor(HBColor.primaryBackground)
     }
 }
 
 struct StoreView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            StoreView()
+        HabitatPreview {
+            NavigationStack {
+                StoreView()
+            }
         }
     }
 }

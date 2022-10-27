@@ -10,52 +10,50 @@ import Models
 import HummingBird
 
 struct PublicDeckView: View {
-    var color: Color
-    var deckName: String
-    var icon: IconNames
+    var deck: ExternalDeck
+    var numberOfCopies: Int
     var author: String
-    var copies: Int
     
-    init(color: Color, deckName: String, icon: IconNames, author: String, copies: Int) {
-        self.color = color
-        self.deckName = deckName
-        self.icon = icon
+    init(deck: ExternalDeck, numberOfCopies: Int, author: String) {
+        self.deck = deck
+        self.numberOfCopies = numberOfCopies
         self.author = author
-        self.copies = copies
     }
     
     var body: some View {
         VStack {
-            Image(systemName: icon.rawValue)
+            Image(systemName: deck.icon.rawValue)
                 .foregroundColor(.white)
                 .font(.system(size: 40))
+                .fontWeight(.regular)
                 
-            Text(deckName)
+            Text(deck.name)
                 .bold()
-                .padding(10)
+                .padding(4)
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.white)
                 .font(.system(size: 20))
+            
             HStack {
                 Image(systemName: "rectangle.portrait.on.rectangle.portrait.fill")
                     .foregroundColor(.white)
-                Text(String(copies))
+                    .font(.system(size: 11))
+                Text(String(numberOfCopies))
                     .foregroundColor(.white)
                     .bold()
             }
             Text(author)
-                .padding(1)
                 .foregroundColor(.white)
         }
-        .padding(10)
-        .viewBackgroundColor(color)
+        .padding(8)
+        .cornerRadius(8)
+        .viewBackgroundColor(HBColor.color(for: deck.color))
     }
 }
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        PublicDeckView(color: .red, deckName: "Jogos de Switch", icon: .gamecontroller, author: "Spixii", copies: 20)
-            .frame(width: 180, height: 220)
+        PublicDeckView(deck: ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem), numberOfCopies: 20, author: "BAHIAAAAA")
     }
 }

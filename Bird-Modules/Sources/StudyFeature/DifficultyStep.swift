@@ -23,7 +23,7 @@ struct DifficultyButtonContent {
         case .correct:
             return DifficultyButtonContent(image: "checkmark", label: NSLocalizedString("facil", bundle: .module, comment: ""), color: HBColor.easyColor)
         case .correctEasy:
-            return DifficultyButtonContent(image: "checkmark.seal", label: NSLocalizedString("muito_facil", bundle: .module, comment: ""), color: HBColor.veryeasyColor)
+            return DifficultyButtonContent(image: "checkmark.seal", label: NSLocalizedString("muito_facil", bundle: .module, comment: ""), color: HBColor.veryEasyColor)
         }
     }
     

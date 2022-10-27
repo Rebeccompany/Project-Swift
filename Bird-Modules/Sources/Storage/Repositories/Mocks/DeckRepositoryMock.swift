@@ -275,7 +275,7 @@ public class DeckRepositoryMock: DeckRepositoryProtocol {
 
 extension Card {
     
-    fileprivate init(id: String, deckId: String, state: WoodpeckerState, front: AttributedString, back: AttributedString) {
+    fileprivate init(id: String, deckId: String, state: WoodpeckerState, front: NSAttributedString, back: NSAttributedString) {
         let h: [CardSnapshot]
         switch state {
         case .review:
@@ -306,8 +306,8 @@ extension Card {
              h = []
          }
          self.init(id: UUID(uuidString: id)!,
-                   front: "Parte da frente",
-                   back: "Parte de tras",
+                   front: NSAttributedString(string: "Parte da frente"),
+                   back: NSAttributedString(string: "Parte de tras"),
                    color: .red,
                    datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                        lastEdit: Date(timeIntervalSince1970: 0),
@@ -332,6 +332,7 @@ extension Card {
                    spacedRepetitionConfig: .init(maxLearningCards: 20,
                                                  maxReviewingCards: 200,
                                                  numberOfSteps: 4),
-                                                 category: DeckCategory.arts)
+                                                 category: DeckCategory.arts,
+                                                 storeId: nil)
      }
  }

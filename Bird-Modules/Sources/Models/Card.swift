@@ -11,9 +11,9 @@ import Foundation
 public struct Card: Identifiable, Equatable, Hashable {
     public let id: UUID
     /// Information displayed on the front of the card.
-    public var front: AttributedString
+    public var front: NSAttributedString
     /// Information displayed on the back of the card.
-    public var back: AttributedString
+    public var back: NSAttributedString
     /// the color of the card
     public var color: CollectionColor
     /// Logs of dates.
@@ -48,7 +48,7 @@ public struct Card: Identifiable, Equatable, Hashable {
     /// List of the CardSnapshots of the card.
     public var history: [CardSnapshot]
     
-    public init(id: UUID, front: AttributedString, back: AttributedString, color: CollectionColor, datesLogs: DateLogs, deckID: UUID, woodpeckerCardInfo: WoodpeckerCardInfo, history: [CardSnapshot]) {
+    public init(id: UUID, front: NSAttributedString, back: NSAttributedString, color: CollectionColor, datesLogs: DateLogs, deckID: UUID, woodpeckerCardInfo: WoodpeckerCardInfo, history: [CardSnapshot]) {
         self.id = id
         self.front = front
         self.back = back
