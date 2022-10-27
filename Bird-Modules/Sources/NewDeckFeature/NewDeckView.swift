@@ -31,7 +31,7 @@ public struct NewDeckView: View {
     
     public var body: some View {
         
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
                     Text("nome", bundle: .module)
