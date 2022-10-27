@@ -151,7 +151,8 @@ let package = Package(
                 "Flock",
                 "Habitat",
                 "NewFlashcardFeature",
-                "OnboardingFeature"
+                "OnboardingFeature",
+                "StoreFeature"
             ]
         ),
         

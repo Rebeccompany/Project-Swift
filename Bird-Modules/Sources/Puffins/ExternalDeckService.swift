@@ -20,7 +20,7 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     }
     
     public func getDeckFeed() -> AnyPublisher<[ExternalSection], URLError> {
-        session.dataTaskPublisher(for: URL(string: "https://www.google.com.br")!)
+        session.dataTaskPublisher(for: Endpoint.feed.url)
             .map(\.data)
             .decode(type: [ExternalSection].self, decoder: JSONDecoder())
             .mapError { error in

@@ -21,7 +21,7 @@ struct PublicSection: View {
                 .cornerRadius(12)
             }
         } header: {
-            Text(section.title)
+            Text(LocalizedStringKey(stringLiteral: section.title), bundle: .module)
                 .font(.title3.bold())
         }
         .padding([.bottom, .leading, .trailing], 16)
