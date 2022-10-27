@@ -1,8 +1,8 @@
 //
-//  NewDeckView.swift
+//   NewDeckViewMacOS.swift
 //  
 //
-//  Created by Rebecca Mello on 06/09/22.
+//  Created by Nathalia do Valle Papst on 27/10/22.
 //
 
 import SwiftUI
@@ -11,7 +11,8 @@ import Models
 import Storage
 import Habitat
 
-public struct NewDeckView: View {
+#if os(macOS)
+public struct NewDeckViewMacOS: View {
     @StateObject private var viewModel: NewDeckViewModel = NewDeckViewModel()
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteDeck
@@ -24,21 +25,10 @@ public struct NewDeckView: View {
     var editingDeck: Deck?
     var collection: DeckCollection?
     
-    #if os(iOS)
-    @Binding private var editMode: EditMode
-    
-    public init(collection: DeckCollection?, editingDeck: Deck?, editMode: Binding<EditMode>) {
-        self.collection = collection
-        self.editingDeck = editingDeck
-        self._editMode = editMode
-    }
-    
-    #elseif os(macOS)
     public init(collection: DeckCollection?, editingDeck: Deck?) {
         self.collection = collection
         self.editingDeck = editingDeck
     }
-    #endif
     
     public var body: some View {
         
@@ -131,24 +121,12 @@ public struct NewDeckView: View {
                     
                 }
                 .navigationTitle(editingDeck == nil ? NSLocalizedString("criar_deck", bundle: .module, comment: "") : NSLocalizedString("editar_deck", bundle: .module, comment: ""))
-                #if os(iOS)
-                .navigationBarTitleDisplayMode(.inline)
-                #endif
                 
             }
             .toolbar {
-                #if os(iOS)
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
-                        selectedField = nil
-                    }
-                    .accessibilityLabel(Text("botao_feito", bundle: .module))
-                }
-                #endif
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
+                    Button {
                         
                         if editingDeck == nil {
                             do {
@@ -162,9 +140,6 @@ public struct NewDeckView: View {
                         } else {
                             do {
                                 try viewModel.editDeck(editingDeck: editingDeck)
-                                #if os(iOS)
-                                editMode = .inactive
-                                #endif
                                 dismiss()
                             } catch {
                                 activeAlert = .error
@@ -172,18 +147,20 @@ public struct NewDeckView: View {
                                 selectedErrorMessage = .editDeck
                             }
                         }
+                    } label: {
+                        Text(NSLocalizedString("feito", bundle: .module, comment: ""))
+                            .foregroundColor(viewModel.canSubmit ? HBColor.actionColor : .none)
                     }
                     .disabled(!viewModel.canSubmit)
                 }
                 
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
-                        #if os(iOS)
-                        editMode = .inactive
-                        #endif
+                    Button {
                         dismiss()
+                    } label: {
+                        Text(NSLocalizedString("cancelar", bundle: .module, comment: ""))
+                            .foregroundColor(.red)
                     }
-                    .foregroundColor(.red)
                 }
             }
             .onAppear {
@@ -200,13 +177,13 @@ public struct NewDeckView: View {
 }
 
 
-struct NewDeckView_Previews: PreviewProvider {
+struct NewDeckViewMacOS_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
-            #if os(iOS)
-            NewDeckView(collection: nil, editingDeck: nil, editMode: .constant(.active))
+            NewDeckViewMacOS(collection: nil, editingDeck: nil)
                 .preferredColorScheme(.dark)
-            #endif
         }
     }
 }
+#endif
+

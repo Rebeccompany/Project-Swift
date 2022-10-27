@@ -93,7 +93,7 @@ public struct DetailViewMacOS: View {
                         .foregroundColor(HBColor.actionColor)
                 }
                 .sheet(isPresented: $presentDeckCreation) {
-                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck)
+                    NewDeckViewMacOS(collection: viewModel.selectedCollection, editingDeck: editingDeck)
                         .frame(minWidth: 300, minHeight: 600)
                 }
             }

@@ -104,7 +104,7 @@ public struct DetailViewiOS: View {
                         .foregroundColor(HBColor.actionColor)
                 }
                 .popover(isPresented: $presentDeckEdition) {
-                    NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
+                    NewDeckViewiOS(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
                         .frame(minWidth: 300, minHeight: 600)
                 }
             }
