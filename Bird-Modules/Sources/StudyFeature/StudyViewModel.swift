@@ -173,6 +173,7 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func fetchCardsPublisher(for ids: [UUID]) -> AnyPublisher<[Card], RepositoryError> {
+        
         if ids.isEmpty {
             return Just<[Card]>([]).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
         } else {
@@ -192,12 +193,61 @@ public class StudyViewModel: ObservableObject {
         try saveToCache(deck: deck, ids: cards.map(\.id))
     }
     
-    private func saveToCache(deck: Deck, ids: [UUID]) throws {
+    private func saveToCache(deck: Deck, ids: [UUID], cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
         if let session = deck.session {
             try deckRepository.deleteSession(session, for: deck)
         }
         
-        try deckRepository.createSession(Session(cardIds: ids, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
+        if ids.isEmpty {
+            deckRepository.fetchCardsByIds(deck.cardsIds)
+                .map {
+                    $0.map(OrganizerCardInfo.init(card:))
+                }
+                .tryMap { [dateHandler] cards in
+                    let date = cards.reduce(dateHandler.today) { earliestDate, card in
+                        guard let dueDate = card.dueDate else { return earliestDate }
+                        if earliestDate < dueDate {
+                            return earliestDate
+                        } else {
+                            return dueDate
+                        }
+                    }
+                    
+                    return try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: date)
+                }
+                .mapError { _ in
+                    RepositoryError.internalError
+                }
+                .flatMap { [weak self] in
+                    guard let self = self else {
+                        return Fail<([Card], [Card], [Card]), RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
+                    }
+                    
+                    return self.transformIdsIntoPublishers(ids: $0)
+                }
+                .sink { completion in
+                    switch completion {
+                    case .finished:
+                        <#code#>
+                    case .failure(_):
+                        <#code#>
+                    }
+                } receiveValue: { cardsIds in
+                    let cards = (cardsIds.0 + cardsIds.1).sorted(by: cardSortingFunc)
+                    let cardsToEdit = cardsIds.2.map { card in
+                        var newCard = card
+                        newCard.dueDate = dateHandler.dayAfterToday(1)
+                        return newCard
+                    }
+                }
+
+                
+            
+                
+        } else {
+            try deckRepository.createSession(Session(cardIds: ids, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
+        }
+        
     }
     
     private func saveCardIdsToCache(deck: Deck, ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID])) {
