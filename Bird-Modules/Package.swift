@@ -128,6 +128,10 @@ let package = Package(
         .package(
             url: "https://github.com/Rebeccompany/Owl.git",
             from: "1.0.2"
+        ),
+        .package(
+            url: "https://github.com/Rebeccompany/RichTextKit",
+            branch: "main"
         )
     ],
     
@@ -223,7 +227,8 @@ let package = Package(
                 "HummingBird",
                 "Storage",
                 "Utils",
-                "Habitat"
+                "Habitat",
+                "RichTextKit"
             ]
         ),
         
@@ -249,7 +254,9 @@ let package = Package(
         .target(
             name: "HummingBird",
             dependencies: [
-                "Models"
+                "Models",
+                "Utils",
+                "RichTextKit"
             ]
         ),
         

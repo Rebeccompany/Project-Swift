@@ -27,7 +27,7 @@ enum CardDummy {
                                     interval: 1,
                                     hasBeenPresented: true)
         
-        return Card(id: id, front: AttributedString(frontNSAttributedString), back: AttributedString(backNSAttributedString), color: .red, datesLogs: dateLog, deckID: deckId, woodpeckerCardInfo: wp, history: [])
+        return Card(id: id, front: frontNSAttributedString, back: backNSAttributedString, color: .red, datesLogs: dateLog, deckID: deckId, woodpeckerCardInfo: wp, history: [])
     }
     
     static func newDummyCard(_ id: UUID, into deck: Deck) -> Card {
@@ -48,6 +48,6 @@ enum CardDummy {
                                     interval: 1,
                                     hasBeenPresented: true)
         
-        return Card(id: id, front: AttributedString(frontNSAttributedString), back: AttributedString(backNSAttributedString), color: .red, datesLogs: dateLog, deckID: deckId, woodpeckerCardInfo: wp, history: [])
+        return Card(id: id, front: frontNSAttributedString, back: backNSAttributedString, color: .red, datesLogs: dateLog, deckID: deckId, woodpeckerCardInfo: wp, history: [])
     }
 }
