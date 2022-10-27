@@ -206,7 +206,8 @@ public struct DeckView: View {
                             }
                         }
                         .frame(height: 230)
-                        .hoverEffect(.lift)
+                        .padding(2)
+                        .hoverEffect()
                     }
                     .listRowSeparator(.hidden)
                 }
