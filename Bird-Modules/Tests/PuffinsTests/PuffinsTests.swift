@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+import XCTest
+@testable import Puffins
+import Combine
+
+final class PuffinsTests: XCTestCase {
+    
+}
