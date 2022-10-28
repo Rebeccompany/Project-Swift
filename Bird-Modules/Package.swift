@@ -432,6 +432,14 @@ let package = Package(
                 "StoreFeature",
                 "Habitat"
             ]
+        ),
+        
+        .testTarget(
+            name: "PuffinsTests",
+            dependencies: [
+                "StoreFeature",
+                "Habitat"
+            ]
         )
     ]
 )
