@@ -12,5 +12,19 @@ import XCTest
 import Combine
 
 final class PuffinsTests: XCTestCase {
+    var endpointMock: EndpointMock!
     
+    override func setUp() {
+        endpointMock = EndpointMock()
+        endpointMock.data = endpointMock.externalSectionData
+    }
+    
+    override func tearDown() {
+        endpointMock = nil
+    }
+    
+    func testDataTaskError() throws {
+        let response = try? endpointMock.dataTaskPublisher(for: )
+        XCTAssertEqual(response, endpointMock.externalSectionData)
+    }
 }
