@@ -10,6 +10,8 @@ import HummingBird
 
 struct PublicDeckView: View {
     @Binding var description: String
+    @StateObject private var viewModel: PublicDeckViewModel = PublicDeckViewModel()
+
     
     var body: some View {
         VStack {
