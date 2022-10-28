@@ -152,6 +152,7 @@ public struct FlashcardTextEditorView: View {
     }
     
     private func updateFromPhotoSelection(_ photoPickerItem: PhotosPickerItem?) async {
+        #if os(iOS)
         if let selectedPhotoData = try? await photoPickerItem?.loadTransferable(type: Data.self),
            let rawImageData = UIImage(data: selectedPhotoData)?.aspectFittedToHeight(150),
            let compressedImage = rawImageData.jpegData(compressionQuality: 0.5),
@@ -159,6 +160,15 @@ public struct FlashcardTextEditorView: View {
             let lowerBound = context.selectedRange.lowerBound
             context.pasteImage(image, at: lowerBound)
         }
+        #elseif os(macOS)
+        if let selectedPhotoData = try? await photoPickerItem?.loadTransferable(type: Data.self),
+           let rawImageData = NSImage(data: selectedPhotoData),//.aspectFittedToHeight(150),
+           let compressedImage = rawImageData.jpegData(compressionQuality: 0.5),
+           let image = ImageRepresentable(data: compressedImage) {
+            let lowerBound = context.selectedRange.lowerBound
+            context.pasteImage(image, at: lowerBound)
+        }
+        #endif
     }
     
     func sizeTools(for size: Binding<CGFloat>) -> some View {

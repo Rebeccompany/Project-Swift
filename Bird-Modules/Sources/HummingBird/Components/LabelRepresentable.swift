@@ -18,8 +18,8 @@ public struct TextViewRepresentable: NSViewRepresentable {
         self.text = text
     }
     
-    func makeNSView(context: Context) -> NSTextField {
-        var label = NSTextField()
+    public func makeNSView(context: Context) -> NSTextField {
+        let label = NSTextField()
         label.backgroundColor = .clear
         label.maximumNumberOfLines = 0
         label.isBezeled = false
@@ -30,7 +30,7 @@ public struct TextViewRepresentable: NSViewRepresentable {
         return label
     }
     
-    func updateNSView(_ nsView: NSTextField, context: Context) {
+    public func updateNSView(_ nsView: NSTextField, context: Context) {
         nsView.attributedStringValue = text
     }
 }

@@ -6,9 +6,9 @@
 //
 
 import Foundation
+#if !os(macOS)
 import UIKit
 
-#if !os(macOS)
 extension UIImage {
     public func aspectFittedToHeight(_ newHeight: CGFloat) -> UIImage {
         let scale = newHeight / self.size.height

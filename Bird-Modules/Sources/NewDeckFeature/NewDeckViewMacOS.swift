@@ -32,7 +32,7 @@ public struct NewDeckViewMacOS: View {
     
     public var body: some View {
         
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
                     Text("nome", bundle: .module)
@@ -186,4 +186,3 @@ struct NewDeckViewMacOS_Previews: PreviewProvider {
     }
 }
 #endif
-

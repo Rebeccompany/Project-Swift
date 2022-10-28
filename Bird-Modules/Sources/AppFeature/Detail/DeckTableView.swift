@@ -46,28 +46,17 @@ struct DeckTableView: View {
     @ViewBuilder
     private var list: some View {
         List(sortedDecks, selection: $viewModel.selection) { deck in
-            NavigationLink(value: StudyRoute.deck(deck)) {
-                cell(for: deck)
-            }
-            .swipeActions {
-                Button {
-                    editAction(deck)
-                } label: {
-                    Text("Editar")
+            contextMenu(for: deck) {
+                NavigationLink(value: StudyRoute.deck(deck)) {
+                    cell(for: deck)
                 }
-                .tint(HBColor.actionColor)
-            }
-            .contextMenu {
-                Button {
-                    editAction(deck)
-                } label: {
-                    Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
-                }
-                
-                Button(role: .destructive) {
-                    try? viewModel.deleteDeck(deck)
-                } label: {
-                    Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
+                .swipeActions {
+                    Button {
+                        editAction(deck)
+                    } label: {
+                        Text("Editar")
+                    }
+                    .tint(HBColor.actionColor)
                 }
             }
         }
@@ -77,7 +66,7 @@ struct DeckTableView: View {
     
     @ViewBuilder
     private var table: some View {
-        Table(sortedDecks, selection: $viewModel.selection, sortOrder: $viewModel.sortOrder) {
+        Table(selection: $viewModel.selection, sortOrder: $viewModel.sortOrder) {
             TableColumn("") { deck in
                 Image(systemName: deck.icon)
                     .font(.system(size: 14))
@@ -91,25 +80,33 @@ struct DeckTableView: View {
             }.width(35)
             TableColumn(NSLocalizedString("nome", bundle: .module, comment: ""), value: \.name) { deck in
                 Text(deck.name)
-                    .foregroundColor(.primary)
             }
-            TableColumn("Flashcards", value: \.cardCount) { deck in
-                Text("\(deck.cardCount) flashcards")
-            }
-            TableColumn(NSLocalizedString("ultimo_acesso", bundle: .module, comment: ""), value: \.datesLogs.lastAccess) { deck in
-                Text(deck.datesLogs.lastAccess, style: .date)
-            }
-            TableColumn(NSLocalizedString("acessar", bundle: .module, comment: "")) { deck in
-                NavigationLink(value: StudyRoute.deck(deck)) {
-                    Text(NSLocalizedString("abrir", bundle: .module, comment: ""))
-                }
-                .tint(HBColor.color(for: deck.color))
-                .buttonStyle(.bordered)
-                #if os(iOS)
-                .buttonBorderShape(.capsule)
-                #endif
-            }.width(90)
+//            TableColumn("Flashcards", value: \.cardCount) { deck in
+//                Text("\(deck.cardCount) flashcards")
+//            }
+//            TableColumn(NSLocalizedString("ultimo_acesso", bundle: .module, comment: ""), value: \.datesLogs.lastAccess) { deck in
+//                Text(deck.datesLogs.lastAccess, style: .date)
+//            }
+//            TableColumn(NSLocalizedString("acessar", bundle: .module, comment: "")) { deck in
+//                NavigationLink(value: StudyRoute.deck(deck)) {
+//                    Text(NSLocalizedString("abrir", bundle: .module, comment: ""))
+//                        
+//                }
+//                .tint(HBColor.color(for: deck.color))
+//                .buttonStyle(.bordered)
+//                #if os(iOS)
+//                .buttonBorderShape(.capsule)
+//                #endif
+//            }.width(90)
         }
+    rows: {
+        ForEach(sortedDecks) { deck in
+            contextMenu(for: deck) {
+                TableRow(deck)
+            }
+            
+        }
+    }
         .animation(.linear, value: viewModel.sortOrder)
     }
     
@@ -131,5 +128,23 @@ struct DeckTableView: View {
                 .foregroundColor(.primary)
         }
         .padding(.leading, 4)
+    }
+    
+    @ViewBuilder
+    private func contextMenu<Content: View>(for deck: Deck, @ViewBuilder content: () -> Content) -> some View {
+        content()
+            .contextMenu {
+                Button {
+                    editAction(deck)
+                } label: {
+                    Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
+                }
+                
+                Button(role: .destructive) {
+                    try? viewModel.deleteDeck(deck)
+                } label: {
+                    Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
+                }
+            }
     }
 }

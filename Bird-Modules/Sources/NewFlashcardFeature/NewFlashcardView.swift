@@ -23,8 +23,9 @@ public struct NewFlashcardView: View {
     @StateObject private var frontContext = RichTextContext()
     @StateObject private var backContext = RichTextContext()
     
+    #if os (iOS)
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
-//    @FocusState private var focus: NewFlashcardFocus?
+    #endif
     
     @Environment(\.dismiss) private var dismiss
     
@@ -49,7 +50,9 @@ public struct NewFlashcardView: View {
                                 context: frontContext
                             )
                             .id(NewFlashcardFocus.front)
+                            #if os(iOS)
                             .frame(minHeight: horizontalSizeClass == . compact ? 400 : 600)
+                            #endif
                             
                             FlashcardTextEditorView(
                                 text: $viewModel.flashcardBack, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
@@ -57,7 +60,9 @@ public struct NewFlashcardView: View {
                                 context: backContext
                             )
                             .id(NewFlashcardFocus.back)
+#if os(iOS)
                             .frame(minHeight: horizontalSizeClass == . compact ? 400 : 600)
+                            #endif
                         }
                         
                         Text("cores", bundle: .module)
@@ -82,7 +87,9 @@ public struct NewFlashcardView: View {
                 .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
                 .viewBackgroundColor(HBColor.primaryBackground)
                 .navigationTitle(editingFlashcard == nil ? NSLocalizedString("criar_flashcard", bundle: .module, comment: "") : NSLocalizedString("editar_flashcard", bundle: .module, comment: ""))
+#if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
+                #endif
                 .onAppear {
                     viewModel.startUp(editingFlashcard: editingFlashcard)
                 }
@@ -93,9 +100,11 @@ public struct NewFlashcardView: View {
 //                    ToolbarItemGroup(placement: .keyboard) {
 //                        customrightToolbarItemGroup
 //                    }
+#if os(iOS)
                     ToolbarItem(placement: .navigationBarTrailing) {
                         customNavigationToolbar
                     }
+                    #endif
                     
                     ToolbarItem(placement: .cancellationAction) {
                         Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
@@ -106,18 +115,22 @@ public struct NewFlashcardView: View {
                 }
                 
                 .onChange(of: frontContext.isEditingText) { newValue in
+#if os(iOS)
                     if newValue, horizontalSizeClass == .compact {
                         withAnimation {
                             proxy.scrollTo(NewFlashcardFocus.front, anchor: .center)
                         }
                     }
+                    #endif
                 }
                 .onChange(of: backContext.isEditingText) { newValue in
+#if os(iOS)
                     if newValue, horizontalSizeClass == .compact {
                         withAnimation {
                             proxy.scrollTo(NewFlashcardFocus.back, anchor: UnitPoint(x: 0.5, y: 0.8))
                         }
                     }
+                    #endif
                 }     
             }
         }
@@ -125,6 +138,7 @@ public struct NewFlashcardView: View {
     
     @ViewBuilder
     private func layout<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+#if os(iOS)
         if horizontalSizeClass == .compact {
             VStack(alignment: .leading) {
                 content()
@@ -134,6 +148,11 @@ public struct NewFlashcardView: View {
                 content()
             }
         }
+        #elseif os(macOS)
+        HStack {
+            content()
+        }
+        #endif
     }
     
     @ViewBuilder
