@@ -33,6 +33,7 @@ public class StudyViewModel: ObservableObject {
     // MARK: Flags
     @Published var shouldButtonsBeDisabled: Bool = true
     @Published var isVOOn: Bool = getIsVOOn()
+    @Published var shouldDismiss: Bool = false
     
     // MARK: Combine Vars
     private var cancellables: Set<AnyCancellable> = .init()
@@ -204,8 +205,16 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func saveToCache(deck: Deck, ids: [UUID], cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
+        
+        #warning ("AAAAAAAAA")
+        // TIRAR IF. QUEBRAR EM FUNCOES
+        //QUEBRAR A FUNCAO GIGANTE
+        //MUDAR A TUPLA PARA STRUCT
+        //IF BAHIA AMA A GNT {AMAR O BAHIA}
+        var isFirstSession: Bool = true
         if let session = deck.session {
             try deckRepository.deleteSession(session, for: deck)
+            isFirstSession = false
         }
         
         if ids.isEmpty {
@@ -237,20 +246,34 @@ public class StudyViewModel: ObservableObject {
                     return self.transformIdsIntoPublishersWithDate(ids: scheduledCardsIds, date: date)
                     
                 }
-                .sink { completion in
+                .sink { [ weak self ] completion in
+                    switch completion {
+                    case .finished:
+                        self?.shouldDismiss = true
+                    case .failure(_):
+                        print("errinho")
+                    }
                     
-                } receiveValue: { (data: ([Card], [Card], [Card], Date)) in
+                } receiveValue: { [weak self] (data: ([Card], [Card], [Card], Date)) in
                     let cards = (data.0 + data.1).sorted(by: cardSortingFunc)
                     let cardsToEdit = data.2.map { card in
                         var newCard = card
-                        newCard.dueDate = data.3
+                        newCard.dueDate = data.3.addingTimeInterval(86400)
                         return newCard
                     }
+                    guard let self = self else { return }
+                    try? cardsToEdit.forEach { card in
+                        try? self.deckRepository.editCard(card)
+                    }
+                    try? self.deckRepository.createSession(Session(cardIds: cards.map(\.id), date: data.3, deckId: deck.id, id: self.uuidGenerator.newId()), for: deck)
                 }
                 .store(in: &cancellables)
             
         } else {
             try deckRepository.createSession(Session(cardIds: ids, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
+            if !isFirstSession {
+                shouldDismiss = true
+            }
         }
         
     }

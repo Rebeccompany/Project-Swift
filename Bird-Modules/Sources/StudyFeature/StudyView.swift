@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  StudyView.swift
 //  
 //
 //  Created by Marcos Chevis on 08/09/22.
@@ -99,7 +99,6 @@ public struct StudyView: View {
                     EndOfStudyView(mode: mode) {
                         do {
                             try viewModel.saveChanges(deck: deck, mode: mode)
-                            dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy
                             showingErrorAlert = true
@@ -128,7 +127,7 @@ public struct StudyView: View {
                             if mode == .spaced {
                                 try viewModel.saveChanges(deck: deck, mode: mode)
                             }
-                            dismiss()
+                            
                         } catch {
                             selectedErrorMessage = .saveStudy
                             showingErrorAlert = true
@@ -151,8 +150,14 @@ public struct StudyView: View {
                       dismissButton: .default(Text("fechar", bundle: .module)))
             }
         }
+        .onChange(of: viewModel.shouldDismiss) { newValue in
+            if newValue {
+                dismiss()
+            }
+        }
         
     }
+    
 }
 
 struct StudyView_Previews: PreviewProvider {
