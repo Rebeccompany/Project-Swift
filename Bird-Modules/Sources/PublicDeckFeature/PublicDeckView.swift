@@ -49,6 +49,20 @@ struct PublicDeckView: View {
                 .clipShape(
                     RoundedRectangle(cornerRadius: 16)
                 )
+            
+            Text("Flashcards")
+                .font(.title3)
+                .bold()
+                .padding(.leading)
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 180), spacing: 12, alignment: .top)], spacing: 12) {
+                ForEach(viewModel.cardsSearched) { card in
+                    FlashcardCell(card: card) {
+                        shouldDisplayNewFlashcard = true
+                    }
+                }
+                .listRowSeparator(.hidden)
+            }
+            .padding(.horizontal)
         }
         .padding()
         .viewBackgroundColor(HBColor.primaryBackground)
