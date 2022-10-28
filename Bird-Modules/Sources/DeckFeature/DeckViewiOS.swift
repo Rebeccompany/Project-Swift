@@ -1,5 +1,5 @@
 //
-//  DeckView.swift
+//  DeckViewiOS.swift
 //  
 //
 //  Created by Marcos Chevis on 30/08/22.
@@ -16,7 +16,8 @@ import Storage
 import Flock
 import Utils
 
-public struct DeckView: View {
+#if os(iOS)
+public struct DeckViewiOS: View {
     @StateObject private var viewModel: DeckViewModel = DeckViewModel()
     @State private var shouldDisplayNewFlashcard: Bool = false
     @State private var shouldDisplayImport: Bool = false
@@ -45,11 +46,7 @@ public struct DeckView: View {
             viewModel.startup(deck)
         }
         .listStyle(.plain)
-        #if os(iOS)
         .searchable(text: $viewModel.searchFieldContent, placement: .navigationBarDrawer(displayMode: .always))
-        #elseif os(macOS)
-        .searchable(text: $viewModel.searchFieldContent)
-        #endif
         .alert(isPresented: $showingAlert) {
             switch activeAlert {
             case .error:
@@ -76,7 +73,6 @@ public struct DeckView: View {
         }
         .navigationTitle(deck.name)
         .toolbar {
-            #if os(iOS)
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Menu {
                     Button {
@@ -109,50 +105,13 @@ public struct DeckView: View {
                     NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
                 }
             }
-            #elseif os(macOS)
-            ToolbarItemGroup {
-                Menu {
-                    Button {
-                        editingFlashcard = nil
-                        shouldDisplayNewFlashcard = true
-                    } label: {
-                        Label(
-                            NSLocalizedString("add", bundle: .module, comment: ""),
-                            systemImage: "plus"
-                        )
-                    }
-                    
-                    Button {
-                        shouldDisplayImport = true
-                    } label: {
-                        Label(
-                            NSLocalizedString("import", bundle: .module, comment: ""),
-                            systemImage: "arrow.down"
-                        )
-                    }
-                    
-                } label: {
-                    Label(
-                        NSLocalizedString("add", bundle: .module, comment: ""),
-                        systemImage: "plus"
-                    )
-                }
-                .foregroundColor(HBColor.actionColor)
-                .popover(isPresented: $shouldDisplayNewFlashcard) {
-                    NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
-                        .frame(minWidth: 300, minHeight: 600)
-                }
-            }
-            #endif
         }
-        #if os(iOS)
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
             StudyView(
                 deck: deck,
                 mode: studyMode
             )
         }
-        #endif
         .sheet(isPresented: $shouldDisplayImport) {
             ImportView(deck: deck, isPresenting: $shouldDisplayImport)
         }
@@ -199,9 +158,7 @@ public struct DeckView: View {
                     studyMode = .spaced
                     shouldDisplayStudyView = true
                 }
-                #if os(iOS)
                 .hoverEffect(.automatic)
-                #endif
                 .disabled(!viewModel.checkIfCanStudy(deck))
                 .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck), isFilled: true))
                 .listRowInsets(.zero)
@@ -213,9 +170,7 @@ public struct DeckView: View {
                     studyMode = .cramming
                     shouldDisplayStudyView = true
                 }
-                #if os(iOS)
                 .hoverEffect(.automatic)
-                #endif
                 .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
                 .listRowInsets(.zero)
                 .listRowBackground(Color.clear)
@@ -252,9 +207,7 @@ public struct DeckView: View {
                             }
                         }
                         .frame(height: 230)
-                        #if os(iOS)
                         .hoverEffect()
-                        #endif
                         .padding(2)
                     }
                     .listRowSeparator(.hidden)
@@ -267,10 +220,10 @@ public struct DeckView: View {
     }
 }
 
-struct DeckView_Previews: PreviewProvider {
+struct DeckViewiOS_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            DeckView(
+            DeckViewiOS(
                 deck: .constant(DeckRepositoryMock()
                     .decks[1])
             )
@@ -278,3 +231,4 @@ struct DeckView_Previews: PreviewProvider {
         .preferredColorScheme(.dark)
     }
 }
+#endif

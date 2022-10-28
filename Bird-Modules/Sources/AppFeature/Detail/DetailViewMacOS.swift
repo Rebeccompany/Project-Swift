@@ -98,17 +98,6 @@ public struct DetailViewMacOS: View {
                 }
             }
         }
-        .alert(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""), isPresented: $shouldDisplayAlert) {
-            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                try? viewModel.deleteDecks()
-                editingDeck = nil
-            }
-            .disabled(viewModel.selection.isEmpty)
-            
-            Button(NSLocalizedString("cancelar", bundle: .module, comment: ""), role: .cancel) { }
-        }
-        .onChange(of: presentDeckCreation, perform: viewModel.didDeckPresentationStatusChanged)
-        .navigationTitle(viewModel.detailTitle)
     }
     
     @ViewBuilder

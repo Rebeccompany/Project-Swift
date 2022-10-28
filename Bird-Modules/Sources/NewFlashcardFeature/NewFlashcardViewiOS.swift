@@ -1,5 +1,5 @@
 //
-//  NewFlashcardView.swift
+//  NewFlashcardViewiOS.swift
 //  
 //
 //  Created by Rebecca Mello on 15/09/22.
@@ -13,7 +13,7 @@ import Habitat
 import RichTextKit
 import Combine
 
-public struct NewFlashcardView: View {
+public struct NewFlashcardViewiOS: View {
     @StateObject private var viewModel: NewFlashcardViewModel = NewFlashcardViewModel()
     
     @State private var showingAlert: Bool = false
@@ -275,10 +275,10 @@ extension View {
 }
 
 
-struct NewFlashcardView_Previews: PreviewProvider {
+struct NewFlashcardViewiOS_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
-            NewFlashcardView(deck: Deck(id: UUID(), name: "Nome", icon: "chove", color: .darkBlue, collectionId: nil, cardsIds: [], category: DeckCategory.arts, storeId: nil), editingFlashcard: nil)
+            NewFlashcardViewiOS(deck: Deck(id: UUID(), name: "Nome", icon: "chove", color: .darkBlue, collectionId: nil, cardsIds: [], category: DeckCategory.arts, storeId: nil), editingFlashcard: nil)
         }
     }
 }
