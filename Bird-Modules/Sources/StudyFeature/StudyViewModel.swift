@@ -172,6 +172,16 @@ public class StudyViewModel: ObservableObject {
         .eraseToAnyPublisher()
     }
     
+    private func transformIdsIntoPublishersWithDate(ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID]), date: Date) -> AnyPublisher<([Card], [Card], [Card], Date), RepositoryError> {
+        
+        
+        Publishers.CombineLatest4(fetchCardsPublisher(for: ids.todayLearningCards),
+                                  fetchCardsPublisher(for: ids.todayReviewingCards),
+                                  fetchCardsPublisher(for: ids.toModify),
+                                  Just(date).setFailureType(to: RepositoryError.self))
+        .eraseToAnyPublisher()
+    }
+    
     private func fetchCardsPublisher(for ids: [UUID]) -> AnyPublisher<[Card], RepositoryError> {
         
         if ids.isEmpty {
@@ -199,11 +209,12 @@ public class StudyViewModel: ObservableObject {
         }
         
         if ids.isEmpty {
+            
             deckRepository.fetchCardsByIds(deck.cardsIds)
                 .map {
                     $0.map(OrganizerCardInfo.init(card:))
                 }
-                .tryMap { [dateHandler] cards in
+                .tryMap { [dateHandler] (cards) -> (Date, (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID])) in
                     let date = cards.reduce(dateHandler.today) { earliestDate, card in
                         guard let dueDate = card.dueDate else { return earliestDate }
                         if earliestDate < dueDate {
@@ -212,38 +223,32 @@ public class StudyViewModel: ObservableObject {
                             return dueDate
                         }
                     }
-                    
-                    return try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: date)
+                    let scheduledCardsIds = try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: date)
+                    return (date, scheduledCardsIds)
                 }
                 .mapError { _ in
                     RepositoryError.internalError
                 }
-                .flatMap { [weak self] in
+                .flatMap { [weak self] (date, scheduledCardsIds) in
                     guard let self = self else {
-                        return Fail<([Card], [Card], [Card]), RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
+                        return Fail<([Card], [Card], [Card], Date), RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
                     }
                     
-                    return self.transformIdsIntoPublishers(ids: $0)
+                    return self.transformIdsIntoPublishersWithDate(ids: scheduledCardsIds, date: date)
+                    
                 }
                 .sink { completion in
-                    switch completion {
-                    case .finished:
-                        <#code#>
-                    case .failure(_):
-                        <#code#>
-                    }
-                } receiveValue: { cardsIds in
-                    let cards = (cardsIds.0 + cardsIds.1).sorted(by: cardSortingFunc)
-                    let cardsToEdit = cardsIds.2.map { card in
+                    
+                } receiveValue: { (data: ([Card], [Card], [Card], Date)) in
+                    let cards = (data.0 + data.1).sorted(by: cardSortingFunc)
+                    let cardsToEdit = data.2.map { card in
                         var newCard = card
-                        newCard.dueDate = dateHandler.dayAfterToday(1)
+                        newCard.dueDate = data.3
                         return newCard
                     }
                 }
-
-                
+                .store(in: &cancellables)
             
-                
         } else {
             try deckRepository.createSession(Session(cardIds: ids, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
         }
