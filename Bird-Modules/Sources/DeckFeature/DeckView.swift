@@ -105,9 +105,8 @@ public struct DeckView: View {
                     )
                 }
                 .foregroundColor(HBColor.actionColor)
-                .popover(isPresented: $shouldDisplayNewFlashcard) {
+                .fullScreenCover(isPresented: $shouldDisplayNewFlashcard) {
                     NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
-                        .frame(minWidth: 300, minHeight: 600)
                 }
             }
             #elseif os(macOS)
@@ -254,8 +253,9 @@ public struct DeckView: View {
                         }
                         .frame(height: 230)
                         #if os(iOS)
-                        .hoverEffect(.lift)
+                        .hoverEffect()
                         #endif
+                        .padding(2)
                     }
                     .listRowSeparator(.hidden)
                 }
@@ -269,7 +269,7 @@ public struct DeckView: View {
 
 struct DeckView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
+        NavigationStack {
             DeckView(
                 deck: .constant(DeckRepositoryMock()
                     .decks[1])

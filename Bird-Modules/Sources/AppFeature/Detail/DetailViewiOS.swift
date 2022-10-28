@@ -20,6 +20,7 @@ public struct DetailViewiOS: View {
     @State private var shouldDisplayAlert = false
     @State private var editingDeck: Deck?
     @Binding private var editMode: EditMode
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     init(editMode: Binding<EditMode>) {
         self._editMode = editMode
@@ -33,7 +34,7 @@ public struct DetailViewiOS: View {
                 content
             }
         }
-        .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
+        .searchable(text: $viewModel.searchText, placement: horizontalSizeClass == .compact ? .navigationBarDrawer(displayMode: .always) : .toolbar)
         .toolbar(editMode.isEditing ? .visible : .hidden,
                  for: .bottomBar)
         .toolbar {

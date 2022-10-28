@@ -24,7 +24,6 @@ struct DeckGridView: View {
                 ForEach(sortedDecks) { deck in
                     NavigationLink(value: StudyRoute.deck(deck)) {
                         DeckCell(info: DeckCellInfo(deck: deck))
-                        .buttonStyle(DeckCell.Style(color: deck.color))
                         .contextMenu {
                             Button {
                                 editAction(deck)
@@ -40,8 +39,10 @@ struct DeckGridView: View {
                         }
                     }
                     #if os(iOS)
-                    .hoverEffect(.lift)
+                    .hoverEffect()
                     #endif
+                    .buttonStyle(DeckCell.Style(color: deck.color))
+                    .padding(2)
                 }
             }
             .animation(.linear, value: viewModel.sortOrder)

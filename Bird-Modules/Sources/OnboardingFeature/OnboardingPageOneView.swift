@@ -18,6 +18,7 @@ struct OnboardingPageOneView: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text(NSLocalizedString("pagina_um", bundle: .module, comment: ""))
+                        .lineLimit(nil)
                         .font(.title3)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)
@@ -25,6 +26,7 @@ struct OnboardingPageOneView: View {
                 }
             }
         }
+        .viewBackgroundColor(HBColor.primaryBackground)
     }
 }
 

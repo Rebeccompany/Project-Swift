@@ -34,6 +34,8 @@ public struct OnboardingView: View {
                 }
                 .foregroundColor(HBColor.actionColor)
             }
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .viewBackgroundColor(HBColor.primaryBackground)
         }
     }
 }

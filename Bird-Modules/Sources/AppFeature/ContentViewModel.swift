@@ -153,9 +153,9 @@ public final class ContentViewModel: ObservableObject {
     private func handleCompletion(_ completion: Subscribers.Completion<RepositoryError>) {
         switch completion {
         case .finished:
-            print("finished")
-        case .failure(let error):
-            print(error)
+            break
+        case .failure(_):
+            break
         }
     }
     

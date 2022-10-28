@@ -40,6 +40,7 @@
         <relationship name="decks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DeckEntity" inverseName="collection" inverseEntity="DeckEntity"/>
     </entity>
     <entity name="DeckEntity" representedClassName="Storage.DeckEntity" syncable="YES">
+        <attribute name="category" optional="YES" attributeType="String" defaultValueString="others"/>
         <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="icon" optional="YES" attributeType="String"/>
@@ -50,6 +51,7 @@
         <attribute name="maxReviewingCards" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="numberOfSteps" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="storeId" optional="YES" attributeType="String"/>
         <relationship name="cards" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CardEntity" inverseName="deck" inverseEntity="CardEntity"/>
         <relationship name="collection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CollectionEntity" inverseName="decks" inverseEntity="CollectionEntity"/>
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="SessionEntity" inverseName="deck" inverseEntity="SessionEntity"/>

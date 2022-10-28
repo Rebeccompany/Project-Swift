@@ -242,8 +242,8 @@ extension Card {
             h = []
         }
         self.init(id: UUID(uuidString: id)!,
-                  front: "",
-                  back: "",
+                  front: NSAttributedString(string: ""),
+                  back: NSAttributedString(string: ""),
                   color: .red,
                   datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
                                       lastEdit: Date(timeIntervalSince1970: 0),
@@ -266,6 +266,8 @@ extension Deck {
                                       createdAt: Date(timeIntervalSince1970: 0)),
                   collectionId: nil,
                   cardsIds: cardsIds,
-                  spacedRepetitionConfig: spacedConfig)
+                  spacedRepetitionConfig: spacedConfig,
+                  category: DeckCategory.arts,
+                  storeId: nil)
     }
 }

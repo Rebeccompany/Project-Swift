@@ -148,9 +148,9 @@ public class StudyViewModel: ObservableObject {
     private func finishFetchCards(_ completion: Subscribers.Completion<RepositoryError>) {
         switch completion {
         case .finished:
-            print("aiai")
-        case .failure(let error):
-            print(error)
+            break
+        case .failure(_):
+            break
         }
     }
     
