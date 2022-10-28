@@ -14,9 +14,9 @@
 "baralhos" = "Decks";
 "flashcards" = "Flashcards";
 "pagina_um" = "Welcome to Spixii! Here you can study through flashcards and enhance your learning and memorization.";
-"pagina_dois_um" = "This are made to test memory! It keeps a question or term on the front, and the answer or definition on the back.";
+"pagina_dois_um" = "These are made to test memory! On its front, there is a term or question, and on its back, there is the answer or definition.";
 "pagina_dois_dois" = "Example: a flashcard has “Gato” on the front and “Cat” on the back.";
-"pagina_tres_um" = "Flashcards belong in a deck!";
+"pagina_tres_um" = "Flashcards belong to a deck!";
 "pagina_tres_dois" = "Exemplo: deck called ”Animals”";
 "pagina_tres_tres" = "Decks can be grouped into collections.";
 "pagina_tres_quatro" = "Example: collection called ”Brazilian Portuguese Language”";
