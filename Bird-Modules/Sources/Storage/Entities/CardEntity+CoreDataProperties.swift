@@ -2,7 +2,7 @@
 //  CardEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Rebecca Mello on 21/10/22.
+//  Created by Rebecca Mello on 25/10/22.
 //
 //
 

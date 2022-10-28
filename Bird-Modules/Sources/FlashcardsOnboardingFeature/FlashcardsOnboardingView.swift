@@ -15,7 +15,7 @@ public struct FlashcardsOnboardingView: View {
         
     }
     public var body: some View {
-        NavigationView {
+        NavigationStack {
             HStack {
                 VStack {
                     HStack {
@@ -67,6 +67,8 @@ public struct FlashcardsOnboardingView: View {
                         .foregroundColor(HBColor.actionColor)
                 }
             }
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .viewBackgroundColor(HBColor.primaryBackground)
         }
         Spacer()
     }

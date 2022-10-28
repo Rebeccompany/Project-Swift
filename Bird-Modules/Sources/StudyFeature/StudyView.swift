@@ -28,10 +28,6 @@ public struct StudyView: View {
         self.mode = mode
     }
     
-    private func toString(_ attributed: AttributedString) -> String {
-        NSAttributedString(attributed).string
-    }
-    
     private func generateAttributedLabel() -> String {
         if !viewModel.cards.isEmpty {
             let card = viewModel.displayedCards[0].card
@@ -40,9 +36,9 @@ public struct StudyView: View {
             }
             
             if !isFlipped {
-                return NSLocalizedString("frente", bundle: .module, comment: "") + ": " + toString(card.front)
+                return NSLocalizedString("frente", bundle: .module, comment: "") + ": " + card.front.string
             } else {
-                return NSLocalizedString("verso", bundle: .module, comment: "") + ": " + toString(card.back)
+                return NSLocalizedString("verso", bundle: .module, comment: "") + ": " + card.back.string
             }
         }
         return ""

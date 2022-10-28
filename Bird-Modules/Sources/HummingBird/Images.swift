@@ -10,19 +10,19 @@ import SwiftUI
 public enum HBImages {
     
     public static var BirdOneOnboarding: Image {
-        Image("FotoOnboarding", bundle: .module)
+        Image("OnboardingPhoto", bundle: .module)
     }
     
     public static var BirdTwoOnboarding: Image {
-        Image("FotoOnboarding", bundle: .module)
+        Image("OnboardingPhotoTwo", bundle: .module)
     }
     
     public static var BirdThreeOnboarding: Image {
-        Image("FotoOnboarding", bundle: .module)
+        Image("OnboardingPhotoThree", bundle: .module)
     }
     
     public static var BirdFourOnboarding: Image {
-        Image("FotoOnboarding", bundle: .module)
+        Image("OnboardingPhotoFour", bundle: .module)
     }
     
     public static var cardsOnboarding: Image {
@@ -30,11 +30,11 @@ public enum HBImages {
     }
     
     public static var decksOnboarding: Image {
-        Image("Baralhos", bundle: .module)
+        Image("Decks", bundle: .module)
     }
     
     public static var collectionOnboarding: Image {
-        Image("Colecoes", bundle: .module)
+        Image("Collections", bundle: .module)
     }
     
 }

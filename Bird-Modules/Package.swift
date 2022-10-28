@@ -119,6 +119,10 @@ let package = Package(
         .library(
             name: "PublicDeckFeature",
             targets: ["PublicDeckFeature"]
+        ),
+        .library(
+            name: "Puffins",
+            targets: ["Puffins"]
         )
     ],
     
@@ -128,6 +132,10 @@ let package = Package(
         .package(
             url: "https://github.com/Rebeccompany/Owl.git",
             from: "1.0.2"
+        ),
+        .package(
+            url: "https://github.com/Rebeccompany/RichTextKit",
+            branch: "main"
         )
     ],
     
@@ -223,7 +231,8 @@ let package = Package(
                 "HummingBird",
                 "Storage",
                 "Utils",
-                "Habitat"
+                "Habitat",
+                "RichTextKit"
             ]
         ),
         
@@ -249,7 +258,9 @@ let package = Package(
         .target(
             name: "HummingBird",
             dependencies: [
-                "Models"
+                "Models",
+                "Utils",
+                "RichTextKit"
             ]
         ),
         
@@ -265,7 +276,8 @@ let package = Package(
             name: "Habitat",
             dependencies: [
                 "Storage",
-                "Utils"
+                "Utils",
+                "Puffins"
             ]
         ),
         
@@ -290,7 +302,16 @@ let package = Package(
             dependencies: [
                 "Models",
                 "HummingBird",
-                "DeckFeature"
+                "DeckFeature",
+                "Puffins",
+                "Habitat"
+            ]
+        ),
+        
+        .target(
+            name: "Puffins",
+            dependencies: [
+                "Models"
             ]
         ),
         
@@ -412,6 +433,15 @@ let package = Package(
                 "HummingBird",
                 "Woodpecker",
                 "Utils",
+                "Habitat"
+            ]
+        ),
+        
+        .testTarget(
+            name: "StoreFeatureTests",
+            dependencies: [
+                "Puffins",
+                "StoreFeature",
                 "Habitat"
             ]
         )
