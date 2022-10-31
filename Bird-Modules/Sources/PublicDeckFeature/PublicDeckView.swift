@@ -7,14 +7,14 @@
 
 import SwiftUI
 import HummingBird
+import Models
 
-struct PublicDeckView: View {
-    @Binding var description: String
+public struct PublicDeckView: View {
+    var description: String = ""
     @StateObject private var viewModel: PublicDeckViewModel = PublicDeckViewModel()
-    @State private var shouldDisplayNewFlashcard: Bool = false
     
     
-    var body: some View {
+    public var body: some View {
         ScrollView {
             VStack {
                 VStack {
@@ -45,7 +45,7 @@ struct PublicDeckView: View {
                         .padding(.bottom)
                     }
                     
-                    TextEditor(text: $description)
+                    Text(description)
                         .foregroundColor(.black)
                         .padding([.horizontal, .bottom], 16)
                         .scrollContentBackground(.hidden)
@@ -66,7 +66,6 @@ struct PublicDeckView: View {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 180), spacing: 12, alignment: .top)], spacing: 12) {
                     ForEach(viewModel.cards) { card in
                         FlashcardCell(card: card) {
-                            shouldDisplayNewFlashcard = true
                         }
                     }
                     .listRowSeparator(.hidden)
@@ -75,12 +74,14 @@ struct PublicDeckView: View {
             }
             .padding()
         }
+        .onAppear {
+        }
         .viewBackgroundColor(HBColor.primaryBackground)
     }
 }
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        PublicDeckView(description: .constant("dasdsadasdasda"))
+        PublicDeckView()
     }
 }

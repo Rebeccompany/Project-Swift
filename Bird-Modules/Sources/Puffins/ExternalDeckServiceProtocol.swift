@@ -11,4 +11,5 @@ import Models
 
 public protocol ExternalDeckServiceProtocol {
     func getDeckFeed() -> AnyPublisher<[ExternalSection], URLError>
+    func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExernalCard], URLError>
 }
