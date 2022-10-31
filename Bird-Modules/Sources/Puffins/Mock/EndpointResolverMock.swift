@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import Models
 
-public final class EndpointMock: EndpointResolverProtocol {
+public final class EndpointResolverMock: EndpointResolverProtocol {
     var shouldThrowError: Bool = false
     var errorType: URLError?
     var data: Data?
