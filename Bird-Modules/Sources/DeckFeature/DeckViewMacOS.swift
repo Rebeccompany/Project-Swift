@@ -41,6 +41,15 @@ public struct DeckViewMacOS: View {
             } else {
                 grid
             }
+            
+        }
+        .sheet(isPresented: $shouldDisplayImport) {
+            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
+                .frame(width: 500, height: 500)
+        }
+        .sheet(isPresented: $shouldDisplayNewFlashcard) {
+            NewFlashcardViewMacOS(deck: deck, editingFlashcard: editingFlashcard)
+                .frame(minWidth: 1024, minHeight: 640)
         }
         .onAppear {
             viewModel.startup(deck)
@@ -84,7 +93,7 @@ public struct DeckViewMacOS: View {
                             systemImage: "plus"
                         )
                     }
-                    
+
                     Button {
                         shouldDisplayImport = true
                     } label: {
@@ -93,7 +102,7 @@ public struct DeckViewMacOS: View {
                             systemImage: "arrow.down"
                         )
                     }
-                    
+
                 } label: {
                     Label(
                         NSLocalizedString("add", bundle: .module, comment: ""),
@@ -101,34 +110,23 @@ public struct DeckViewMacOS: View {
                     )
                 }
                 .foregroundColor(HBColor.actionColor)
-                .popover(isPresented: $shouldDisplayNewFlashcard) {
-                    NewFlashcardViewMacOS(deck: deck, editingFlashcard: editingFlashcard)
-                        .frame(minWidth: 300, minHeight: 600)
-                }
+
             }
-        }
-        .sheet(isPresented: $shouldDisplayImport) {
-            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
         }
     }
     
     @ViewBuilder
     private var emptyState: some View {
         VStack {
-            if viewModel.cards.isEmpty {
-                VStack {
-                    EmptyStateView(component: .flashcard)
-                    Button {
-                        editingFlashcard = nil
-                        shouldDisplayNewFlashcard = true
-                    } label: {
-                        Text("criar_flashcard", bundle: .module)
-                    }
-                    .buttonStyle(LargeButtonStyle(isDisabled: false))
-                    .padding()
-                }
-                
+            EmptyStateView(component: .flashcard)
+            Button {
+                editingFlashcard = nil
+                shouldDisplayNewFlashcard = true
+            } label: {
+                Text("criar_flashcard", bundle: .module)
             }
+            .buttonStyle(LargeButtonStyle(isDisabled: false))
+            .padding()
         }
     }
     
@@ -224,4 +222,3 @@ struct DeckViewMacOS_Previews: PreviewProvider {
     }
 }
 #endif
-
