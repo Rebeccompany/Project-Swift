@@ -30,7 +30,6 @@ struct CollectionsSidebarMacOS: View {
                 NavigationLink(value: SidebarRoute.allDecks) {
                     Label(NSLocalizedString("todos_os_baralhos", bundle: .module, comment: ""), systemImage: "square.stack")
                 }
-                
                 Section {
                         ForEach(viewModel.collections) { collection in
                             NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
@@ -76,12 +75,7 @@ struct CollectionsSidebarMacOS: View {
                 }
                 .buttonStyle(PlainButtonStyle())
                 .tint(HBColor.newCollectionSidebar)
-                .sheet(isPresented: $presentCollectionCreation) {
-                    NewCollectionViewMacOS(
-                        editingCollection: editingCollection
-                    )
-                    .frame(minWidth: 300, maxHeight: 500)
-                }
+                
                 
                 Spacer()
             }
@@ -91,6 +85,16 @@ struct CollectionsSidebarMacOS: View {
             if viewModel.collections.isEmpty {
                 emptyState
             }
+        }
+        .sheet(isPresented: $presentCollectionCreation) {
+            NewCollectionViewMacOS(
+                editingCollection: editingCollection
+            )
+            .frame(minWidth: 400, maxHeight: 500)
+        }
+        .sheet(isPresented: $onboarding) {
+            OnboardingView()
+                .frame(minWidth: 400, minHeight: 700)
         }
         .onChange(of: presentCollectionCreation, perform: viewModel.didCollectionPresentationStatusChanged)
         .scrollContentBackground(.hidden)
@@ -104,10 +108,6 @@ struct CollectionsSidebarMacOS: View {
                         .foregroundColor(HBColor.actionColor)
                         .accessibility(addTraits: .isButton)
                 }
-                .sheet(isPresented: $onboarding, content: {
-                    OnboardingView()
-                        .frame(minWidth: 400, minHeight: 700)
-                })
             }
         }
     }

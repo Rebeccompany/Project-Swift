@@ -13,7 +13,7 @@ public enum CardDestiny {
 }
 
 // Enumerates the possible grades a user can give a card.
-public enum UserGrade: Int, CaseIterable, Identifiable {
+public enum UserGrade: Int, CaseIterable, Identifiable, Codable {
     public var id: Int {
         self.rawValue
     }

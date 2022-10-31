@@ -28,6 +28,10 @@ public struct DetailViewMacOS: View {
                 content
             }
         }
+        .sheet(isPresented: $presentDeckCreation) {
+            NewDeckViewMacOS(collection: viewModel.selectedCollection, editingDeck: editingDeck)
+                .frame(minWidth: 300, minHeight: 600)
+        }
         .searchable(text: $viewModel.searchText)
         .toolbar {
             ToolbarItem {
@@ -80,6 +84,8 @@ public struct DetailViewMacOS: View {
                         Text("Quantidade")
                     } else if viewModel.sortOrder == [KeyPathComparator(\Deck.datesLogs.lastAccess)] {
                         Text("Último Acesso")
+                    } else {
+                        Text("Sort")
                     }
                 }
             }
@@ -91,10 +97,6 @@ public struct DetailViewMacOS: View {
                 } label: {
                     Image(systemName: "plus")
                         .foregroundColor(HBColor.actionColor)
-                }
-                .sheet(isPresented: $presentDeckCreation) {
-                    NewDeckViewMacOS(collection: viewModel.selectedCollection, editingDeck: editingDeck)
-                        .frame(minWidth: 300, minHeight: 600)
                 }
             }
         }

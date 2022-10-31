@@ -30,6 +30,8 @@ public struct DeckViewMacOS: View {
     @State private var editingFlashcard: Card?
     @Binding private var deck: Deck
     
+    @Environment(\.openWindow) var openWindow
+    
     public init(deck: Binding<Deck>) {
         self._deck = deck
     }
@@ -44,6 +46,9 @@ public struct DeckViewMacOS: View {
         }
         .onAppear {
             viewModel.startup(deck)
+        }
+        .sheet(isPresented: $shouldDisplayImport) {
+            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
         }
         .listStyle(.plain)
         .searchable(text: $viewModel.searchFieldContent)
@@ -76,8 +81,10 @@ public struct DeckViewMacOS: View {
             ToolbarItemGroup {
                 Menu {
                     Button {
-                        editingFlashcard = nil
-                        shouldDisplayNewFlashcard = true
+                        let model = NewFlashcardWindowData(deckId: deck.id)
+                        openWindow(value: model)
+//                        editingFlashcard = nil
+//                        shouldDisplayNewFlashcard = true
                     } label: {
                         Label(
                             NSLocalizedString("add", bundle: .module, comment: ""),
@@ -101,34 +108,22 @@ public struct DeckViewMacOS: View {
                     )
                 }
                 .foregroundColor(HBColor.actionColor)
-                .popover(isPresented: $shouldDisplayNewFlashcard) {
-                    NewFlashcardViewMacOS(deck: deck, editingFlashcard: editingFlashcard)
-                        .frame(minWidth: 300, minHeight: 600)
-                }
             }
-        }
-        .sheet(isPresented: $shouldDisplayImport) {
-            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
         }
     }
     
     @ViewBuilder
     private var emptyState: some View {
         VStack {
-            if viewModel.cards.isEmpty {
-                VStack {
-                    EmptyStateView(component: .flashcard)
-                    Button {
-                        editingFlashcard = nil
-                        shouldDisplayNewFlashcard = true
-                    } label: {
-                        Text("criar_flashcard", bundle: .module)
-                    }
-                    .buttonStyle(LargeButtonStyle(isDisabled: false))
-                    .padding()
-                }
-                
+            EmptyStateView(component: .flashcard)
+            Button {
+                editingFlashcard = nil
+                shouldDisplayNewFlashcard = true
+            } label: {
+                Text("criar_flashcard", bundle: .module)
             }
+            .buttonStyle(LargeButtonStyle(isDisabled: false))
+            .padding()
         }
     }
     

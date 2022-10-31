@@ -27,7 +27,7 @@ public class NewFlashcardViewModel: ObservableObject {
     @Dependency(\.uuidGenerator) private var uuidGenerator: UUIDGeneratorProtocol
     
 
-    private func setupDeckContentIntoFields(_ card: Card) {
+    func setupDeckContentIntoFields(_ card: Card) {
         flashcardFront = card.front
         flashcardBack = card.back
         currentSelectedColor = card.color
@@ -48,6 +48,26 @@ public class NewFlashcardViewModel: ObservableObject {
         if let editingFlashcard {
             setupDeckContentIntoFields(editingFlashcard)
         }
+    }
+    
+    func fetchInitialDeck(_ deckId: UUID) -> AnyPublisher<Deck?, Never> {
+        deckRepository
+            .fetchDeckById(deckId)
+            .map { $0 as Deck? }
+            .replaceError(with: nil)
+            .eraseToAnyPublisher()
+    }
+    
+    func fetchEditingCard(_ cardId: UUID?) -> AnyPublisher<Card?, Never> {
+        guard let cardId else {
+            return Just<Card?>(nil).eraseToAnyPublisher()
+        }
+        
+        return deckRepository
+            .fetchCardById(cardId)
+            .map { $0 as Card? }
+            .replaceError(with: nil)
+            .eraseToAnyPublisher()
     }
     
     func createFlashcard(for deck: Deck) throws {

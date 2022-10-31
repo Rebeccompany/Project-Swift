@@ -23,19 +23,15 @@ public struct NewFlashcardViewMacOS: View {
     @StateObject private var frontContext = RichTextContext()
     @StateObject private var backContext = RichTextContext()
     
-    #if os (iOS)
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    #endif
-    
     @Environment(\.dismiss) private var dismiss
     
+    @State private var deck: Deck?
+    @State private var editingFlashcard: Card?
     
-    var deck: Deck
-    var editingFlashcard: Card?
+    var data: NewFlashcardWindowData
     
-    public init(deck: Deck, editingFlashcard: Card? = nil) {
-        self.deck = deck
-        self.editingFlashcard = editingFlashcard
+    public init(data: NewFlashcardWindowData) {
+        self.data = data
     }
     
     public var body: some View {
@@ -133,6 +129,14 @@ public struct NewFlashcardViewMacOS: View {
                     #endif
                 }
             }
+        }
+        .onReceive(viewModel.fetchInitialDeck(data.deckId)) { deck in
+            self.deck = deck
+        }
+        .onReceive(viewModel.fetchEditingCard(data.editingFlashcardId)) { card in
+            self.editingFlashcard = card
+            guard let card else { return }
+            viewModel.setupDeckContentIntoFields(card)
         }
     }
     
@@ -238,6 +242,8 @@ public struct NewFlashcardViewMacOS: View {
     @ViewBuilder
     private var customNavigationToolbar: some View {
             Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
+                guard let deck else { return }
+                
                 if editingFlashcard == nil {
                     do {
                         try viewModel.createFlashcard(for: deck)
@@ -278,7 +284,7 @@ extension View {
 struct NewFlashcardViewMacOS_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
-            NewFlashcardViewMacOS(deck: Deck(id: UUID(), name: "Nome", icon: "chove", color: .darkBlue, collectionId: nil, cardsIds: [], category: DeckCategory.arts, storeId: nil), editingFlashcard: nil)
+            NewFlashcardViewMacOS(data: NewFlashcardWindowData(deckId: .init()))
         }
     }
 }

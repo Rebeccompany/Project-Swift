@@ -22,5 +22,9 @@ struct Project_BirdApp: App {
             ContentViewMacOS()
             #endif
         }
+        
+        #if os(macOS)
+        newFlashcardWindow
+        #endif
     }
 }

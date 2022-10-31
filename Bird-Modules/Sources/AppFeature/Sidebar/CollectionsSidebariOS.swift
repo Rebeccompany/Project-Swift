@@ -90,6 +90,9 @@ struct CollectionsSidebariOS: View {
                 Text(NSLocalizedString("colecoes", bundle: .module, comment: ""))
             }
         }
+        .sheet(isPresented: $onboarding) {
+            OnboardingView()
+        }
         .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
         .scrollContentBackground(.hidden)
         .viewBackgroundColor(HBColor.primaryBackground)
@@ -102,9 +105,6 @@ struct CollectionsSidebariOS: View {
                     Image(systemName: "info.circle")
                         .foregroundColor(HBColor.actionColor)
                         .accessibility(addTraits: .isButton)
-                }
-                .sheet(isPresented: $onboarding) {
-                    OnboardingView()
                 }
             }
             
