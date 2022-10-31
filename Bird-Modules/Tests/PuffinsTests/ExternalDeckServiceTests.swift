@@ -47,4 +47,22 @@ final class ExternalDeckServiceTests: XCTestCase {
         
         wait(for: [expectation], timeout: 1)
     }
+    
+    func testFailCall() throws {
+        let expectedResult = resolverMock.externalSection
+        resolverMock.data = resolverMock.externalSectionData
+        resolverMock.shouldThrowError = true
+        resolverMock.errorType = URLError.badServerResponse
+        
+        let expectation = expectation(description: "Return expected result from api call")
+        
+        sut.getDeckFeed()
+            .sink { completion in
+                XCTAssertEqual(completion, .failure(URLError.badServerResponse))
+                expectation.fulfill()
+            } receiveValue: { _ in
+            }
+            .store(in: &cancellables)
+            wait(for: [expectation], timeout: 1)
+    }
 }
