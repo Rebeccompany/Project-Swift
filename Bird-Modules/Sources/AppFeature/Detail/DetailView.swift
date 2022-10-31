@@ -23,6 +23,8 @@ public struct DetailView: View {
     @State private var editingDeck: Deck?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
+    @State private var shouldReturnToGrid: Bool = true
+    
     init(editMode: Binding<EditMode>) {
         self._editMode = editMode
     }
@@ -62,6 +64,7 @@ public struct DetailView: View {
                 Menu {
                     Button {
                         viewModel.changeDetailType(for: .grid)
+                        shouldReturnToGrid = true
                     } label: {
                         Label(NSLocalizedString("icones", bundle: .module, comment: ""), systemImage: "rectangle.grid.2x2")
                     }
@@ -69,6 +72,7 @@ public struct DetailView: View {
                     
                     Button {
                         viewModel.changeDetailType(for: .table)
+                        shouldReturnToGrid = false
                     } label: {
                         Label(NSLocalizedString("lista", bundle: .module, comment: ""), systemImage: "list.bullet")
                     }
@@ -115,6 +119,11 @@ public struct DetailView: View {
                 viewModel.detailType = .table
                 viewModel.changeDetailType(for: .table)
             }
+            if newValue == .inactive && shouldReturnToGrid {
+                viewModel.detailType = .grid
+                viewModel.changeDetailType(for: .grid)
+            }
+            
         }
         .alert(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""), isPresented: $shouldDisplayAlert) {
             Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
