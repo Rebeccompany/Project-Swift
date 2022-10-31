@@ -52,13 +52,13 @@ final class ExternalDeckServiceTests: XCTestCase {
         let expectedResult = resolverMock.externalSection
         resolverMock.data = resolverMock.externalSectionData
         resolverMock.shouldThrowError = true
-        resolverMock.errorType = URLError.badServerResponse
+        resolverMock.errorType = URLError(URLError.badServerResponse)
         
         let expectation = expectation(description: "Return expected result from api call")
         
         sut.getDeckFeed()
             .sink { completion in
-                XCTAssertEqual(completion, .failure(URLError.badServerResponse))
+                XCTAssertEqual(completion, .failure(URLError(URLError.badServerResponse)))
                 expectation.fulfill()
             } receiveValue: { _ in
             }
