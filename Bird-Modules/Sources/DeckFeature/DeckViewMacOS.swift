@@ -43,6 +43,15 @@ public struct DeckViewMacOS: View {
             } else {
                 grid
             }
+            
+        }
+        .sheet(isPresented: $shouldDisplayImport) {
+            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
+                .frame(width: 500, height: 500)
+        }
+        .sheet(isPresented: $shouldDisplayNewFlashcard) {
+            NewFlashcardViewMacOS(deck: deck, editingFlashcard: editingFlashcard)
+                .frame(minWidth: 1024, minHeight: 640)
         }
         .onAppear {
             viewModel.startup(deck)
@@ -91,7 +100,7 @@ public struct DeckViewMacOS: View {
                             systemImage: "plus"
                         )
                     }
-                    
+
                     Button {
                         shouldDisplayImport = true
                     } label: {
@@ -100,7 +109,7 @@ public struct DeckViewMacOS: View {
                             systemImage: "arrow.down"
                         )
                     }
-                    
+
                 } label: {
                     Label(
                         NSLocalizedString("add", bundle: .module, comment: ""),
@@ -219,4 +228,3 @@ struct DeckViewMacOS_Previews: PreviewProvider {
     }
 }
 #endif
-
