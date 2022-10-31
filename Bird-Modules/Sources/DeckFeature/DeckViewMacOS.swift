@@ -30,7 +30,7 @@ public struct DeckViewMacOS: View {
     @State private var editingFlashcard: Card?
     @Binding private var deck: Deck
     
-    @Environment(\.openWindow) var openWindow
+    @Environment(\.openWindow) private var openWindow
     
     public init(deck: Binding<Deck>) {
         self._deck = deck
@@ -45,10 +45,6 @@ public struct DeckViewMacOS: View {
             }
             
         }
-//        .sheet(isPresented: $shouldDisplayImport) {
-//            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
-//                .frame(width: 500, height: 500)
-//        }
         .onAppear {
             viewModel.startup(deck)
         }
@@ -88,8 +84,6 @@ public struct DeckViewMacOS: View {
                     Button {
                         let model = NewFlashcardWindowData(deckId: deck.id)
                         openWindow(value: model)
-//                        editingFlashcard = nil
-//                        shouldDisplayNewFlashcard = true
                     } label: {
                         Label(
                             NSLocalizedString("add", bundle: .module, comment: ""),

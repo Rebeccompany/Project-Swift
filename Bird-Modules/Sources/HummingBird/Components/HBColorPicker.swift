@@ -8,13 +8,13 @@
 import SwiftUI
 import Models
 
-struct HBColorPicker<Label: View>: View {
+public struct HBColorPicker<Label: View>: View {
     @Binding var selection: Color
     @State private var _color: Color = .white
     @State private var present = false
     private var labelBuilder: () -> Label
     
-    init(selection: Binding<Color>, @ViewBuilder label: @escaping () -> Label) {
+    public init(selection: Binding<Color>, @ViewBuilder label: @escaping () -> Label) {
         self._selection = selection
         self.labelBuilder = label
     }
@@ -32,7 +32,7 @@ struct HBColorPicker<Label: View>: View {
         return colors
     }()
     
-    var body: some View {
+    public var body: some View {
         Button {
             present = true
         } label: {

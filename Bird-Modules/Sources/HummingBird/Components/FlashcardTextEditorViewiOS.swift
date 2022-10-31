@@ -1,17 +1,19 @@
 //
-//  FlashcardTextEditorView.swift
+//  FlashcardTextEditorViewiOS .swift
 //  
 //
 //  Created by Rebecca Mello on 06/09/22.
 //
 //
+
 import SwiftUI
 import RichTextKit
 import Combine
 import PhotosUI
 import Utils
 
-public struct FlashcardTextEditorView: View {
+#if os(iOS)
+public struct FlashcardTextEditorViewiOS: View {
     var color: Color
     var side: String
     
@@ -94,15 +96,6 @@ public struct FlashcardTextEditorView: View {
                 .buttonStyle(.bordered)
                 .tint(context.isUnderlined ? HBColor.actionColor : nil)
                 .keyboardShortcut("u", modifiers: .command)
-//                Button {
-//                    isPhotoPickerPresented = true
-//                } label: {
-//                    Image(systemName: "photo.on.rectangle")
-//                        .frame(width: 18, height: 18)
-//                }
-//                .frame(width: 32, height: 32)
-//                .buttonStyle(.bordered)
-//                .padding(.horizontal, 4)
                 alignmentMenu
                 HBColorPicker(selection: context.foregroundColorBinding) {
                     Image(systemName: "character")
@@ -199,9 +192,10 @@ public struct FlashcardTextEditorView: View {
     }
 }
 
-struct SwiftUIView_Previews: PreviewProvider {
+struct FlashcardTextEditorViewiOS_Previews: PreviewProvider {
     static var previews: some View {
-        FlashcardTextEditorView(text: .constant(NSAttributedString("")), color: .blue, side: "Frente", context: RichTextContext())
+        FlashcardTextEditorViewiOS(text: .constant(NSAttributedString("")), color: .blue, side: "Frente", context: RichTextContext())
             .environment(\.sizeCategory, .medium)
     }
 }
+#endif

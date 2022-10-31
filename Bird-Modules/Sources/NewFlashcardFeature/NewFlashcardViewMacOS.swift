@@ -30,6 +30,14 @@ public struct NewFlashcardViewMacOS: View {
     
     var data: NewFlashcardWindowData
     
+    var activeContext: RichTextContext {
+        if frontContext.isEditingText {
+            return frontContext
+        } else {
+            return backContext
+        }
+    }
+    
     public init(data: NewFlashcardWindowData) {
         self.data = data
     }
@@ -40,7 +48,7 @@ public struct NewFlashcardViewMacOS: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         HStack {
-                            FlashcardTextEditorView(
+                            FlashcardTextEditorViewMacOS(
                                 text: $viewModel.flashcardFront, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                                 side: NSLocalizedString("frente", bundle: .module, comment: ""),
                                 context: frontContext
@@ -48,7 +56,7 @@ public struct NewFlashcardViewMacOS: View {
                             .id(NewFlashcardFocus.front)
                             .frame(minHeight: 450)
                             
-                            FlashcardTextEditorView(
+                            FlashcardTextEditorViewMacOS(
                                 text: $viewModel.flashcardBack, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                                 side: NSLocalizedString("verso", bundle: .module, comment: ""),
                                 context: backContext
@@ -63,7 +71,7 @@ public struct NewFlashcardViewMacOS: View {
                             .padding(.top)
                         
                         IconColorGridView {
-                           colorGridItems
+                            colorGridItems
                         }
                         
                         Spacer()
@@ -91,6 +99,68 @@ public struct NewFlashcardViewMacOS: View {
                             dismiss()
                         }
                         .foregroundColor(.red)
+                    }
+                    
+                    ToolbarItem {
+                        Button { activeContext.isItalic.toggle() } label: {
+                            Image.richTextStyleItalic
+                                .frame(width: 18, height: 18)
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(activeContext.isItalic ? HBColor.actionColor : nil)
+                        .keyboardShortcut("i", modifiers: .command)
+                    }
+                    
+                    ToolbarItem {
+                        Button { activeContext.isBold.toggle() } label: {
+                            Image.richTextStyleBold
+                                .frame(width: 18, height: 18)
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(activeContext.isBold ? HBColor.actionColor : nil)
+                        .keyboardShortcut("b", modifiers: .command)
+                    }
+                    
+                    ToolbarItem {
+                        Button { activeContext.isUnderlined.toggle() } label: {
+                            Image.richTextStyleUnderline
+                                .frame(width: 18, height: 18)
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(activeContext.isUnderlined ? HBColor.actionColor : nil)
+                        .keyboardShortcut("u", modifiers: .command)
+                    }
+                    
+                    ToolbarItem {
+                        alignmentMenu
+                    }
+                    
+                    ToolbarItem {
+                        HBColorPicker(selection: activeContext.foregroundColorBinding) {
+                            Image(systemName: "character")
+                                .font(.system(size: 18))
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    
+                    ToolbarItem {
+                        HBColorPicker(selection: activeContext.backgroundColorBinding) {
+                            Image(systemName: "highlighter")
+                                .font(.system(size: 14))
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    
+                    ToolbarItem {
+                        HStack {
+                            Spacer()
+                            sizeTools()
+                                .frame(width: 115)
+                                .padding(.horizontal, 4)
+                                .background(.regularMaterial)
+                                .cornerRadius(8)
+                            Spacer()
+                        }
                     }
                 }
             }
@@ -128,7 +198,7 @@ public struct NewFlashcardViewMacOS: View {
             Text("apagar_flashcard", bundle: .module)
         }
         .buttonStyle(DeleteButtonStyle())
-
+        
     }
     
     private func customAlert() -> Alert {
@@ -141,50 +211,94 @@ public struct NewFlashcardViewMacOS: View {
             return Alert(title: Text("alert_delete_flashcard", bundle: .module),
                          message: Text("alert_delete_flashcard_text", bundle: .module),
                          primaryButton: .destructive(Text("deletar", bundle: .module)) {
-                    do {
-                        try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
-                        dismiss()
-                    } catch {
-                        activeAlert = .error
-                        showingAlert = true
-                        selectedErrorMessage = .deleteCard
-                    }
-                         },
-                secondaryButton: .cancel(Text("cancelar", bundle: .module))
+                do {
+                    try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
+                    dismiss()
+                } catch {
+                    activeAlert = .error
+                    showingAlert = true
+                    selectedErrorMessage = .deleteCard
+                }
+            },
+                         secondaryButton: .cancel(Text("cancelar", bundle: .module))
             )
         }
     }
     
     @ViewBuilder
     private var customNavigationToolbar: some View {
-            Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
-                guard let deck else { return }
+        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
+            guard let deck else { return }
+            
+            if editingFlashcard == nil {
+                do {
+                    try viewModel.createFlashcard(for: deck)
+                    dismiss()
+                } catch {
+                    selectedErrorMessage = .createCard
+                    showingAlert = true
+                }
                 
-                if editingFlashcard == nil {
-                    do {
-                        try viewModel.createFlashcard(for: deck)
-                        dismiss()
-                    } catch {
-                        selectedErrorMessage = .createCard
-                        showingAlert = true
-                    }
-                    
-                } else {
-                    do {
-                        try viewModel.editFlashcard(editingFlashcard: editingFlashcard)
-                        dismiss()
-                    } catch {
-                        selectedErrorMessage = .editCard
-                        showingAlert = true
+            } else {
+                do {
+                    try viewModel.editFlashcard(editingFlashcard: editingFlashcard)
+                    dismiss()
+                } catch {
+                    selectedErrorMessage = .editCard
+                    showingAlert = true
+                }
+            }
+        }
+        .disabled(!viewModel.canSubmit)
+        .accessibilityLabel(!viewModel.canSubmit ? NSLocalizedString("feito_disabled",
+                                                                     bundle: .module,
+                                                                     comment: "") : NSLocalizedString("feito",
+                                                                                                      bundle: .module,
+                                                                                                      comment: ""))
+    }
+
+    @ViewBuilder
+    private var alignmentMenu: some View {
+        Menu {
+            ForEach(RichTextAlignment.allCases) { alignment in
+                Button {
+                    activeContext.alignment = alignment
+                } label: {
+                    Label {
+                        Text(alignment.rawValue)
+                    } icon: {
+                        alignment.icon
                     }
                 }
             }
-            .disabled(!viewModel.canSubmit)
-            .accessibilityLabel(!viewModel.canSubmit ? NSLocalizedString("feito_disabled",
-                                                                         bundle: .module,
-                                                                         comment: "") : NSLocalizedString("feito",
-                                                                                                          bundle: .module,
-                                                                                                          comment: ""))
+            
+        } label: {
+            activeContext.alignment.icon
+                .frame(width: 18, height: 18)
+        }
+        .buttonStyle(.bordered)
+    }
+    
+    func sizeTools() -> some View {
+        HStack {
+            Button {
+                activeContext.decrementFontSize()
+            } label: {
+                Image(systemName: "minus")
+                    .frame(width: 10, height: 10)
+            }
+            .keyboardShortcut("-", modifiers: .command)
+//            FontSizePicker(selection: size)
+//                .labelsHidden()
+//                .frame(minWidth: 50)
+            Button {
+                activeContext.incrementFontSize()
+            } label: {
+                Image(systemName: "plus")
+                    .frame(width: 10, height: 10)
+            }
+            .keyboardShortcut("+", modifiers: .command)
+        }
     }
     
 }
@@ -196,7 +310,6 @@ extension View {
     }
 }
 
-
 struct NewFlashcardViewMacOS_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
@@ -204,4 +317,3 @@ struct NewFlashcardViewMacOS_Previews: PreviewProvider {
         }
     }
 }
-

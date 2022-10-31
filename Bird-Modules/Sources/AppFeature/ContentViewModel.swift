@@ -21,7 +21,11 @@ public final class ContentViewModel: ObservableObject {
     @Published var decks: [Deck]
     
     // MARK: View Bindings
+#if os(iOS)
     @Published var sidebarSelection: SidebarRoute? = .allDecks
+#elseif os(macOS)
+    @Published var sidebarSelection: SidebarRoute = .allDecks
+#endif
     @Published var selection: Set<Deck.ID>
     @Published var searchText: String
     @Published var detailType: DetailDisplayType
@@ -33,16 +37,6 @@ public final class ContentViewModel: ObservableObject {
     @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
     
     private var cancellables: Set<AnyCancellable>
-    
-    #if os(macOS)
-    var macOSSidebarSelection: Binding<SidebarRoute> {
-        Binding<SidebarRoute> { [weak self] in
-            self?.sidebarSelection ?? .allDecks
-        } set: {[weak self] route in
-            self?.sidebarSelection = route
-        }
-    }
-    #endif
     
     var detailTitle: String {
         switch sidebarSelection ?? .allDecks {

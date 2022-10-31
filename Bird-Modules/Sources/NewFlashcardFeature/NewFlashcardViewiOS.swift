@@ -13,6 +13,7 @@ import Habitat
 import RichTextKit
 import Combine
 
+#if os(iOS)
 public struct NewFlashcardViewiOS: View {
     @StateObject private var viewModel: NewFlashcardViewModel = NewFlashcardViewModel()
     
@@ -44,7 +45,7 @@ public struct NewFlashcardViewiOS: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         layout {
-                            FlashcardTextEditorView(
+                            FlashcardTextEditorViewiOS(
                                 text: $viewModel.flashcardFront, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                                 side: NSLocalizedString("frente", bundle: .module, comment: ""),
                                 context: frontContext
@@ -54,7 +55,7 @@ public struct NewFlashcardViewiOS: View {
                             .frame(minHeight: horizontalSizeClass == . compact ? 400 : 600)
                             #endif
                             
-                            FlashcardTextEditorView(
+                            FlashcardTextEditorViewiOS(
                                 text: $viewModel.flashcardBack, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                                 side: NSLocalizedString("verso", bundle: .module, comment: ""),
                                 context: backContext
@@ -282,3 +283,5 @@ struct NewFlashcardViewiOS_Previews: PreviewProvider {
         }
     }
 }
+
+#endif
