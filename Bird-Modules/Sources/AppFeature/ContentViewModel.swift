@@ -27,6 +27,7 @@ public final class ContentViewModel: ObservableObject {
     @Published var searchText: String
     @Published var detailType: DetailDisplayType
     @Published var sortOrder: [KeyPathComparator<Deck>]
+    @Published var todayDecks: [Deck]
 
     // MARK: Repositories
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
@@ -54,10 +55,6 @@ public final class ContentViewModel: ObservableObject {
         }
     }
     
-    var todayDecks: [Deck] {
-        decks.filter { _ in true }
-    }
-    
     public init() {
         self.collections = []
         self.cancellables = .init()
@@ -66,6 +63,7 @@ public final class ContentViewModel: ObservableObject {
         self.searchText = ""
         self.detailType = .grid
         self.sortOrder = [KeyPathComparator(\Deck.name)]
+        self.todayDecks = []
     }
     
     private var collectionListener: AnyPublisher<[DeckCollection], Never> {
@@ -94,6 +92,12 @@ public final class ContentViewModel: ObservableObject {
     }
     
     func startup() {
+        
+        $decks
+            .tryMap(filterDecksForToday)
+            .replaceError(with: [])
+            .assign(to: &$todayDecks)
+        
         collectionListener
             .assign(to: &$collections)
         
@@ -144,6 +148,14 @@ public final class ContentViewModel: ObservableObject {
         } else {
             return decks.filter { $0.name.capitalized.contains(searchText.capitalized) }
         }
+    }
+    
+    private func filterDecksForToday(_ decks: [Deck]) -> [Deck] {
+        
+        decks.filter {
+                guard let session = $0.session else { return false }
+                return dateHandler.isToday(date: session.date)
+            }
     }
     
     private func handleCompletion(_ completion: Subscribers.Completion<RepositoryError>) {

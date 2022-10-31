@@ -126,6 +126,8 @@ public struct StudyView: View {
                         do {
                             if mode == .spaced {
                                 try viewModel.saveChanges(deck: deck, mode: mode)
+                            } else {
+                                dismiss()
                             }
                             
                         } catch {

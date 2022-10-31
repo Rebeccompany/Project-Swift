@@ -11,14 +11,11 @@ import Models
 struct SessionsForTodayView: View {
     
     @EnvironmentObject private var viewModel: ContentViewModel
-    private var todayDecks: [Deck] {
-        viewModel.decks
-    }
     
     var body: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
-                ForEach(todayDecks) { deck in
+                ForEach(viewModel.todayDecks) { deck in
                     DeckForTodayCell(deck: deck)
                 }
             }
