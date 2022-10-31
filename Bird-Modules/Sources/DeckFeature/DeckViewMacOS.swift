@@ -102,7 +102,7 @@ public struct DeckViewMacOS: View {
                 }
                 .foregroundColor(HBColor.actionColor)
                 .popover(isPresented: $shouldDisplayNewFlashcard) {
-                    NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
+                    NewFlashcardViewMacOS(deck: deck, editingFlashcard: editingFlashcard)
                         .frame(minWidth: 300, minHeight: 600)
                 }
             }
