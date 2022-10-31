@@ -86,8 +86,7 @@ public struct NewFlashcardViewMacOS: View {
                     customAlert()
                 }
                 .toolbar {
-                    
-                    ToolbarItem(placement: .cancellationAction) {
+                    ToolbarItem(placement: .principal) {
                         Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
                             dismiss()
                         }

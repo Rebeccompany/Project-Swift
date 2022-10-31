@@ -14,6 +14,7 @@ public var newFlashcardWindow: some Scene {
     WindowGroup("New Flashcard", for: NewFlashcardWindowData.self) { $data in
         if let data {
             NewFlashcardViewMacOS(data: data)
+                .frame(minWidth: 1024, minHeight: 640)
         } else {
             Text("error")
         }

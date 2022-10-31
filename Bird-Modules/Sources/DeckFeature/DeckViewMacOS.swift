@@ -45,14 +45,10 @@ public struct DeckViewMacOS: View {
             }
             
         }
-        .sheet(isPresented: $shouldDisplayImport) {
-            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
-                .frame(width: 500, height: 500)
-        }
-        .sheet(isPresented: $shouldDisplayNewFlashcard) {
-            NewFlashcardViewMacOS(deck: deck, editingFlashcard: editingFlashcard)
-                .frame(minWidth: 1024, minHeight: 640)
-        }
+//        .sheet(isPresented: $shouldDisplayImport) {
+//            ImportView(deck: deck, isPresenting: $shouldDisplayImport)
+//                .frame(width: 500, height: 500)
+//        }
         .onAppear {
             viewModel.startup(deck)
         }
