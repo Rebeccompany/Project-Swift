@@ -206,7 +206,8 @@ public struct DeckView: View {
                             }
                         }
                         .frame(height: 230)
-                        .hoverEffect(.lift)
+                        .padding(2)
+                        .hoverEffect()
                     }
                     .listRowSeparator(.hidden)
                 }
@@ -220,7 +221,7 @@ public struct DeckView: View {
 
 struct DeckView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
+        NavigationStack {
             DeckView(
                 deck: .constant(DeckRepositoryMock()
                     .decks[1])

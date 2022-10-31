@@ -23,6 +23,7 @@ public struct NewFlashcardView: View {
     @StateObject private var frontContext = RichTextContext()
     @StateObject private var backContext = RichTextContext()
     
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 //    @FocusState private var focus: NewFlashcardFocus?
     
     @Environment(\.dismiss) private var dismiss
@@ -37,26 +38,27 @@ public struct NewFlashcardView: View {
     }
     
     public var body: some View {
-        
-        NavigationView {
+        NavigationStack {
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(alignment: .leading) {
-                        FlashcardTextEditorView(
-                            text: $viewModel.flashcardFront, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
-                            side: NSLocalizedString("frente", bundle: .module, comment: ""),
-                            context: frontContext
-                        )
-                        .id(NewFlashcardFocus.front)
-                        .frame(minHeight: 360)
-                        
-                        FlashcardTextEditorView(
-                            text: $viewModel.flashcardBack, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
-                            side: NSLocalizedString("verso", bundle: .module, comment: ""),
-                            context: backContext
-                        )
-                        .id(NewFlashcardFocus.back)
-                        .frame(minHeight: 360)
+                        layout {
+                            FlashcardTextEditorView(
+                                text: $viewModel.flashcardFront, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
+                                side: NSLocalizedString("frente", bundle: .module, comment: ""),
+                                context: frontContext
+                            )
+                            .id(NewFlashcardFocus.front)
+                            .frame(minHeight: horizontalSizeClass == . compact ? 400 : 600)
+                            
+                            FlashcardTextEditorView(
+                                text: $viewModel.flashcardBack, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
+                                side: NSLocalizedString("verso", bundle: .module, comment: ""),
+                                context: backContext
+                            )
+                            .id(NewFlashcardFocus.back)
+                            .frame(minHeight: horizontalSizeClass == . compact ? 400 : 600)
+                        }
                         
                         Text("cores", bundle: .module)
                             .font(.callout)
@@ -104,19 +106,32 @@ public struct NewFlashcardView: View {
                 }
                 
                 .onChange(of: frontContext.isEditingText) { newValue in
-                    if newValue {
+                    if newValue, horizontalSizeClass == .compact {
                         withAnimation {
                             proxy.scrollTo(NewFlashcardFocus.front, anchor: .center)
                         }
                     }
                 }
                 .onChange(of: backContext.isEditingText) { newValue in
-                    if newValue {
+                    if newValue, horizontalSizeClass == .compact {
                         withAnimation {
                             proxy.scrollTo(NewFlashcardFocus.back, anchor: UnitPoint(x: 0.5, y: 0.8))
                         }
                     }
                 }     
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func layout<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        if horizontalSizeClass == .compact {
+            VStack(alignment: .leading) {
+                content()
+            }
+        } else {
+            HStack {
+                content()
             }
         }
     }
