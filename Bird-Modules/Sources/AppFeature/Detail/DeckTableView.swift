@@ -47,7 +47,7 @@ struct DeckTableView: View {
                 Button {
                     try? viewModel.deleteDeck(deck)
                 } label: {
-                    Text("Apagar")
+                    Text("deletar", bundle: .module)
                 }
                 .tint(.red)
             }
@@ -55,7 +55,7 @@ struct DeckTableView: View {
                 Button {
                     editAction(deck)
                 } label: {
-                    Text("Editar")
+                    Text("editar", bundle: .module)
                 }
                 .tint(HBColor.actionColor)
             }
