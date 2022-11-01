@@ -305,7 +305,8 @@ let package = Package(
                 "HummingBird",
                 "DeckFeature",
                 "Puffins",
-                "Habitat"
+                "Habitat",
+                "PublicDeckFeature"
             ]
         ),
         
@@ -320,8 +321,7 @@ let package = Package(
             name: "PublicDeckFeature",
             dependencies: [
                 "Models",
-                "HummingBird",
-                "StoreFeature"
+                "HummingBird"
             ]
         ),
         

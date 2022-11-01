@@ -17,7 +17,9 @@ public func setupHabitatForProduction() {
     Habitat[\.uuidGenerator] = UUIDGenerator()
     Habitat[\.systemObserver] = SystemObserver.shared
     Habitat[\.displayCacher] = DisplayCacher()
-    Habitat[\.externalDeckService] = ExternalDeckService.shared
+    //Habitat[\.externalDeckService] = ExternalDeckService.shared
+    
+    Habitat[\.externalDeckService] = ExternalDeckServiceMock()
 }
 
 public func setupHabitatForIsolatedTesting(

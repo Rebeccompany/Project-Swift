@@ -10,8 +10,8 @@ import Models
 import Combine
 
 public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
-    public func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExernalCard], URLError> {
-        Just([]).setFailureType(to: URLError.self).eraseToAnyPublisher()
+    public func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExternalCard], URLError> {
+        Just(cards).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
     
     
@@ -27,6 +27,65 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         ExternalSection(title: getCategoryString(category: .arts), decks: [ExternalDeck(id: "9", name: "Arts 3", description: "Arts Desc 3", icon: .books, color: .orange, category: .arts), ExternalDeck(id: "10", name: "Arts 3", description: "Arts Desc 3", icon: .cpu, color: .lightBlue, category: .arts)]),
                         
         ExternalSection(title: getCategoryString(category: .others), decks: [ExternalDeck(id: "11", name: "Others", description: "Others Desc", icon: .books, color: .darkPurple, category: .others)])
+    ]
+    
+    public var cards: [ExternalCard] = [
+        ExternalCard(
+            id: "1",
+            front: "Lavender Hazer",
+            back: "1",
+            color: .darkBlue,
+            deckId: "1"
+        ),
+        ExternalCard(
+            id: "2",
+            front: "Lavender Hazer",
+            back: "1",
+            color: .darkBlue,
+            deckId: "1"
+        ),
+        ExternalCard(
+            id: "3",
+            front: "Lavender Hazer",
+            back: "1",
+            color: .darkBlue,
+            deckId: "1"
+        ),
+        ExternalCard(
+            id: "4",
+            front: "Lavender Hazer",
+            back: "1",
+            color: .darkBlue,
+            deckId: "1"
+        ),
+        ExternalCard(
+            id: "5",
+            front: "Lavender Hazer",
+            back: "1",
+            color: .darkBlue,
+            deckId: "1"
+        ),
+        ExternalCard(
+            id: "6",
+            front: "Lavender Hazer",
+            back: "1",
+            color: .darkBlue,
+            deckId: "1"
+        ),
+        ExternalCard(
+            id: "7",
+            front: "Lavender Hazer",
+            back: "1",
+            color: .darkBlue,
+            deckId: "1"
+        ),
+        ExternalCard(
+            id: "8",
+            front: "Lavender Hazer",
+            back: "1",
+            color: .darkBlue,
+            deckId: "1"
+        ),
     ]
     
     public init() {

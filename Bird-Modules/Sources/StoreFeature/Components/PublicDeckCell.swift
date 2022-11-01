@@ -9,7 +9,7 @@ import SwiftUI
 import Models
 import HummingBird
 
-struct PublicDeckView: View {
+struct PublicDeckCell: View {
     var deck: ExternalDeck
     var numberOfCopies: Int
     var author: String
@@ -54,6 +54,6 @@ struct PublicDeckView: View {
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        PublicDeckView(deck: ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem), numberOfCopies: 20, author: "BAHIAAAAA")
+        PublicDeckCell(deck: ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem), numberOfCopies: 20, author: "BAHIAAAAA")
     }
 }

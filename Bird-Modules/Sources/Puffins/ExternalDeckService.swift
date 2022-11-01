@@ -33,7 +33,7 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
             .eraseToAnyPublisher()
     }
     
-    public func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExernalCard], URLError> {
+    public func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExternalCard], URLError> {
         Just([]).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
 }

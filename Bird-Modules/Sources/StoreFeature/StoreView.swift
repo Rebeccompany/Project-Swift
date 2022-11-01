@@ -9,6 +9,7 @@ import SwiftUI
 import HummingBird
 import Habitat
 import Models
+import PublicDeckFeature
 
 public struct StoreView: View {
     @StateObject private var viewModel: StoreViewModel = StoreViewModel()
@@ -35,6 +36,9 @@ public struct StoreView: View {
         .navigationTitle(NSLocalizedString("baralhos_publicos", bundle: .module, comment: ""))
         .onAppear(perform: viewModel.startup)
         .viewBackgroundColor(HBColor.primaryBackground)
+        .navigationDestination(for: ExternalDeck.self) { deck in
+            PublicDeckView(deck: deck)
+        }
     }
 }
 
