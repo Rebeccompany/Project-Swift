@@ -61,8 +61,7 @@ struct CollectionsSidebar: View {
                                     Image(systemName: "info.circle")
                                         .foregroundColor(HBColor.actionColor)
                                         .onTapGesture {
-                                            editingCollection = collection
-                                            presentCollectionEdition = true
+                                            editCollection(editingCollection: collection)
                                         }
                                         .accessibility(addTraits: .isButton)
                                 }
@@ -70,8 +69,7 @@ struct CollectionsSidebar: View {
                         }
                         .swipeActions(edge: .leading, allowsFullSwipe: false) {
                             Button {
-                                editingCollection = collection
-                                presentCollectionEdition = true
+                                editCollection(editingCollection: collection)
                             } label: {
                                 Text("editar", bundle: .module)
                             }
@@ -82,8 +80,7 @@ struct CollectionsSidebar: View {
                         )
                         .contextMenu {
                             Button {
-                                editingCollection = collection
-                                presentCollectionEdition = true
+                                editCollection(editingCollection: collection)
                             } label: {
                                 Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
                             }
@@ -135,8 +132,7 @@ struct CollectionsSidebar: View {
             }
             ToolbarItem {
                 Button {
-                    editingCollection = nil
-                    presentCollectionCreation = true
+                    editCollection(editingCollection: nil)
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -155,13 +151,17 @@ struct CollectionsSidebar: View {
         VStack {
             EmptyStateView(component: .collection)
             Button {
-                editingCollection = nil
-                presentCollectionEdition = true
+                editCollection(editingCollection: nil)
             } label: {
                 Text(NSLocalizedString("criar_colecao", bundle: .module, comment: ""))
             }
             .buttonStyle(LargeButtonStyle(isDisabled: false))
             .padding()
         }
+    }
+    
+    private func editCollection(editingCollection: DeckCollection?) {
+        self.editingCollection = editingCollection
+        presentCollectionEdition = true
     }
 }
