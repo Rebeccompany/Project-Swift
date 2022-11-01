@@ -10,6 +10,10 @@ import Models
 import Combine
 
 public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
+    public func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExernalCard], URLError> {
+        Just([]).setFailureType(to: URLError.self).eraseToAnyPublisher()
+    }
+    
     
     public var shouldError = false
     
