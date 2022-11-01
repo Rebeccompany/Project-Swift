@@ -9,6 +9,7 @@ import SwiftUI
 import Models
 import NewCollectionFeature
 import HummingBird
+import StoreFeature
 import OnboardingFeature
 
 struct CollectionsSidebar: View {
@@ -36,6 +37,15 @@ struct CollectionsSidebar: View {
             .listRowBackground(
                 isCompact ? HBColor.secondaryBackground : nil
             )
+            NavigationLink {
+                StoreView()
+            } label: {
+                Label("Store", systemImage: "bag")
+            }
+            .listRowBackground(
+                isCompact ? HBColor.secondaryBackground : nil
+            )
+
             
             Section {
                 if viewModel.collections.isEmpty {
