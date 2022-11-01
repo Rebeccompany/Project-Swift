@@ -155,7 +155,8 @@ let package = Package(
                 "Flock",
                 "Habitat",
                 "NewFlashcardFeature",
-                "OnboardingFeature"
+                "OnboardingFeature",
+                "StoreFeature"
             ]
         ),
         
@@ -441,6 +442,14 @@ let package = Package(
             name: "StoreFeatureTests",
             dependencies: [
                 "Puffins",
+                "StoreFeature",
+                "Habitat"
+            ]
+        ),
+        
+        .testTarget(
+            name: "PuffinsTests",
+            dependencies: [
                 "StoreFeature",
                 "Habitat"
             ]
