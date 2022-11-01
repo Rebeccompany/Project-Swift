@@ -23,7 +23,7 @@ public struct NewFlashcardView: View {
     @StateObject private var frontContext = RichTextContext()
     @StateObject private var backContext = RichTextContext()
     
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 //    @FocusState private var focus: NewFlashcardFocus?
     
     @Environment(\.dismiss) private var dismiss

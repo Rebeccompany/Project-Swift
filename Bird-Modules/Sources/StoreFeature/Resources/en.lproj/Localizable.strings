@@ -7,3 +7,10 @@
 */
 
 "baralhos_publicos" = "Public Decks";
+"languages" = "Languages";
+"humanities" = "Humanities";
+"stem" = "Stem";
+"arts" = "Arts";
+"medicine" = "Medicine";
+"law" = "Law";
+"others" = "Others";

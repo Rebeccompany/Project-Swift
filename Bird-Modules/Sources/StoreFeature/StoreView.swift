@@ -10,10 +10,12 @@ import HummingBird
 import Habitat
 import Models
 
-struct StoreView: View {
+public struct StoreView: View {
     @StateObject private var viewModel: StoreViewModel = StoreViewModel()
     
-    var body: some View {
+    public init() { }
+    
+    public var body: some View {
         Group {
             switch viewModel.viewState {
             case .loaded:
