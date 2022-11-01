@@ -20,7 +20,7 @@ struct DeckGridView: View {
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 188), spacing: 24, alignment: .top)], spacing: 24) {
                 ForEach(sortedDecks) { deck in
                     NavigationLink(value: StudyRoute.deck(deck)) {
                         DeckCell(info: DeckCellInfo(deck: deck))
@@ -40,9 +40,9 @@ struct DeckGridView: View {
                     }
                     #if os(iOS)
                     .hoverEffect()
+                    .padding(2)
                     #endif
                     .buttonStyle(DeckCell.Style(color: deck.color))
-                    .padding(2)
                 }
             }
             .animation(.linear, value: viewModel.sortOrder)

@@ -13,6 +13,7 @@ import Habitat
 import RichTextKit
 import Combine
 
+#if os(macOS)
 public struct NewFlashcardViewMacOS: View {
     @StateObject private var viewModel: NewFlashcardViewModel = NewFlashcardViewModel()
     
@@ -27,6 +28,8 @@ public struct NewFlashcardViewMacOS: View {
     
     @State private var deck: Deck?
     @State private var editingFlashcard: Card?
+    
+    @State private var size: CGFloat = 14
     
     var data: NewFlashcardWindowData
     
@@ -94,12 +97,6 @@ public struct NewFlashcardViewMacOS: View {
                     customAlert()
                 }
                 .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
-                            dismiss()
-                        }
-                        .foregroundColor(.red)
-                    }
                     
                     ToolbarItem {
                         Button { activeContext.isItalic.toggle() } label: {
@@ -154,7 +151,7 @@ public struct NewFlashcardViewMacOS: View {
                     ToolbarItem {
                         HStack {
                             Spacer()
-                            sizeTools()
+                            sizeTools(size: $size)
                                 .frame(width: 115)
                                 .padding(.horizontal, 4)
                                 .background(.regularMaterial)
@@ -172,6 +169,9 @@ public struct NewFlashcardViewMacOS: View {
             self.editingFlashcard = card
             guard let card else { return }
             viewModel.setupDeckContentIntoFields(card)
+        }
+        .onChange(of: size) { newValue in
+            activeContext.fontSize = newValue
         }
     }
     
@@ -279,7 +279,7 @@ public struct NewFlashcardViewMacOS: View {
         .buttonStyle(.bordered)
     }
     
-    func sizeTools() -> some View {
+    func sizeTools(size: Binding<CGFloat>) -> some View {
         HStack {
             Button {
                 activeContext.decrementFontSize()
@@ -288,9 +288,9 @@ public struct NewFlashcardViewMacOS: View {
                     .frame(width: 10, height: 10)
             }
             .keyboardShortcut("-", modifiers: .command)
-//            FontSizePicker(selection: size)
-//                .labelsHidden()
-//                .frame(minWidth: 50)
+            FontSizePicker(selection: size)
+                .labelsHidden()
+                .frame(minWidth: 50)
             Button {
                 activeContext.incrementFontSize()
             } label: {
@@ -317,3 +317,4 @@ struct NewFlashcardViewMacOS_Previews: PreviewProvider {
         }
     }
 }
+#endif

@@ -102,7 +102,7 @@ public struct DeckViewiOS: View {
                 }
                 .foregroundColor(HBColor.actionColor)
                 .fullScreenCover(isPresented: $shouldDisplayNewFlashcard) {
-                    NewFlashcardView(deck: deck, editingFlashcard: editingFlashcard)
+                    NewFlashcardViewiOS(deck: deck, editingFlashcard: editingFlashcard)
                 }
             }
         }

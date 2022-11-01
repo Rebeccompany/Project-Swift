@@ -24,9 +24,7 @@ public struct NewFlashcardViewiOS: View {
     @StateObject private var frontContext = RichTextContext()
     @StateObject private var backContext = RichTextContext()
     
-    #if os (iOS)
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    #endif
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Environment(\.dismiss) private var dismiss
     
@@ -51,9 +49,7 @@ public struct NewFlashcardViewiOS: View {
                                 context: frontContext
                             )
                             .id(NewFlashcardFocus.front)
-                            #if os(iOS)
                             .frame(minHeight: horizontalSizeClass == . compact ? 400 : 600)
-                            #endif
                             
                             FlashcardTextEditorViewiOS(
                                 text: $viewModel.flashcardBack, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
@@ -61,9 +57,7 @@ public struct NewFlashcardViewiOS: View {
                                 context: backContext
                             )
                             .id(NewFlashcardFocus.back)
-#if os(iOS)
                             .frame(minHeight: horizontalSizeClass == . compact ? 400 : 600)
-                            #endif
                         }
                         
                         Text("cores", bundle: .module)
@@ -88,9 +82,7 @@ public struct NewFlashcardViewiOS: View {
                 .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
                 .viewBackgroundColor(HBColor.primaryBackground)
                 .navigationTitle(editingFlashcard == nil ? NSLocalizedString("criar_flashcard", bundle: .module, comment: "") : NSLocalizedString("editar_flashcard", bundle: .module, comment: ""))
-#if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
-                #endif
                 .onAppear {
                     viewModel.startUp(editingFlashcard: editingFlashcard)
                 }
@@ -98,14 +90,9 @@ public struct NewFlashcardViewiOS: View {
                     customAlert()
                 }
                 .toolbar {
-//                    ToolbarItemGroup(placement: .keyboard) {
-//                        customrightToolbarItemGroup
-//                    }
-#if os(iOS)
                     ToolbarItem(placement: .navigationBarTrailing) {
                         customNavigationToolbar
                     }
-                    #endif
                     
                     ToolbarItem(placement: .cancellationAction) {
                         Button(NSLocalizedString("cancelar", bundle: .module, comment: "")) {
@@ -116,22 +103,18 @@ public struct NewFlashcardViewiOS: View {
                 }
                 
                 .onChange(of: frontContext.isEditingText) { newValue in
-#if os(iOS)
                     if newValue, horizontalSizeClass == .compact {
                         withAnimation {
                             proxy.scrollTo(NewFlashcardFocus.front, anchor: .center)
                         }
                     }
-                    #endif
                 }
                 .onChange(of: backContext.isEditingText) { newValue in
-#if os(iOS)
                     if newValue, horizontalSizeClass == .compact {
                         withAnimation {
                             proxy.scrollTo(NewFlashcardFocus.back, anchor: UnitPoint(x: 0.5, y: 0.8))
                         }
                     }
-                    #endif
                 }     
             }
         }
@@ -139,7 +122,6 @@ public struct NewFlashcardViewiOS: View {
     
     @ViewBuilder
     private func layout<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-#if os(iOS)
         if horizontalSizeClass == .compact {
             VStack(alignment: .leading) {
                 content()
@@ -149,11 +131,6 @@ public struct NewFlashcardViewiOS: View {
                 content()
             }
         }
-        #elseif os(macOS)
-        HStack {
-            content()
-        }
-        #endif
     }
     
     @ViewBuilder
@@ -205,36 +182,6 @@ public struct NewFlashcardViewiOS: View {
             )
         }
     }
-    
-//    @ViewBuilder
-//    private var customrightToolbarItemGroup: some View {
-//        Spacer()
-//        Button {
-//            if focus == .back {
-//                focus = .front
-//            }
-//        } label: {
-//            Image(systemName: "chevron.up")
-//        }
-//        .disabled(focus == .front)
-//        .accessibilityLabel(focus == .front ? NSLocalizedString("moveup_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("moveup_focus", bundle: .module, comment: ""))
-//
-//
-//        Button {
-//            if focus == .front {
-//                focus = .back
-//            }
-//        } label: {
-//            Image(systemName: "chevron.down")
-//        }
-//        .disabled(focus == .back)
-//        .accessibilityLabel(focus == .back ? NSLocalizedString("down_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("down_focus", bundle: .module, comment: ""))
-//
-//        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
-//            focus = nil
-//        }
-//        .accessibilityLabel(Text("botao_feito", bundle: .module))
-//    }
     
     @ViewBuilder
     private var customNavigationToolbar: some View {

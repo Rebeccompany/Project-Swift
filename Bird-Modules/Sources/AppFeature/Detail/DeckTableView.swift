@@ -12,9 +12,9 @@ import NewDeckFeature
 
 struct DeckTableView: View {
     @EnvironmentObject private var viewModel: ContentViewModel
-#if os(iOS)
+    #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-#endif
+    #endif
     
     var editAction: (Deck) -> Void
     
@@ -32,15 +32,15 @@ struct DeckTableView: View {
     
     @ViewBuilder
     private var content: some View {
-#if os(iOS)
+        #if os(iOS)
         if horizontalSizeClass == .compact {
             list
         } else {
             table
         }
-#elseif os(macOS)
+        #elseif os(macOS)
         table
-#endif
+        #endif
     }
     
     @ViewBuilder
@@ -95,9 +95,9 @@ struct DeckTableView: View {
                 }
                 .tint(HBColor.color(for: deck.color))
                 .buttonStyle(.bordered)
-#if os(iOS)
+                #if os(iOS)
                 .buttonBorderShape(.capsule)
-#endif
+                #endif
             }.width(90)
         } rows: {
             ForEach(sortedDecks) { deck in
