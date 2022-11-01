@@ -230,4 +230,69 @@ class NewFlashcardFeatureTests: XCTestCase {
         deckRepository.shouldThrowError = true
         XCTAssertThrowsError(try sut.editFlashcard(editingFlashcard: deckRepository.cards[0]))
     }
+    
+    func testFetchInitialDeckSuccessfully() {
+        let wantedDeck = deckRepository.decks[0]
+        let expectation = expectation(description: "specific deck fetched")
+        
+        sut.fetchInitialDeck(wantedDeck.id).sink { deck in
+            XCTAssertEqual(deck, wantedDeck)
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testFetchInitialDeckError() {
+        let wrongDeckId = UUID(uuidString: "bd08f598-93a7-493b-9acf-5fe3762dfe57")!
+        let expectation = expectation(description: "fetch unexisting deck")
+        
+        sut.fetchInitialDeck(wrongDeckId).sink { deck in
+            XCTAssertNil(deck)
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testFetchEditingCardSuccessfully() {
+        let wantedCard = deckRepository.cards[0]
+        let expectation = expectation(description: "fetch specific card")
+        
+        sut.fetchEditingCard(wantedCard.id).sink { card in
+            XCTAssertEqual(card, wantedCard)
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testFetchEditingCardError() {
+        let wrongID = UUID(uuidString: "8821596f-b7ff-4604-9b2b-2f12b6fee8fe")
+        let expectation = expectation(description: "fetch unexisting card")
+        
+        sut.fetchEditingCard(wrongID).sink { card in
+            XCTAssertNil(card)
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testFetchEditingCardNil() {
+        let cardId: UUID? = nil
+        let expectation = expectation(description: "fetch card with nil id")
+        
+        sut.fetchEditingCard(cardId).sink { card in
+            XCTAssertNil(card)
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+    }
 }
