@@ -41,12 +41,6 @@ public struct FlashcardTextEditorViewMacOS: View {
                     $0.textContentInset = CGSize(width: 10, height: 20)
                 }
             }
-            
-//            if context.isEditingText {
-//                styleStack
-//                    .padding()
-//                    .background(.thinMaterial)
-//            }
         }
         .background(color)
         .overlay(
@@ -67,83 +61,6 @@ public struct FlashcardTextEditorViewMacOS: View {
             context.shouldUpdateTextField()
         }
     }
-
-//    @ViewBuilder
-//    private var styleStack: some View {
-//        VStack(alignment: .center) {
-//            HStack(alignment: .top, spacing: 16) {
-//                Button { context.isItalic.toggle() } label: {
-//                    Image.richTextStyleItalic
-//                        .frame(width: 18, height: 18)
-//                }
-//                .buttonStyle(.bordered)
-//                .tint(context.isItalic ? HBColor.actionColor : nil)
-//                .keyboardShortcut("i", modifiers: .command)
-//                
-//                Button { context.isBold.toggle() } label: {
-//                    Image.richTextStyleBold
-//                        .frame(width: 18, height: 18)
-//                }
-//                .buttonStyle(.bordered)
-//                .tint(context.isBold ? HBColor.actionColor : nil)
-//                .keyboardShortcut("b", modifiers: .command)
-//                
-//                Button { context.isUnderlined.toggle() } label: {
-//                    Image.richTextStyleUnderline
-//                        .frame(width: 18, height: 18)
-//                }
-//                .buttonStyle(.bordered)
-//                .tint(context.isUnderlined ? HBColor.actionColor : nil)
-//                .keyboardShortcut("u", modifiers: .command)
-//                
-//                alignmentMenu
-//                
-//                HBColorPicker(selection: context.foregroundColorBinding) {
-//                    Image(systemName: "character")
-//                        .font(.system(size: 18))
-//                }
-//                    .buttonStyle(.bordered)
-//                    
-//                HBColorPicker(selection: context.backgroundColorBinding) {
-//                    Image(systemName: "highlighter")
-//                        .font(.system(size: 14))
-//                }
-//                    .buttonStyle(.bordered)
-//            }
-//            HStack {
-//                Spacer()
-//                sizeTools(for: $context.fontSize)
-//                    .frame(width: 115)
-//                    .padding(.horizontal, 4)
-//                    .background(.regularMaterial)
-//                    .cornerRadius(8)
-//                Spacer()
-//            }
-//            
-//        }
-//    }
-    
-//    @ViewBuilder
-//    private var alignmentMenu: some View {
-//        Menu {
-//            ForEach(RichTextAlignment.allCases) { alignment in
-//                Button {
-//                    context.alignment = alignment
-//                } label: {
-//                    Label {
-//                        Text(alignment.rawValue)
-//                    } icon: {
-//                        alignment.icon
-//                    }
-//                }
-//            }
-//            
-//        } label: {
-//            context.alignment.icon
-//                .frame(width: 18, height: 18)
-//        }
-//        .buttonStyle(.bordered)
-//    }
     
     private func updateFromPhotoSelection(_ photoPickerItem: PhotosPickerItem?) async {
         #if os(iOS)
@@ -164,28 +81,6 @@ public struct FlashcardTextEditorViewMacOS: View {
         }
         #endif
     }
-    
-//    func sizeTools(for size: Binding<CGFloat>) -> some View {
-//        HStack {
-//            Button {
-//                context.decrementFontSize()
-//            } label: {
-//                Image(systemName: "minus")
-//                    .frame(width: 10, height: 10)
-//            }
-//            .keyboardShortcut("-", modifiers: .command)
-//            FontSizePicker(selection: size)
-//                .labelsHidden()
-//                .frame(minWidth: 50)
-//            Button {
-//                context.incrementFontSize()
-//            } label: {
-//                Image(systemName: "plus")
-//                    .frame(width: 10, height: 10)
-//            }
-//            .keyboardShortcut("+", modifiers: .command)
-//        }
-//    }
     
     func text(for fontSize: CGFloat) -> some View {
         Text("\(Int(fontSize))")

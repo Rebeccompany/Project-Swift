@@ -85,6 +85,19 @@ public struct NewFlashcardViewMacOS: View {
                     }
                     .padding()
                     
+                    Button {
+                        print("salvar")
+                    } label: {
+                        Text("Salvar")
+                    }
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(HBColor.actionColor)
+                            .frame(width: 300, height: 50)
+                    )
+                    .padding(.bottom, 20)
+
+                    
                 }
                 .scrollContentBackground(.hidden)
                 .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)

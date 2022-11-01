@@ -19,11 +19,10 @@ public struct HBColorPicker<Label: View>: View {
         self.labelBuilder = label
     }
     
-    
-#if os(iOS)
+    #if os(iOS)
     @Environment(\.horizontalSizeClass)
     private var horizontalSizeClass
-#endif
+    #endif
     
     private let colors: [Color] = {
         var colors = CollectionColor.allCases.map(HBColor.color(for:))
@@ -44,13 +43,15 @@ public struct HBColorPicker<Label: View>: View {
             .font(.body)
             .frame(width: 18, height: 18)
         }
+        #if os(iOS)
         .buttonStyle(.bordered)
+        #endif
         .onAppear {
             _color = selection
         }
         .popover(isPresented: $present) {
             colorGrid
-                .frame(minWidth: 180, minHeight: 160)
+                .frame(minWidth: 180, maxWidth: 350, minHeight: 160, maxHeight: 350)
         }
         .presentationDetents([.height(180)])
     }
@@ -58,14 +59,15 @@ public struct HBColorPicker<Label: View>: View {
     @ViewBuilder
     private var colorGrid: some View {
         VStack {
-#if os(iOS)
+            #if os(iOS)
             if horizontalSizeClass == .compact {
                 Capsule()
                     .fill(Color.gray.opacity(0.5))
                     .frame(width: 40, height: 6)
                     .padding(.top, 8)
             }
-#endif
+            #endif
+            
             ScrollView(.horizontal, showsIndicators: true) {
                 LazyHGrid(rows: [GridItem(.adaptive(minimum: 44))]) {
                     ForEach(colors, id: \.self) { color in
@@ -80,11 +82,17 @@ public struct HBColorPicker<Label: View>: View {
                                     Circle()
                                         .stroke(_color == color ? HBColor.actionColor : Color.gray, lineWidth: color == _color ? 4 : 2)
                                 }
+                                #if os(iOS)
                                 .frame(width: 56, height: 56)
+                                #elseif os(macOS)
+                                .frame(width: 35, height: 35)
+                                #endif
                                 .clipShape(Circle())
                         }
+                        .buttonStyle(.plain)
                     }
-                }.padding()
+                }
+                .padding()
             }
         }
         .background(HBColor.primaryBackground)
