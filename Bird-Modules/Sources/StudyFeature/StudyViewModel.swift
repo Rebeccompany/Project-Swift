@@ -205,14 +205,7 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func getSchedule(deck: Deck, cards: [OrganizerCardInfo]) throws -> (Date, SchedulerResponse) {
-        let date = cards.reduce(dateHandler.today) { earliestDate, card in
-            guard let dueDate = card.dueDate else { return earliestDate }
-            if earliestDate < dueDate {
-                return earliestDate
-            } else {
-                return dueDate
-            }
-        }
+        let date = cards.compactMap(\.dueDate).min() ?? dateHandler.dayAfterToday(1)
         let scheduledCardsIds = try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: date)
         return (date, scheduledCardsIds)
     }
