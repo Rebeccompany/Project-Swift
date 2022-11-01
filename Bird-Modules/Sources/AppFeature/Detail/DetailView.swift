@@ -23,7 +23,7 @@ public struct DetailView: View {
     @State private var editingDeck: Deck?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
-    @State private var shouldReturnToGrid: Bool = true
+    
     
     init(editMode: Binding<EditMode>) {
         self._editMode = editMode
@@ -64,7 +64,7 @@ public struct DetailView: View {
                 Menu {
                     Button {
                         viewModel.changeDetailType(for: .grid)
-                        shouldReturnToGrid = true
+                        viewModel.shouldReturnToGrid = true
                     } label: {
                         Label(NSLocalizedString("icones", bundle: .module, comment: ""), systemImage: "rectangle.grid.2x2")
                     }
@@ -72,7 +72,7 @@ public struct DetailView: View {
                     
                     Button {
                         viewModel.changeDetailType(for: .table)
-                        shouldReturnToGrid = false
+                        viewModel.shouldReturnToGrid = false
                     } label: {
                         Label(NSLocalizedString("lista", bundle: .module, comment: ""), systemImage: "list.bullet")
                     }
@@ -116,10 +116,9 @@ public struct DetailView: View {
         }
         .onChange(of: editMode) { newValue in
             if newValue == .active {
-                viewModel.detailType = .table
                 viewModel.changeDetailType(for: .table)
-            } else if newValue == .inactive && shouldReturnToGrid {
-                viewModel.detailType = .grid
+            } else if viewModel.shouldReturnToGrid {
+                print(viewModel.shouldReturnToGrid)
                 viewModel.changeDetailType(for: .grid)
             }
             
