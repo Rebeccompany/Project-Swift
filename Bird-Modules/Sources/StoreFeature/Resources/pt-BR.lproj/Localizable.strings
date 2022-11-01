@@ -7,3 +7,10 @@
 */
 
 "baralhos_publicos" = "Baralhos Públicos";
+"languages" = "Idiomas";
+"humanities" = "Humanas";
+"stem" = "Exatas";
+"arts" = "Artes";
+"medicine" = "Medicina";
+"law" = "Direito";
+"others" = "Outros";

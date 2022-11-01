@@ -11,16 +11,16 @@ import Models
 
 public final class ExternalDeckService: ExternalDeckServiceProtocol {
     //HANDLER DE URL
-    private let session: URLSession
+    private let session: EndpointResolverProtocol
     
     public static let shared: ExternalDeckService = .init()
     
-    public init(session: URLSession = .shared) {
+    public init(session: EndpointResolverProtocol = URLSession.shared) {
         self.session = session
     }
     
     public func getDeckFeed() -> AnyPublisher<[ExternalSection], URLError> {
-        session.dataTaskPublisher(for: URL(string: "https://www.google.com.br")!)
+        session.dataTaskPublisher(for: Endpoint.feed)
             .map(\.data)
             .decode(type: [ExternalSection].self, decoder: JSONDecoder())
             .mapError { error in
