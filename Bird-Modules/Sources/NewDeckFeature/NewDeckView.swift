@@ -10,6 +10,7 @@ import HummingBird
 import Models
 import Storage
 import Habitat
+import DeckFeature
 
 public struct NewDeckView: View {
     @StateObject private var viewModel: NewDeckViewModel = NewDeckViewModel()

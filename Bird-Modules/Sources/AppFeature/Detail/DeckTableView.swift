@@ -45,6 +45,14 @@ struct DeckTableView: View {
             }
             .swipeActions {
                 Button {
+                    try? viewModel.deleteDeck(deck)
+                } label: {
+                    Text("Apagar")
+                }
+                .tint(.red)
+            }
+            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                Button {
                     editAction(deck)
                 } label: {
                     Text("Editar")

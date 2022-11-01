@@ -68,6 +68,15 @@ struct CollectionsSidebar: View {
                                 }
                             }
                         }
+                        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                            Button {
+                                editingCollection = collection
+                                presentCollectionEdition = true
+                            } label: {
+                                Text("editar", bundle: .module)
+                            }
+                            .tint(HBColor.actionColor)
+                        }
                         .listRowBackground(
                             isCompact ? HBColor.secondaryBackground : nil
                         )
