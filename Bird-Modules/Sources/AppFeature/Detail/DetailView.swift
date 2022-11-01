@@ -76,7 +76,7 @@ public struct DetailView: View {
                     } label: {
                         Label(NSLocalizedString("lista", bundle: .module, comment: ""), systemImage: "list.bullet")
                     }
-
+                    
                     Picker(selection: $viewModel.sortOrder) {
                         Text(NSLocalizedString("nome", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.name)])
                         Text(NSLocalizedString("quantidade", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.cardCount)])
@@ -110,7 +110,7 @@ public struct DetailView: View {
                 }
                 .popover(isPresented: $presentDeckEdition) {
                     NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
-                    .frame(minWidth: 300, minHeight: 600)
+                        .frame(minWidth: 300, minHeight: 600)
                 }
             }
         }
@@ -118,8 +118,7 @@ public struct DetailView: View {
             if newValue == .active {
                 viewModel.detailType = .table
                 viewModel.changeDetailType(for: .table)
-            }
-            if newValue == .inactive && shouldReturnToGrid {
+            } else if newValue == .inactive && shouldReturnToGrid {
                 viewModel.detailType = .grid
                 viewModel.changeDetailType(for: .grid)
             }
