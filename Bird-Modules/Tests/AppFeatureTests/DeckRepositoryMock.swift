@@ -68,7 +68,9 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
             throw RepositoryError.couldNotDelete
         }
         
-        data.removeValue(forKey: deck.id)
+        data.remove(at: data.keys.firstIndex(where: { id in
+            id == deck.id
+        })!)
         deckSubject.send(data.values.map(\.deck))
     }
 
@@ -110,9 +112,9 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
         cardSubject.send(data[deck.id]!.cards)
     }
 
-    #warning("oi babylis, paramos aqui. Boa sorte!")
+    
     public func fetchCardById(_ id: UUID) -> AnyPublisher<Card, RepositoryError> {
-        if let card = cards.first(where: { card in card.id == id }) {
+        if let card = data.values.flatMap(\.cards).first(where: { $0.id == id }) {
             return Just(card).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
         } else {
             return Fail<Card, RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
@@ -120,73 +122,75 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
     }
 
     public func fetchCardsByIds(_ ids: [UUID]) -> AnyPublisher<[Card], RepositoryError> {
-        let cards = cards.filter { card in ids.contains(card.id) }
+        let cards = data.values.flatMap(\.cards).filter { ids.contains($0.id) }
         return Just(cards).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
     }
-
+    
     public func deleteCard(_ card: Card) throws {
         if shouldThrowError {
             throw RepositoryError.couldNotDelete
         }
+        let index = card.deckID
+        data[index]?.cards.removeAll(where: { card == $0 })
         
-        cards.removeAll { $0.id == card.id }
-        decks = decks.map { d in
-            var d = d
-            d.cardsIds = d.cardsIds.filter { id in id != card.id }
-            return d
-        }
         
-        cardSubject.send(cards)
+        data[index]?.deck.cardsIds.removeAll(where:{ card.id == $0})
+        cardSubject.send(data[index]!.cards)
     }
 
     public func editCard(_ card: Card) throws {
         if shouldThrowError {
             throw RepositoryError.couldNotEdit
         }
-        
-        if let i = cards.firstIndex(where: { d in d.id == card.id }) {
-            cards[i] = card
+        let index = card.deckID
+        if let i = data[index]?.cards.firstIndex(where: { card.id == $0.id }) {
+            data[index]?.cards[i] = card
         } else {
             throw RepositoryError.couldNotEdit
         }
         
-        cardSubject.send(cards)
+        cardSubject.send(data[index]!.cards)
     }
    
    public func createSession(_ session: Session, for deck: Deck) throws {
        if shouldThrowError {
            throw RepositoryError.couldNotCreate
        }
-       
-       guard let index = decks.firstIndex(of: deck) else {
+       if data[deck.id] == nil {
            throw NSError()
        }
-      
-       decks[index].session = session
+       
+       data[deck.id]?.deck.session = session
    }
    
    public func editSession(_ session: Session) throws {
        if shouldThrowError {
            throw RepositoryError.couldNotEdit
        }
-       
-       guard let index = decks.firstIndex(where: { deck in
+       guard let index = data.values.map(\.deck).first(where: { deck in
            deck.session?.id == session.id
-       }) else { throw NSError() }
+       })?.id else {
+           throw NSError()
+       }
        
-       decks[index].session = session
+       if data[index] == nil {
+           throw NSError()
+       }
+       data[index]?.deck.session = session
    }
    
+    
    public func deleteSession(_ session: Session, for deck: Deck) throws {
        if shouldThrowError {
            throw RepositoryError.couldNotDelete
        }
-       
-       guard let index = decks.firstIndex(of: deck) else { throw NSError() }
-       
-       decks[index].session = nil
+       if data[deck.id] == nil {
+           throw NSError()
+       }
+       data[deck.id]?.deck.session = nil
    }
    
+    
    public func addCardsToSession(_ session: Session, cards: [Card]) throws {
        if shouldThrowError {
            throw RepositoryError.internalError
@@ -195,27 +199,58 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
        var session = session
        
        session.cardIds.append(contentsOf: cards.map(\.id))
+       
+       guard let index = data.values.map(\.deck).first(where: { deck in
+           deck.session?.id == session.id
+       })?.id else {
+           throw NSError()
+       }
+       
+       if data[index] == nil {
+           throw NSError()
+       }
+       
+       guard let oldCardsIds = data[index]?.deck.session?.cardIds else { throw NSError() }
+       
+       let newCardsIds = cards.filter { card in
+           !oldCardsIds.contains(card.id)
+       }.map(\.id)
+       
+       data[index]?.deck.session?.cardIds.append(contentsOf: newCardsIds)
+       
+       
    }
    
    public func removeCardsFromSession(_ session: Session, cards: [Card]) throws {
        if shouldThrowError {
            throw RepositoryError.internalError
        }
+
        
-       var session = session
-       
-       session.cardIds.removeAll { id in
-           cards.map(\.id).contains(id)
+       guard let index = data.values.map(\.deck).first(where: { deck in
+           deck.session?.id == session.id
+       })?.id else {
+           throw NSError()
        }
+       
+       if data[index] == nil {
+           throw NSError()
+       }
+       
+       let ids = cards.map { $0.id }
+       data[index]?.deck.session?.cardIds.removeAll { id in
+           ids.contains(id)
+       }
+
    }
 
    public func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
-       guard let i = cards.firstIndex(of: card) else {
-           throw NSError()
-       }
-       cards[i].history.append(snapshot)
+       
+       let deckIndex = card.deckID
+       guard let cardIndex = data[deckIndex]?.cards.firstIndex(where: { $0.id == card.id }) else { throw NSError() }
+       data[deckIndex]?.cards[cardIndex].history.append(snapshot)
    }
 
     
-    
+#warning("oi babylis, falta o send das coisas. boa sorte! beijocas. em varias coisas hein kkkkk")
 }
