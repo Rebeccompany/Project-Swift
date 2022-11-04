@@ -86,16 +86,38 @@ public struct NewFlashcardViewMacOS: View {
                     .padding()
                     
                     Button {
-                        print("salvar")
+                        if editingFlashcard == nil {
+                            do {
+                                guard let deck = deck else { return }
+                                try viewModel.createFlashcard(for: deck)
+                                //dismiss()
+                            } catch {
+                                activeAlert = .error
+                                showingAlert = true
+                                selectedErrorMessage = .createCard
+                            }
+                        } else {
+                            do {
+                                try viewModel.editFlashcard(editingFlashcard: editingFlashcard)
+                                //dismiss()
+                            } catch {
+                                activeAlert = .error
+                                showingAlert = true
+                                selectedErrorMessage = .editCard
+                            }
+                        }
                     } label: {
                         Text("Salvar")
-                    }
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(HBColor.actionColor)
                             .frame(width: 300, height: 50)
-                    )
-                    .padding(.bottom, 20)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(HBColor.actionColor)
+                            )
+                            .font(.system(size: 16))
+                    }
+                    .padding(.bottom, 50)
+                    .padding(.top, 50)
+                    .buttonStyle(.plain)
 
                     
                 }
@@ -226,7 +248,7 @@ public struct NewFlashcardViewMacOS: View {
                          primaryButton: .destructive(Text("deletar", bundle: .module)) {
                 do {
                     try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
-                    dismiss()
+                    //dismiss()
                 } catch {
                     activeAlert = .error
                     showingAlert = true
@@ -246,7 +268,7 @@ public struct NewFlashcardViewMacOS: View {
             if editingFlashcard == nil {
                 do {
                     try viewModel.createFlashcard(for: deck)
-                    dismiss()
+                    //dismiss()
                 } catch {
                     selectedErrorMessage = .createCard
                     showingAlert = true
@@ -255,7 +277,7 @@ public struct NewFlashcardViewMacOS: View {
             } else {
                 do {
                     try viewModel.editFlashcard(editingFlashcard: editingFlashcard)
-                    dismiss()
+                    //dismiss()
                 } catch {
                     selectedErrorMessage = .editCard
                     showingAlert = true
