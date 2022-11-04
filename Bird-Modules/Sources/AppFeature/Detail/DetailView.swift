@@ -118,7 +118,6 @@ public struct DetailView: View {
             if newValue == .active {
                 viewModel.changeDetailType(for: .table)
             } else if viewModel.shouldReturnToGrid {
-                print(viewModel.shouldReturnToGrid)
                 viewModel.changeDetailType(for: .grid)
             }
             
