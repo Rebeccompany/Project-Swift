@@ -321,7 +321,8 @@ let package = Package(
             name: "PublicDeckFeature",
             dependencies: [
                 "Models",
-                "HummingBird"
+                "HummingBird",
+                "Habitat"
             ]
         ),
         

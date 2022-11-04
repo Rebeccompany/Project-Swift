@@ -43,7 +43,7 @@ struct DeckGridView: View {
                     .hoverEffect()
                 }
             }
-            .animation(.linear, value: viewModel.sortOrder)
+            .animation(.linear.speed(2), value: sortedDecks)
             .padding([.horizontal], 12)
             .padding(.top, 24)
         }

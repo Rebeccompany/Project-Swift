@@ -14,6 +14,8 @@ public struct PublicDeckView: View {
     var deck: ExternalDeck
     
     @StateObject private var viewModel: PublicDeckViewModel = PublicDeckViewModel()
+    @StateObject private var interactor: PublicDeckInteractor = PublicDeckInteractor()
+    @StateObject private var store: Store<PublicDeckState> = Store(state: PublicDeckState())
     
     public init(deck: ExternalDeck) {
         self.deck = deck
@@ -24,7 +26,9 @@ public struct PublicDeckView: View {
         ScrollView {
             VStack {
                 VStack {
-                    HeaderPublicDeckView()
+                    if let deck = store.state.deck {
+                        HeaderPublicDeckView(deck: deck)
+                    }
                     HStack {
                         Button {
                             
@@ -52,7 +56,7 @@ public struct PublicDeckView: View {
                     }
                     
                     VStack(alignment: .leading) {
-                        Text(deck.description)
+                        Text(store.state.deck?.description ?? "")
                     }
                     .foregroundColor(.black)
                     .multilineTextAlignment(.leading)
@@ -67,12 +71,22 @@ public struct PublicDeckView: View {
                 }
                 
                 Section {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 180), spacing: 12, alignment: .top)], spacing: 12) {
-                        ForEach(viewModel.cards) { card in
-                            Text(card.front)
-                                .frame(height: 300)
+                    LazyVStack {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 180), spacing: 12, alignment: .top)], spacing: 12) {
+                            ForEach(store.state.cards) { card in
+                                FlashcardCell(card: card) {}
+                                    .frame(height: 240)
+                                    .onAppear {
+                                        if card.id == store.state.cards.last?.id {
+                                            interactor.send(.loadCards(id: deck.id, page: store.state.currentPage))
+                                        }
+                                    }
+                                    
+                            }
+                            .listRowSeparator(.hidden)
+                            
+                            
                         }
-                        .listRowSeparator(.hidden)
                     }
                 } header: {
                     HStack {
@@ -86,9 +100,15 @@ public struct PublicDeckView: View {
             .padding()
         }
         .onAppear {
-            viewModel.fetchCards(deckId: deck.id)
+            startUp()
         }
         .viewBackgroundColor(HBColor.primaryBackground)
+    }
+    
+    private func startUp() {
+        interactor.bind(to: store)
+        interactor.send(.loadDeck(id: deck.id))
+        interactor.send(.loadCards(id: deck.id, page: store.state.currentPage))
     }
 }
 

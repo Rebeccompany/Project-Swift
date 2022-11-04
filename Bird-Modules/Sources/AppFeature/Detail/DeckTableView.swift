@@ -65,7 +65,7 @@ struct DeckTableView: View {
                 }
             }
         }
-        .animation(.linear, value: viewModel.sortOrder)
+        .animation(.linear, value: sortedDecks)
         .listStyle(.plain)
     }
     

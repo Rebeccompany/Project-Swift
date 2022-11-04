@@ -36,4 +36,8 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     public func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExternalCard], URLError> {
         Just([]).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
+    
+    public func getDeck(by id: String) -> AnyPublisher<Models.ExternalDeck, URLError> {
+        fatalError()
+    }
 }
