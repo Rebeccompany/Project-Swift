@@ -75,6 +75,13 @@ struct DeckTableView: View {
         }
         .animation(.linear, value: viewModel.sortOrder)
         .listStyle(.plain)
+        .onDisappear {
+            Task {
+                await MainActor.run {
+                    viewModel.selection = Set()
+                }
+            }
+        }
     }
     
     @ViewBuilder
