@@ -16,48 +16,53 @@ public struct FlashcardsOnboardingView: View {
     }
     public var body: some View {
         NavigationStack {
-            HStack {
-                VStack {
-                    HStack {
-                        Text("1")
-                            .font(.custom("SF Pro Text", size: 84, relativeTo: .largeTitle))
+            VStack {
+                HStack {
+                    Text("1")
+                        .font(.custom("SF Pro Text", size: 84, relativeTo: .largeTitle))
+                        .fontWeight(.bold)
+                        .foregroundColor(HBColor.actionColor)
+                        .padding()
+                    
+                    VStack(alignment: .leading) {
+                        Text(NSLocalizedString("frente", bundle: .module, comment: ""))
+                            .font(.title)
                             .fontWeight(.bold)
-                            .foregroundColor(HBColor.actionColor)
-                            .padding(.leading)
-                        VStack(alignment: .leading) {
-                            Text(NSLocalizedString("frente", bundle: .module, comment: ""))
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .foregroundColor(HBColor.collectionTextColor)
-                                .padding(.all)
-                            Text(NSLocalizedString("instrucao_um", bundle: .module, comment: ""))
-                                .font(.title3)
-                                .fontWeight(.regular)
-                                .foregroundColor(HBColor.collectionTextColor)
-                                .padding(.all)
-                        }
-                    }
-                    HStack {
-                        Text("2")
-                            .font(.custom("SF Pro Text", size: 84, relativeTo: .largeTitle))
-                            .fontWeight(.bold)
-                            .foregroundColor(HBColor.actionColor)
-                            .padding(.leading)
-                        VStack(alignment: .leading) {
-                            Text(NSLocalizedString("verso", bundle: .module, comment: ""))
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .foregroundColor(HBColor.collectionTextColor)
-                                .padding(.all)
-                            Text(NSLocalizedString("instrucao_dois", bundle: .module, comment: ""))
-                                .font(.title3)
-                                .fontWeight(.regular)
-                                .foregroundColor(HBColor.collectionTextColor)
-                                .padding(.all)
-                        }
+                            .foregroundColor(HBColor.collectionTextColor)
+                            .padding(.bottom, 2)
+                        
+                        Text(NSLocalizedString("instrucao_um", bundle: .module, comment: ""))
+                            .font(.body)
+                            .fontWeight(.regular)
+                            .foregroundColor(HBColor.collectionTextColor)
                     }
                 }
+                .padding(.bottom, 16)
+                .padding(.trailing, 12)
+                
+                HStack {
+                    Text("2")
+                        .font(.custom("SF Pro Text", size: 84, relativeTo: .largeTitle))
+                        .fontWeight(.bold)
+                        .foregroundColor(HBColor.actionColor)
+                        .padding()
+                    
+                    VStack(alignment: .leading) {
+                        Text(NSLocalizedString("verso", bundle: .module, comment: ""))
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .foregroundColor(HBColor.collectionTextColor)
+                            .padding(.bottom, 2)
+                        
+                        Text(NSLocalizedString("instrucao_dois", bundle: .module, comment: ""))
+                            .font(.body)
+                            .fontWeight(.regular)
+                            .foregroundColor(HBColor.collectionTextColor)
+                    }
+                }
+                .padding(.trailing, 12)
             }
+            .padding()
             .navigationTitle(NSLocalizedString("como_estudar", bundle: .module, comment: ""))
             .toolbar {
                 Button {

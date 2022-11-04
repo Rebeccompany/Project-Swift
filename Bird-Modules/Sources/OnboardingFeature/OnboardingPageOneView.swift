@@ -15,16 +15,13 @@ struct OnboardingPageOneView: View {
             HBImages.BirdOneOnboarding
                 .resizable()
                 .frame(width: 250, height: 250)
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(NSLocalizedString("pagina_um", bundle: .module, comment: ""))
-                        .lineLimit(nil)
-                        .font(.title3)
-                        .fontWeight(.regular)
-                        .foregroundColor(HBColor.collectionTextColor)
-                        .padding(.all)
-                }
-            }
+            
+            Text(NSLocalizedString("pagina_um", bundle: .module, comment: ""))
+                .font(.title3)
+                .fontWeight(.regular)
+                .foregroundColor(HBColor.collectionTextColor)
+                .padding(.all)
+                .multilineTextAlignment(.center)
         }
         .viewBackgroundColor(HBColor.primaryBackground)
     }

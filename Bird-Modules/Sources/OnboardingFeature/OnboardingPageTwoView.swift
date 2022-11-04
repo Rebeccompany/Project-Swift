@@ -15,6 +15,7 @@ struct OnboardingPageTwoView: View {
             HBImages.BirdTwoOnboarding
                 .resizable()
                 .frame(width: 180, height: 180)
+            
             HStack {
                 VStack(alignment: .leading) {
                     Text(NSLocalizedString("flashcards", bundle: .module, comment: ""))
@@ -23,12 +24,14 @@ struct OnboardingPageTwoView: View {
                         .fontWeight(.semibold)
                         .foregroundColor(HBColor.actionColor)
                         .padding(.vertical)
+                    
                     Text(NSLocalizedString("pagina_dois_um", bundle: .module, comment: ""))
                         .lineLimit(nil)
                         .font(.body)
                         .fontWeight(.regular)
                         .foregroundColor(HBColor.collectionTextColor)
                         .padding(.bottom)
+                    
                     Text(NSLocalizedString("pagina_dois_dois", bundle: .module, comment: ""))
                         .lineLimit(nil)
                         .font(.body)
