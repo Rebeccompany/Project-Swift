@@ -45,9 +45,17 @@ struct DeckTableView: View {
             }
             .swipeActions {
                 Button {
+                    try? viewModel.deleteDeck(deck)
+                } label: {
+                    Text("deletar", bundle: .module)
+                }
+                .tint(.red)
+            }
+            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                Button {
                     editAction(deck)
                 } label: {
-                    Text("Editar")
+                    Text("editar", bundle: .module)
                 }
                 .tint(HBColor.actionColor)
             }
