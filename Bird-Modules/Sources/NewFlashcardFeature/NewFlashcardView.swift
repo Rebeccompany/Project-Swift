@@ -183,36 +183,6 @@ public struct NewFlashcardView: View {
         }
     }
     
-//    @ViewBuilder
-//    private var customrightToolbarItemGroup: some View {
-//        Spacer()
-//        Button {
-//            if focus == .back {
-//                focus = .front
-//            }
-//        } label: {
-//            Image(systemName: "chevron.up")
-//        }
-//        .disabled(focus == .front)
-//        .accessibilityLabel(focus == .front ? NSLocalizedString("moveup_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("moveup_focus", bundle: .module, comment: ""))
-//
-//
-//        Button {
-//            if focus == .front {
-//                focus = .back
-//            }
-//        } label: {
-//            Image(systemName: "chevron.down")
-//        }
-//        .disabled(focus == .back)
-//        .accessibilityLabel(focus == .back ? NSLocalizedString("down_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("down_focus", bundle: .module, comment: ""))
-//
-//        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
-//            focus = nil
-//        }
-//        .accessibilityLabel(Text("botao_feito", bundle: .module))
-//    }
-    
     @ViewBuilder
     private var customNavigationToolbar: some View {
             Button(NSLocalizedString("feito", bundle: .module, comment: "")) {

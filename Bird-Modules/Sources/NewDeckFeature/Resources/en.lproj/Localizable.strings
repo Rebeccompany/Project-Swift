@@ -19,3 +19,5 @@
 "editar_deck" = "Edit Deck";
 "feito" = "Done";
 "botao_feito" = "Done button";
+"alert_delete_deck_error" = "An error occured when trying to delete deck";
+"alert_delete_deck_error_text" = "Something went wrong! Please try again.";
