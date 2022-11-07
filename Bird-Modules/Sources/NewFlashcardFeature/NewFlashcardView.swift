@@ -86,8 +86,24 @@ public struct NewFlashcardView: View {
                 .onAppear {
                     viewModel.startUp(editingFlashcard: editingFlashcard)
                 }
-                .alert(isPresented: $showingAlert) {
-                    customAlert()
+                .confirmationDialog("Are you sure you want to delete this flashcard?", isPresented: $showingAlert) {
+                    Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                        do {
+                            try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
+                            dismiss()
+                        } catch {
+                            activeAlert = .error
+                            showingAlert = true
+                            selectedErrorMessage = .deleteCard
+                        }
+                    }
+                } message: {
+                    switch activeAlert {
+                    case .error:
+                        Text(NSLocalizedString("alert_delete_flashcard_error_text", bundle: .module, comment: ""))
+                    case .confirm:
+                        Text(NSLocalizedString("alert_delete_flashcard_text", bundle: .module, comment: ""))
+                    }
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -157,30 +173,6 @@ public struct NewFlashcardView: View {
         }
         .buttonStyle(DeleteButtonStyle())
 
-    }
-    
-    private func customAlert() -> Alert {
-        switch activeAlert {
-        case .error:
-            return Alert(title: Text(selectedErrorMessage.texts.title),
-                         message: Text(selectedErrorMessage.texts.message),
-                         dismissButton: .default(Text("fechar", bundle: .module)))
-        case .confirm:
-            return Alert(title: Text("alert_delete_flashcard", bundle: .module),
-                         message: Text("alert_delete_flashcard_text", bundle: .module),
-                         primaryButton: .destructive(Text("deletar", bundle: .module)) {
-                    do {
-                        try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
-                        dismiss()
-                    } catch {
-                        activeAlert = .error
-                        showingAlert = true
-                        selectedErrorMessage = .deleteCard
-                    }
-                         },
-                secondaryButton: .cancel(Text("cancelar", bundle: .module))
-            )
-        }
     }
     
     @ViewBuilder
