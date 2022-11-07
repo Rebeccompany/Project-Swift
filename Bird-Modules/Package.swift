@@ -112,13 +112,20 @@ let package = Package(
             name: "FlashcardsOnboardingFeature",
             targets: ["FlashcardsOnboardingFeature"]
         ),
+        
         .library(
             name: "StoreFeature",
             targets: ["StoreFeature"]
         ),
+        
         .library(
             name: "Puffins",
             targets: ["Puffins"]
+        ),
+        
+        .library(
+            name: "Tweet",
+            targets: ["Tweet"]
         )
     ],
     
@@ -307,6 +314,13 @@ let package = Package(
         
         .target(
             name: "Puffins",
+            dependencies: [
+                "Models"
+            ]
+        ),
+        
+        .target(
+            name: "Tweet",
             dependencies: [
                 "Models"
             ]

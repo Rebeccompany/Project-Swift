@@ -12,6 +12,15 @@ import AppFeature
 struct Project_BirdApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
+    init() {
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { result, error in
+            if let error = error {
+                print(error)
+            }
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
