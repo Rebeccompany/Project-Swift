@@ -15,19 +15,15 @@ import Combine
 
 #if os(macOS)
 public struct NewFlashcardViewMacOS: View {
-    @StateObject private var viewModel: NewFlashcardViewModel = NewFlashcardViewModel()
+    @StateObject private var viewModel = NewFlashcardViewModelMacOS()
     
     @State private var showingAlert: Bool = false
+    @State private var showingCloseAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
     
     @StateObject private var frontContext = RichTextContext()
     @StateObject private var backContext = RichTextContext()
-    
-    @Environment(\.dismiss) private var dismiss
-    
-    @State private var deck: Deck?
-    @State private var editingFlashcard: Card?
     
     @State private var size: CGFloat = 14
     
@@ -78,19 +74,15 @@ public struct NewFlashcardViewMacOS: View {
                         }
                         
                         Spacer()
-                        
-                        if editingFlashcard != nil {
-                            deleteButton
-                        }
                     }
                     .padding()
                     
                     Button {
-                        if editingFlashcard == nil {
+                        if viewModel.editingFlashcard == nil {
                             do {
-                                guard let deck = deck else { return }
-                                try viewModel.createFlashcard(for: deck)
+                                try viewModel.createFlashcard()
                                 //dismiss()
+                                viewModel.reset()
                             } catch {
                                 activeAlert = .error
                                 showingAlert = true
@@ -98,7 +90,7 @@ public struct NewFlashcardViewMacOS: View {
                             }
                         } else {
                             do {
-                                try viewModel.editFlashcard(editingFlashcard: editingFlashcard)
+                                try viewModel.editFlashcard()
                                 //dismiss()
                             } catch {
                                 activeAlert = .error
@@ -106,30 +98,44 @@ public struct NewFlashcardViewMacOS: View {
                                 selectedErrorMessage = .editCard
                             }
                         }
+                        
+                        showingCloseAlert = true
                     } label: {
-                        Text("Salvar")
-                            .frame(width: 300, height: 50)
-                            .background(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(HBColor.actionColor)
-                            )
-                            .font(.system(size: 16))
+                        HStack {
+                            Spacer()
+                            Text("Salvar")
+                                .font(.system(size: 16))
+                            Spacer()
+                        }
+                        .frame(height: 50)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(HBColor.actionColor)
+                        )
                     }
-                    .padding(.bottom, 50)
-                    .padding(.top, 50)
+                    .padding(.bottom, 10)
                     .buttonStyle(.plain)
-
                     
+                    if viewModel.editingFlashcard != nil {
+                        deleteButton
+                    }
                 }
                 .scrollContentBackground(.hidden)
                 .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
                 .viewBackgroundColor(HBColor.primaryBackground)
-                .navigationTitle(editingFlashcard == nil ? NSLocalizedString("criar_flashcard", bundle: .module, comment: "") : NSLocalizedString("editar_flashcard", bundle: .module, comment: ""))
+                .navigationTitle(viewModel.editingFlashcard == nil ? NSLocalizedString("criar_flashcard", bundle: .module, comment: "") : NSLocalizedString("editar_flashcard", bundle: .module, comment: ""))
                 .onAppear {
-                    viewModel.startUp(editingFlashcard: editingFlashcard)
+                    viewModel.startUp(data)
+                }
+                .onReceive(viewModel.updateTextFieldContextPublisher) { _ in
+                    frontContext.shouldUpdateTextField()
+                    backContext.shouldUpdateTextField()
                 }
                 .alert(isPresented: $showingAlert) {
                     customAlert()
+                }
+                .alert(isPresented: $showingCloseAlert) {
+                    return Alert(title: Text("Cartão Salvo!"), message: Text("Seu cartão foi salvo no baralho, essa janela pode ser fechada"))
                 }
                 .toolbar {
                     
@@ -197,14 +203,6 @@ public struct NewFlashcardViewMacOS: View {
                 }
             }
         }
-        .onReceive(viewModel.fetchInitialDeck(data.deckId)) { deck in
-            self.deck = deck
-        }
-        .onReceive(viewModel.fetchEditingCard(data.editingFlashcardId)) { card in
-            self.editingFlashcard = card
-            guard let card else { return }
-            viewModel.setupDeckContentIntoFields(card)
-        }
         .onChange(of: size) { newValue in
             activeContext.fontSize = newValue
         }
@@ -247,7 +245,7 @@ public struct NewFlashcardViewMacOS: View {
                          message: Text("alert_delete_flashcard_text", bundle: .module),
                          primaryButton: .destructive(Text("deletar", bundle: .module)) {
                 do {
-                    try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
+                    try viewModel.deleteFlashcard()
                     //dismiss()
                 } catch {
                     activeAlert = .error
@@ -263,11 +261,10 @@ public struct NewFlashcardViewMacOS: View {
     @ViewBuilder
     private var customNavigationToolbar: some View {
         Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
-            guard let deck else { return }
             
-            if editingFlashcard == nil {
+            if viewModel.editingFlashcard == nil {
                 do {
-                    try viewModel.createFlashcard(for: deck)
+                    try viewModel.createFlashcard()
                     //dismiss()
                 } catch {
                     selectedErrorMessage = .createCard
@@ -276,7 +273,7 @@ public struct NewFlashcardViewMacOS: View {
                 
             } else {
                 do {
-                    try viewModel.editFlashcard(editingFlashcard: editingFlashcard)
+                    try viewModel.editFlashcard()
                     //dismiss()
                 } catch {
                     selectedErrorMessage = .editCard

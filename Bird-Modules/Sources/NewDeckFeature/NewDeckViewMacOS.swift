@@ -149,7 +149,6 @@ public struct NewDeckViewMacOS: View {
                         }
                     } label: {
                         Text(NSLocalizedString("feito", bundle: .module, comment: ""))
-                            .foregroundColor(viewModel.canSubmit ? HBColor.actionColor : .none)
                     }
                     .disabled(!viewModel.canSubmit)
                 }

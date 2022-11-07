@@ -15,7 +15,7 @@ import Combine
 
 #if os(iOS)
 public struct NewFlashcardViewiOS: View {
-    @StateObject private var viewModel: NewFlashcardViewModel = NewFlashcardViewModel()
+    @StateObject private var viewModel = NewFlashcardViewModeliOS()
     
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard

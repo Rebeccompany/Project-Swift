@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  NewFlashcardViewModeliOS.swift
 //  
 //
 //  Created by Rebecca Mello on 15/09/22.
@@ -13,7 +13,8 @@ import Utils
 import Combine
 import Habitat
 
-public class NewFlashcardViewModel: ObservableObject {
+#if os(iOS)
+public class NewFlashcardViewModeliOS: ObservableObject {
     @Published var flashcardFront: NSAttributedString = NSAttributedString(string: "")
     @Published var flashcardBack: NSAttributedString = NSAttributedString(string: "")
     @Published var currentSelectedColor: CollectionColor? = CollectionColor.red
@@ -108,3 +109,4 @@ public class NewFlashcardViewModel: ObservableObject {
         try deckRepository.deleteCard(editingFlashcard)
     }
 }
+#endif

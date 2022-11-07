@@ -90,7 +90,7 @@ struct CollectionsSidebarMacOS: View {
             NewCollectionViewMacOS(
                 editingCollection: editingCollection
             )
-            .frame(minWidth: 400, maxHeight: 500)
+            .frame(minWidth: 600, maxHeight: 500)
         }
         .sheet(isPresented: $onboarding) {
             OnboardingView()

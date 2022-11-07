@@ -30,7 +30,7 @@ public struct DetailViewMacOS: View {
         }
         .sheet(isPresented: $presentDeckCreation) {
             NewDeckViewMacOS(collection: viewModel.selectedCollection, editingDeck: editingDeck)
-                .frame(minWidth: 300, minHeight: 600)
+                .frame(minWidth: 600, maxHeight: 600)
         }
         .searchable(text: $viewModel.searchText)
         .toolbar {
