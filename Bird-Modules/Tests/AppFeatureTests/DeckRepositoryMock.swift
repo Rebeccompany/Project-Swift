@@ -17,13 +17,19 @@ struct Wrapper {
 
 final class DeckRepositoryMock: DeckRepositoryProtocol {
     
-    var data: [UUID: Wrapper] = [:]
+    var data: [UUID: Wrapper]
+    var shouldThrowError: Bool
     
-    var shouldThrowError: Bool = false
+    var deckSubject: CurrentValueSubject<[Deck], RepositoryError>
+    var cardSubject: CurrentValueSubject<[Card], RepositoryError>
     
-    
-    lazy var deckSubject: CurrentValueSubject<[Deck], RepositoryError> = .init(data.values.map(\.deck))
-    lazy var cardSubject: CurrentValueSubject<[Card], RepositoryError> = .init([])
+    init(data: [UUID: Wrapper] = [:], shouldThrowError: Bool = false) {
+        self.data = data
+        self.shouldThrowError = shouldThrowError
+        
+        deckSubject = .init(data.values.map(\.deck))
+        cardSubject = .init([])
+    }
     
     public func fetchDeckById(_ id: UUID) -> AnyPublisher<Deck, RepositoryError> {
         if let deck = data[id]?.deck {
@@ -33,22 +39,22 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
         }
     }
     
-
+    
     public func fetchDecksByIds(_ ids: [UUID]) -> AnyPublisher<[Deck], RepositoryError> {
         let decks = data.filter { wrap in ids.contains(wrap.key) }.map(\.value.deck)
         return Just(decks).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
-
+        
     }
-
+    
     public func deckListener() -> AnyPublisher<[Deck], RepositoryError> {
         deckSubject.eraseToAnyPublisher()
     }
-   
-   public func cardListener(forId deckId: UUID) -> AnyPublisher<[Card], RepositoryError> {
-       cardSubject.value = data[deckId]?.cards ?? []
-       return cardSubject.eraseToAnyPublisher()
-   }
-
+    
+    public func cardListener(forId deckId: UUID) -> AnyPublisher<[Card], RepositoryError> {
+        cardSubject.value = data[deckId]?.cards ?? []
+        return cardSubject.eraseToAnyPublisher()
+    }
+    
     public func createDeck(_ deck: Deck, cards: [Card]) throws {
         if shouldThrowError {
             throw RepositoryError.couldNotCreate
@@ -56,13 +62,21 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
         
         var deck = deck
         deck.cardsIds = cards.map(\.id)
+        
+        let newCards = cards.map { card in
+            var n = card
+            n.deckID = deck.id
+            
+            return n
+        }
+        
         data[deck.id] = Wrapper(deck: deck, cards: cards)
-
+        
         
         deckSubject.send(data.values.map(\.deck))
         cardSubject.send(cards)
     }
-
+    
     public func deleteDeck(_ deck: Deck) throws {
         if shouldThrowError {
             throw RepositoryError.couldNotDelete
@@ -71,9 +85,11 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
         data.remove(at: data.keys.firstIndex(where: { id in
             id == deck.id
         })!)
+        
         deckSubject.send(data.values.map(\.deck))
+        cardSubject.send([])
     }
-
+    
     public func editDeck(_ deck: Deck) throws {
         if shouldThrowError {
             throw RepositoryError.couldNotEdit
@@ -81,8 +97,9 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
         guard data[deck.id] != nil else { throw RepositoryError.couldNotEdit }
         data[deck.id]?.deck = deck
         deckSubject.send(data.values.map(\.deck))
+        cardSubject.send(data[deck.id]!.cards)
     }
-
+    
     public func addCard(_ card: Card, to deck: Deck) throws {
         if shouldThrowError {
             throw RepositoryError.couldNotCreate
@@ -95,7 +112,7 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
         deckSubject.send(data.values.map(\.deck))
         cardSubject.send(data[deck.id]!.cards)
     }
-
+    
     public func removeCard(_ card: Card, from deck: Deck) throws {
         if shouldThrowError {
             throw RepositoryError.couldNotDelete
@@ -111,7 +128,7 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
         deckSubject.send(data.values.map(\.deck))
         cardSubject.send(data[deck.id]!.cards)
     }
-
+    
     
     public func fetchCardById(_ id: UUID) -> AnyPublisher<Card, RepositoryError> {
         if let card = data.values.flatMap(\.cards).first(where: { $0.id == id }) {
@@ -120,7 +137,7 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
             return Fail<Card, RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
         }
     }
-
+    
     public func fetchCardsByIds(_ ids: [UUID]) -> AnyPublisher<[Card], RepositoryError> {
         let cards = data.values.flatMap(\.cards).filter { ids.contains($0.id) }
         return Just(cards).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
@@ -135,9 +152,11 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
         
         
         data[index]?.deck.cardsIds.removeAll(where:{ card.id == $0})
+        
+        deckSubject.send(data.values.map(\.deck))
         cardSubject.send(data[index]!.cards)
     }
-
+    
     public func editCard(_ card: Card) throws {
         if shouldThrowError {
             throw RepositoryError.couldNotEdit
@@ -151,106 +170,110 @@ final class DeckRepositoryMock: DeckRepositoryProtocol {
         
         cardSubject.send(data[index]!.cards)
     }
-   
-   public func createSession(_ session: Session, for deck: Deck) throws {
-       if shouldThrowError {
-           throw RepositoryError.couldNotCreate
-       }
-       if data[deck.id] == nil {
-           throw NSError()
-       }
-       
-       data[deck.id]?.deck.session = session
-   }
-   
-   public func editSession(_ session: Session) throws {
-       if shouldThrowError {
-           throw RepositoryError.couldNotEdit
-       }
-       guard let index = data.values.map(\.deck).first(where: { deck in
-           deck.session?.id == session.id
-       })?.id else {
-           throw NSError()
-       }
-       
-       if data[index] == nil {
-           throw NSError()
-       }
-       data[index]?.deck.session = session
-   }
-   
     
-   public func deleteSession(_ session: Session, for deck: Deck) throws {
-       if shouldThrowError {
-           throw RepositoryError.couldNotDelete
-       }
-       if data[deck.id] == nil {
-           throw NSError()
-       }
-       data[deck.id]?.deck.session = nil
-   }
-   
+    public func createSession(_ session: Session, for deck: Deck) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotCreate
+        }
+        if data[deck.id] == nil {
+            throw RepositoryError.notFound
+        }
+        
+        data[deck.id]?.deck.session = session
+        deckSubject.send(data.values.map(\.deck))
+    }
     
-   public func addCardsToSession(_ session: Session, cards: [Card]) throws {
-       if shouldThrowError {
-           throw RepositoryError.internalError
-       }
-       
-       var session = session
-       
-       session.cardIds.append(contentsOf: cards.map(\.id))
-       
-       guard let index = data.values.map(\.deck).first(where: { deck in
-           deck.session?.id == session.id
-       })?.id else {
-           throw NSError()
-       }
-       
-       if data[index] == nil {
-           throw NSError()
-       }
-       
-       guard let oldCardsIds = data[index]?.deck.session?.cardIds else { throw NSError() }
-       
-       let newCardsIds = cards.filter { card in
-           !oldCardsIds.contains(card.id)
-       }.map(\.id)
-       
-       data[index]?.deck.session?.cardIds.append(contentsOf: newCardsIds)
-       
-       
-   }
-   
-   public func removeCardsFromSession(_ session: Session, cards: [Card]) throws {
-       if shouldThrowError {
-           throw RepositoryError.internalError
-       }
-
-       
-       guard let index = data.values.map(\.deck).first(where: { deck in
-           deck.session?.id == session.id
-       })?.id else {
-           throw NSError()
-       }
-       
-       if data[index] == nil {
-           throw NSError()
-       }
-       
-       let ids = cards.map { $0.id }
-       data[index]?.deck.session?.cardIds.removeAll { id in
-           ids.contains(id)
-       }
-
-   }
-
-   public func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
-       
-       let deckIndex = card.deckID
-       guard let cardIndex = data[deckIndex]?.cards.firstIndex(where: { $0.id == card.id }) else { throw NSError() }
-       data[deckIndex]?.cards[cardIndex].history.append(snapshot)
-   }
-
+    public func editSession(_ session: Session) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotEdit
+        }
+        guard let index = data.values.map(\.deck).first(where: { deck in
+            deck.session?.id == session.id
+        })?.id else {
+            throw RepositoryError.notFound
+        }
+        
+        if data[index] == nil {
+            throw RepositoryError.notFound
+        }
+        data[index]?.deck.session = session
+        deckSubject.send(data.values.map(\.deck))
+    }
     
-#warning("oi babylis, falta o send das coisas. boa sorte! beijocas. em varias coisas hein kkkkk")
+    
+    public func deleteSession(_ session: Session, for deck: Deck) throws {
+        if shouldThrowError {
+            throw RepositoryError.couldNotDelete
+        }
+        if data[deck.id] == nil {
+            throw RepositoryError.notFound
+        }
+        data[deck.id]?.deck.session = nil
+        deckSubject.send(data.values.map(\.deck))
+    }
+    
+    
+    public func addCardsToSession(_ session: Session, cards: [Card]) throws {
+        if shouldThrowError {
+            throw RepositoryError.internalError
+        }
+        
+        var session = session
+        
+        session.cardIds.append(contentsOf: cards.map(\.id))
+        
+        guard let index = data.values.map(\.deck).first(where: { deck in
+            deck.session?.id == session.id
+        })?.id else {
+            throw RepositoryError.notFound
+        }
+        
+        if data[index] == nil {
+            throw RepositoryError.notFound
+        }
+        
+        guard let oldCardsIds = data[index]?.deck.session?.cardIds else { throw NSError() }
+        
+        let newCardsIds = cards.filter { card in
+            !oldCardsIds.contains(card.id)
+        }.map(\.id)
+        
+        data[index]?.deck.session?.cardIds.append(contentsOf: newCardsIds)
+        
+        deckSubject.send(data.values.map(\.deck))
+    }
+    
+    public func removeCardsFromSession(_ session: Session, cards: [Card]) throws {
+        if shouldThrowError {
+            throw RepositoryError.internalError
+        }
+        
+        
+        guard let index = data.values.map(\.deck).first(where: { deck in
+            deck.session?.id == session.id
+        })?.id else {
+            throw RepositoryError.notFound
+        }
+        
+        if data[index] == nil {
+            throw RepositoryError.notFound
+        }
+        
+        let ids = cards.map { $0.id }
+        data[index]?.deck.session?.cardIds.removeAll { id in
+            ids.contains(id)
+        }
+        
+        deckSubject.send(data.values.map(\.deck))
+    }
+    
+    public func addHistory(_ snapshot: CardSnapshot, to card: Card) throws {
+        
+        let deckIndex = card.deckID
+        guard let cardIndex = data[deckIndex]?.cards.firstIndex(where: { $0.id == card.id }) else { throw NSError() }
+        data[deckIndex]?.cards[cardIndex].history.append(snapshot)
+        
+        cardSubject.send(data[deckIndex]!.cards)
+    }
+    
 }

@@ -22,7 +22,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
                         
         ExternalSection(title: getCategoryString(category: .arts), decks:  [ExternalDeck(id: "9", name: "Arts 3", description: "Arts Desc 3", icon: .books, color: .orange, category: .arts), ExternalDeck(id: "10", name: "Arts 3", description: "Arts Desc 3", icon: .cpu, color: .lightBlue, category: .arts),]),
                         
-        ExternalSection(title: getCategoryString(category: .others), decks:  [ExternalDeck(id: "11", name: "Others", description: "Others Desc", icon: .books, color: .darkPurple, category: .others),])
+        ExternalSection(title: getCategoryString(category: .others), decks:  [ExternalDeck(id: "11", name: "Others", description: "Others Desc", icon: .books, color: .darkPurple, category: .others)])
     ]
     
     public init() {

@@ -150,11 +150,10 @@ public final class ContentViewModel: ObservableObject {
     }
     
     private func filterDecksForToday(_ decks: [Deck]) -> [Deck] {
-        
         decks.filter {
-                guard let session = $0.session else { return false }
+            guard let session = $0.session, !session.cardIds.isEmpty else { return false }
             return dateHandler.isToday(date: session.date) || session.date < dateHandler.today
-            }
+        }
     }
     
     private func handleCompletion(_ completion: Subscribers.Completion<RepositoryError>) {
