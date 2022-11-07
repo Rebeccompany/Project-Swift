@@ -90,9 +90,6 @@ public struct NewFlashcardView: View {
                     customAlert()
                 }
                 .toolbar {
-//                    ToolbarItemGroup(placement: .keyboard) {
-//                        customrightToolbarItemGroup
-//                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         customNavigationToolbar
                     }
