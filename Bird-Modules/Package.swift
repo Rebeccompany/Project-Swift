@@ -123,7 +123,8 @@ let package = Package(
         .library(
             name: "Puffins",
             targets: ["Puffins"]
-        )
+        ),
+        .library(name: "Peacock", targets: ["Peacock"])
     ],
     
     dependencies: [
@@ -274,6 +275,9 @@ let package = Package(
         ),
         
         .target(
+            name: "Peacock"
+        ),
+        .target(
             name: "Habitat",
             dependencies: [
                 "Storage",
@@ -306,7 +310,8 @@ let package = Package(
                 "DeckFeature",
                 "Puffins",
                 "Habitat",
-                "PublicDeckFeature"
+                "PublicDeckFeature",
+                "Peacock"
             ]
         ),
         
@@ -322,7 +327,8 @@ let package = Package(
             dependencies: [
                 "Models",
                 "HummingBird",
-                "Habitat"
+                "Habitat",
+                "Peacock"
             ]
         ),
         

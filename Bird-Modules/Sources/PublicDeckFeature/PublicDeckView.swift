@@ -13,79 +13,53 @@ import Habitat
 public struct PublicDeckView: View {
     var deck: ExternalDeck
     
-    @StateObject private var viewModel: PublicDeckViewModel = PublicDeckViewModel()
     @StateObject private var interactor: PublicDeckInteractor = PublicDeckInteractor()
-    @StateObject private var store: Store<PublicDeckState> = Store(state: PublicDeckState())
+    @StateObject private var store: PublicDeckStore = PublicDeckStore(state: .init())
     
     public init(deck: ExternalDeck) {
         self.deck = deck
     }
     
-    
     public var body: some View {
+        let state = store.deckState
+        
+        Group {
+            if let deck = state.deck {
+                loadedView(deck)
+            } else {
+                loadingView()
+            }
+        }
+        .onAppear {
+            startUp()
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .viewBackgroundColor(HBColor.primaryBackground)
+    }
+    
+    @ViewBuilder
+    private func loadingView() -> some View {
+        ProgressView()
+    }
+    
+    @ViewBuilder
+    private func loadedView(_ deck: ExternalDeck) -> some View {
+        let state = store.deckState
         ScrollView {
-            VStack {
-                VStack {
-                    if let deck = store.state.deck {
-                        HeaderPublicDeckView(deck: deck)
-                    }
-                    HStack {
-                        Button {
-                            
-                        } label: {
-                            Image(systemName: "square.and.arrow.down")
-                            Text("Download")
-                        }
-                        .bold()
-                        .buttonStyle(.borderedProminent)
-                        .tint(HBColor.actionColor.opacity(0.15))
-                        .foregroundColor(HBColor.actionColor)
-                        .padding(.bottom)
-                        
-                        Button {
-                            
-                        } label: {
-                            Image(systemName: "square.and.arrow.up")
-                            Text("Compartilhar")
-                        }
-                        .bold()
-                        .buttonStyle(.borderedProminent)
-                        .tint(HBColor.actionColor.opacity(0.15))
-                        .foregroundColor(HBColor.actionColor)
-                        .padding(.bottom)
-                    }
-                    
-                    VStack(alignment: .leading) {
-                        Text(store.state.deck?.description ?? "")
-                    }
-                    .foregroundColor(.black)
-                    .multilineTextAlignment(.leading)
-                    .padding([.horizontal, .bottom], 16)
-                    .scrollContentBackground(.hidden)
-                    .frame(maxWidth: .infinity, minHeight: 150)
-                    .background(.white)
-                    .clipShape(
-                        RoundedRectangle(cornerRadius: 16)
-                    )
-                    .padding(.bottom)
-                }
-                
+            LazyVStack {
+                deckHeader(deck)
                 Section {
                     LazyVStack {
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 180), spacing: 12, alignment: .top)], spacing: 12) {
-                            ForEach(store.state.cards) { card in
-                                FlashcardCell(card: card) {}
-                                    .frame(height: 240)
+                        if store.deckState.cards.isEmpty {
+                            LoadingFlashcardGrid()
+                        } else {
+                            flashcardGrid(store.deckState.cards)
+                            if state.shouldLoadMore {
+                                ProgressView()
                                     .onAppear {
-                                        if card.id == store.state.cards.last?.id {
-                                            interactor.send(.loadCards(id: deck.id, page: store.state.currentPage))
-                                        }
+                                        interactor.send(.loadCards(id: deck.id, page: store.deckState.currentPage))
                                     }
-                                    
                             }
-                            .listRowSeparator(.hidden)
-                            
-                            
                         }
                     }
                 } header: {
@@ -100,19 +74,79 @@ public struct PublicDeckView: View {
             .padding()
         }
         .onAppear {
-            startUp()
+            let state = store.deckState
+            interactor.send(.loadCards(id: deck.id, page: state.currentPage))
         }
-        .viewBackgroundColor(HBColor.primaryBackground)
+        .refreshable {
+            interactor.send(.reloadCards(id: deck.id))
+        }
+    }
+    
+    @ViewBuilder
+    private func flashcardGrid(_ cards: [ExternalCard]) -> some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 180), spacing: 12, alignment: .top)], spacing: 12) {
+            ForEach(cards) { card in
+                FlashcardCell(card: card) {}
+                    .frame(height: 240)
+                    .listRowSeparator(.hidden)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func deckHeader(_ deck: ExternalDeck) -> some View {
+        VStack {
+            HeaderPublicDeckView(deck: deck)
+            
+            HStack {
+                Button {
+                    
+                } label: {
+                    Image(systemName: "square.and.arrow.down")
+                    Text("Download")
+                }
+                .bold()
+                .buttonStyle(.borderedProminent)
+                .tint(HBColor.actionColor.opacity(0.15))
+                .foregroundColor(HBColor.actionColor)
+                .padding(.bottom)
+                
+                Button {
+                    
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                    Text("Compartilhar")
+                }
+                .bold()
+                .buttonStyle(.borderedProminent)
+                .tint(HBColor.actionColor.opacity(0.15))
+                .foregroundColor(HBColor.actionColor)
+                .padding(.bottom)
+            }
+            
+            VStack(alignment: .leading) {
+                Text(store.deckState.deck?.description ?? "")
+            }
+            .foregroundColor(.black)
+            .multilineTextAlignment(.leading)
+            .padding([.horizontal, .bottom], 16)
+            .scrollContentBackground(.hidden)
+            .frame(maxWidth: .infinity, minHeight: 150)
+            .background(.white)
+            .clipShape(
+                RoundedRectangle(cornerRadius: 16)
+            )
+            .padding(.bottom)
+        }
     }
     
     private func startUp() {
         interactor.bind(to: store)
         interactor.send(.loadDeck(id: deck.id))
-        interactor.send(.loadCards(id: deck.id, page: store.state.currentPage))
     }
 }
 
-struct SwiftUIView_Previews: PreviewProvider {
+struct PublicDeckView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
             NavigationStack {

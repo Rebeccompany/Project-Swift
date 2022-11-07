@@ -38,7 +38,9 @@ struct CollectionsSidebar: View {
                 isCompact ? HBColor.secondaryBackground : nil
             )
             NavigationLink {
-                StoreView()
+                NavigationStack {
+                    StoreView()
+                }
             } label: {
                 Label("Store", systemImage: "bag")
             }

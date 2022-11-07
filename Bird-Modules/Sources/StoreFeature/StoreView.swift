@@ -27,6 +27,9 @@ public struct StoreView: View {
                         }
                     }
                 }
+                .navigationDestination(for: ExternalDeck.self) { deck in
+                    PublicDeckView(deck: deck)
+                }
             case .error:
                 Text("Error")
             case .loading:
@@ -36,9 +39,6 @@ public struct StoreView: View {
         .navigationTitle(NSLocalizedString("baralhos_publicos", bundle: .module, comment: ""))
         .onAppear(perform: viewModel.startup)
         .viewBackgroundColor(HBColor.primaryBackground)
-        .navigationDestination(for: ExternalDeck.self) { deck in
-            PublicDeckView(deck: deck)
-        }
     }
 }
 
