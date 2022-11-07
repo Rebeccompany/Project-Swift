@@ -109,7 +109,7 @@ public struct NewDeckView: View {
                     case .error:
                         Text(NSLocalizedString("alert_delete_deck_error_text", bundle: .module, comment: ""))
                     case .confirm:
-                        Text(NSLocalizedString("alert_delete_deck_text", bundle: .module, comment: ""))
+                        Text(NSLocalizedString("alert_delete_deck", bundle: .module, comment: ""))
                     }
                 }
                 .navigationTitle(editingDeck == nil ? NSLocalizedString("criar_deck", bundle: .module, comment: "") : NSLocalizedString("editar_deck", bundle: .module, comment: ""))

@@ -102,7 +102,7 @@ public struct NewFlashcardView: View {
                     case .error:
                         Text(NSLocalizedString("alert_delete_flashcard_error_text", bundle: .module, comment: ""))
                     case .confirm:
-                        Text(NSLocalizedString("alert_delete_flashcard_text", bundle: .module, comment: ""))
+                        Text(NSLocalizedString("alert_delete_flashcard", bundle: .module, comment: ""))
                     }
                 }
                 .toolbar {

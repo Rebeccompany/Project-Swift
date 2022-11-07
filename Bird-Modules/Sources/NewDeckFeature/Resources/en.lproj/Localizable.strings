@@ -12,7 +12,6 @@
 "apagar_deck" = "Delete Deck";
 "fechar" = "Close";
 "alert_delete_deck" = "Are you sure you want to delete it?";
-"alert_delete_deck_text" = "You'll lose its content permanently.";
 "deletar" = "Delete";
 "cancelar" = "Cancel";
 "criar_deck" = "Create Deck";
