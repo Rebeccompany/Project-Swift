@@ -73,6 +73,13 @@ public struct DeckView: View {
         .navigationTitle(deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Button {
+                    
+                } label: {
+                    Label("Export", systemImage: "globe.americas")
+                }
+                .foregroundColor(HBColor.actionColor)
+                
                 Menu {
                     Button {
                         editingFlashcard = nil

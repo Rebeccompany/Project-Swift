@@ -8,7 +8,7 @@
 import Foundation
 
 public struct ExternalDeck: Identifiable, Codable, Equatable, Hashable {
-    public init(id: String, name: String, description: String, icon: IconNames, color: CollectionColor, category: DeckCategory) {
+    public init(id: String?, name: String, description: String, icon: IconNames, color: CollectionColor, category: DeckCategory) {
         self.id = id
         self.name = name
         self.description = description
@@ -17,7 +17,7 @@ public struct ExternalDeck: Identifiable, Codable, Equatable, Hashable {
         self.category = category
     }
     
-    public let id: String
+    public let id: String?
     public let name: String
     public let description: String
     public let icon: IconNames

@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  CollectionsSidebar.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 14/09/22.
@@ -11,11 +11,13 @@ import NewCollectionFeature
 import HummingBird
 import StoreFeature
 import OnboardingFeature
+import StoreState
 
 struct CollectionsSidebar: View {
     @State private var onboarding: Bool = false
     @Binding private var editMode: EditMode
     @EnvironmentObject private var viewModel: ContentViewModel
+    @EnvironmentObject private var store: ShopStore
     @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
     @State private var presentCollectionCreation = false
@@ -37,17 +39,20 @@ struct CollectionsSidebar: View {
             .listRowBackground(
                 isCompact ? HBColor.secondaryBackground : nil
             )
-            NavigationLink {
-                NavigationStack {
-                    StoreView()
+            
+            if !isCompact {
+                NavigationLink {
+                    NavigationStack {
+                        StoreView(store: store)
+                    }
+                } label: {
+                    Label("Store", systemImage: "bag")
                 }
-            } label: {
-                Label("Store", systemImage: "bag")
-            }
-            .listRowBackground(
-                isCompact ? HBColor.secondaryBackground : nil
-            )
+                .listRowBackground(
+                    isCompact ? HBColor.secondaryBackground : nil
+                )
 
+            }
             
             Section {
                 if viewModel.collections.isEmpty {

@@ -14,7 +14,9 @@ import Flock
 import NewCollectionFeature
 import Habitat
 import Storage
+import StoreFeature
 import OnboardingFeature
+import StoreState
 
 public struct ContentView: View {
     @AppStorage("com.projectbird.birdmodules.appfeature.onboarding") private var onboarding: Bool = true
@@ -24,12 +26,58 @@ public struct ContentView: View {
     @State private var path: NavigationPath = .init()
     
     @StateObject private var viewModel: ContentViewModel = ContentViewModel()
+    @StateObject private var shopStore = ShopStore()
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     public init() {}
     
     public var body: some View {
+        if horizontalSizeClass == .compact {
+            TabView {
+                NavigationSplitView(columnVisibility: $columnVisibility) {
+                    sidebar
+                } detail: {
+                    detail
+                }
+                .onChange(of: viewModel.sidebarSelection) { _ in
+                    path.removeLast(path.count - 1)
+                }
+                .onAppear(perform: viewModel.startup)
+                .navigationSplitViewStyle(.balanced)
+                .sheet(isPresented: $onboarding) {
+                    OnboardingView()
+                }
+                .tabItem {
+                    Label("Baralhos", systemImage: "rectangle.portrait.on.rectangle.portrait.angled")
+                }
+                
+                NavigationStack {
+                    StoreView(store: shopStore)
+                }
+                .tabItem {
+                    Label("Loja", systemImage: "bag")
+                }
+            }
+        } else {
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                sidebar
+            } detail: {
+                detail
+            }
+            .onChange(of: viewModel.sidebarSelection) { _ in
+                path.removeLast(path.count - 1)
+            }
+            .onAppear(perform: viewModel.startup)
+            .navigationSplitViewStyle(.balanced)
+            .sheet(isPresented: $onboarding) {
+                OnboardingView()
+            }
+        }
+    }
+    
+@ViewBuilder
+    private var mainView: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             sidebar
         } detail: {
@@ -53,6 +101,7 @@ public struct ContentView: View {
             editMode: $editModeForCollection
         )
         .environmentObject(viewModel)
+        .environmentObject(shopStore)
         .environment(\.editMode, $editModeForCollection)
     }
     

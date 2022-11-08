@@ -158,7 +158,8 @@ let package = Package(
                 "Habitat",
                 "NewFlashcardFeature",
                 "OnboardingFeature",
-                "StoreFeature"
+                "StoreFeature",
+                "StoreState"
             ]
         ),
         

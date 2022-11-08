@@ -14,10 +14,12 @@ import PublicDeckFeature
 import StoreState
 
 public struct StoreView: View {
-    @StateObject private var store = ShopStore()
+    @ObservedObject private var store: ShopStore
     @StateObject private var interactor = FeedInteractor()
     
-    public init() { }
+    public init(store: ShopStore) {
+        self.store = store
+    }
     
     public var body: some View {
         let state = store.feedState
@@ -54,7 +56,7 @@ struct StoreView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
             NavigationStack {
-                StoreView()
+                StoreView(store: ShopStore())
             }
         }
     }

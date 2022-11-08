@@ -58,7 +58,8 @@ public struct PublicDeckView: View {
                             if state.shouldLoadMore {
                                 ProgressView()
                                     .onAppear {
-                                        interactor.send(.loadCards(id: deck.id, page: store.deckState.currentPage))
+                                        guard let id = deck.id else { return }
+                                        interactor.send(.loadCards(id: id, page: store.deckState.currentPage))
                                     }
                             }
                         }
@@ -75,11 +76,13 @@ public struct PublicDeckView: View {
             .padding()
         }
         .onAppear {
+            guard let id = deck.id else { return }
             let state = store.deckState
-            interactor.send(.loadCards(id: deck.id, page: state.currentPage))
+            interactor.send(.loadCards(id: id, page: state.currentPage))
         }
         .refreshable {
-            interactor.send(.reloadCards(id: deck.id))
+            guard let id = deck.id else { return }
+            interactor.send(.reloadCards(id: id))
         }
     }
     
@@ -142,8 +145,9 @@ public struct PublicDeckView: View {
     }
     
     private func startUp() {
+        guard let id = deck.id else { return }
         interactor.bind(to: store)
-        interactor.send(.loadDeck(id: deck.id))
+        interactor.send(.loadDeck(id: id))
     }
 }
 
