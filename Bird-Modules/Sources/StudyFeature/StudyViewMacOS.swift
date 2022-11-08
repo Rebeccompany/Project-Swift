@@ -1,8 +1,9 @@
 //
-//  SwiftUIView.swift
+//  StudyViewMacOS.swift
 //  
 //
-//  Created by Marcos Chevis on 08/09/22.
+//  Created by Nathalia do Valle Papst on 08/11/22.
+//
 //
 
 import SwiftUI
@@ -12,7 +13,8 @@ import HummingBird
 import Utils
 import FlashcardsOnboardingFeature
 
-public struct StudyView: View {
+#if os(macOS)
+public struct StudyViewMacOS: View {
     @State private var flashcardsOnboarding: Bool = false
     @StateObject private var viewModel: StudyViewModel = StudyViewModel()
     @Environment(\.dismiss) private var dismiss
@@ -20,12 +22,10 @@ public struct StudyView: View {
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var shouldDisplaySessionProgress: Bool = false
     
-    var deck: Deck
-    let mode: StudyMode
+    var data: StudyWindowData
     
-    public init(deck: Deck, mode: StudyMode) {
-        self.deck = deck
-        self.mode = mode
+    public init(data: StudyWindowData) {
+        self.data = data
     }
     
     private func generateAttributedLabel() -> String {
@@ -64,16 +64,13 @@ public struct StudyView: View {
                                 DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in
                                     withAnimation {
                                         do {
-                                            try viewModel.pressedButton(for: userGrade, deck: deck, mode: mode)
+                                            try viewModel.pressedButton(for: userGrade, deck: data.deck, mode: data.mode)
                                         } catch {
                                             selectedErrorMessage = .gradeCard
                                             showingErrorAlert = true
                                         }
                                     }
                                 }
-                                #if os(iOS)
-                                .hoverEffect(.lift)
-                                #endif
                                 Spacer()
                             }
                         }
@@ -91,16 +88,16 @@ public struct StudyView: View {
                                     .foregroundColor(HBColor.actionColor)
                             }
                             .popover(isPresented: $shouldDisplaySessionProgress) {
-                                StudyProgressView(numOfTotalSeen: viewModel.getSessionTotalSeenCards(), numOfTotalCards: viewModel.getSessionTotalCards(), numOfReviewingSeen: viewModel.getSessionReviewingSeenCards(mode: mode), numOfReviewingCards: viewModel.getSessionReviewingCards(mode: mode), numOfLearningSeen: viewModel.getSessionLearningSeenCards(mode: mode), numOfLearningCards: viewModel.getSessionLearningCards(mode: mode), studyMode: mode)
+                                StudyProgressView(numOfTotalSeen: viewModel.getSessionTotalSeenCards(), numOfTotalCards: viewModel.getSessionTotalCards(), numOfReviewingSeen: viewModel.getSessionReviewingSeenCards(mode: data.mode), numOfReviewingCards: viewModel.getSessionReviewingCards(mode: data.mode), numOfLearningSeen: viewModel.getSessionLearningSeenCards(mode: data.mode), numOfLearningCards: viewModel.getSessionLearningCards(mode: data.mode), studyMode: data.mode)
                                 .frame(minWidth: 300, minHeight: 600)
                             }
                         }
                     }
     
                 } else {
-                    EndOfStudyView(mode: mode) {
+                    EndOfStudyView(mode: data.mode) {
                         do {
-                            try viewModel.saveChanges(deck: deck, mode: mode)
+                            try viewModel.saveChanges(deck: data.deck, mode: data.mode)
                             dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy
@@ -110,7 +107,7 @@ public struct StudyView: View {
                 }
             }
             .viewBackgroundColor(HBColor.primaryBackground)
-            .navigationTitle(deck.name)
+            .navigationTitle(data.deck.name)
             .toolbar(content: {
                 ToolbarItem {
                     Button {
@@ -140,8 +137,8 @@ public struct StudyView: View {
                 ToolbarItem(placement: .destructiveAction) {
                     Button(role: .destructive) {
                         do {
-                            if mode == .spaced {
-                                try viewModel.saveChanges(deck: deck, mode: mode)
+                            if data.mode == .spaced {
+                                try viewModel.saveChanges(deck: data.deck, mode: data.mode)
                             }
                             dismiss()
                         } catch {
@@ -155,11 +152,8 @@ public struct StudyView: View {
                 }
                 
             })
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
             .onAppear {
-                viewModel.startup(deck: deck, mode: mode)
+                viewModel.startup(deck: data.deck, mode: data.mode)
             }
             
             .alert(isPresented: $showingErrorAlert) {
@@ -172,10 +166,12 @@ public struct StudyView: View {
     }
 }
 
-struct StudyView_Previews: PreviewProvider {
+struct StudyViewMacOS_Previews: PreviewProvider {
     static var repo: DeckRepositoryMock { DeckRepositoryMock() }
     
     static var previews: some View {
-        StudyView(deck: repo.decks.first { $0.id == repo.deckWithCardsId }!, mode: .spaced)
+        StudyViewMacOS(data: StudyWindowData(deck: repo.decks.first { $0.id == repo.deckWithCardsId }!, mode: .spaced))
     }
 }
+#endif
+

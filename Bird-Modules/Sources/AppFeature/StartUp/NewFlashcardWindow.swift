@@ -1,5 +1,5 @@
 //
-//  newFlashcardWindow.swift
+//  NewFlashcardWindow.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 31/10/22.

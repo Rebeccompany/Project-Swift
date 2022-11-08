@@ -7,6 +7,6 @@
 
 import Foundation
 
-public enum StudyMode {
+public enum StudyMode: Codable {
     case spaced, cramming
 }

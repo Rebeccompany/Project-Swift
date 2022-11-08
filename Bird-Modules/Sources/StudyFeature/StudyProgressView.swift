@@ -7,6 +7,7 @@
 
 import SwiftUI
 import HummingBird
+import Models
 
 public struct StudyProgressView: View {
     let numOfTotalSeen: Int

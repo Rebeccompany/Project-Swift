@@ -43,7 +43,6 @@ public class NewFlashcardViewModelMacOS: ObservableObject {
         currentSelectedColor = editingFlashcard.color
     }
     
-    #warning("testar")
     func reset() {
         flashcardFront = NSAttributedString(string: "")
         flashcardBack = NSAttributedString(string: "")
@@ -86,7 +85,9 @@ public class NewFlashcardViewModelMacOS: ObservableObject {
             .replaceError(with: nil)
             .receive(on: RunLoop.main)
             .sink {[weak self] card in
-                guard let card else { return }
+                guard let card else {
+                    return
+                }
                 self?.editingFlashcard = card
                 self?.setupDeckContentIntoFields()
                 self?.updateTextFieldContextSubject.send(Void())

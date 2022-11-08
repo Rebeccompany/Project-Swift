@@ -77,47 +77,20 @@ public struct NewFlashcardViewMacOS: View {
                     }
                     .padding()
                     
-                    Button {
-                        if viewModel.editingFlashcard == nil {
-                            do {
-                                try viewModel.createFlashcard()
-                                //dismiss()
-                                viewModel.reset()
-                            } catch {
-                                activeAlert = .error
-                                showingAlert = true
-                                selectedErrorMessage = .createCard
-                            }
-                        } else {
-                            do {
-                                try viewModel.editFlashcard()
-                                //dismiss()
-                            } catch {
-                                activeAlert = .error
-                                showingAlert = true
-                                selectedErrorMessage = .editCard
-                            }
-                        }
-                        
-                        showingCloseAlert = true
-                    } label: {
+                    if viewModel.editingFlashcard != nil {
                         HStack {
                             Spacer()
-                            Text("Salvar")
-                                .font(.system(size: 16))
+                            deleteButton
+                            Spacer()
+                            saveButton
                             Spacer()
                         }
-                        .frame(height: 50)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(HBColor.actionColor)
-                        )
-                    }
-                    .padding(.bottom, 10)
-                    .buttonStyle(.plain)
-                    
-                    if viewModel.editingFlashcard != nil {
-                        deleteButton
+                        .padding(.bottom, 50)
+                        
+                    } else {
+                        saveButton
+                            .frame(width: 300)
+                            .padding(.bottom, 50)
                     }
                 }
                 .scrollContentBackground(.hidden)
@@ -234,6 +207,46 @@ public struct NewFlashcardViewMacOS: View {
         
     }
     
+    @ViewBuilder
+    private var saveButton: some View {
+        Button {
+            if viewModel.editingFlashcard == nil {
+                do {
+                    try viewModel.createFlashcard()
+                    viewModel.reset()
+                } catch {
+                    activeAlert = .error
+                    showingAlert = true
+                    selectedErrorMessage = .createCard
+                }
+            } else {
+                do {
+                    try viewModel.editFlashcard()
+                } catch {
+                    activeAlert = .error
+                    showingAlert = true
+                    selectedErrorMessage = .editCard
+                }
+            }
+            
+            showingCloseAlert = true
+            
+        } label: {
+            HStack {
+                Spacer()
+                Text("Salvar")
+                    .font(.system(size: 14, weight: .bold))
+                Spacer()
+            }
+            .frame(height: 46)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(HBColor.actionColor)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+    
     private func customAlert() -> Alert {
         switch activeAlert {
         case .error:
@@ -246,7 +259,6 @@ public struct NewFlashcardViewMacOS: View {
                          primaryButton: .destructive(Text("deletar", bundle: .module)) {
                 do {
                     try viewModel.deleteFlashcard()
-                    //dismiss()
                 } catch {
                     activeAlert = .error
                     showingAlert = true

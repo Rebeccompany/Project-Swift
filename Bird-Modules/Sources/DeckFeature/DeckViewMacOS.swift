@@ -128,7 +128,7 @@ public struct DeckViewMacOS: View {
                     .font(.title3)
                     .bold()
                     .padding(.leading)
-                    .padding(.bottom)
+                    .padding(.vertical)
                 if !viewModel.checkIfCanStudy(deck) && !viewModel.cards.isEmpty {
                     Text(NSLocalizedString("no_study_allowed", bundle: .module, comment: ""))
                         .padding(.leading)
@@ -137,32 +137,44 @@ public struct DeckViewMacOS: View {
                         .listRowBackground(Color.clear)
                 }
                 
-                Button("Spixii") {
-                    studyMode = .spaced
-                    shouldDisplayStudyView = true
+                HStack(alignment: .center) {
+                    Spacer()
+                    Button(NSLocalizedString("intenso", bundle: .module, comment: "")) {
+                        studyMode = .cramming
+                        shouldDisplayStudyView = true
+                        
+                        let model = StudyWindowData(deck: deck, mode: studyMode)
+                        openWindow(value: model)
+                    }
+                    .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
+                    .listRowInsets(.zero)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .frame(maxWidth: 350)
+                    .padding(.horizontal, 5)
+                    
+                    Button("Spixii") {
+                        studyMode = .spaced
+                        shouldDisplayStudyView = true
+                        
+                        let model = StudyWindowData(deck: deck, mode: studyMode)
+                        openWindow(value: model)
+                    }
+                    .disabled(!viewModel.checkIfCanStudy(deck))
+                    .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck), isFilled: true))
+                    .listRowInsets(.zero)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .frame(maxWidth: 350)
+                    .padding(.horizontal, 5)
+                    Spacer()
                 }
-                .disabled(!viewModel.checkIfCanStudy(deck))
-                .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck), isFilled: true))
-                .listRowInsets(.zero)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-                .padding()
-
-                Button(NSLocalizedString("intenso", bundle: .module, comment: "")) {
-                    studyMode = .cramming
-                    shouldDisplayStudyView = true
-                }
-                .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
-                .listRowInsets(.zero)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-                .padding(.horizontal)
-                .padding(.bottom)
                 
                 Text("Flashcards")
                     .font(.title3)
                     .bold()
                     .padding(.leading)
+                    .padding(.vertical)
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 160, maximum: 180), spacing: 12, alignment: .top)], spacing: 12) {
                     ForEach(viewModel.cardsSearched) { card in
                         FlashcardCell(card: card) {
