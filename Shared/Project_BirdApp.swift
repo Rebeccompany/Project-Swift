@@ -15,6 +15,9 @@ struct Project_BirdApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onOpenURL { url in
+                    print("olaaaa", url)
+                }
         }
     }
 }
