@@ -72,6 +72,7 @@ final class SessionsForTodayTests: XCTestCase {
         try deckRepositoryMock.createDeck(deck, cards: pastDDCards)
         sut.startup()
         
+        XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
         XCTAssertTrue(sut.todayDecks.isEmpty)
     }
     
@@ -81,6 +82,7 @@ final class SessionsForTodayTests: XCTestCase {
         try deckRepositoryMock.createSession(Session(cardIds: pastDDCards.map(\.id), date: dateHandler.today.addingTimeInterval(-86400), deckId: deck.id, id: UUID()), for: deck)
         sut.startup()
         
+        XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
         XCTAssertTrue(sut.todayDecks.contains(where: {$0.id == deck.id}))
     }
     
@@ -90,6 +92,7 @@ final class SessionsForTodayTests: XCTestCase {
         try deckRepositoryMock.createDeck(deck, cards: todayDDCards)
         sut.startup()
         
+        XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
         XCTAssertTrue(sut.todayDecks.isEmpty)
     }
     
@@ -99,6 +102,7 @@ final class SessionsForTodayTests: XCTestCase {
         try deckRepositoryMock.createSession(Session(cardIds: todayDDCards.map(\.id), date: dateHandler.today, deckId: deck.id, id: UUID()), for: deck)
         sut.startup()
         
+        XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
         XCTAssertTrue(sut.todayDecks.contains(where: {$0.id == deck.id}))
     }
     
@@ -107,40 +111,17 @@ final class SessionsForTodayTests: XCTestCase {
     func testSessionDDFuture() throws {
         try deckRepositoryMock.createDeck(deck, cards: futureDDCards)
         sut.startup()
-        
+        XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
         XCTAssertTrue(sut.todayDecks.isEmpty)
     }
 
-    #warning("falta de nil e falta fazer permutations")
     // Tests with cards that have dueDates = nil
-    func testSessionNeverStartedDDNil() {
+    func testSessionDDNil() throws {
+        try deckRepositoryMock.createDeck(deck, cards: nilDDCards)
+        sut.startup()
         
-    }
-    
-    func testSessionHasStartedBeforeDDNil() {
-        
-    }
-    
-    
-    // Tests with cards that have dueDates mixed
-    func testSessionNeverStartedDDPermutations() {
-        
-    }
-    
-    func testSessionInProgressFromADayAgoDDPermutations() {
-        
-    }
-    
-    func testSessionInProgressFromTodayDDPermutations() {
-        
-    }
-    
-    func testSessionEndedInThePastDDPermutations() {
-        
-    }
-    
-    func testSessionEndedNowDDPermutations() {
-        
+        XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
+        XCTAssertTrue(sut.todayDecks.isEmpty)
     }
     
     func createCards() {
