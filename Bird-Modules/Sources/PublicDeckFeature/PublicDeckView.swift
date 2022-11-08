@@ -9,12 +9,13 @@ import SwiftUI
 import HummingBird
 import Models
 import Habitat
+import StoreState
 
 public struct PublicDeckView: View {
     var deck: ExternalDeck
     
     @StateObject private var interactor: PublicDeckInteractor = PublicDeckInteractor()
-    @StateObject private var store: PublicDeckStore = PublicDeckStore(state: .init())
+    @EnvironmentObject private var store: ShopStore
     
     public init(deck: ExternalDeck) {
         self.deck = deck
@@ -157,6 +158,7 @@ struct PublicDeckView_Previews: PreviewProvider {
                 }
 
             }
+            .environmentObject(ShopStore())
         }
     }
 }

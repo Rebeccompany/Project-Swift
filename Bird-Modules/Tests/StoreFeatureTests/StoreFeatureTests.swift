@@ -12,16 +12,17 @@ import XCTest
 import Puffins
 import Habitat
 import Combine
+import StoreState
 
 final class StoreFeatureTests: XCTestCase {
-    var sut: StoreViewModel!
+    var sut: FeedInteractor!
     var externalDeckRepository: ExternalDeckServiceMock!
     var cancelables: Set<AnyCancellable>!
 
     override func setUp() {
         externalDeckRepository = ExternalDeckServiceMock()
         setupHabitatForIsolatedTesting(externalDeckService: externalDeckRepository)
-        sut = StoreViewModel()
+        sut = FeedInteractor()
         cancelables = Set<AnyCancellable>()
     }
     
@@ -34,47 +35,50 @@ final class StoreFeatureTests: XCTestCase {
         cancelables = nil
     }
     
-    func testStartUpLoaded() throws {
-        sut.startup()
+    func testStartUpSucessfully() throws {
         let deckExpectation = expectation(description: "Connection with External Deck repository")
         
-        sut.$sections
-            .sink { [unowned self] sections in
-                XCTAssertEqual(sections, externalDeckRepository.feed)
+        var initialState = FeedState()
+        
+        sut
+            .reduce(&initialState, action: .loadFeed)
+            .sink { _ in
+                
+            } receiveValue: {[unowned self] newState in
+                XCTAssertEqual(newState.viewState, .loaded)
+                XCTAssertEqual(newState.sections, self.externalDeckRepository.feed)
                 deckExpectation.fulfill()
             }
             .store(in: &cancelables)
+
+        
+        XCTAssertEqual(initialState.viewState, .loading)
+        XCTAssertTrue(initialState.sections.isEmpty)
         wait(for: [deckExpectation], timeout: 1)
-        XCTAssertEqual(sut.viewState, .loaded)
-    }
-    
-    func testStartUpLoading() throws {
-        sut.startup()
-        let deckExpectation = expectation(description: "Connection with External Deck repository")
-        
-        sut.$sections
-            .sink { [unowned self] sections in
-                XCTAssertEqual(sections, externalDeckRepository.feed)
-                deckExpectation.fulfill()
-            }
-            .store(in: &cancelables)
-        wait(for: [deckExpectation], timeout: 4)
-        XCTAssertEqual(sut.viewState, .loaded)
     }
     
     func testStartUpError() throws {
         let deckExpectation = expectation(description: "Connection with External Deck repository")
         externalDeckRepository.shouldError = true
-        sut.startup()
-        
-        sut.$sections
-            .sink { [] sections in
-                XCTAssertEqual(sections, [])
+        var newState = FeedState()
+
+        sut
+            .reduce(&newState, action: .loadFeed)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    XCTAssertTrue(false)
+                case .failure(_):
+                    XCTAssertTrue(true)
+                }
                 deckExpectation.fulfill()
+            } receiveValue: { _ in
+                
             }
             .store(in: &cancelables)
+
         
         wait(for: [deckExpectation], timeout: 1)
-        XCTAssertEqual(sut.viewState, .error)
+        //XCTAssertEqual(sut.viewState, .error)
     }
 }

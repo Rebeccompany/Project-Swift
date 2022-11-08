@@ -10,6 +10,7 @@ import Models
 import Combine
 import Habitat
 import Peacock
+import StoreState
 
 
 enum PublicDeckActions: Equatable {
@@ -29,7 +30,7 @@ final class PublicDeckInteractor: Interactor {
         actionDispatcher.send(action)
     }
     
-    func bind(to store: PublicDeckStore) {
+    func bind(to store: ShopStore) {
         actionDispatcher
             .receive(on: RunLoop.main)
             .flatMap { [weak self, weak store] action -> AnyPublisher<PublicDeckState, Error> in
@@ -63,7 +64,6 @@ final class PublicDeckInteractor: Interactor {
     private func loadDeckEffect(id: String, currentState: PublicDeckState) -> AnyPublisher<PublicDeckState, Error> {
         return deckService
             .getDeck(by: id)
-            .delay(for: .seconds(2), scheduler: RunLoop.main)
             .map { deck in
                 var newState = currentState
                 newState.deck = deck
@@ -76,7 +76,6 @@ final class PublicDeckInteractor: Interactor {
     private func loadNewCardsEffect(_ currentState: PublicDeckState, id: String, page: Int) -> AnyPublisher<PublicDeckState, Error> {
         deckService
             .getCardsFor(deckId: id, page: page)
-            .delay(for: .seconds(2), scheduler: RunLoop.main)
             .map { cards in
                 var newState = currentState
                 newState.cards += cards
@@ -91,7 +90,6 @@ final class PublicDeckInteractor: Interactor {
     private func reloadCardsEffect(_ currentState: PublicDeckState, id: String) -> AnyPublisher<PublicDeckState, Error> {
         deckService
             .getCardsFor(deckId: id, page: 0)
-            .delay(for: .seconds(2), scheduler: RunLoop.main)
             .map { cards in
                 var newState = currentState
                 newState.cards = cards
@@ -102,5 +100,3 @@ final class PublicDeckInteractor: Interactor {
             .eraseToAnyPublisher()
     }
 }
-
-

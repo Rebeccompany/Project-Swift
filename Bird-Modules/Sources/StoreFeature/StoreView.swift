@@ -9,26 +9,31 @@ import SwiftUI
 import HummingBird
 import Habitat
 import Models
+import Peacock
 import PublicDeckFeature
+import StoreState
 
 public struct StoreView: View {
-    @StateObject private var viewModel: StoreViewModel = StoreViewModel()
+    @StateObject private var store = ShopStore()
+    @StateObject private var interactor = FeedInteractor()
     
     public init() { }
     
     public var body: some View {
+        let state = store.feedState
         Group {
-            switch viewModel.viewState {
+            switch state.viewState {
             case .loaded:
                 ScrollView {
                     LazyVStack(alignment: .leading) {
-                        ForEach(viewModel.sections) { section in
+                        ForEach(state.sections) { section in
                             PublicSection(section: section)
                         }
                     }
                 }
                 .navigationDestination(for: ExternalDeck.self) { deck in
                     PublicDeckView(deck: deck)
+                        .environmentObject(store)
                 }
             case .error:
                 Text("Error")
@@ -37,7 +42,10 @@ public struct StoreView: View {
             }
         }
         .navigationTitle(NSLocalizedString("baralhos_publicos", bundle: .module, comment: ""))
-        .onAppear(perform: viewModel.startup)
+        .onAppear {
+            interactor.bind(to: store)
+            interactor.send(.loadFeed)
+        }
         .viewBackgroundColor(HBColor.primaryBackground)
     }
 }
