@@ -147,8 +147,35 @@ public struct DetailView: View {
             }
             .buttonStyle(LargeButtonStyle(isDisabled: false))
             .padding()
+            
+            Button("Schedule Notification") {
+                let center = UNUserNotificationCenter.current()
+                
+                let content = sortNotification()
+                
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5.0, repeats: false)
+                
+                let request = UNNotificationRequest(identifier: "identifier", content: content, trigger: trigger)
+                
+                center.add(request)
+            }
         }
+    }
+    
+    
+    private func sortNotification() -> UNMutableNotificationContent {
+        let notificationContent = ["Vem estudar Nome do Baralho",
+                                   "Ta achando que a vida é fácil, vem estudar Nome do Baralho",
+                                   "Já tá na hora né, o baralho Nome do Baralho te espera"]
+        let notificationContentIndex = Int.random(in: 0...2)
         
+        let content = UNMutableNotificationContent()
+        content.title = "Piu!!"
+        content.body = notificationContent[notificationContentIndex]
+        content.sound = UNNotificationSound.default
+        content.userInfo = ["CustomData": "Some Data"]
+        
+        return content
     }
     
     @ViewBuilder
