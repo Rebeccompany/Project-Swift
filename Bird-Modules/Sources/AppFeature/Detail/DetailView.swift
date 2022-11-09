@@ -25,7 +25,6 @@ public struct DetailView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     
-    
     init(editMode: Binding<EditMode>) {
         self._editMode = editMode
     }
@@ -150,25 +149,9 @@ public struct DetailView: View {
             .padding()
             
             Button("Schedule Notification") {
-                
+                viewModel.callNotification()
             }
         }
-    }
-    
-    
-    private func sortNotification() -> UNMutableNotificationContent {
-        let notificationContent = ["Vem estudar Nome do Baralho",
-                                   "Ta achando que a vida é fácil, vem estudar Nome do Baralho",
-                                   "Já tá na hora né, o baralho Nome do Baralho te espera"]
-        let notificationContentIndex = Int.random(in: 0...2)
-        
-        let content = UNMutableNotificationContent()
-        content.title = "Piu!!"
-        content.body = notificationContent[notificationContentIndex]
-        content.sound = UNNotificationSound.default
-        content.userInfo = ["CustomData": "Some Data"]
-        
-        return content
     }
     
     @ViewBuilder

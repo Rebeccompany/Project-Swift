@@ -42,8 +42,11 @@ public final class NotificationService: NotificationServiceProtocol {
     
     private func timeTrigger(for time: TimeInterval) -> TimeInterval {
         let today = dateHandler.today.timeIntervalSince1970
-        let timeTrigger = time - today
-        return timeTrigger
+        if time > today {
+            let timeTrigger = time - today
+            return timeTrigger
+        }
+        return time
     }
     
     private func sortNotification(for deck: Deck) -> UNMutableNotificationContent {
@@ -59,16 +62,7 @@ public final class NotificationService: NotificationServiceProtocol {
         content.title = NSLocalizedString("birdSound", bundle: .module, comment: "")
         content.body = notificationContent[notificationContentIndex]
         content.sound = UNNotificationSound.default
-        content.userInfo = ["CustomData": "Some Data"]
         
         return content
     }
-}
-
-public protocol UserNotificationServiceProtocol {
-    func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> Void)?)
-}
-
-extension UNUserNotificationCenter: UserNotificationServiceProtocol {
-    
 }
