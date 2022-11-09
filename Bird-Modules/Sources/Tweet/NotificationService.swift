@@ -12,6 +12,10 @@ import Utils
 public final class NotificationService: NotificationServiceProtocol {
     private let center: UserNotificationServiceProtocol
     private let dateHandler: DateHandlerProtocol
+    private let not1: String = NSLocalizedString("notification1", bundle: .module, comment: "")
+    private let not2: String = NSLocalizedString("notification2", bundle: .module, comment: "")
+    private let not3: String = NSLocalizedString("notification3", bundle: .module, comment: "")
+    private let not3_secondPart: String = NSLocalizedString("notification3_awaits", bundle: .module, comment: "")
     
     public init(center: UserNotificationServiceProtocol = UNUserNotificationCenter.current(), dateHandler: DateHandlerProtocol = DateHandler()) {
         self.center = center
@@ -44,14 +48,15 @@ public final class NotificationService: NotificationServiceProtocol {
     
     private func sortNotification(for deck: Deck) -> UNMutableNotificationContent {
         let notificationContent = [
-            "Vem estudar \(deck.name)",
-            "Ta achando que a vida é fácil, vem estudar \(deck.name)",
-            "Já tá na hora né, o baralho \(deck.name) te espera"
+            "\(not1) \(deck.name)",
+            "\(not2) \(deck.name)",
+            "\(not3) \(deck.name) \(not3_secondPart)"
         ]
+        
         let notificationContentIndex = Int.random(in: 0...2)
         let content = UNMutableNotificationContent()
         
-        content.title = "Piu!!"
+        content.title = NSLocalizedString("birdSound", bundle: .module, comment: "")
         content.body = notificationContent[notificationContentIndex]
         content.sound = UNNotificationSound.default
         content.userInfo = ["CustomData": "Some Data"]
