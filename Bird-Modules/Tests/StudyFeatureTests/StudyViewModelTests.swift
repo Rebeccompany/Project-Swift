@@ -1,44 +1,46 @@
-#warning("grrrrrrrr")
-//////
-//////  StudyViewModelTests.swift
-//////
-//////
-//////  Created by Marcos Chevis on 06/09/22.
-//////
-//
-//import XCTest
-//@testable import StudyFeature
-//import Storage
-//import Models
-//import Combine
-//import Utils
-//import Habitat
-//
-//class StudyViewModelTests: XCTestCase {
-//
-//    var sut: StudyViewModel!
-//    var localStorage: LocalStorageMock!
-//    var deckRepository: DeckRepositoryMock!
-//    var deck: Deck!
-//    var dateHandler: DateHandlerProtocol!
-//    var systemObserver: SystemObserverMock!
-//    var uuidGenerator: UUIDGeneratorProtocol!
-//    var cancellables: Set<AnyCancellable>!
-//
-//
-//    override func setUpWithError() throws {
-//        deckRepository = DeckRepositoryMock()
-//        localStorage = LocalStorageMock()
-//        deck = deckRepository.decks.first
-//        dateHandler = DateHandlerMock()
-//        systemObserver = SystemObserverMock()
-//        setupHabitatForIsolatedTesting(deckRepository: deckRepository, collectionRepository: CollectionRepositoryMock(), dateHandler: dateHandler, uuidGenerator: UUIDHandlerMock(), systemObserver: systemObserver)
-//
-//        sut = .init()
-//        uuidGenerator = UUIDHandlerMock()
-//        cancellables = .init()
-//    }
-//
+////
+////  StudyViewModelTests.swift
+////
+////
+////  Created by Marcos Chevis on 06/09/22.
+////
+
+import XCTest
+@testable import StudyFeature
+import Storage
+import Models
+import Combine
+import Utils
+import Habitat
+
+
+#warning("oi babylis! falta arrumar isso e criar os testes das coisas que vcs fizeram na VM")
+
+class StudyViewModelTests: XCTestCase {
+
+    var sut: StudyViewModel!
+    var localStorage: LocalStorageMock!
+    var deckRepository: DeckRepositoryMock!
+    var deck: Deck!
+    var dateHandler: DateHandlerProtocol!
+    var systemObserver: SystemObserverMock!
+    var uuidGenerator: UUIDGeneratorProtocol!
+    var cancellables: Set<AnyCancellable>!
+
+
+    override func setUpWithError() throws {
+        deckRepository = DeckRepositoryMock()
+        localStorage = LocalStorageMock()
+        deck = deckRepository.decks.first
+        dateHandler = DateHandlerMock()
+        systemObserver = SystemObserverMock()
+        setupHabitatForIsolatedTesting(deckRepository: deckRepository, collectionRepository: CollectionRepositoryMock(), dateHandler: dateHandler, uuidGenerator: UUIDHandlerMock(), systemObserver: systemObserver)
+
+        sut = .init()
+        uuidGenerator = UUIDHandlerMock()
+        cancellables = .init()
+    }
+
 //    override func tearDownWithError() throws {
 //        deckRepository = nil
 //        localStorage = nil
@@ -665,4 +667,4 @@
 //    func testNewSessionCreationAtEndOfSession() {
 //
 //    }
-//}
+}

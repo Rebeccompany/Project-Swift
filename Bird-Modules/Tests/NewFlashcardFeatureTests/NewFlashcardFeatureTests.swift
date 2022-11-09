@@ -21,6 +21,9 @@ class NewFlashcardFeatureTests: XCTestCase {
     var dateHandlerMock: DateHandlerMock!
     var uuidHandler: UUIDHandlerMock!
     var cancellables: Set<AnyCancellable>!
+    
+    var deck0: Deck!
+    var cards: [Card]!
 
 
     override func setUp() {
@@ -34,6 +37,14 @@ class NewFlashcardFeatureTests: XCTestCase {
         sut = NewFlashcardViewModel()
 
         sut.startUp(editingFlashcard: nil)
+        createData()
+    }
+    
+    func createData() {
+        createCards()
+        createDecks()
+        
+        try? deckRepository.createDeck(deck0, cards: cards)
     }
 
     override func tearDown() {
@@ -43,15 +54,17 @@ class NewFlashcardFeatureTests: XCTestCase {
         uuidHandler = nil
         cancellables.forEach({$0.cancel()})
         cancellables = nil
+        deck0 = nil
+        cards = nil
     }
 
     func testCreateFlashcardSuccessfully() throws {
         sut.flashcardFront = NSAttributedString(string: "Frente do card")
         sut.flashcardBack = NSAttributedString(string: "Verso do flashard")
         sut.currentSelectedColor = CollectionColor.red
-        try sut.createFlashcard(for: deckRepository.decks[0])
+        try sut.createFlashcard(for: deckRepository.data[deck0.id]!.deck)
 
-        let containsFlashcard = deckRepository.cards.contains(where: {
+        let containsFlashcard = deckRepository.data[deck0.id]!.cards.contains(where: {
             $0.id == uuidHandler.lastCreatedID
         })
 
@@ -63,9 +76,9 @@ class NewFlashcardFeatureTests: XCTestCase {
         sut.flashcardBack = NSAttributedString(string: "tras")
         sut.currentSelectedColor = CollectionColor.red
         deckRepository.shouldThrowError = true
-        XCTAssertThrowsError(try sut.createFlashcard(for: deckRepository.decks[0]))
+        XCTAssertThrowsError(try sut.createFlashcard(for: deckRepository.data[deck0.id]!.deck))
 
-        let containsFlashcard = deckRepository.cards.contains(where: {
+        let containsFlashcard = deckRepository.data[deck0.id]!.cards.contains(where: {
             $0.id == uuidHandler.lastCreatedID
         })
 
@@ -166,52 +179,61 @@ class NewFlashcardFeatureTests: XCTestCase {
     }
 
     func testEditFlashcardFront() throws {
-        XCTAssertEqual(deckRepository.cards[0].front, NSAttributedString(string: "Parte da frente"))
+        var card = deckRepository.data[deck0.id]!.cards.first
+        XCTAssertEqual(card!.front, NSAttributedString(string: "Parte da frente"))
 
         sut.flashcardFront = NSAttributedString(string: "Novo texto")
-        try sut.editFlashcard(editingFlashcard: deckRepository.cards[0])
+        try sut.editFlashcard(editingFlashcard: card)
+        card = deckRepository.data[deck0.id]!.cards.first
 
-        XCTAssertEqual(deckRepository.cards[0].front, NSAttributedString(string: "Novo texto"))
+        XCTAssertEqual(card!.front, NSAttributedString(string: "Novo texto"))
     }
 
     func testEditFlashcardBack() throws {
-        XCTAssertEqual(deckRepository.cards[0].back, NSAttributedString(string: "Parte de tras"))
+        var card = deckRepository.data[deck0.id]!.cards.first
+        XCTAssertEqual(card!.back, NSAttributedString(string: "Parte de tras"))
 
         sut.flashcardBack = NSAttributedString(string: "Novo texto")
-        try sut.editFlashcard(editingFlashcard: deckRepository.cards[0])
+        try sut.editFlashcard(editingFlashcard: card)
+        card = deckRepository.data[deck0.id]!.cards.first
 
-        XCTAssertEqual(deckRepository.cards[0].back, NSAttributedString(string: "Novo texto"))
+        XCTAssertEqual(card!.back, NSAttributedString(string: "Novo texto"))
     }
 
     func testEditFlashcardColor() throws {
-        XCTAssertEqual(deckRepository.cards[0].color, CollectionColor.red)
+        var card = deckRepository.data[deck0.id]!.cards.first
+        XCTAssertEqual(card!.color, CollectionColor.red)
 
         sut.currentSelectedColor = CollectionColor.darkBlue
-        try sut.editFlashcard(editingFlashcard: deckRepository.cards[0])
+        try sut.editFlashcard(editingFlashcard: card)
+        card = deckRepository.data[deck0.id]!.cards.first
 
-        XCTAssertEqual(deckRepository.cards[0].color, CollectionColor.darkBlue)
+        XCTAssertEqual(card!.color, CollectionColor.darkBlue)
     }
 
     func testEditFlashcardError() throws {
-        XCTAssertEqual(deckRepository.cards[0].color, CollectionColor.red)
+        var card = deckRepository.data[deck0.id]!.cards.first
+        XCTAssertEqual(card!.color, CollectionColor.red)
 
         deckRepository.shouldThrowError = true
         sut.currentSelectedColor = CollectionColor.darkBlue
-        XCTAssertThrowsError(try sut.editFlashcard(editingFlashcard: deckRepository.cards[0]))
+        card = deckRepository.data[deck0.id]!.cards.first
+        XCTAssertThrowsError(try sut.editFlashcard(editingFlashcard: card))
     }
 
     func testDeleteFlashcardSuccessfully() throws {
-        let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
+        let id = deckRepository.data[deck0.id]!.cards.first?.id
+        
 
-        let containsFlashcard = deckRepository.cards.contains(where: {
+        let containsFlashcard = deckRepository.data[deck0.id]!.cards.contains(where: {
             $0.id == id
         })
 
         XCTAssertTrue(containsFlashcard)
 
-        try sut.deleteFlashcard(editingFlashcard: deckRepository.cards[0])
+        try sut.deleteFlashcard(editingFlashcard: deckRepository.data[deck0.id]!.cards.first)
 
-        let deletedCard = deckRepository.decks.contains(where: {
+        let deletedCard = deckRepository.data[deck0.id]!.cards.contains(where: {
             $0.id == id
         })
 
@@ -219,15 +241,80 @@ class NewFlashcardFeatureTests: XCTestCase {
     }
 
     func testDeleteFlashcardError() throws {
-        let id = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")
+        let id = deckRepository.data[deck0.id]!.cards.first?.id
 
-        let containsFlashcard = deckRepository.cards.contains(where: {
+        let containsFlashcard = deckRepository.data[deck0.id]!.cards.contains(where: {
             $0.id == id
         })
 
         XCTAssertTrue(containsFlashcard)
 
         deckRepository.shouldThrowError = true
-        XCTAssertThrowsError(try sut.editFlashcard(editingFlashcard: deckRepository.cards[0]))
+        XCTAssertThrowsError(try sut.editFlashcard(editingFlashcard: deckRepository.data[deck0.id]!.cards.first))
+    }
+    
+    enum WoodpeckerState {
+        case review, learn
+    }
+    
+    func createCards() {
+        cards = []
+        var i = 0
+        while i < 7 {
+            cards.append(createNewCard(state: .learn))
+            i += 1
+        }
+        
+        i = 0
+        while i < 5 {
+            cards.append(createNewCard(state: .review))
+            i += 1
+        }
+    }
+    
+    func createNewCard(state: WoodpeckerState) -> Card {
+        Card(id: UUID(),
+             front: NSAttributedString(string: "Parte da frente"),
+             back: NSAttributedString(string: "Parte de tras"),
+             color: CollectionColor.red,
+             datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
+                                 lastEdit: Date(timeIntervalSince1970: 0),
+                                 createdAt: Date(timeIntervalSince1970: 0)),
+             deckID: UUID(),
+             woodpeckerCardInfo: WoodpeckerCardInfo(step: 0,
+                                                    isGraduated: state == .review ? true : false,
+                                                    easeFactor: 2.5, streak: 0,
+                                                    interval: state == .review ? 1 : 0,
+                                                    hasBeenPresented: state == .review ? true : false),
+             history: state == .review ? [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(step: 0,
+                                                                                              isGraduated: false,
+                                                                                              easeFactor: 2.5,
+                                                                                              streak: 0,
+                                                                                              interval: 0,
+                                                                                              hasBeenPresented: false),
+                                                       userGrade: .correct,
+                                                       timeSpend: 20,
+                                                       date: Date(timeIntervalSince1970: -86400))] : [])
+        
+    }
+    
+    func createDecks() {
+        deck0 = newDeck()
+        
+    }
+    
+    func newDeck() -> Deck {
+        Deck(id: UUID(),
+             name: "Programação Swift",
+             icon: IconNames.atom.rawValue,
+             color: CollectionColor.red,
+             datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0),
+                                 lastEdit: Date(timeIntervalSince1970: 0),
+                                 createdAt: Date(timeIntervalSince1970: 0)),
+             collectionId: nil,
+             cardsIds: [],
+             spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
+             category: DeckCategory.arts,
+             storeId: nil)
     }
 }
