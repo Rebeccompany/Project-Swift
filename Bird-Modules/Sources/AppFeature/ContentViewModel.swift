@@ -12,6 +12,7 @@ import Storage
 import DeckFeature
 import Habitat
 import SwiftUI
+import Tweet
 
 //swiftlint:disable trailing_closure
 public final class ContentViewModel: ObservableObject {
@@ -32,6 +33,7 @@ public final class ContentViewModel: ObservableObject {
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
+    @Dependency(\.notificationCenter) private var notificationCenter: NotificationServiceProtocol
     
     private var cancellables: Set<AnyCancellable>
     
@@ -98,6 +100,8 @@ public final class ContentViewModel: ObservableObject {
         
         detailType = displayCacher.getCurrentDetailType() ?? .grid
         shouldReturnToGrid = detailType == .grid
+        
+        notificationCenter.requestAuthorizationForNotifications()
     }
     
     func bindingToDeck(_ deck: Deck) -> Binding<Deck> {
