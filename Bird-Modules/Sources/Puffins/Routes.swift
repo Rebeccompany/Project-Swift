@@ -16,4 +16,8 @@ extension Endpoint {
         let queryItem = URLQueryItem(name: "page", value: "\(page)")
         return Endpoint(path: "api/cards/\(id)", queryItems: [queryItem])
     }
+    
+    static func sendAnDeck() -> Endpoint {
+        Endpoint(path: "api/deck")
+    }
 }
