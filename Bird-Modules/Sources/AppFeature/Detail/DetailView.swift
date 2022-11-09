@@ -12,6 +12,7 @@ import NewDeckFeature
 import DeckFeature
 import Storage
 import Habitat
+import Tweet
 
 
 public struct DetailView: View {
@@ -149,15 +150,7 @@ public struct DetailView: View {
             .padding()
             
             Button("Schedule Notification") {
-                let center = UNUserNotificationCenter.current()
                 
-                let content = sortNotification()
-                
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5.0, repeats: false)
-                
-                let request = UNNotificationRequest(identifier: "identifier", content: content, trigger: trigger)
-                
-                center.add(request)
             }
         }
     }

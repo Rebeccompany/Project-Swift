@@ -8,6 +8,7 @@ import Foundation
 import Storage
 import Puffins
 import Utils
+import Tweet
 
 // MARK: Keys
 
@@ -37,6 +38,10 @@ private struct SystemObserverKey: HabitatKey {
 
 private struct DisplayCacherKey: HabitatKey {
     static var currentValue: DisplayCacherProtocol = DisplayCacher()
+}
+
+private struct NotificationCenterKey: HabitatKey {
+    static var currentValue: NotificationServiceProtocol = NotificationService()
 }
 
 // MARK: Extension
@@ -74,5 +79,10 @@ extension Habitat {
     public var externalDeckService: ExternalDeckServiceProtocol {
         get { Self[ExternalDeckServiceKey.self] }
         set { Self[ExternalDeckServiceKey.self] = newValue }
+    }
+    
+    public var notificationCenter: NotificationServiceProtocol {
+        get { Self[NotificationCenterKey.self] }
+        set { Self[NotificationCenterKey.self] = newValue }
     }
 }

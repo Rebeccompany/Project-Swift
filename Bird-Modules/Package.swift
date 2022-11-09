@@ -159,7 +159,8 @@ let package = Package(
                 "Habitat",
                 "NewFlashcardFeature",
                 "OnboardingFeature",
-                "StoreFeature"
+                "StoreFeature",
+                "Tweet"
             ]
         ),
         
@@ -281,7 +282,8 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Utils",
-                "Puffins"
+                "Puffins",
+                "Tweet"
             ]
         ),
         
@@ -322,7 +324,8 @@ let package = Package(
         .target(
             name: "Tweet",
             dependencies: [
-                "Models"
+                "Models",
+                "Utils"
             ]
         ),
         
