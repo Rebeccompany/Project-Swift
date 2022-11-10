@@ -107,7 +107,7 @@ public struct DeckViewiOS: View {
             }
         }
         .fullScreenCover(isPresented: $shouldDisplayStudyView) {
-            StudyView(
+            StudyViewiOS(
                 deck: deck,
                 mode: studyMode
             )

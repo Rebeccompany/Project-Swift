@@ -1,8 +1,8 @@
 //
-//  EndOfStudyView.swift
+//  EndOfStudyViewMacOS.swift
 //  
 //
-//  Created by Rebecca Mello on 21/09/22.
+//  Created by Nathalia do Valle Papst on 10/11/22.
 //
 
 import SwiftUI
@@ -11,14 +11,12 @@ import Models
 import HummingBird
 import Utils
 
-struct EndOfStudyView: View {
-    @Environment(\.dismiss) private var dismiss
+#if os(macOS)
+struct EndOfStudyViewMacOS: View {
     private let mode: StudyMode
-    var action: () -> Void
     
-    init(mode: StudyMode, action: @escaping () -> Void) {
+    init(mode: StudyMode) {
         self.mode = mode
-        self.action = action
     }
     
     var body: some View {
@@ -42,21 +40,17 @@ struct EndOfStudyView: View {
                 .multilineTextAlignment(.center)
                 .padding()
             
-            Button {
-                action()
-                dismiss()
-            } label: {
-                Text("go_back_to_deck", bundle: .module)
-            }
-            .buttonStyle(LargeButtonStyle(isDisabled: false, isFilled: false))
-            .padding()
-            
+            Text("Você já pode fechar essa janela!")
+                .font(.system(size: 18, weight: .bold))
+                .multilineTextAlignment(.center)
+                .padding()
         }
     }
 }
 
-struct EndOfStudyView_Previews: PreviewProvider {
+struct EndOfStudyViewMacvOS_Previews: PreviewProvider {
     static var previews: some View {
-        EndOfStudyView(mode: .spaced) { }
+        EndOfStudyViewMacOS(mode: .spaced)
     }
 }
+#endif

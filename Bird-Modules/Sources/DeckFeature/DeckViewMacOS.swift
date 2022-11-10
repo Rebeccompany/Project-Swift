@@ -100,7 +100,6 @@ public struct DeckViewMacOS: View {
                         systemImage: "plus"
                     )
                 }
-                .foregroundColor(HBColor.actionColor)
             }
         }
     }

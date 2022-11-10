@@ -97,7 +97,7 @@ public struct StudyViewiOS: View {
                     }
     
                 } else {
-                    EndOfStudyView(mode: mode) {
+                    EndOfStudyViewiOS(mode: mode) {
                         do {
                             try viewModel.saveChanges(deck: deck, mode: mode)
                             dismiss()

@@ -20,8 +20,7 @@ public struct HBColorPicker<Label: View>: View {
     }
     
     #if os(iOS)
-    @Environment(\.horizontalSizeClass)
-    private var horizontalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     #endif
     
     private let colors: [Color] = {

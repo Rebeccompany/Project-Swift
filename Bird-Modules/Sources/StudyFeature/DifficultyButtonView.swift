@@ -60,6 +60,7 @@ struct DifficultyButtonView: View {
             }
             .keyboardShortcut(shortcutValue())
             .disabled(isDisabled)
+            .buttonStyle(.plain)
             
             Text(content.label)
                 .font(.system(size: 14))

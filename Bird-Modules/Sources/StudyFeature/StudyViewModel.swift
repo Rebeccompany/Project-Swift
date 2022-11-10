@@ -12,6 +12,7 @@ import Woodpecker
 import Combine
 import Utils
 import Habitat
+import SwiftUI
 
 //swiftlint:disable trailing_closure
 
@@ -143,6 +144,14 @@ public class StudyViewModel: ObservableObject {
                 }
                 .store(in: &cancellables)
         }
+        
+        #if os(macOS)
+//        NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)
+//            .sink { [weak self] _ in
+//                try? self?.saveChanges(deck: deck, mode: .spaced)
+//            }
+//            .store(in: &cancellables)
+        #endif
     }
     
     private func finishFetchCards(_ completion: Subscribers.Completion<RepositoryError>) {

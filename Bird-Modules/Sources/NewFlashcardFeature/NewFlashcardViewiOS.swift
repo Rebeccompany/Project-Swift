@@ -28,7 +28,6 @@ public struct NewFlashcardViewiOS: View {
     
     @Environment(\.dismiss) private var dismiss
     
-    
     var deck: Deck
     var editingFlashcard: Card?
     

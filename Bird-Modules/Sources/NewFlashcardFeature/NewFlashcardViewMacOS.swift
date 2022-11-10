@@ -31,8 +31,10 @@ public struct NewFlashcardViewMacOS: View {
     
     var activeContext: RichTextContext {
         if frontContext.isEditingText {
+            print("oi", frontContext.isEditingText)
             return frontContext
         } else {
+            print("tchau", backContext.isEditingText)
             return backContext
         }
     }
@@ -74,24 +76,32 @@ public struct NewFlashcardViewMacOS: View {
                         }
                         
                         Spacer()
+                        
+                        if viewModel.editingFlashcard != nil {
+                            HStack {
+                                Spacer()
+                                deleteButton
+                                Spacer()
+                                saveButton
+                                Spacer()
+                            }
+                            .padding(.bottom, 30)
+                            .padding(.top, 30)
+                            
+                        } else {
+                            HStack {
+                                Spacer()
+                                saveButton
+                                    .frame(width: 300)
+                                    .padding(.bottom, 30)
+                                    .padding(.top, 30)
+                                Spacer()
+                            }
+                        }
                     }
                     .padding()
                     
-                    if viewModel.editingFlashcard != nil {
-                        HStack {
-                            Spacer()
-                            deleteButton
-                            Spacer()
-                            saveButton
-                            Spacer()
-                        }
-                        .padding(.bottom, 50)
-                        
-                    } else {
-                        saveButton
-                            .frame(width: 300)
-                            .padding(.bottom, 50)
-                    }
+                    
                 }
                 .scrollContentBackground(.hidden)
                 .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
@@ -113,33 +123,15 @@ public struct NewFlashcardViewMacOS: View {
                 .toolbar {
                     
                     ToolbarItem {
-                        Button { activeContext.isItalic.toggle() } label: {
-                            Image.richTextStyleItalic
-                                .frame(width: 18, height: 18)
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(activeContext.isItalic ? HBColor.actionColor : nil)
-                        .keyboardShortcut("i", modifiers: .command)
+                        italicButton
                     }
                     
                     ToolbarItem {
-                        Button { activeContext.isBold.toggle() } label: {
-                            Image.richTextStyleBold
-                                .frame(width: 18, height: 18)
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(activeContext.isBold ? HBColor.actionColor : nil)
-                        .keyboardShortcut("b", modifiers: .command)
+                        boldButton
                     }
                     
                     ToolbarItem {
-                        Button { activeContext.isUnderlined.toggle() } label: {
-                            Image.richTextStyleUnderline
-                                .frame(width: 18, height: 18)
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(activeContext.isUnderlined ? HBColor.actionColor : nil)
-                        .keyboardShortcut("u", modifiers: .command)
+                        underlineButton
                     }
                     
                     ToolbarItem {
@@ -147,19 +139,11 @@ public struct NewFlashcardViewMacOS: View {
                     }
                     
                     ToolbarItem {
-                        HBColorPicker(selection: activeContext.foregroundColorBinding) {
-                            Image(systemName: "character")
-                                .font(.system(size: 18))
-                        }
-                        .buttonStyle(.bordered)
+                        textColorButton
                     }
                     
                     ToolbarItem {
-                        HBColorPicker(selection: activeContext.backgroundColorBinding) {
-                            Image(systemName: "highlighter")
-                                .font(.system(size: 14))
-                        }
-                        .buttonStyle(.bordered)
+                        textBackgroundColor
                     }
                     
                     ToolbarItem {
@@ -179,6 +163,57 @@ public struct NewFlashcardViewMacOS: View {
         .onChange(of: size) { newValue in
             activeContext.fontSize = newValue
         }
+    }
+    
+    @ViewBuilder
+    private var italicButton: some View {
+        Button { activeContext.isItalic.toggle() } label: {
+            Image.richTextStyleItalic
+                .frame(width: 18, height: 18)
+        }
+        .buttonStyle(.bordered)
+        .tint(activeContext.isItalic ? HBColor.actionColor : nil)
+        .keyboardShortcut("i", modifiers: .command)
+    }
+    
+    @ViewBuilder
+    private var boldButton: some View {
+        Button { activeContext.isBold.toggle() } label: {
+            Image.richTextStyleBold
+                .frame(width: 18, height: 18)
+        }
+        .buttonStyle(.bordered)
+        .tint(activeContext.isBold ? HBColor.actionColor : nil)
+        .keyboardShortcut("b", modifiers: .command)
+    }
+    
+    @ViewBuilder
+    private var underlineButton: some View {
+        Button { activeContext.isUnderlined.toggle() } label: {
+            Image.richTextStyleUnderline
+                .frame(width: 18, height: 18)
+        }
+        .buttonStyle(.bordered)
+        .tint(activeContext.isUnderlined ? HBColor.actionColor : nil)
+        .keyboardShortcut("u", modifiers: .command)
+    }
+    
+    @ViewBuilder
+    private var textColorButton: some View {
+        HBColorPicker(selection: activeContext.foregroundColorBinding) {
+            Image(systemName: "character")
+                .font(.system(size: 18))
+        }
+        .buttonStyle(.bordered)
+    }
+    
+    @ViewBuilder
+    private var textBackgroundColor: some View {
+        HBColorPicker(selection: activeContext.backgroundColorBinding) {
+            Image(systemName: "highlighter")
+                .font(.system(size: 14))
+        }
+        .buttonStyle(.bordered)
     }
     
     @ViewBuilder
@@ -268,37 +303,6 @@ public struct NewFlashcardViewMacOS: View {
                          secondaryButton: .cancel(Text("cancelar", bundle: .module))
             )
         }
-    }
-    
-    @ViewBuilder
-    private var customNavigationToolbar: some View {
-        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
-            
-            if viewModel.editingFlashcard == nil {
-                do {
-                    try viewModel.createFlashcard()
-                    //dismiss()
-                } catch {
-                    selectedErrorMessage = .createCard
-                    showingAlert = true
-                }
-                
-            } else {
-                do {
-                    try viewModel.editFlashcard()
-                    //dismiss()
-                } catch {
-                    selectedErrorMessage = .editCard
-                    showingAlert = true
-                }
-            }
-        }
-        .disabled(!viewModel.canSubmit)
-        .accessibilityLabel(!viewModel.canSubmit ? NSLocalizedString("feito_disabled",
-                                                                     bundle: .module,
-                                                                     comment: "") : NSLocalizedString("feito",
-                                                                                                      bundle: .module,
-                                                                                                      comment: ""))
     }
 
     @ViewBuilder

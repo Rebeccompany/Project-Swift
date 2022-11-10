@@ -17,7 +17,6 @@ import FlashcardsOnboardingFeature
 public struct StudyViewMacOS: View {
     @State private var flashcardsOnboarding: Bool = false
     @StateObject private var viewModel: StudyViewModel = StudyViewModel()
-    @Environment(\.dismiss) private var dismiss
     @State private var showingErrorAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var shouldDisplaySessionProgress: Bool = false
@@ -58,7 +57,9 @@ public struct StudyViewMacOS: View {
                             .accessibilityLabel(generateAttributedLabel())
                             .accessibilityHidden(viewModel.cards.isEmpty)
                         
-                        HStack(alignment: .top) {
+                        Spacer()
+                        
+                        HStack {
                             ForEach(UserGrade.allCases) { userGrade in
                                 Spacer()
                                 DifficultyButtonView(userGrade: userGrade, isDisabled: $viewModel.shouldButtonsBeDisabled, isVOOn: $viewModel.isVOOn) { userGrade in
@@ -71,8 +72,9 @@ public struct StudyViewMacOS: View {
                                         }
                                     }
                                 }
-                                Spacer()
                             }
+                            
+                            Spacer()
                         }
                         .padding()
                         .accessibilityElement(children: .contain)
@@ -89,38 +91,21 @@ public struct StudyViewMacOS: View {
                             }
                             .popover(isPresented: $shouldDisplaySessionProgress) {
                                 StudyProgressView(numOfTotalSeen: viewModel.getSessionTotalSeenCards(), numOfTotalCards: viewModel.getSessionTotalCards(), numOfReviewingSeen: viewModel.getSessionReviewingSeenCards(mode: data.mode), numOfReviewingCards: viewModel.getSessionReviewingCards(mode: data.mode), numOfLearningSeen: viewModel.getSessionLearningSeenCards(mode: data.mode), numOfLearningCards: viewModel.getSessionLearningCards(mode: data.mode), studyMode: data.mode)
-                                .frame(minWidth: 300, minHeight: 600)
+                                    .frame(minWidth: 300, minHeight: 600)
                             }
                         }
                     }
     
                 } else {
-                    EndOfStudyView(mode: data.mode) {
-                        do {
-                            try viewModel.saveChanges(deck: data.deck, mode: data.mode)
-                            dismiss()
-                        } catch {
-                            selectedErrorMessage = .saveStudy
-                            showingErrorAlert = true
-                        }
-                    }
+                    EndOfStudyViewMacOS(mode: data.mode)
                 }
             }
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(data.deck.name)
+            .onDisappear {
+                try? viewModel.saveChanges(deck: data.deck, mode: data.mode)
+            }
             .toolbar(content: {
-                ToolbarItem {
-                    Button {
-                        flashcardsOnboarding = true
-                    } label: {
-                        Image(systemName: "info.circle")
-                            .foregroundColor(HBColor.actionColor)
-                            .accessibility(addTraits: .isButton)
-                    }
-                    .sheet(isPresented: $flashcardsOnboarding) {
-                        FlashcardsOnboardingView()
-                    }
-                }
 
                 ToolbarItem {
                     Button {
@@ -132,15 +117,16 @@ public struct StudyViewMacOS: View {
                     }
                     .sheet(isPresented: $flashcardsOnboarding) {
                         FlashcardsOnboardingView()
+                            .frame(minWidth: 300, maxWidth: 500, minHeight: 500)
                     }
                 }
+                
                 ToolbarItem(placement: .destructiveAction) {
                     Button(role: .destructive) {
                         do {
                             if data.mode == .spaced {
                                 try viewModel.saveChanges(deck: data.deck, mode: data.mode)
                             }
-                            dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy
                             showingErrorAlert = true
@@ -174,4 +160,3 @@ struct StudyViewMacOS_Previews: PreviewProvider {
     }
 }
 #endif
-
