@@ -457,6 +457,15 @@ let package = Package(
                 "StoreFeature",
                 "Habitat"
             ]
+        ),
+        
+        .testTarget(
+            name: "TweetTests",
+            dependencies: [
+                "Models",
+                "Habitat",
+                "Tweet"
+            ]
         )
     ]
 )
