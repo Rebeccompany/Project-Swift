@@ -11,14 +11,49 @@ import HummingBird
 import Models
 import Utils
 
+struct GrowingButton: ButtonStyle {
+    var color: Color
+    @Binding var disabled: Bool
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .symbolVariant(configuration.isPressed ? .fill : .none)
+            .font(.system(size: configuration.isPressed ? 35 : 30))
+            .scaleEffect(configuration.isPressed ? 1.2 : 1)
+            .animation(.easeIn(duration: 0.5), value: configuration.isPressed)
+            .animation(.easeOut(duration: 0.2), value: disabled)
+            .tint(configuration.isPressed ? color : HBColor.actionColor)
+            .foregroundColor(buttonColor(isPressed: configuration.isPressed))
+            .aspectRatio(1, contentMode: .fill)
+            .frame(width: 70, height: 70)
+            .background(
+                Capsule()
+                    .fill(HBColor.secondaryBackground)
+                    .shadow(color: buttonColor(isPressed: configuration.isPressed), radius: 1, x: 0, y: 2)
+            )
+    }
+    
+    private func buttonColor(isPressed: Bool) -> Color {
+        guard !disabled else {
+            return .gray
+        }
+        
+        if isPressed {
+            return color
+        } else {
+            return HBColor.actionColor
+        }
+    }
+}
+
 struct DifficultyButtonView: View {
     @Binding var isDisabled: Bool
     private var content: DifficultyButtonContent
     private let userGrade: UserGrade
     private let action: (UserGrade) -> Void
-
+    @State var show: Bool = false
+    @GestureState var press: Bool = false
     @Binding var isVOOn: Bool
-
+    
     init(userGrade: UserGrade, isDisabled: Binding<Bool>, isVOOn: Binding<Bool>, action: @escaping (UserGrade) -> Void) {
         self.userGrade = userGrade
         self.content = DifficultyButtonContent.getbuttonContent(for: userGrade)
@@ -48,26 +83,17 @@ struct DifficultyButtonView: View {
                 }
             } label: {
                 Image(systemName: !isVOOn ? content.image : "circle")
-                    .font(.title)
-                    .foregroundColor(isDisabled ? .gray : content.color)
-                    .aspectRatio(1, contentMode: .fill)
-                    .frame(width: 70, height: 70)
-                    .background(
-                        Capsule()
-                            .fill(HBColor.secondaryBackground)
-                            .shadow(color: isDisabled ? .gray : content.color, radius: 1, x: 0, y: 2)
-                    )
             }
             .keyboardShortcut(shortcutValue())
             .disabled(isDisabled)
-            
+            .buttonStyle(GrowingButton(color: content.color, disabled: $isDisabled))
             Text(content.label)
                 .font(.system(size: 14))
                 .fontWeight(.medium)
                 .foregroundColor(isDisabled ? .gray : .primary)
                 .padding(.top, 4)
                 .accessibilityHidden(true)
-                
+            
         }
         .accessibilityLabel(NSLocalizedString("clicar_em", bundle: .module, comment: "") + content.label.finilized)
     }
@@ -88,10 +114,10 @@ struct DifficultyButtonView_Preview: PreviewProvider {
                 Spacer()
             }
         }
-            .preferredColorScheme(.light)
-            .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
-            .background(HBColor.primaryBackground)
-            .previewLayout(.sizeThatFits)
+        .preferredColorScheme(.light)
+        .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
+        .background(HBColor.primaryBackground)
+        .previewLayout(.sizeThatFits)
         
         HStack {
             ForEach(UserGrade.allCases) { step in
