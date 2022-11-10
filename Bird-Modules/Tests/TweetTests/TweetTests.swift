@@ -44,4 +44,10 @@ final class NotificationServiceTests: XCTestCase {
         let time = trigger?.nextTriggerDate()?.timeIntervalSince1970
         XCTAssertNotEqual(time, 0)
     }
+    
+    func testSortNotification() {
+        sut.scheduleNotification(for: deck, at: 5)
+        let content = center.requests.first?.content
+        XCTAssertNotEqual(content, nil)
+    }
 }
