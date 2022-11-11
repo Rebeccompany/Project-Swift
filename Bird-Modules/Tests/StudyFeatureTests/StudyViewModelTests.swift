@@ -705,8 +705,15 @@ class StudyViewModelTests: XCTestCase {
 
     // MARK: - Tests Session Creation
 
-    func testNewSessionCreationAtEndOfSession() {
-
+    func testNewSessionCreationAtEndOfSession() throws {
+        sut.startup(deck: deckRepository.data[decks[1].id]!.deck, mode: .spaced)
+        try sut.pressedButton(for: .correctEasy, deck: deckRepository.data[decks[1].id]!.deck, mode: .spaced)
+        
+        try sut.saveChanges(deck: deckRepository.data[decks[1].id]!.deck, mode: .spaced)
+        let session = deckRepository.data[decks[1].id]!.deck.session
+        
+        XCTAssertEqual(deckRepository.data[decks[1].id]!.cards.map(\.id), session?.cardIds)
+        XCTAssert(DateInterval(start: session!.date, end: session!.date.addingTimeInterval(86400)).contains((deckRepository.data[decks[1].id]!.cards.first!.dueDate)!))
     }
     
     enum WoodpeckerState {

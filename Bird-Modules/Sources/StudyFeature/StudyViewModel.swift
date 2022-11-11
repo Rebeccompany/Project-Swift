@@ -197,7 +197,10 @@ public class StudyViewModel: ObservableObject {
         guard mode == .spaced else { return }
         try cardsToEdit.forEach { card in
             try deckRepository.editCard(card)
-            guard let lastSnapshot = card.history.last else { return }
+            guard let lastSnapshot = card.history.max(by: { card0, card1 in
+                card0.date < card1.date
+            }) else { return }
+            print("wpSm2", card.front.string, card.woodpeckerCardInfo, lastSnapshot)
             try deckRepository.addHistory(lastSnapshot, to: card)
         }
         

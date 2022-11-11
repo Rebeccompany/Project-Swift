@@ -114,6 +114,7 @@ public struct Woodpecker {
             modifiedCard.woodpeckerCardInfo.interval = 1
         }
         
+        print("learning", modifiedCard.woodpeckerCardInfo)
         return modifiedCard
     }
     
@@ -194,6 +195,7 @@ public struct Woodpecker {
             result.easeFactor = 1.3
         }
         
+        print("wpSm2", result)
         return result
     }
     

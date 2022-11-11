@@ -24,7 +24,7 @@ public struct Card: Identifiable, Equatable, Hashable {
     public var dueDate: Date? {
         get {
             let newestItem = history.max { card0, card1 in
-            card0.date > card1.date
+                card0.date > card1.date
             }
             return newestItem?.date.advanced(by: TimeInterval(86400 * woodpeckerCardInfo.interval))
         }

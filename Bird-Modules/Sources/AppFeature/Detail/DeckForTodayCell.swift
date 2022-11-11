@@ -23,7 +23,7 @@ struct DeckForTodayCell: View {
                     .font(.title3)
                     .bold()
                 
-                Text("X cartas para hoje")
+                Text("\(deck.session?.cardIds.count ?? 404) cartas para hoje")
                     .font(.subheadline)
             }
             .foregroundColor(Color.white)

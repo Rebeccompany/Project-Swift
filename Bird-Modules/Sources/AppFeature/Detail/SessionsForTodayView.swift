@@ -12,29 +12,29 @@ import StudyFeature
 struct SessionsForTodayView: View {
     
     @EnvironmentObject private var viewModel: ContentViewModel
-    @State private var shouldPresentStudyView: Bool = false
+    
+    @State private var selectedDeck: Deck?
     
     var body: some View {
-        ScrollView(.horizontal) {
+        ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(viewModel.todayDecks) { deck in
                     
                     Button {
-                        shouldPresentStudyView = true
+                        selectedDeck = deck
                     } label: {
                         DeckForTodayCell(deck: deck)
                     }
 
-                    .fullScreenCover(isPresented: $shouldPresentStudyView) {
-                            StudyView(
-                                deck: deck,
-                                mode: .spaced
-                            )
-                        }
+                    
                 }
             }
+            
+            .padding(.leading)
         }
-        .padding(.leading)
+        .fullScreenCover(item: $selectedDeck) { deck in
+            StudyView(deck: deck, mode: .spaced)
+        }
     }
     
 }
