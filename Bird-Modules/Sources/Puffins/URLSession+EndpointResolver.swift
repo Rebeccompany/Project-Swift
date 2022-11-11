@@ -10,6 +10,6 @@ import Combine
 
 extension URLSession: EndpointResolverProtocol {
     public func dataTaskPublisher(for endpoint: Endpoint) -> AnyPublisher<DataTaskPublisher.Output, DataTaskPublisher.Failure> {
-        self.dataTaskPublisher(for: endpoint.url).eraseToAnyPublisher()
+        self.dataTaskPublisher(for: endpoint.request).eraseToAnyPublisher()
     }
 }

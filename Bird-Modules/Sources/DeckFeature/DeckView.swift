@@ -74,6 +74,22 @@ public struct DeckView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button {
+                    Task {
+                        let deckDTO = DeckAdapter.adapt(deck, with: viewModel.cards)
+                        var request = URLRequest(url: URL(string: "http://crow-dev.eba-udf2azmf.sa-east-1.elasticbeanstalk.com/api/decks")!)
+                        request.httpMethod = "POST"
+                        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                            request.setValue("application/json", forHTTPHeaderField: "Accept")
+
+                        request.httpBody = try! JSONEncoder().encode(deckDTO)
+                        
+                        var d = try! await URLSession.shared.data(for: request)
+                        
+                        print(String(data: try! JSONEncoder().encode(deckDTO), encoding: .utf8))
+                        
+                        print(d.1, String(data: d.0, encoding: .utf8))
+                        
+                    }
                     
                 } label: {
                     Label("Export", systemImage: "globe.americas")

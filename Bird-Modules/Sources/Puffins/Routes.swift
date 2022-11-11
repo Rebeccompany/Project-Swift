@@ -17,7 +17,7 @@ extension Endpoint {
         return Endpoint(path: "api/cards/\(id)", queryItems: [queryItem])
     }
     
-    static func sendAnDeck() -> Endpoint {
-        Endpoint(path: "api/deck")
+    static func sendAnDeck(_ dto: Data) -> Endpoint {
+        Endpoint(path: "api/deck", method: .post, body: dto)
     }
 }
