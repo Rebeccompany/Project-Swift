@@ -12,7 +12,6 @@
 "apagar_flashcard" = "Apagar Flashcard";
 "fechar" = "Fechar";
 "alert_delete_flashcard" = "Tem certeza de que deseja deletar o flashcard?";
-"alert_delete_flashcard_text" = "Você perderá permanentemente o conteúdo deste flashcard.";
 "deletar" = "Apagar";
 "cancelar" = "Cancelar";
 "criar_flashcard" = "Criar Flashcard";
