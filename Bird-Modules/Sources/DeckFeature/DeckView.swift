@@ -167,7 +167,7 @@ public struct DeckView: View {
                     .font(.title3)
                     .bold()
                     .padding(.leading)
-                    .padding(.bottom)
+                    .padding(.bottom, 8)
                 if !viewModel.checkIfCanStudy(deck) && !viewModel.cards.isEmpty {
                     Text(NSLocalizedString("no_study_allowed", bundle: .module, comment: ""))
                         .padding(.leading)
@@ -186,7 +186,7 @@ public struct DeckView: View {
                 .listRowInsets(.zero)
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
-                .padding()
+                .padding(.horizontal)
 
                 Button(NSLocalizedString("intenso", bundle: .module, comment: "")) {
                     studyMode = .cramming
@@ -232,6 +232,7 @@ public struct DeckView: View {
                         .padding(2)
                         .hoverEffect()
                     }
+                    .padding(.horizontal, -2)
                     .listRowSeparator(.hidden)
                 }
                 .padding(.horizontal)

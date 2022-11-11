@@ -18,6 +18,7 @@ public class NewDeckViewModel: ObservableObject {
     @Published var deckName: String = ""
     @Published var currentSelectedColor: CollectionColor? = CollectionColor.red
     @Published var currentSelectedIcon: IconNames? = IconNames.gamecontroller
+    @Published var currentSelectedCategory: DeckCategory = .others
     @Published var canSubmit: Bool = false
     @Published var showingErrorAlert: Bool = false
     
@@ -66,7 +67,8 @@ public class NewDeckViewModel: ObservableObject {
                         collectionId: collection?.id,
                         cardsIds: [],
                         spacedRepetitionConfig: SpacedRepetitionConfig(),
-                        category: DeckCategory.others, storeId: nil)
+                        category: currentSelectedCategory,
+                        storeId: nil)
         
         try deckRepository.createDeck(deck, cards: [])
         

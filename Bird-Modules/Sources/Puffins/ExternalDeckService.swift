@@ -10,6 +10,7 @@ import Combine
 import Models
 
 public final class ExternalDeckService: ExternalDeckServiceProtocol {
+    
     //HANDLER DE URL
     private let session: EndpointResolverProtocol
     
@@ -38,6 +39,14 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     }
     
     public func getDeck(by id: String) -> AnyPublisher<Models.ExternalDeck, URLError> {
+        fatalError()
+    }
+    
+    public func uploadNewDeck(_ deck: Models.Deck, with cards: [Models.Card]) -> AnyPublisher<String, URLError> {
+        fatalError()
+    }
+    
+    public func deleteDeck(_ deck: Models.Deck) -> AnyPublisher<Void, URLError> {
         fatalError()
     }
 }

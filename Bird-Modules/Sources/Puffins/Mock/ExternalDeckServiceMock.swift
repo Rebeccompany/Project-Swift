@@ -10,6 +10,7 @@ import Models
 import Combine
 
 public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
+    
     public func getDeck(by id: String) -> AnyPublisher<Models.ExternalDeck, URLError> {
         Just(ExternalDeck(id: id, name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem))
             .setFailureType(to: URLError.self)
@@ -20,6 +21,13 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         Just(cards).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
     
+    public func uploadNewDeck(_ deck: Models.Deck, with cards: [Models.Card]) -> AnyPublisher<String, URLError> {
+        fatalError()
+    }
+    
+    public func deleteDeck(_ deck: Models.Deck) -> AnyPublisher<Void, URLError> {
+        fatalError()
+    }
     
     public var shouldError = false
     
