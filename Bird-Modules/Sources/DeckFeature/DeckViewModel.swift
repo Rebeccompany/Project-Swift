@@ -55,8 +55,8 @@ public class DeckViewModel: ObservableObject {
             .handleEvents(receiveOutput: { cards in
                 print("pipens")
                 cards.forEach { card in
-                    print("card id: ",card.id)
-                    print("card history: ",card.history.sorted(by: { cs0, cs1 in
+                    print("card id: ", card.id)
+                    print("card history: ", card.history.sorted(by: { cs0, cs1 in
                         cs0.date < cs1.date
                     }))
                     print()
