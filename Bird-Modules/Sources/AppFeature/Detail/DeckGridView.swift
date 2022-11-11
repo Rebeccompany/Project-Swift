@@ -45,20 +45,21 @@ struct DeckGridView: View {
                     .buttonStyle(DeckCell.Style(color: deck.color))
                     .padding(2)
                     .hoverEffect()
+                    .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                        Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                            guard let deckToBeDeleted else { return }
+                            try? viewModel.deleteDeck(deckToBeDeleted)
+                        }
+                    } message: {
+                        Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                    }
                 }
             }
             .animation(.linear, value: viewModel.sortOrder)
             .padding([.horizontal], 12)
             .padding(.top, 24)
         }
-        .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
-            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                guard let deckToBeDeleted else { return }
-                try? viewModel.deleteDeck(deckToBeDeleted)
-            }
-        } message: {
-            Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
-        }
+        
 
     }
 }

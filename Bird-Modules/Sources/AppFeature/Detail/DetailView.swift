@@ -57,6 +57,15 @@ public struct DetailView: View {
                     shouldDisplayAlert = true
                 }
                 .foregroundColor(.red)
+                .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                    Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                        try? viewModel.deleteDecks()
+                        editingDeck = nil
+                    }
+                    .disabled(viewModel.selection.isEmpty)
+                } message: {
+                    Text(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                }
             }
             
             
@@ -113,15 +122,6 @@ public struct DetailView: View {
                         .frame(minWidth: 300, minHeight: 600)
                 }
             }
-        }
-        .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
-            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                try? viewModel.deleteDecks()
-                editingDeck = nil
-            }
-            .disabled(viewModel.selection.isEmpty)
-        } message: {
-            Text(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
         }
         .onChange(of: editMode) { newValue in
             if newValue == .active {
