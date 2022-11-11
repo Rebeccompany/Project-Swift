@@ -19,8 +19,6 @@ struct GrowingButton: ButtonStyle {
             .symbolVariant(configuration.isPressed ? .fill : .none)
             .font(.system(size: configuration.isPressed ? 35 : 30))
             .scaleEffect(configuration.isPressed ? 1.2 : 1)
-            .animation(.easeIn(duration: 0.5), value: configuration.isPressed)
-            .animation(.easeOut(duration: 0.2), value: disabled)
             .tint(configuration.isPressed ? color : HBColor.actionColor)
             .foregroundColor(buttonColor(isPressed: configuration.isPressed))
             .aspectRatio(1, contentMode: .fill)
@@ -30,6 +28,13 @@ struct GrowingButton: ButtonStyle {
                     .fill(HBColor.secondaryBackground)
                     .shadow(color: buttonColor(isPressed: configuration.isPressed), radius: 1, x: 0, y: 2)
             )
+            .onChange(of: configuration.isPressed) { newValue in
+                if newValue {
+                    withAnimation(.easeIn(duration: 0.01)) {
+                        
+                    }
+                }
+            }
     }
     
     private func buttonColor(isPressed: Bool) -> Color {
