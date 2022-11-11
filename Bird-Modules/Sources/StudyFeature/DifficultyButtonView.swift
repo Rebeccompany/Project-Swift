@@ -14,34 +14,51 @@ import Utils
 struct GrowingButton: ButtonStyle {
     var color: Color
     @Binding var disabled: Bool
+    @State private var scaleEffectSize: CGFloat = 1.0
+    @State private var selectedColor = Color.gray
+    @State private var currentSymbolVariant = SymbolVariants.none
+    
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .symbolVariant(configuration.isPressed ? .fill : .none)
+            .symbolVariant(currentSymbolVariant)
             .font(.system(size: configuration.isPressed ? 35 : 30))
-            .scaleEffect(configuration.isPressed ? 1.2 : 1)
-            .tint(configuration.isPressed ? color : HBColor.actionColor)
-            .foregroundColor(buttonColor(isPressed: configuration.isPressed))
+            .scaleEffect(scaleEffectSize)
+            .tint(configuration.isPressed ? selectedColor : HBColor.actionColor)
+            .foregroundColor(selectedColor)
             .aspectRatio(1, contentMode: .fill)
             .frame(width: 70, height: 70)
+            .animation(.linear.delay(0.5), value: disabled)
             .background(
                 Capsule()
                     .fill(HBColor.secondaryBackground)
-                    .shadow(color: buttonColor(isPressed: configuration.isPressed), radius: 1, x: 0, y: 2)
+                    .shadow(color: selectedColor, radius: 1, x: 0, y: 2)
             )
             .onChange(of: configuration.isPressed) { newValue in
-                if newValue {
-                    withAnimation(.easeIn(duration: 0.01)) {
-                        
+                withAnimation(.linear(duration: 0.1).delay(newValue ? 0 : 0.2)) {
+                    currentSymbolVariant = newValue ? .fill : .none
+                    scaleEffectSize = newValue ? 1.2 : 1.0
+                    selectedColor = color
+                }
+                
+                if disabled, !newValue {
+                    withAnimation(.linear.delay(0.3)) {
+                        selectedColor = .gray
                     }
                 }
             }
+            .onChange(of: disabled) { newValue in
+                withAnimation(.linear(duration: 0.2).delay(newValue ? 0.3 : 0)) {
+                    selectedColor = newValue ? .gray : HBColor.actionColor
+                }
+            }
+        
     }
     
     private func buttonColor(isPressed: Bool) -> Color {
-        guard !disabled else {
-            return .gray
-        }
-        
+//        guard !disabled else {
+//            return .gray
+//        }
+//
         if isPressed {
             return color
         } else {
