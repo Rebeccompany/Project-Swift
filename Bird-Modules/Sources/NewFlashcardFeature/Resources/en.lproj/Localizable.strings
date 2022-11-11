@@ -12,7 +12,6 @@
 "apagar_flashcard" = "Delete Flashcard";
 "fechar" = "Close";
 "alert_delete_flashcard" = "Are you sure you want to delete it?";
-"alert_delete_flashcard_text" = "You'll lose its content permanently.";
 "deletar" = "Delete";
 "cancelar" = "Cancel";
 "criar_flashcard" = "Create Flashcard";
