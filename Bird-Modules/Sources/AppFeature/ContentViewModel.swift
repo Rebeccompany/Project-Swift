@@ -39,20 +39,24 @@ public final class ContentViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable>
     
     var detailTitle: String {
-        switch sidebarSelection ?? .allDecks {
+        switch sidebarSelection {
         case .allDecks:
             return NSLocalizedString("todos_os_baralhos", bundle: .module, comment: "")
         case .decksFromCollection(let collection):
             return collection.name
+        case .none:
+            return ""
         }
     }
     
     var selectedCollection: DeckCollection? {
-        switch sidebarSelection ?? .allDecks {
+        switch sidebarSelection {
         case .allDecks:
             return nil
         case .decksFromCollection(let collection):
             return collection
+        case .none:
+            return nil
         }
     }
     

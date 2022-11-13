@@ -12,7 +12,11 @@ import Storage
 import Habitat
 import RichTextKit
 import Combine
-
+#warning("Texto inicia preto no flashcard e salva branco")
+#warning("Cor inicia marcado preto mesmo nao sendo preto")
+#warning("Tamanho da letra nao muda só de clicar no lado que está editando")
+#warning("Clicar numa coleção estando dentro de um deck faz o app carregar infinitamente")
+#warning("Estudar um deck pela primeira vez faz o app carregar infinitamente")
 #if os(macOS)
 public struct NewFlashcardViewMacOS: View {
     @StateObject private var viewModel = NewFlashcardViewModelMacOS()
@@ -30,11 +34,9 @@ public struct NewFlashcardViewMacOS: View {
     var data: NewFlashcardWindowData
     
     var activeContext: RichTextContext {
-        if frontContext.isEditingText {
-            print("oi", frontContext.isEditingText)
+        if frontContext.hasSelectedRange {
             return frontContext
         } else {
-            print("tchau", backContext.isEditingText)
             return backContext
         }
     }
@@ -200,18 +202,22 @@ public struct NewFlashcardViewMacOS: View {
     
     @ViewBuilder
     private var textColorButton: some View {
-        HBColorPicker(selection: activeContext.foregroundColorBinding) {
+        HBColorPicker {
             Image(systemName: "character")
                 .font(.system(size: 18))
+        } onColorSelected: { color in
+            activeContext.foregroundColorBinding.wrappedValue = color
         }
         .buttonStyle(.bordered)
     }
     
     @ViewBuilder
     private var textBackgroundColor: some View {
-        HBColorPicker(selection: activeContext.backgroundColorBinding) {
+        HBColorPicker {
             Image(systemName: "highlighter")
                 .font(.system(size: 14))
+        } onColorSelected: { color in
+            activeContext.backgroundColorBinding.wrappedValue = color
         }
         .buttonStyle(.bordered)
     }
@@ -331,16 +337,22 @@ public struct NewFlashcardViewMacOS: View {
         HStack {
             Button {
                 activeContext.decrementFontSize()
+                self.size -= CGFloat(1)
+                self.size = activeContext.fontSize
             } label: {
                 Image(systemName: "minus")
                     .frame(width: 10, height: 10)
             }
             .keyboardShortcut("-", modifiers: .command)
+            
             FontSizePicker(selection: size)
                 .labelsHidden()
                 .frame(minWidth: 50)
+            
             Button {
                 activeContext.incrementFontSize()
+                self.size += CGFloat(1)
+                self.size = activeContext.fontSize
             } label: {
                 Image(systemName: "plus")
                     .frame(width: 10, height: 10)

@@ -97,15 +97,19 @@ public struct FlashcardTextEditorViewiOS: View {
                 .tint(context.isUnderlined ? HBColor.actionColor : nil)
                 .keyboardShortcut("u", modifiers: .command)
                 alignmentMenu
-                HBColorPicker(selection: context.foregroundColorBinding) {
+                HBColorPicker {  
                     Image(systemName: "character")
                         .font(.system(size: 18))
+                } onColorSelected: { color in
+                    context.foregroundColorBinding.wrappedValue = color
                 }
                     .buttonStyle(.bordered)
                     
-                HBColorPicker(selection: context.backgroundColorBinding) {
+                HBColorPicker {
                     Image(systemName: "highlighter")
                         .font(.system(size: 14))
+                } onColorSelected: { color in
+                    context.backgroundColorBinding.wrappedValue = color
                 }
                     .buttonStyle(.bordered)
             }

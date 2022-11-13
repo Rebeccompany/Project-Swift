@@ -9,14 +9,14 @@ import SwiftUI
 import Models
 
 public struct HBColorPicker<Label: View>: View {
-    @Binding var selection: Color
-    @State private var _color: Color = .white
+    @State private var _color: Color = .black
     @State private var present = false
     private var labelBuilder: () -> Label
+    private var onColorSelected: (Color) -> Void
     
-    public init(selection: Binding<Color>, @ViewBuilder label: @escaping () -> Label) {
-        self._selection = selection
+    public init(@ViewBuilder label: @escaping () -> Label, onColorSelected: @escaping (Color) -> Void) {
         self.labelBuilder = label
+        self.onColorSelected = onColorSelected
     }
     
     #if os(iOS)
@@ -36,7 +36,7 @@ public struct HBColorPicker<Label: View>: View {
         } label: {
             VStack {
                 labelBuilder()
-                selection
+                _color
                     .frame(width: 17, height: 4)
             }
             .font(.body)
@@ -45,9 +45,6 @@ public struct HBColorPicker<Label: View>: View {
         #if os(iOS)
         .buttonStyle(.bordered)
         #endif
-        .onAppear {
-            _color = selection
-        }
         .popover(isPresented: $present) {
             colorGrid
                 .frame(minWidth: 180, maxWidth: 350, minHeight: 160, maxHeight: 350)
@@ -71,7 +68,7 @@ public struct HBColorPicker<Label: View>: View {
                 LazyHGrid(rows: [GridItem(.adaptive(minimum: 44))]) {
                     ForEach(colors, id: \.self) { color in
                         Button {
-                            selection = color
+                            onColorSelected(color)
                             _color = color
                         } label: {
                             color
@@ -101,13 +98,17 @@ public struct HBColorPicker<Label: View>: View {
 struct HBColorPicker_Preview: PreviewProvider {
     static var previews: some View {
         VStack {
-            HBColorPicker(selection: .constant(HBColor.collectionRed)) {
+            HBColorPicker {
                 Image(systemName: "character")
                     .font(.system(size: 18))
+            } onColorSelected: { _ in
+                 
             }
-            HBColorPicker(selection: .constant(HBColor.collectionRed)) {
+            HBColorPicker {
                 Image(systemName: "highlighter")
                     .font(.system(size: 14))
+            } onColorSelected: { _ in
+                 
             }
         }
     }
