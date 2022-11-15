@@ -109,8 +109,12 @@ public struct ContentView: View {
     private var detail: some View {
         Router(path: $path) {
             DetailView(editMode: $editModeForDeck)
-            .environmentObject(viewModel)
-            .environment(\.editMode, $editModeForDeck)
+                .toolbar(
+                    editModeForDeck.isEditing ? .hidden :
+                            .automatic,
+                    for: .tabBar)
+                .environmentObject(viewModel)
+                .environment(\.editMode, $editModeForDeck)
         } destination: { (route: StudyRoute) in
             StudyRoutes.destination(for: route, viewModel: viewModel)
         }
