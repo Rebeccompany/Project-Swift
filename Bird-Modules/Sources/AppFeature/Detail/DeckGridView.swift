@@ -61,7 +61,7 @@ struct DeckGridView: View {
                         }
                     } message: {
                         Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
-                    }
+                        }
                     }
                 }
                 .animation(.linear, value: viewModel.sortOrder)

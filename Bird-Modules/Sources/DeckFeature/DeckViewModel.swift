@@ -60,6 +60,7 @@ public class DeckViewModel: ObservableObject {
     }
     
     func checkIfCanStudy(_ deck: Deck) -> Bool {
+        if cards.isEmpty { return false }
         guard let session = deck.session else { return true }
         guard !session.cardIds.isEmpty else { return false }
         
