@@ -29,6 +29,7 @@ struct HBColorPicker<Label: View>: View {
         var colors = CollectionColor.allCases.map(HBColor.color(for:))
         colors.insert(HBColor.black, at: 0)
         colors.insert(HBColor.white, at: 0)
+        colors.insert(HBColor.clear, at: 0)
         return colors
     }()
     
@@ -77,11 +78,22 @@ struct HBColorPicker<Label: View>: View {
                                 .clipShape(Circle())
                                 .padding(4)
                                 .overlay {
-                                    Circle()
-                                        .stroke(_color == color ? HBColor.actionColor : Color.gray, lineWidth: color == _color ? 4 : 2)
+                                    ZStack {
+                                        if color == .clear {
+                                            Path { path in
+                                                path.move(to: CGPoint(x: 100, y: 100))
+                                                path.addLine(to: CGPoint.zero)
+                                            }
+                                            .stroke(.red, lineWidth: 8)
+                                        }
+                                        Circle()
+                                            .stroke(_color == color ? HBColor.actionColor : Color.gray,
+                                                    lineWidth: color == _color ? 4 : 2)
+                                    }
                                 }
                                 .frame(width: 56, height: 56)
                                 .clipShape(Circle())
+                            
                         }
                     }
                 }.padding()

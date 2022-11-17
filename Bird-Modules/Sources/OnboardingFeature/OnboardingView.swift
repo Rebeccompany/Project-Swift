@@ -16,7 +16,7 @@ public struct OnboardingView: View {
         
     }
     public var body: some View {
-        NavigationView {
+        NavigationStack {
             TabView(selection: $tab) {
                 OnboardingPageOneView().tag(0)
                 OnboardingPageTwoView().tag(1)
@@ -32,6 +32,8 @@ public struct OnboardingView: View {
                 }
                 .foregroundColor(HBColor.actionColor)
             }
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .viewBackgroundColor(HBColor.primaryBackground)
         }
     }
 }

@@ -135,6 +135,10 @@ public enum HBColor {
         Color.white
     }
     
+    public static var clear: Color {
+        Color.clear
+    }
+    
     public static var progressGraphTotalBackground: Color {
         Color(light: "E1D1EE",
               dark: "4A345E"

@@ -13,6 +13,8 @@ struct DeckGridView: View {
     
     @EnvironmentObject private var viewModel: ContentViewModel
     var editAction: (Deck) -> Void
+    @State private var shouldDisplayAlert = false
+    @State private var deckToBeDeleted: Deck?
     
     private var sortedDecks: [Deck] {
         viewModel.decks.sorted(using: viewModel.sortOrder)
@@ -52,6 +54,14 @@ struct DeckGridView: View {
                                 }
                         }
                         .hoverEffect(.lift)
+                        .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                        Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                            guard let deckToBeDeleted else { return }
+                            try? viewModel.deleteDeck(deckToBeDeleted)
+                        }
+                    } message: {
+                        Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                    }
                     }
                 }
                 .animation(.linear, value: viewModel.sortOrder)
@@ -59,5 +69,7 @@ struct DeckGridView: View {
                 .padding(.top, 24)
             }
         }
+        
+
     }
 }

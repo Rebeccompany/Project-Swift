@@ -21,6 +21,9 @@ public struct DetailView: View {
     @State private var presentDeckEdition = false
     @State private var shouldDisplayAlert = false
     @State private var editingDeck: Deck?
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    
     
     init(editMode: Binding<EditMode>) {
         self._editMode = editMode
@@ -34,7 +37,7 @@ public struct DetailView: View {
                 content
             }
         }
-        .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
+        .searchable(text: $viewModel.searchText, placement: horizontalSizeClass == .compact ? .navigationBarDrawer(displayMode: .always) : .toolbar)
         .toolbar(editMode.isEditing ? .visible : .hidden,
                  for: .bottomBar)
         .toolbar {
@@ -54,6 +57,15 @@ public struct DetailView: View {
                     shouldDisplayAlert = true
                 }
                 .foregroundColor(.red)
+                .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                    Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                        try? viewModel.deleteDecks()
+                        editingDeck = nil
+                    }
+                    .disabled(viewModel.selection.isEmpty)
+                } message: {
+                    Text(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                }
             }
             
             
@@ -61,6 +73,7 @@ public struct DetailView: View {
                 Menu {
                     Button {
                         viewModel.changeDetailType(for: .grid)
+                        viewModel.shouldReturnToGrid = true
                     } label: {
                         Label(NSLocalizedString("icones", bundle: .module, comment: ""), systemImage: "rectangle.grid.2x2")
                     }
@@ -68,10 +81,11 @@ public struct DetailView: View {
                     
                     Button {
                         viewModel.changeDetailType(for: .table)
+                        viewModel.shouldReturnToGrid = false
                     } label: {
                         Label(NSLocalizedString("lista", bundle: .module, comment: ""), systemImage: "list.bullet")
                     }
-
+                    
                     Picker(selection: $viewModel.sortOrder) {
                         Text(NSLocalizedString("nome", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.name)])
                         Text(NSLocalizedString("quantidade", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.cardCount)])
@@ -105,24 +119,16 @@ public struct DetailView: View {
                 }
                 .popover(isPresented: $presentDeckEdition) {
                     NewDeckView(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
-                    .frame(minWidth: 300, minHeight: 600)
+                        .frame(minWidth: 300, minHeight: 600)
                 }
             }
         }
         .onChange(of: editMode) { newValue in
             if newValue == .active {
-                viewModel.detailType = .table
                 viewModel.changeDetailType(for: .table)
+            } else if viewModel.shouldReturnToGrid {
+                viewModel.changeDetailType(for: .grid)
             }
-        }
-        .alert(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""), isPresented: $shouldDisplayAlert) {
-            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                try? viewModel.deleteDecks()
-                editingDeck = nil
-            }
-            .disabled(viewModel.selection.isEmpty)
-            
-            Button(NSLocalizedString("cancelar", bundle: .module, comment: ""), role: .cancel) { }
         }
         .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
         .navigationTitle(viewModel.detailTitle)

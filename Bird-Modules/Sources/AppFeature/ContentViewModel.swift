@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ContentViewModel.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 14/09/22.
@@ -28,6 +28,7 @@ public final class ContentViewModel: ObservableObject {
     @Published var searchText: String
     @Published var detailType: DetailDisplayType
     @Published var sortOrder: [KeyPathComparator<Deck>]
+    @Published var shouldReturnToGrid: Bool
 
     // MARK: Repositories
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
@@ -63,6 +64,7 @@ public final class ContentViewModel: ObservableObject {
         self.selection = .init()
         self.searchText = ""
         self.detailType = .grid
+        self.shouldReturnToGrid = true
         self.sortOrder = [KeyPathComparator(\Deck.name)]
     }
     
@@ -99,11 +101,13 @@ public final class ContentViewModel: ObservableObject {
             .assign(to: &$decks)
         
         detailType = displayCacher.getCurrentDetailType() ?? .grid
+        shouldReturnToGrid = detailType == .grid
         
         $decks
             .tryMap(filterDecksForToday)
             .replaceError(with: [])
             .assign(to: &$todayDecks)
+        
     }
     
     func bindingToDeck(_ deck: Deck) -> Binding<Deck> {

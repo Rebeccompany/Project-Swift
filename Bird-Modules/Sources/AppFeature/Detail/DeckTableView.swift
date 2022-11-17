@@ -58,9 +58,17 @@ struct DeckTableView: View {
             }
             .swipeActions {
                 Button {
+                    try? viewModel.deleteDeck(deck)
+                } label: {
+                    Text("deletar", bundle: .module)
+                }
+                .tint(.red)
+            }
+            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                Button {
                     editAction(deck)
                 } label: {
-                    Text("Editar")
+                    Text("editar", bundle: .module)
                 }
                 .tint(HBColor.actionColor)
             }
@@ -80,13 +88,32 @@ struct DeckTableView: View {
         }
         .animation(.linear, value: viewModel.sortOrder)
         .listStyle(.plain)
+        .onDisappear {
+            Task {
+                await MainActor.run {
+                    viewModel.selection = Set()
+                }
+            }
+        }
     }
     
     @ViewBuilder
     private var table: some View {
         Table(sortedDecks, selection: $viewModel.selection, sortOrder: $viewModel.sortOrder) {
+            TableColumn("") { deck in
+                Image(systemName: deck.icon)
+                    .font(.system(size: 14))
+                    .foregroundColor(HBColor.color(for: deck.color))
+                    .background {
+                        Circle()
+                            .fill(HBColor.color(for: deck.color).opacity(0.2))
+                            .frame(width: 35, height: 35)
+                    }
+                    .frame(width: 35, height: 35)
+            }.width(35)
             TableColumn(NSLocalizedString("nome", bundle: .module, comment: ""), value: \.name) { deck in
-                cell(for: deck)
+                Text(deck.name)
+                    .foregroundColor(.primary)
             }
             TableColumn("Flashcards", value: \.cardCount) { deck in
                 Text("\(deck.cardCount) flashcards")

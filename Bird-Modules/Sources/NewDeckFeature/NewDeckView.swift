@@ -31,7 +31,7 @@ public struct NewDeckView: View {
     
     public var body: some View {
         
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
                     Text("nome", bundle: .module)
@@ -92,31 +92,25 @@ public struct NewDeckView: View {
                     
                 }
                 .padding()
-                .alert(isPresented: $showingAlert) {
+                .confirmationDialog("Are you sure you want to delete this deck?", isPresented: $showingAlert) {
+                    Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                        do {
+                            try viewModel.deleteDeck(editingDeck: editingDeck)
+                            editMode = .inactive
+                            dismiss()
+                        } catch {
+                            activeAlert = .error
+                            showingAlert = true
+                            selectedErrorMessage = .deleteDeck
+                        }
+                    }
+                } message: {
                     switch activeAlert {
                     case .error:
-                        return Alert(title: Text(selectedErrorMessage.texts.title),
-                                     message: Text(selectedErrorMessage.texts.message),
-                                     dismissButton: .default(Text("fechar", bundle: .module)))
+                        Text(NSLocalizedString("alert_delete_deck_error_text", bundle: .module, comment: ""))
                     case .confirm:
-                        return Alert(title: Text("alert_delete_deck", bundle: .module),
-                                     message: Text("alert_delete_deck_text", bundle: .module),
-                                     primaryButton: .destructive(Text("deletar", bundle: .module)) {
-                                        do {
-                                            try viewModel.deleteDeck(editingDeck: editingDeck)
-                                            editMode = .inactive
-                                            dismiss()
-                                        } catch {
-                                            activeAlert = .error
-                                            showingAlert = true
-                                            selectedErrorMessage = .deleteDeck
-                                        }
-                                     },
-                                     secondaryButton: .cancel(Text("cancelar", bundle: .module))
-                        )
-                        
+                        Text(NSLocalizedString("alert_delete_deck", bundle: .module, comment: ""))
                     }
-                    
                 }
                 .navigationTitle(editingDeck == nil ? NSLocalizedString("criar_deck", bundle: .module, comment: "") : NSLocalizedString("editar_deck", bundle: .module, comment: ""))
                 .navigationBarTitleDisplayMode(.inline)

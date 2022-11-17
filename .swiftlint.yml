@@ -141,6 +141,7 @@ only_rules:
   - xct_specific_matcher
   - xctfail_message
   - yoda_condition
+  - no_navigation_view
 analyzer_rules:
   - capture_variable
   - unused_declaration
@@ -151,6 +152,10 @@ deployment_target:
   tvOS_deployment_target: '13'
   watchOS_deployment_target: '6'
 custom_rules:
+  no_navigation_view:
+    regex: 'NavigationView'
+    message: 'Use NavigationStack or SplitView instead'
+    severity: error
   no_print:
     regex: 'print\([^)]*\)'
     message: 'Dont use print on final version'

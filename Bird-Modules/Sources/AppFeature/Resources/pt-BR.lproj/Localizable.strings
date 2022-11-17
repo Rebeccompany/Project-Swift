@@ -19,7 +19,7 @@
 "opcoes_organizacao" = "Opções de ordenação";
 "visualizacao" = "Visualização";
 "alert_nada_selecionado" = "Nada foi selecinado";
-"alert_confirmacao_deletar" = "Tem certeza que deseja deletar";
+"alert_confirmacao_deletar" = "Tem certeza que deseja deletar?";
 "criar_baralho" = "Criar Baralho";
 "acessar" = "Acessar";
 "abrir" = "Abrir";
