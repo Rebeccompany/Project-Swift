@@ -53,10 +53,11 @@ public class DeckViewModel: ObservableObject {
     func startup(_ deck: Deck) {
         cardListener(deck)
             .handleEvents(receiveOutput: { cards in
-                print("pipens")
+                print("pippens")
                 cards.forEach { card in
-                    print("card id: ", card.id)
-                    print("card history: ", card.history.sorted(by: { cs0, cs1 in
+                    print("card id", card.id)
+                    print(card.woodpeckerCardInfo.interval)
+                    print("card history", card.history.sorted(by: { cs0, cs1 in
                         cs0.date < cs1.date
                     }))
                     print()
@@ -70,22 +71,11 @@ public class DeckViewModel: ObservableObject {
     }
     
     func checkIfCanStudy(_ deck: Deck) -> Bool {
-        do {
-            if let session = deck.session, dateHandler.isToday(date: session.date) {
-                return !session.cardIds.isEmpty
-            }
-            
-            let cardsInfo = cards.map { OrganizerCardInfo(card: $0) }
-            let cardsToStudy = try Woodpecker.scheduler(cardsInfo: cardsInfo, config: deck.spacedRepetitionConfig)
-            let todayCards = cardsToStudy.todayLearningCards + cardsToStudy.todayReviewingCards
-            if !todayCards.isEmpty {
-                return true
-            } else {
-                return false
-            }
-        } catch {
-            return false
-        }
+        guard let session = deck.session else { return true }
+        guard !session.cardIds.isEmpty else { return false }
+        
+        return dateHandler.isToday(date: session.date) || session.date < dateHandler.today
+        
         
     }
     

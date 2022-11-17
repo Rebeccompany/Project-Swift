@@ -88,6 +88,11 @@ public class StudyViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
+    private func saveCardIdsToCache(deck: Deck, ids: SchedulerResponse) throws {
+        try deckRepository.createSession(Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
+        
+    }
+    
     init() {
     }
     
@@ -197,36 +202,32 @@ public class StudyViewModel: ObservableObject {
         guard mode == .spaced else { return }
         try cardsToEdit.forEach { card in
             try deckRepository.editCard(card)
-            guard let lastSnapshot = card.history.max(by: { card0, card1 in
-                card0.date < card1.date
-            }) else { return }
+            
+            guard let lastSnapshot = card.history.max(by: { $0.date.timeIntervalSince1970 < $1.date.timeIntervalSince1970 }) else { return }
             print("wpSm2", card.front.string, card.woodpeckerCardInfo, lastSnapshot)
+
             try deckRepository.addHistory(lastSnapshot, to: card)
         }
         
         try saveToCache(deck: deck, ids: cards.map(\.id))
     }
     
-    private func getSchedule(deck: Deck, cards: [OrganizerCardInfo]) throws -> (Date, SchedulerResponse) {
-        let date = cards.compactMap(\.dueDate).min() ?? dateHandler.dayAfterToday(1)
-        let scheduledCardsIds = try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: date)
-        return (date, scheduledCardsIds)
-    }
+    private func saveToCache(deck: Deck, ids: [UUID], cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
     
-    private func editCardsToModify(cards: [Card], date: Date) {
-        let cardsToEdit = cards.map { card in
-            var newCard = card
-            newCard.dueDate = date.addingTimeInterval(86400)
-            return newCard
+        var isFirstSession: Bool = true
+        if let session = deck.session {
+            try deckRepository.deleteSession(session, for: deck)
+            isFirstSession = false
         }
-        cardsToEdit.forEach { card in
-            try? self.deckRepository.editCard(card)
+        
+        if ids.isEmpty {
+            handleWhenStudySessionIsOver(deck: deck, cardSortingFunc: cardSortingFunc)
+        } else {
+            try deckRepository.createSession(Session(cardIds: ids, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
+            if !isFirstSession {
+                shouldDismiss = true
+            }
         }
-    }
-    
-    private func createNewSessionAtEndOfStudy(deck: Deck, cards: [Card], date: Date, cardSortingFunc: @escaping (Card, Card) -> Bool) throws {
-        let cards = (cards).sorted(by: cardSortingFunc)
-        try self.deckRepository.createSession(Session(cardIds: cards.map(\.id), date: date, deckId: deck.id, id: self.uuidGenerator.newId()), for: deck)
     }
     
     private func handleWhenStudySessionIsOver(deck: Deck, cardSortingFunc: @escaping (Card, Card) -> Bool) {
@@ -268,28 +269,26 @@ public class StudyViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    private func saveToCache(deck: Deck, ids: [UUID], cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
-    
-        var isFirstSession: Bool = true
-        if let session = deck.session {
-            try deckRepository.deleteSession(session, for: deck)
-            isFirstSession = false
-        }
-        
-        if ids.isEmpty {
-            handleWhenStudySessionIsOver(deck: deck, cardSortingFunc: cardSortingFunc)
-        } else {
-            try deckRepository.createSession(Session(cardIds: ids, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
-            if !isFirstSession {
-                shouldDismiss = true
-            }
-        }
-        
+    private func getSchedule(deck: Deck, cards: [OrganizerCardInfo]) throws -> (Date, SchedulerResponse) {
+        let date = cards.compactMap(\.dueDate).min() ?? dateHandler.dayAfterToday(1)
+        let scheduledCardsIds = try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: date)
+        return (date, scheduledCardsIds)
     }
     
-    private func saveCardIdsToCache(deck: Deck, ids: SchedulerResponse) throws {
-        try deckRepository.createSession(Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
-        
+    private func editCardsToModify(cards: [Card], date: Date) {
+        let cardsToEdit = cards.map { card in
+            var newCard = card
+            newCard.dueDate = date.addingTimeInterval(86400)
+            return newCard
+        }
+        cardsToEdit.forEach { card in
+            try? self.deckRepository.editCard(card)
+        }
+    }
+    
+    private func createNewSessionAtEndOfStudy(deck: Deck, cards: [Card], date: Date, cardSortingFunc: @escaping (Card, Card) -> Bool) throws {
+        let cards = (cards).sorted(by: cardSortingFunc)
+        try self.deckRepository.createSession(Session(cardIds: cards.map(\.id), date: date, deckId: deck.id, id: self.uuidGenerator.newId()), for: deck)
     }
     
     // MARK: - Study Logic
