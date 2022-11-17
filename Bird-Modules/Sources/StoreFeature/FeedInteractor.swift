@@ -37,7 +37,7 @@ final class FeedInteractor: Interactor {
                 }
                 return self.reduce(&store.feedState, action: action)
             }
-            .sink {[weak store] completion in
+            .sink {[weak store] _ in
                 store?.feedState.viewState = .error
             } receiveValue: {[weak store] newState in
                 guard newState != store?.feedState else { return }
@@ -67,7 +67,5 @@ final class FeedInteractor: Interactor {
             }
             .mapError { $0 as Error }
             .eraseToAnyPublisher()
-        
     }
 }
-

@@ -12,6 +12,7 @@ import Habitat
 import StoreState
 
 public struct PublicDeckView: View {
+    #warning("isso aqui ta estranho")
     var deck: ExternalDeck
     
     @StateObject private var interactor: PublicDeckInteractor = PublicDeckInteractor()
@@ -32,9 +33,11 @@ public struct PublicDeckView: View {
             }
         }
         .onAppear {
+            store.deckState = .init()
             startUp()
         }
         .navigationBarTitleDisplayMode(.inline)
+        .animation(.linear, value: state.cards)
         .viewBackgroundColor(HBColor.primaryBackground)
     }
     
@@ -131,12 +134,12 @@ public struct PublicDeckView: View {
             VStack(alignment: .leading) {
                 Text(store.deckState.deck?.description ?? "")
             }
-            .foregroundColor(.black)
+            .foregroundColor(.primary)
             .multilineTextAlignment(.leading)
             .padding([.horizontal, .bottom], 16)
             .scrollContentBackground(.hidden)
             .frame(maxWidth: .infinity, minHeight: 150)
-            .background(.white)
+            .background(HBColor.secondaryBackground)
             .clipShape(
                 RoundedRectangle(cornerRadius: 16)
             )

@@ -17,6 +17,7 @@ enum PublicDeckActions: Equatable {
     case loadDeck(id: String)
     case loadCards(id: String, page: Int)
     case reloadCards(id: String)
+    case exitDeck
 }
 
 final class PublicDeckInteractor: Interactor {
@@ -42,7 +43,9 @@ final class PublicDeckInteractor: Interactor {
             .sink { _ in
                 
             } receiveValue: { [weak store] newState in
-                store?.deckState = newState
+                DispatchQueue.main.async {
+                    store?.deckState = newState
+                }
             }
             .store(in: &cancellables)
     }
@@ -58,11 +61,13 @@ final class PublicDeckInteractor: Interactor {
             currentState.cards = []
             currentState.currentPage = 0
             return reloadCardsEffect(currentState, id: id)
+        case .exitDeck:
+            return Just(PublicDeckState()).setFailureType(to: Error.self).eraseToAnyPublisher()
         }
     }
     
     private func loadDeckEffect(id: String, currentState: PublicDeckState) -> AnyPublisher<PublicDeckState, Error> {
-        return deckService
+        deckService
             .getDeck(by: id)
             .map { deck in
                 var newState = currentState

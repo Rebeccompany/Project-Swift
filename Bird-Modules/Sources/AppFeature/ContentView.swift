@@ -97,12 +97,12 @@ public struct ContentView: View {
     private var sidebar: some View {
         CollectionsSidebar(
             selection: $viewModel.sidebarSelection,
-            isCompact: horizontalSizeClass == .compact,
             editMode: $editModeForCollection
         )
         .environmentObject(viewModel)
         .environmentObject(shopStore)
         .environment(\.editMode, $editModeForCollection)
+        .environment(\.horizontalSizeClass, horizontalSizeClass)
     }
     
     @ViewBuilder

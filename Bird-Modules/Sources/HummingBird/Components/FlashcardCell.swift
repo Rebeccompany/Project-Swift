@@ -26,8 +26,8 @@ public struct FlashcardCell: View {
     }
     
     public init(card: ExternalCard, isFront: Bool = true, action: @escaping () -> Void) {
-        self.front = NSAttributedString(string: card.front)
-        self.back = NSAttributedString(string: card.back)
+        self.front = try! NSTextStorage(rtfData: card.front.data(using: .utf8)!)
+        self.back = try! NSTextStorage(rtfData: card.back.data(using: .utf8)!)
         self.isFront = isFront
         self.action = action
         self.color = card.color

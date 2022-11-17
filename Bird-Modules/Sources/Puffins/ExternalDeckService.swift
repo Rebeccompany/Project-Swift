@@ -35,18 +35,38 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     }
     
     public func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExternalCard], URLError> {
-        Just([]).setFailureType(to: URLError.self).eraseToAnyPublisher()
+        session.dataTaskPublisher(for: .cardsForDeck(id: deckId, page: page))
+            .map(\.data)
+            .decode(type: [ExternalCard].self, decoder: JSONDecoder())
+            .mapError { error in
+                if let error = error as? URLError {
+                    return error
+                } else {
+                    return URLError(.cannotDecodeContentData)
+                }
+            }
+            .eraseToAnyPublisher()
     }
     
-    public func getDeck(by id: String) -> AnyPublisher<Models.ExternalDeck, URLError> {
+    public func getDeck(by id: String) -> AnyPublisher<ExternalDeck, URLError> {
+        session.dataTaskPublisher(for: .deck(id: id))
+            .map(\.data)
+            .decode(type: ExternalDeck.self, decoder: JSONDecoder())
+            .mapError { error in
+                if let error = error as? URLError {
+                    return error
+                } else {
+                    return URLError(.cannotDecodeContentData)
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    public func uploadNewDeck(_ deck: Deck, with cards: [Card]) -> AnyPublisher<String, URLError> {
         fatalError()
     }
     
-    public func uploadNewDeck(_ deck: Models.Deck, with cards: [Models.Card]) -> AnyPublisher<String, URLError> {
-        fatalError()
-    }
-    
-    public func deleteDeck(_ deck: Models.Deck) -> AnyPublisher<Void, URLError> {
+    public func deleteDeck(_ deck: Deck) -> AnyPublisher<Void, URLError> {
         fatalError()
     }
 }

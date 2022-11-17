@@ -28,8 +28,9 @@ public struct StoreView: View {
             case .loaded:
                 ScrollView {
                     LazyVStack(alignment: .leading) {
-                        ForEach(state.sections) { section in
+                        ForEach(state.sections.filter { !$0.decks.isEmpty }) { section in
                             PublicSection(section: section)
+                            
                         }
                     }
                 }

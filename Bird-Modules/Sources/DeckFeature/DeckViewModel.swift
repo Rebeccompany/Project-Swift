@@ -14,10 +14,17 @@ import Woodpecker
 import Utils
 import Habitat
 
+enum LoadingPhase: Equatable {
+    case loading
+    case showSuccess
+    case showFailure
+}
+
 @MainActor
 public class DeckViewModel: ObservableObject {
     @Published var searchFieldContent: String
     @Published var cards: [Card]
+    @Published var loadingPhase: LoadingPhase?
     
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -27,6 +34,7 @@ public class DeckViewModel: ObservableObject {
     public init() {
         self.searchFieldContent = ""
         self.cards = []
+        self.loadingPhase = nil
     }
     
     private func cardListener(_ deck: Deck) -> AnyPublisher<[Card], Never> {
@@ -89,6 +97,41 @@ public class DeckViewModel: ObservableObject {
         } else {
             return cards.filter { $0.front.string.contains(searchFieldContent) || $0.back.string.contains(searchFieldContent) }
         }
+    }
+    
+    func publishDeck(_ deck: Deck) {
+        loadingPhase = .loading
+        
+        let dto = DeckAdapter.adapt(deck, with: cards)
+        
+        var request = URLRequest(url: URL(string: "http://crow-dev.eba-udf2azmf.sa-east-1.elasticbeanstalk.com/api/decks")!)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = try! JSONEncoder().encode(dto)
+        
+        URLSession.shared
+            .dataTaskPublisher(for: request)
+            .print()
+            .map(\.data)
+            .decode(type: String.self, decoder: JSONDecoder())
+            .delay(for: .milliseconds(500), scheduler: RunLoop.main)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.loadingPhase = .showSuccess
+                case .failure(let error):
+                    self?.loadingPhase = .showFailure
+                    print(error.localizedDescription)
+                }
+            } receiveValue: { [weak self] storeId in
+                print("store id \(storeId)")
+                var deckWithStoreId = deck
+                deckWithStoreId.storeId = storeId
+                try? self?.deckRepository.editDeck(deckWithStoreId)
+            }
+            .store(in: &cancellables)
     }
     
 }

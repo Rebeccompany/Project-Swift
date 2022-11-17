@@ -15,19 +15,23 @@ import StoreState
 
 struct CollectionsSidebar: View {
     @State private var onboarding: Bool = false
-    @Binding private var editMode: EditMode
-    @EnvironmentObject private var viewModel: ContentViewModel
-    @EnvironmentObject private var store: ShopStore
-    @Binding private var selection: SidebarRoute?
     @State private var presentCollectionEdition = false
     @State private var presentCollectionCreation = false
     @State private var editingCollection: DeckCollection?
-    private var isCompact: Bool
+    @Binding private var editMode: EditMode
+    @Binding private var selection: SidebarRoute?
+    @EnvironmentObject private var viewModel: ContentViewModel
+    @EnvironmentObject private var store: ShopStore
     
-    init(selection: Binding<SidebarRoute?>, isCompact: Bool, editMode: Binding<EditMode>) {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
+    
+    init(selection: Binding<SidebarRoute?>, editMode: Binding<EditMode>) {
         self._selection = selection
         self._editMode = editMode
-        self.isCompact = isCompact
     }
     
     var body: some View {
