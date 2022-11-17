@@ -12,8 +12,6 @@ import Storage
 import Habitat
 import RichTextKit
 import Combine
-#warning("Texto inicia preto no flashcard e salva branco")
-#warning("Cor inicia marcado preto mesmo nao sendo preto")
 #warning("Tamanho da letra nao muda só de clicar no lado que está editando")
 #warning("Clicar numa coleção estando dentro de um deck faz o app carregar infinitamente")
 #warning("Estudar um deck pela primeira vez faz o app carregar infinitamente")
@@ -33,12 +31,12 @@ public struct NewFlashcardViewMacOS: View {
     
     var data: NewFlashcardWindowData
     
-    var activeContext: RichTextContext {
-        if frontContext.hasSelectedRange {
+    var activeContext: RichTextContext? {
+        if frontContext.isEditingText || frontContext.hasSelectedRange {
             return frontContext
-        } else {
+        } else if backContext.isEditingText || backContext.hasSelectedRange {
             return backContext
-        }
+        } else { return nil }
     }
     
     public init(data: NewFlashcardWindowData) {
@@ -163,63 +161,73 @@ public struct NewFlashcardViewMacOS: View {
             }
         }
         .onChange(of: size) { newValue in
-            activeContext.fontSize = newValue
+            activeContext?.fontSize = newValue
         }
     }
     
     @ViewBuilder
     private var italicButton: some View {
-        Button { activeContext.isItalic.toggle() } label: {
+        Button { activeContext?.isItalic.toggle() } label: {
             Image.richTextStyleItalic
                 .frame(width: 18, height: 18)
         }
         .buttonStyle(.bordered)
-        .tint(activeContext.isItalic ? HBColor.actionColor : nil)
+        .tint(activeContext?.isItalic ?? false ? HBColor.actionColor : nil)
         .keyboardShortcut("i", modifiers: .command)
     }
     
     @ViewBuilder
     private var boldButton: some View {
-        Button { activeContext.isBold.toggle() } label: {
+        Button { activeContext?.isBold.toggle() } label: {
             Image.richTextStyleBold
                 .frame(width: 18, height: 18)
         }
         .buttonStyle(.bordered)
-        .tint(activeContext.isBold ? HBColor.actionColor : nil)
+        .tint(activeContext?.isBold ?? false ? HBColor.actionColor : nil)
         .keyboardShortcut("b", modifiers: .command)
     }
     
     @ViewBuilder
     private var underlineButton: some View {
-        Button { activeContext.isUnderlined.toggle() } label: {
+        Button { activeContext?.isUnderlined.toggle() } label: {
             Image.richTextStyleUnderline
                 .frame(width: 18, height: 18)
         }
         .buttonStyle(.bordered)
-        .tint(activeContext.isUnderlined ? HBColor.actionColor : nil)
+        .tint(activeContext?.isUnderlined ?? false ? HBColor.actionColor : nil)
         .keyboardShortcut("u", modifiers: .command)
     }
     
     @ViewBuilder
     private var textColorButton: some View {
-        HBColorPicker {
+        ZStack {
             Image(systemName: "character")
-                .font(.system(size: 18))
-        } onColorSelected: { color in
-            activeContext.foregroundColorBinding.wrappedValue = color
+                .zIndex(2)
+                .foregroundColor(activeContext?.foregroundColor?.isLight ?? false ? .black : .white)
+                .font(.system(size: 14, weight: .bold))
+            ColorPicker("", selection: activeContext?.foregroundColorBinding ?? frontContext.foregroundColorBinding, supportsOpacity: false)
         }
-        .buttonStyle(.bordered)
     }
     
     @ViewBuilder
     private var textBackgroundColor: some View {
-        HBColorPicker {
+        ZStack {
             Image(systemName: "highlighter")
-                .font(.system(size: 14))
-        } onColorSelected: { color in
-            activeContext.backgroundColorBinding.wrappedValue = color
+                .zIndex(2)
+                .foregroundColor(checkBackgroundColor(color: activeContext?.foregroundColor ?? .clear))
+                .font(.system(size: 14, weight: .bold))
+            ColorPicker("", selection: activeContext?.backgroundColorBinding ?? frontContext.backgroundColorBinding, supportsOpacity: true)
         }
-        .buttonStyle(.bordered)
+    }
+    
+    private func checkBackgroundColor(color: ColorRepresentable) -> Color {
+        if color == .clear {
+            return Color.gray
+        } else if color.isLight {
+            return .black
+        } else {
+            return .white
+        }
     }
     
     @ViewBuilder
@@ -316,7 +324,7 @@ public struct NewFlashcardViewMacOS: View {
         Menu {
             ForEach(RichTextAlignment.allCases) { alignment in
                 Button {
-                    activeContext.alignment = alignment
+                    activeContext?.alignment = alignment
                 } label: {
                     Label {
                         Text(alignment.rawValue)
@@ -327,7 +335,7 @@ public struct NewFlashcardViewMacOS: View {
             }
             
         } label: {
-            activeContext.alignment.icon
+            activeContext?.alignment.icon
                 .frame(width: 18, height: 18)
         }
         .buttonStyle(.bordered)
@@ -336,6 +344,7 @@ public struct NewFlashcardViewMacOS: View {
     func sizeTools(size: Binding<CGFloat>) -> some View {
         HStack {
             Button {
+                guard let activeContext else { return }
                 activeContext.decrementFontSize()
                 self.size -= CGFloat(1)
                 self.size = activeContext.fontSize
@@ -350,6 +359,7 @@ public struct NewFlashcardViewMacOS: View {
                 .frame(minWidth: 50)
             
             Button {
+                guard let activeContext else { return }
                 activeContext.incrementFontSize()
                 self.size += CGFloat(1)
                 self.size = activeContext.fontSize
@@ -377,4 +387,14 @@ struct NewFlashcardViewMacOS_Previews: PreviewProvider {
         }
     }
 }
+
+extension NSColor {
+    var isLight: Bool {
+        guard let components = cgColor.components, components.count > 2 else {return false}
+        let brightness = ((components[0] * 299) + (components[1] * 587) + (components[2] * 114)) / 1000
+        return (brightness > 0.5)
+    }
+}
+
+
 #endif

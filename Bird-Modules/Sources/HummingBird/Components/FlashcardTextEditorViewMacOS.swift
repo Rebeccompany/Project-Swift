@@ -57,7 +57,6 @@ public struct FlashcardTextEditorViewMacOS: View {
             }
         }
         .onAppear {
-            context.foregroundColor = ColorRepresentable.white
             context.shouldUpdateTextField()
         }
     }

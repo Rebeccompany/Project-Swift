@@ -44,8 +44,6 @@ public final class ContentViewModel: ObservableObject {
             return NSLocalizedString("todos_os_baralhos", bundle: .module, comment: "")
         case .decksFromCollection(let collection):
             return collection.name
-        case .none:
-            return ""
         }
     }
     
@@ -55,8 +53,6 @@ public final class ContentViewModel: ObservableObject {
             return nil
         case .decksFromCollection(let collection):
             return collection
-        case .none:
-            return nil
         }
     }
     

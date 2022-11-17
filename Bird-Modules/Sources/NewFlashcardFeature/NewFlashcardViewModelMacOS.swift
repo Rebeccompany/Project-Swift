@@ -35,7 +35,6 @@ public class NewFlashcardViewModelMacOS: ObservableObject {
     @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
     @Dependency(\.uuidGenerator) private var uuidGenerator: UUIDGeneratorProtocol
     
-
     func setupDeckContentIntoFields() {
         guard let editingFlashcard = editingFlashcard else { return }
         flashcardFront = editingFlashcard.front

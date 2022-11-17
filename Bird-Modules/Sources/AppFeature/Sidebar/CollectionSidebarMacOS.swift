@@ -61,6 +61,7 @@ struct CollectionsSidebarMacOS: View {
                     Text(NSLocalizedString("colecoes", bundle: .module, comment: ""))
                 }
             }
+            
             HStack {
                 Button {
                     editingCollection = nil

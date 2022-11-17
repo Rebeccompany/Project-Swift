@@ -26,7 +26,7 @@ public struct TextViewRepresentable: NSViewRepresentable {
         label.isEditable = false
         label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         label.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
-        
+        label.attributedStringValue = text
         return label
     }
     
