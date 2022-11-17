@@ -24,11 +24,12 @@ struct FlashcardView: View {
     
     var body: some View {
         ZStack {
-            cardFace(content: viewModel.card.back, face: NSLocalizedString("verso", bundle: .module, comment: ""), description: NSLocalizedString("toque_virar", bundle: .module, comment: ""))
+            cardFace(content: viewModel.card.back, face: NSLocalizedString("verso", bundle: .module, comment: ""), description: "arrow.triangle.2.circlepath")
                 .rotation3DEffect(.degrees(backDegree), axis: (x: 0, y: 1, z: 0.0001))
-            cardFace(content: viewModel.card.front, face: NSLocalizedString("frente", bundle: .module, comment: ""), description: NSLocalizedString("toque_virar", bundle: .module, comment: ""))
+            cardFace(content: viewModel.card.front, face: NSLocalizedString("frente", bundle: .module, comment: ""), description: "arrow.triangle.2.circlepath")
                 .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0.0001))
         }
+        .shadow(color: .black.opacity(0.3), radius: 1, y: -1)
         .onTapGesture(perform: flip)
         .onChange(of: viewModel.isFlipped) { newValue in
             flipWithAnimation(newValue)
@@ -96,18 +97,32 @@ struct FlashcardView: View {
             
             HStack {
                 Spacer()
-                Text(description)
-                    .font(.system(size: 15))
+                Image(systemName: description)
+                    .font(.system(size: 30))
             }
         }
         .foregroundColor(.white)
         .padding(24)
-        .background(HBColor.color(for: viewModel.card.color))
+        .background {
+            if content == viewModel.card.front {
+                SpixiiShapeFront()
+                    .foregroundColor(HBColor.color(for: viewModel.card.color))
+            }
+            else {
+                SpixiiShapeBack()
+                    .foregroundColor(HBColor.color(for: viewModel.card.color))
+                    .brightness(0.1)
+            }
+        }
+        .background {
+            if content == viewModel.card.front {
+                HBColor.color(for: viewModel.card.color).brightness(0.1)
+            } else {
+                HBColor.color(for: viewModel.card.color)
+            }
+        }
         .cornerRadius(24)
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.white, lineWidth: 3)
-        )
+
     }
 }
 
