@@ -152,8 +152,6 @@ public final class ContentViewModel: ObservableObject {
     private func filterDecksForToday(_ decks: [Deck]) -> [Deck] {
         
         decks.filter {
-            print("toti", $0.name, $0.session?.date ?? "nil")
-            print("cards for today: ", $0.session?.cardIds.count ?? 404)
             guard let session = $0.session else { return false }
 
             guard !session.cardIds.isEmpty else { return false }

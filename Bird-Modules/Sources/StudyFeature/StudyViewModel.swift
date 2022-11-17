@@ -204,7 +204,6 @@ public class StudyViewModel: ObservableObject {
             try deckRepository.editCard(card)
             
             guard let lastSnapshot = card.history.max(by: { $0.date.timeIntervalSince1970 < $1.date.timeIntervalSince1970 }) else { return }
-            print("wpSm2", card.front.string, card.woodpeckerCardInfo, lastSnapshot)
 
             try deckRepository.addHistory(lastSnapshot, to: card)
         }
@@ -255,7 +254,7 @@ public class StudyViewModel: ObservableObject {
                 case .finished:
                     self?.shouldDismiss = true
                 case .failure(_):
-                    print("errinho")
+                    print("error")
                 }
                 
             } receiveValue: { [weak self] (data: ([Card], [Card], [Card], Date)) in

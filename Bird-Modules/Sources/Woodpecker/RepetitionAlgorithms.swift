@@ -113,8 +113,7 @@ public struct Woodpecker {
             modifiedCard.woodpeckerCardInfo.isGraduated = true
             modifiedCard.woodpeckerCardInfo.interval = 1
         }
-        
-        print("learning", modifiedCard.woodpeckerCardInfo)
+
         return modifiedCard
     }
     
@@ -194,8 +193,6 @@ public struct Woodpecker {
         if result.easeFactor < 1.3 {
             result.easeFactor = 1.3
         }
-        
-        print("wpSm2", result)
 
         return result
     }

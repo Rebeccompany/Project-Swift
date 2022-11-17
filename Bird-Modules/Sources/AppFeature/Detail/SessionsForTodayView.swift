@@ -20,17 +20,27 @@ struct SessionsForTodayView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(viewModel.todayDecks) { deck in
-                    
-                    Button {
-                        selectedDeck = deck
-                    } label: {
-//                        DeckForTodayCell(deck: deck)
-                        Label(deck.name, systemImage: deck.icon)
+                    if viewModel.detailType == .grid {
+                        Button {
+                            selectedDeck = deck
+                        } label: {
                             
+                            DeckForTodayCell(deck: deck)
+                                
+                        }
+                    } else {
+                        Button {
+                            selectedDeck = deck
+                        } label: {
+                            
+                            Label(deck.name, systemImage: deck.icon)
+                                
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(HBColor.color(for: deck.color))
+                        .buttonBorderShape(.capsule)
                     }
-                    .buttonStyle(.bordered)
-                    .tint(HBColor.color(for: deck.color))
-                    .buttonBorderShape(.capsule)
+                    
 
                     
                 }

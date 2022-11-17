@@ -30,7 +30,7 @@ struct DeckForTodayCell: View {
             Spacer()
         }
         .padding(.horizontal)
-        .frame(height: 80)
+        .frame(width: 250, height: 80)
         .background {
             RoundedRectangle(cornerRadius: 8)
                 .fill(HBColor.color(for: deck.color))
