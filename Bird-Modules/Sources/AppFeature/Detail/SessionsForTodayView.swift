@@ -8,6 +8,7 @@
 import SwiftUI
 import Models
 import StudyFeature
+import HummingBird
 
 struct SessionsForTodayView: View {
     
@@ -23,8 +24,13 @@ struct SessionsForTodayView: View {
                     Button {
                         selectedDeck = deck
                     } label: {
-                        DeckForTodayCell(deck: deck)
+//                        DeckForTodayCell(deck: deck)
+                        Label(deck.name, systemImage: deck.icon)
+                            
                     }
+                    .buttonStyle(.bordered)
+                    .tint(HBColor.color(for: deck.color))
+                    .buttonBorderShape(.capsule)
 
                     
                 }

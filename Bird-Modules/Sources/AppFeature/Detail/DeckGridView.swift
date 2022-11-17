@@ -19,32 +19,45 @@ struct DeckGridView: View {
     }
     
     var body: some View {
-        
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
-                ForEach(sortedDecks) { deck in
-                    NavigationLink(value: StudyRoute.deck(deck)) {
-                        DeckCell(info: DeckCellInfo(deck: deck))
-                        .buttonStyle(DeckCell.Style(color: deck.color))
-                        .contextMenu {
-                            Button {
-                                editAction(deck)
-                            } label: {
-                                Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
-                            }
-                                
-                            Button(role: .destructive) {
-                                try? viewModel.deleteDeck(deck)
-                            } label: {
-                                Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
-                            }
-                        }
-                    }
-                    .hoverEffect(.lift)
+        ScrollView {
+            LazyVStack(alignment: .leading) {
+                if !viewModel.todayDecks.isEmpty {
+                    Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
+                        .padding(.leading)
+                        .font(.title3)
+                        .bold()
+                    SessionsForTodayView()
                 }
+                Text(NSLocalizedString("baralhos", bundle: .module, comment: ""))
+                    .padding(.leading)
+                    .font(.title3)
+                    .bold()
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
+                    ForEach(sortedDecks) { deck in
+                        NavigationLink(value: StudyRoute.deck(deck)) {
+                            DeckCell(info: DeckCellInfo(deck: deck))
+                                .buttonStyle(DeckCell.Style(color: deck.color))
+                                .contextMenu {
+                                    Button {
+                                        editAction(deck)
+                                    } label: {
+                                        Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
+                                    }
+                                    
+                                    Button(role: .destructive) {
+                                        try? viewModel.deleteDeck(deck)
+                                    } label: {
+                                        Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
+                                    }
+                                }
+                        }
+                        .hoverEffect(.lift)
+                    }
+                }
+                .animation(.linear, value: viewModel.sortOrder)
+                .padding([.horizontal], 12)
+                .padding(.top, 24)
             }
-            .animation(.linear, value: viewModel.sortOrder)
-            .padding([.horizontal], 12)
-            .padding(.top, 24)
-        
+        }
     }
 }

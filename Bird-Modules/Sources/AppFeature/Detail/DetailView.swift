@@ -147,18 +147,6 @@ public struct DetailView: View {
     @ViewBuilder
     private var content: some View {
         VStack(alignment: .leading) {
-            ScrollView {
-                if !viewModel.todayDecks.isEmpty {
-                    Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
-                        .padding(.leading)
-                        .font(.title3)
-                        .bold()
-                    SessionsForTodayView()
-                }
-                Text(NSLocalizedString("baralhos", bundle: .module, comment: ""))
-                    .padding(.leading)
-                    .font(.title3)
-                    .bold()
                 if viewModel.detailType == .grid {
                     DeckGridView { deck in
                         editingDeck = deck
@@ -170,7 +158,7 @@ public struct DetailView: View {
                         presentDeckEdition = true
                     }
                 }
-            }
+            
         }
     }
 }
