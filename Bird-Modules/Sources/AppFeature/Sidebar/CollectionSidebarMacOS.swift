@@ -32,7 +32,7 @@ struct CollectionsSidebarMacOS: View {
                 }
                 Section {
                         ForEach(viewModel.collections) { collection in
-                            NavigationLink(value: SidebarRoute.decksFromCollection( collection)) {
+                            NavigationLink(value: SidebarRoute.decksFromCollection(collection)) {
                                 HStack {
                                     Label(collection.name, systemImage: collection.icon.rawValue)
                                     Spacer()
