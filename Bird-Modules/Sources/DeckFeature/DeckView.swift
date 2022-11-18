@@ -87,10 +87,16 @@ public struct DeckView: View {
                 Button {
                     shouldDisplayPublishConfirmation = true
                 } label: {
-                    Label("Publish", systemImage: "globe.americas")
+                    Label(
+                        NSLocalizedString("publicar", bundle: .module, comment: ""),
+                        systemImage: "globe.americas"
+                    )
                 }
-                .confirmationDialog("Publicação de deck na Biblioteca", isPresented: $shouldDisplayPublishConfirmation) {
-                    Button("confirm") {
+                .confirmationDialog(
+                    NSLocalizedString("confirmar_publicao", bundle: .module, comment: ""),
+                    isPresented: $shouldDisplayPublishConfirmation
+                ) {
+                    Button(NSLocalizedString("confirmar", bundle: .module, comment: ""), role: deck.storeId != nil ? .destructive : nil) {
                         if deck.storeId != nil {
                             viewModel.deletePublicDeck(deck)
                         } else {
@@ -99,9 +105,15 @@ public struct DeckView: View {
                     }
                 } message: {
                     if deck.storeId != nil {
-                        Text("Você tem certeza que deseja apagar")
+                        Text(
+                            "confirmar_publicao_delete",
+                            bundle: .module
+                        )
                     } else {
-                        Text("Você tem certeza que deseja publicar o seu baralho?")
+                        Text(
+                            "confirmar_publicao_publicar",
+                            bundle: .module
+                        )
                     }
                 }
                 .disabled(deck.cardCount == 0)
