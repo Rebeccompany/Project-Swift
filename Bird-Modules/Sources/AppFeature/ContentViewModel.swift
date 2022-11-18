@@ -38,7 +38,7 @@ public final class ContentViewModel: ObservableObject {
     var detailTitle: String {
         switch sidebarSelection ?? .allDecks {
         case .allDecks:
-            return NSLocalizedString("todos_os_baralhos", bundle: .module, comment: "")
+            return NSLocalizedString("baralhos_title", bundle: .module, comment: "")
         case .decksFromCollection(let collection):
             return collection.name
         }

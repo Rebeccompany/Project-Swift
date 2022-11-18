@@ -7,7 +7,7 @@
 */
 
 "colecoes" = "Coleções";
-"todos_os_baralhos" = "Todos os Baralhos";
+"baralhos_title" = "Baralhos";
 "editar" = "Editar";
 "deletar" = "Deletar";
 "cancelar" = "Cancelar";
@@ -25,3 +25,4 @@
 "abrir" = "Abrir";
 "cartas" = "cartas";
 "criar_colecao" = "Criar Coleção";
+"colecoes_title" = "Coleções";
