@@ -175,7 +175,8 @@ let package = Package(
                 "NewFlashcardFeature",
                 "StudyFeature",
                 "ImportingFeature",
-                "Habitat"
+                "Habitat",
+                "Puffins"
             ]
         ),
             

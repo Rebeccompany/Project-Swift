@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import HummingBird
 import Models
 
 struct HeaderPublicDeckView: View {
@@ -18,7 +19,7 @@ struct HeaderPublicDeckView: View {
             .padding()
             .background(
                 Circle()
-                    .fill(.red)
+                    .fill(HBColor.color(for: deck.color))
                     .frame(width: 100, height: 100)
             )
         

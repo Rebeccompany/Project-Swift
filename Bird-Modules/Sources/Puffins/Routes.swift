@@ -22,6 +22,10 @@ extension Endpoint {
     }
     
     static func sendAnDeck(_ dto: Data) -> Endpoint {
-        Endpoint(path: "api/deck", method: .post, body: dto)
+        Endpoint(path: "api/decks", method: .post, body: dto)
+    }
+    
+    static func deleteDeck(with id: String) -> Endpoint {
+        Endpoint(path: "api/decks/\(id)", method: .delete)
     }
 }

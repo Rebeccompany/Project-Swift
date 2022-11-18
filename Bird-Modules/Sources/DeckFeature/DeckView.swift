@@ -91,7 +91,11 @@ public struct DeckView: View {
                 }
                 .confirmationDialog("Publicação de deck na Biblioteca", isPresented: $shouldDisplayPublishConfirmation) {
                     Button("confirm") {
-                        viewModel.publishDeck(deck)
+                        if deck.storeId != nil {
+                            viewModel.deletePublicDeck(deck)
+                        } else {
+                            viewModel.publishDeck(deck)
+                        }
                     }
                 } message: {
                     if deck.storeId != nil {

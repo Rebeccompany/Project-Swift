@@ -9,6 +9,7 @@ import Foundation
 import Models
 import HummingBird
 import Combine
+import Puffins
 import Storage
 import Woodpecker
 import Utils
@@ -30,6 +31,7 @@ public class DeckViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
+    @Dependency(\.externalDeckService) private var externalDeckService: ExternalDeckServiceProtocol
     
     public init() {
         self.searchFieldContent = ""
@@ -102,20 +104,7 @@ public class DeckViewModel: ObservableObject {
     func publishDeck(_ deck: Deck) {
         loadingPhase = .loading
         
-        let dto = DeckAdapter.adapt(deck, with: cards)
-        
-        var request = URLRequest(url: URL(string: "http://crow-dev.eba-udf2azmf.sa-east-1.elasticbeanstalk.com/api/decks")!)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.httpBody = try! JSONEncoder().encode(dto)
-        
-        URLSession.shared
-            .dataTaskPublisher(for: request)
-            .print()
-            .map(\.data)
-            .decode(type: String.self, decoder: JSONDecoder())
-            .delay(for: .milliseconds(500), scheduler: RunLoop.main)
+        externalDeckService.uploadNewDeck(deck, with: cards)
             .receive(on: RunLoop.main)
             .sink { [weak self] completion in
                 switch completion {
@@ -129,6 +118,27 @@ public class DeckViewModel: ObservableObject {
                 print("store id \(storeId)")
                 var deckWithStoreId = deck
                 deckWithStoreId.storeId = storeId
+                try? self?.deckRepository.editDeck(deckWithStoreId)
+            }
+            .store(in: &cancellables)
+    }
+    
+    func deletePublicDeck(_ deck: Deck) {
+        loadingPhase = .loading
+        
+        externalDeckService.deleteDeck(deck)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.loadingPhase = .showSuccess
+                case .failure(let error):
+                    self?.loadingPhase = .showFailure
+                    print(error.localizedDescription)
+                }
+            } receiveValue: { [weak self] _ in
+                var deckWithStoreId = deck
+                deckWithStoreId.storeId = nil
                 try? self?.deckRepository.editDeck(deckWithStoreId)
             }
             .store(in: &cancellables)

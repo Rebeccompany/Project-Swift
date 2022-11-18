@@ -22,7 +22,14 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     
     public func getDeckFeed() -> AnyPublisher<[ExternalSection], URLError> {
         session.dataTaskPublisher(for: Endpoint.feed)
-            .map(\.data)
+            .tryMap { (data, response) in
+                let range = 200...299
+                guard let response = response as? HTTPURLResponse,
+                      range.contains(response.statusCode)
+                else { throw URLError(.badServerResponse) }
+                
+                return data
+            }
             .decode(type: [ExternalSection].self, decoder: JSONDecoder())
             .mapError { error in
                 if let error = error as? URLError {
@@ -36,7 +43,14 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     
     public func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExternalCard], URLError> {
         session.dataTaskPublisher(for: .cardsForDeck(id: deckId, page: page))
-            .map(\.data)
+            .tryMap { (data, response) in
+                let range = 200...299
+                guard let response = response as? HTTPURLResponse,
+                      range.contains(response.statusCode)
+                else { throw URLError(.badServerResponse) }
+                
+                return data
+            }
             .decode(type: [ExternalCard].self, decoder: JSONDecoder())
             .mapError { error in
                 if let error = error as? URLError {
@@ -50,7 +64,14 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     
     public func getDeck(by id: String) -> AnyPublisher<ExternalDeck, URLError> {
         session.dataTaskPublisher(for: .deck(id: id))
-            .map(\.data)
+            .tryMap { (data, response) in
+                let range = 200...299
+                guard let response = response as? HTTPURLResponse,
+                      range.contains(response.statusCode)
+                else { throw URLError(.badServerResponse) }
+                
+                return data
+            }
             .decode(type: ExternalDeck.self, decoder: JSONDecoder())
             .mapError { error in
                 if let error = error as? URLError {
@@ -63,10 +84,59 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     }
     
     public func uploadNewDeck(_ deck: Deck, with cards: [Card]) -> AnyPublisher<String, URLError> {
-        fatalError()
+        let dto = DeckAdapter.adapt(deck, with: cards)
+        let jsonEncoder = JSONEncoder()
+        guard let jsonData = try? jsonEncoder.encode(dto) else {
+            return Fail(outputType: String.self, failure: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()
+        }
+        
+        return session.dataTaskPublisher(for: .sendAnDeck(jsonData))
+            .tryMap { (data, response) in
+                let range = 200...299
+                guard let response = response as? HTTPURLResponse,
+                      range.contains(response.statusCode)
+                else { throw URLError(.badServerResponse) }
+                
+                return data
+            }
+            .print()
+            .decode(type: String.self, decoder: JSONDecoder())
+            .mapError { error in
+                if let error = error as? URLError {
+                    return error
+                } else {
+                    return URLError(.cannotDecodeContentData)
+                }
+            }
+            .receive(on: RunLoop.main)
+            .eraseToAnyPublisher()
     }
     
     public func deleteDeck(_ deck: Deck) -> AnyPublisher<Void, URLError> {
-        fatalError()
+        guard let storeId = deck.storeId else {
+            return Fail(outputType: Void.self, failure: URLError(.badURL)).eraseToAnyPublisher()
+        }
+        
+        return session.dataTaskPublisher(for: .deleteDeck(with: storeId))
+            .tryMap { (_, response) in
+                let range = 200...299
+                guard let response = response as? HTTPURLResponse,
+                      range.contains(response.statusCode)
+                else {
+                    print((response as? HTTPURLResponse)?.statusCode)
+                    throw URLError(.badServerResponse)
+                }
+                print(response.statusCode)
+                return Void()
+            }
+            .mapError { error in
+                if let error = error as? URLError {
+                    return error
+                } else {
+                    return URLError(.cannotDecodeContentData)
+                }
+            }
+            .print()
+            .eraseToAnyPublisher()
     }
 }
