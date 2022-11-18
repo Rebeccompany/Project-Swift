@@ -51,9 +51,17 @@ struct DeckTableView: View {
             }
             .swipeActions {
                 Button {
+                    try? viewModel.deleteDeck(deck)
+                } label: {
+                    Text("deletar", bundle: .module)
+                }
+                .tint(.red)
+            }
+            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                Button {
                     editAction(deck)
                 } label: {
-                    Text("Editar")
+                    Text("editar", bundle: .module)
                 }
                 .tint(HBColor.actionColor)
             }
@@ -63,6 +71,13 @@ struct DeckTableView: View {
         }
         .animation(.linear, value: viewModel.sortOrder)
         .listStyle(.plain)
+        .onDisappear {
+            Task {
+                await MainActor.run {
+                    viewModel.selection = Set()
+                }
+            }
+        }
     }
     
     @ViewBuilder

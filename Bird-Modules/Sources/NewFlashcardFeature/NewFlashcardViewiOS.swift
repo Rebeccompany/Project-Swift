@@ -25,7 +25,6 @@ public struct NewFlashcardViewiOS: View {
     @StateObject private var backContext = RichTextContext()
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    
     @Environment(\.dismiss) private var dismiss
     
     var deck: Deck
@@ -85,8 +84,24 @@ public struct NewFlashcardViewiOS: View {
                 .onAppear {
                     viewModel.startUp(editingFlashcard: editingFlashcard)
                 }
-                .alert(isPresented: $showingAlert) {
-                    customAlert()
+                .confirmationDialog("Are you sure you want to delete this flashcard?", isPresented: $showingAlert) {
+                    Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                        do {
+                            try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
+                            dismiss()
+                        } catch {
+                            activeAlert = .error
+                            showingAlert = true
+                            selectedErrorMessage = .deleteCard
+                        }
+                    }
+                } message: {
+                    switch activeAlert {
+                    case .error:
+                        Text(NSLocalizedString("alert_delete_flashcard_error_text", bundle: .module, comment: ""))
+                    case .confirm:
+                        Text(NSLocalizedString("alert_delete_flashcard", bundle: .module, comment: ""))
+                    }
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {

@@ -9,6 +9,7 @@ import SwiftUI
 import Models
 import NewCollectionFeature
 import HummingBird
+import StoreFeature
 import OnboardingFeature
 
 #if os(iOS)
@@ -32,11 +33,20 @@ struct CollectionsSidebariOS: View {
         
         List(selection: $selection) {
             NavigationLink(value: SidebarRoute.allDecks) {
-                Label(NSLocalizedString("todos_os_baralhos", bundle: .module, comment: ""), systemImage: "square.stack")
+                Label(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), systemImage: "square.stack")
             }
             .listRowBackground(
                 isCompact ? HBColor.secondaryBackground : nil
             )
+            NavigationLink {
+                StoreView()
+            } label: {
+                Label("Store", systemImage: "bag")
+            }
+            .listRowBackground(
+                isCompact ? HBColor.secondaryBackground : nil
+            )
+
             
             Section {
                 if viewModel.collections.isEmpty {
@@ -52,20 +62,26 @@ struct CollectionsSidebariOS: View {
                                     Image(systemName: "info.circle")
                                         .foregroundColor(HBColor.actionColor)
                                         .onTapGesture {
-                                            editingCollection = collection
-                                            presentCollectionEdition = true
+                                            editCollection(editingCollection: collection)
                                         }
                                         .accessibility(addTraits: .isButton)
                                 }
                             }
+                        }
+                        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                            Button {
+                                editCollection(editingCollection: collection)
+                            } label: {
+                                Text("editar", bundle: .module)
+                            }
+                            .tint(HBColor.actionColor)
                         }
                         .listRowBackground(
                             isCompact ? HBColor.secondaryBackground : nil
                         )
                         .contextMenu {
                             Button {
-                                editingCollection = collection
-                                presentCollectionEdition = true
+                                editCollection(editingCollection: collection)
                             } label: {
                                 Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
                             }
@@ -96,7 +112,7 @@ struct CollectionsSidebariOS: View {
         .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
         .scrollContentBackground(.hidden)
         .viewBackgroundColor(HBColor.primaryBackground)
-        .navigationTitle("Spixii")
+        .navigationTitle(NSLocalizedString("colecoes_title", bundle: .module, comment: ""))
         .toolbar {
             ToolbarItem {
                 Button {
@@ -120,8 +136,7 @@ struct CollectionsSidebariOS: View {
             
             ToolbarItem {
                 Button {
-                    editingCollection = nil
-                    presentCollectionCreation = true
+                    editCollection(editingCollection: nil)
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -140,14 +155,18 @@ struct CollectionsSidebariOS: View {
         VStack {
             EmptyStateView(component: .collection)
             Button {
-                editingCollection = nil
-                presentCollectionEdition = true
+                editCollection(editingCollection: nil)
             } label: {
                 Text(NSLocalizedString("criar_colecao", bundle: .module, comment: ""))
             }
             .buttonStyle(LargeButtonStyle(isDisabled: false))
             .padding()
         }
+    }
+    
+    private func editCollection(editingCollection: DeckCollection?) {
+        self.editingCollection = editingCollection
+        presentCollectionEdition = true
     }
 }
 #endif

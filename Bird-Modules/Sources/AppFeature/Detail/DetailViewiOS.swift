@@ -22,6 +22,8 @@ public struct DetailViewiOS: View {
     @Binding private var editMode: EditMode
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
+    
+    
     init(editMode: Binding<EditMode>) {
         self._editMode = editMode
     }
@@ -54,6 +56,15 @@ public struct DetailViewiOS: View {
                     shouldDisplayAlert = true
                 }
                 .foregroundColor(.red)
+                .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                    Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                        try? viewModel.deleteDecks()
+                        editingDeck = nil
+                    }
+                    .disabled(viewModel.selection.isEmpty)
+                } message: {
+                    Text(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                }
             }
         }
         .toolbar {
@@ -62,6 +73,7 @@ public struct DetailViewiOS: View {
                 Menu {
                     Button {
                         viewModel.changeDetailType(for: .grid)
+                        viewModel.shouldReturnToGrid = true
                     } label: {
                         Label(NSLocalizedString("icones", bundle: .module, comment: ""), systemImage: "rectangle.grid.2x2")
                     }
@@ -69,10 +81,11 @@ public struct DetailViewiOS: View {
                     
                     Button {
                         viewModel.changeDetailType(for: .table)
+                        viewModel.shouldReturnToGrid = false
                     } label: {
                         Label(NSLocalizedString("lista", bundle: .module, comment: ""), systemImage: "list.bullet")
                     }
-
+                    
                     Picker(selection: $viewModel.sortOrder) {
                         Text(NSLocalizedString("nome", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.name)])
                         Text(NSLocalizedString("quantidade", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.cardCount)])
@@ -112,18 +125,10 @@ public struct DetailViewiOS: View {
         }
         .onChange(of: editMode) { newValue in
             if newValue == .active {
-                viewModel.detailType = .table
                 viewModel.changeDetailType(for: .table)
+            } else if viewModel.shouldReturnToGrid {
+                viewModel.changeDetailType(for: .grid)
             }
-        }
-        .alert(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""), isPresented: $shouldDisplayAlert) {
-            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                try? viewModel.deleteDecks()
-                editingDeck = nil
-            }
-            .disabled(viewModel.selection.isEmpty)
-            
-            Button(NSLocalizedString("cancelar", bundle: .module, comment: ""), role: .cancel) { }
         }
         .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
         .navigationTitle(viewModel.detailTitle)

@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  HBImages.swift
 //  
 //
 //  Created by Claudia Fiorentino on 30/09/22.
@@ -34,7 +34,7 @@ public enum HBImages {
     }
     
     public static var collectionOnboarding: Image {
-        Image("Collections", bundle: .module)
+        Image("Collection", bundle: .module)
     }
     
 }

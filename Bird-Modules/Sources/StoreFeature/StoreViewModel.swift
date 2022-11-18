@@ -24,6 +24,7 @@ public class StoreViewModel: ObservableObject {
     func startup() {
         externalDeckService
             .getDeckFeed()
+            .receive(on: RunLoop.main)
             .handleEvents(receiveOutput: {[weak self] _ in
                 self?.viewState = .loaded
             }, receiveCompletion: {[weak self] completion in
