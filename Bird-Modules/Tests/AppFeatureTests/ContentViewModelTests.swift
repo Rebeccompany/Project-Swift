@@ -209,112 +209,107 @@ final class ContentViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-        func testDetailNameForAllDecks() {
-            sut.startup()
-            sut.sidebarSelection = .allDecks
-            XCTAssertEqual(NSLocalizedString("todos_os_baralhos", bundle: .module, comment: ""), sut.detailTitle)
-        }
+    func testDetailNameForSingleCollection() {
+        sut.startup()
+        sut.sidebarSelection = .decksFromCollection(collectionRepositoryMock.collections[0])
+        XCTAssertEqual(collectionRepositoryMock.collections[0].name, sut.detailTitle)
+    }
     
-        func testDetailNameForSingleCollection() {
-            sut.startup()
-            sut.sidebarSelection = .decksFromCollection(collectionRepositoryMock.collections[0])
-            XCTAssertEqual(collectionRepositoryMock.collections[0].name, sut.detailTitle)
-        }
+    func testDeleteSingleCollectionSuccessifully() throws {
+        sut.startup()
+        
+        let collectionToBeDeleted = collectionRepositoryMock.collections[0]
+        try sut.deleteCollection(collectionToBeDeleted)
+        
+        let doesContainCollection = collectionRepositoryMock.collections.contains { $0.id == collectionToBeDeleted.id }
+        
+        XCTAssertFalse(doesContainCollection)
+    }
     
-        func testDeleteSingleCollectionSuccessifully() throws {
-            sut.startup()
+    func testDeleteCollectionSuccessifully() throws {
+        sut.startup()
+        let indexSet = IndexSet([0])
+        let collectionToBeDeleted = collectionRepositoryMock.collections[0]
+        
+        try sut.deleteCollection(at: indexSet)
+        
+        let doesContainCollection = collectionRepositoryMock.collections.contains { $0.id == collectionToBeDeleted.id }
+        
+        XCTAssertFalse(doesContainCollection)
+    }
     
-            let collectionToBeDeleted = collectionRepositoryMock.collections[0]
-            try sut.deleteCollection(collectionToBeDeleted)
+    func testSelectedCollectionWhenSidebarIsAllDecks() {
+        sut.startup()
+        sut.sidebarSelection = .allDecks
+        
+        XCTAssertNil(sut.selectedCollection)
+    }
     
-            let doesContainCollection = collectionRepositoryMock.collections.contains { $0.id == collectionToBeDeleted.id }
+    func testSelectedCollectionWhenSidebarIsACollection() {
+        sut.startup()
+        sut.sidebarSelection = .decksFromCollection(collectionRepositoryMock.collections[0])
+        
+        XCTAssertEqual(collectionRepositoryMock.collections[0], sut.selectedCollection)
+    }
     
-            XCTAssertFalse(doesContainCollection)
-        }
+    func testEditDeckSuccessfully() {
+        sut.startup()
+        let deck = deckRepositoryMock.data[deck0.id]!.deck
+        sut.selection.insert(deck.id)
+        
+        XCTAssertEqual(sut.selection.count, 1)
+        
+        XCTAssertEqual(sut.editDeck(), deck)
+    }
     
-        func testDeleteCollectionSuccessifully() throws {
-            sut.startup()
-            let indexSet = IndexSet([0])
-            let collectionToBeDeleted = collectionRepositoryMock.collections[0]
+    func testEditDeckWithWrongSelection() {
+        sut.startup()
+        sut.selection = .init()
+        
+        XCTAssertNil(sut.editDeck())
+    }
     
-            try sut.deleteCollection(at: indexSet)
+    func testEditDeckWithWrongDeck() {
+        sut.startup()
+        let deck = Deck(id: UUID.init(), name: "deck", icon: IconNames.abc.rawValue, color: .beigeBrown, collectionId: UUID.init(), cardsIds: [], category: DeckCategory.arts, storeId: nil)
+        
+        sut.selection.insert(deck.id)
+        
+        XCTAssertNil(sut.editDeck())
+    }
     
-            let doesContainCollection = collectionRepositoryMock.collections.contains { $0.id == collectionToBeDeleted.id }
+    func testDeleteDeckSuccessifully() throws {
+        sut.selection = Set(Array([deckRepositoryMock.data[deck0.id]!.deck, deckRepositoryMock.data[deck1.id]!.deck, deckRepositoryMock.data[deck2.id]!.deck]).map(\.id))
+        XCTAssertEqual(4, deckRepositoryMock.data.count)
+        
+        sut.startup()
+        try sut.deleteDecks()
+        
+        XCTAssertEqual(1, deckRepositoryMock.data.count)
+    }
     
-            XCTAssertFalse(doesContainCollection)
-        }
+    func testDeleteDeckFailed() throws {
+        sut.startup()
+        
+        sut.selection.insert(UUID())
+        
+        XCTAssertThrowsError(try sut.deleteDecks())
+    }
     
-        func testSelectedCollectionWhenSidebarIsAllDecks() {
-            sut.startup()
-            sut.sidebarSelection = .allDecks
+    func testChangeDetailType() throws {
+        sut.startup()
+        XCTAssertEqual(sut.detailType, .grid)
+        let current = displayCacherMock.getCurrentDetailType()
+        XCTAssertNil(current)
+        sut.changeDetailType(for: .table)
+        XCTAssertEqual(sut.detailType, .table)
+        XCTAssertEqual(.table, displayCacherMock.getCurrentDetailType())
+    }
     
-            XCTAssertNil(sut.selectedCollection)
-        }
-    
-        func testSelectedCollectionWhenSidebarIsACollection() {
-            sut.startup()
-            sut.sidebarSelection = .decksFromCollection(collectionRepositoryMock.collections[0])
-    
-            XCTAssertEqual(collectionRepositoryMock.collections[0], sut.selectedCollection)
-        }
-    
-        func testEditDeckSuccessfully() {
-            sut.startup()
-            let deck = deckRepositoryMock.data[deck0.id]!.deck
-            sut.selection.insert(deck.id)
-    
-            XCTAssertEqual(sut.selection.count, 1)
-    
-            XCTAssertEqual(sut.editDeck(), deck)
-        }
-    
-        func testEditDeckWithWrongSelection() {
-            sut.startup()
-            sut.selection = .init()
-    
-            XCTAssertNil(sut.editDeck())
-        }
-    
-        func testEditDeckWithWrongDeck() {
-            sut.startup()
-            let deck = Deck(id: UUID.init(), name: "deck", icon: IconNames.abc.rawValue, color: .beigeBrown, collectionId: UUID.init(), cardsIds: [], category: DeckCategory.arts, storeId: nil)
-    
-            sut.selection.insert(deck.id)
-    
-            XCTAssertNil(sut.editDeck())
-        }
-    
-        func testDeleteDeckSuccessifully() throws {
-            sut.selection = Set(Array([deckRepositoryMock.data[deck0.id]!.deck, deckRepositoryMock.data[deck1.id]!.deck, deckRepositoryMock.data[deck2.id]!.deck]).map(\.id))
-            XCTAssertEqual(4, deckRepositoryMock.data.count)
-            
-            sut.startup()
-            try sut.deleteDecks()
-    
-            XCTAssertEqual(1, deckRepositoryMock.data.count)
-        }
-    
-        func testDeleteDeckFailed() throws {
-            sut.startup()
-    
-            sut.selection.insert(UUID())
-    
-            XCTAssertThrowsError(try sut.deleteDecks())
-        }
-    
-        func testChangeDetailType() throws {
-            sut.startup()
-            XCTAssertEqual(sut.detailType, .grid)
-            let current = displayCacherMock.getCurrentDetailType()
-            XCTAssertNil(current)
-            sut.changeDetailType(for: .table)
-            XCTAssertEqual(sut.detailType, .table)
-            XCTAssertEqual(.table, displayCacherMock.getCurrentDetailType())
-        }
-    
-    
-    enum WoodpeckerState {
-        case review, learn
+    func testDetailNameForAllDecks() {
+        sut.startup()
+        sut.sidebarSelection = .allDecks
+        XCTAssertEqual(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), sut.detailTitle)
     }
     
     func createCards() {
@@ -383,4 +378,9 @@ final class ContentViewModelTests: XCTestCase {
     func sortById<T: Identifiable>(d0: T, d1: T) -> Bool where T.ID == UUID {
         return d0.id.uuidString > d1.id.uuidString
     }
+    
+    enum WoodpeckerState {
+        case review, learn
+    }
+    
 }
