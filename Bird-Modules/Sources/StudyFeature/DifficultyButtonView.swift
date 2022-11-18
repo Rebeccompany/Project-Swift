@@ -11,7 +11,7 @@ import HummingBird
 import Models
 import Utils
 
-struct GrowingButton: ButtonStyle {
+struct RatingButtonStyle: ButtonStyle {
     var color: Color
     @Binding var disabled: Bool
     @State private var scaleEffectSize: CGFloat = 1.0
@@ -55,10 +55,6 @@ struct GrowingButton: ButtonStyle {
     }
     
     private func buttonColor(isPressed: Bool) -> Color {
-//        guard !disabled else {
-//            return .gray
-//        }
-//
         if isPressed {
             return color
         } else {
@@ -108,7 +104,7 @@ struct DifficultyButtonView: View {
             }
             .keyboardShortcut(shortcutValue())
             .disabled(isDisabled)
-            .buttonStyle(GrowingButton(color: content.color, disabled: $isDisabled))
+            .buttonStyle(RatingButtonStyle(color: content.color, disabled: $isDisabled))
             Text(content.label)
                 .font(.system(size: 14))
                 .fontWeight(.medium)
