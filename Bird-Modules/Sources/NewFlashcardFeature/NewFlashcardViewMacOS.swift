@@ -27,7 +27,7 @@ public struct NewFlashcardViewMacOS: View {
     @StateObject private var frontContext = RichTextContext()
     @StateObject private var backContext = RichTextContext()
     
-    @State private var size: CGFloat = 14
+    @State private var size: CGFloat = 16
     
     var data: NewFlashcardWindowData
     
