@@ -468,7 +468,19 @@ let package = Package(
         .testTarget(
             name: "PuffinsTests",
             dependencies: [
+                "Puffins",
                 "StoreFeature",
+                "Habitat"
+            ]
+        ),
+        
+        .testTarget(
+            name: "PublicDeckFeatureTests",
+            dependencies: [
+                "PublicDeckFeature",
+                "StoreState",
+                "Models",
+                "Puffins",
                 "Habitat"
             ]
         )

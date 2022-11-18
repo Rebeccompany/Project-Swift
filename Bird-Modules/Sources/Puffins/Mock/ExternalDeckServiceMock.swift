@@ -11,25 +11,9 @@ import Combine
 
 public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     
-    public func getDeck(by id: String) -> AnyPublisher<Models.ExternalDeck, URLError> {
-        Just(ExternalDeck(id: id, name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem))
-            .setFailureType(to: URLError.self)
-            .eraseToAnyPublisher()
-    }
-    
-    public func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExternalCard], URLError> {
-        Just(cards).setFailureType(to: URLError.self).eraseToAnyPublisher()
-    }
-    
-    public func uploadNewDeck(_ deck: Models.Deck, with cards: [Models.Card]) -> AnyPublisher<String, URLError> {
-        fatalError()
-    }
-    
-    public func deleteDeck(_ deck: Models.Deck) -> AnyPublisher<Void, URLError> {
-        fatalError()
-    }
-    
     public var shouldError = false
+    public var error: URLError? = nil
+    public var expectedUploadString = ""
     
     public var feed: [ExternalSection] = [
         ExternalSection(title: getCategoryString(category: .stem), decks: [ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem), ExternalDeck(id: "2", name: "Stem 2", description: "Stem Desc 2", icon: .abc, color: .darkBlue, category: .stem), ExternalDeck(id: "3", name: "Stem 3", description: "Stem Desc 3", icon: .atom, color: .gray, category: .stem)]),
@@ -42,6 +26,10 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         
         ExternalSection(title: getCategoryString(category: .others), decks: [ExternalDeck(id: "11", name: "Others", description: "Others Desc", icon: .books, color: .darkPurple, category: .others)])
     ]
+    
+    public func deck(id: String) -> ExternalDeck {
+        ExternalDeck(id: id, name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem)
+    }
     
     public var cards: [ExternalCard] {
         [
@@ -116,5 +104,35 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
             return Just(feed).setFailureType(to: URLError.self).eraseToAnyPublisher()
         }
         
+    }
+    
+    public func getDeck(by id: String) -> AnyPublisher<ExternalDeck, URLError> {
+        if shouldError {
+            return Fail(outputType: ExternalDeck.self, failure: error!).eraseToAnyPublisher()
+        }
+        return Just(deck(id: id))
+            .setFailureType(to: URLError.self)
+            .eraseToAnyPublisher()
+    }
+    
+    public func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExternalCard], URLError> {
+        if shouldError {
+            return Fail(outputType: [ExternalCard].self, failure: error!).eraseToAnyPublisher()
+        }
+        return Just(cards).setFailureType(to: URLError.self).eraseToAnyPublisher()
+    }
+    
+    public func uploadNewDeck(_ deck: Deck, with cards: [Card]) -> AnyPublisher<String, URLError> {
+        if shouldError {
+            return Fail(outputType: String.self, failure: error!).eraseToAnyPublisher()
+        }
+        return Just(expectedUploadString).setFailureType(to: URLError.self).eraseToAnyPublisher()
+    }
+    
+    public func deleteDeck(_ deck: Models.Deck) -> AnyPublisher<Void, URLError> {
+        if shouldError {
+            return Fail(outputType: Void.self, failure: error!).eraseToAnyPublisher()
+        }
+        return Just(Void()).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
 }

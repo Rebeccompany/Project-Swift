@@ -7,7 +7,7 @@
 
 import Models
 
-public struct PublicDeckState {
+public struct PublicDeckState: Equatable {
     public var deck: ExternalDeck?
     public var cards: [ExternalCard]
     public var currentPage: Int
