@@ -152,19 +152,16 @@ public struct DetailView: View {
     
     @ViewBuilder
     private var content: some View {
-        VStack(alignment: .leading) {
-                if viewModel.detailType == .grid {
-                    DeckGridView { deck in
-                        editingDeck = deck
-                        presentDeckEdition = true
-                    }
-                } else {
-                    DeckTableView { deck in
-                        editingDeck = deck
-                        presentDeckEdition = true
-                    }
-                }
-            
+        if viewModel.detailType == .grid {
+            DeckGridView { deck in
+                editingDeck = deck
+                presentDeckEdition = true
+            }
+        } else {
+            DeckTableView { deck in
+                editingDeck = deck
+                presentDeckEdition = true
+            }
         }
     }
 }

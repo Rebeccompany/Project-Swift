@@ -64,9 +64,7 @@ public class DeckViewModel: ObservableObject {
         guard let session = deck.session else { return true }
         guard !session.cardIds.isEmpty else { return false }
         
-        return dateHandler.isToday(date: session.date) || session.date < dateHandler.today
-        
-        
+        return dateHandler.isToday(date: session.date) || session.date < dateHandler.today   
     }
     
     func deleteFlashcard(card: Card) throws {

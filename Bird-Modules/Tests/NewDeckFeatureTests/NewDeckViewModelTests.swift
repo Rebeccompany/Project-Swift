@@ -23,8 +23,7 @@ class NewDeckViewModelTests: XCTestCase {
     var uuidHandler: UUIDHandlerMock!
     var cancellables: Set<AnyCancellable>!
     var collectionRepository: CollectionRepositoryMock!
-    
-    var deck0: Deck!
+    var deck: Deck!
     var cards: [Card]!
 
 
@@ -45,7 +44,7 @@ class NewDeckViewModelTests: XCTestCase {
         createCards()
         createDecks()
         
-        try? deckRepository.createDeck(deck0, cards: cards)
+        try? deckRepository.createDeck(deck, cards: cards)
     }
 
     override func tearDown() {
@@ -56,7 +55,7 @@ class NewDeckViewModelTests: XCTestCase {
         uuidHandler = nil
         cancellables.forEach({$0.cancel()})
         cancellables = nil
-        deck0 = nil
+        deck = nil
         cards = nil
     }
 
@@ -180,44 +179,44 @@ class NewDeckViewModelTests: XCTestCase {
     }
 
     func testEditDeckName() throws {
-        XCTAssertEqual(deckRepository.data[deck0.id]!.deck.name, "Programação Swift")
+        XCTAssertEqual(deckRepository.data[deck.id]!.deck.name, "Programação Swift")
 
         sut.deckName = "New name"
-        try sut.editDeck(editingDeck: deckRepository.data[deck0.id]!.deck)
+        try sut.editDeck(editingDeck: deckRepository.data[deck.id]!.deck)
 
-        XCTAssertEqual(deckRepository.data[deck0.id]!.deck.name, "New name")
+        XCTAssertEqual(deckRepository.data[deck.id]!.deck.name, "New name")
     }
 
     func testEditDeckColor() throws {
-        XCTAssertEqual(deckRepository.data[deck0.id]!.deck.color, .red)
+        XCTAssertEqual(deckRepository.data[deck.id]!.deck.color, .red)
 
         sut.currentSelectedColor = CollectionColor.darkBlue
-        try sut.editDeck(editingDeck: deckRepository.data[deck0.id]!.deck)
+        try sut.editDeck(editingDeck: deckRepository.data[deck.id]!.deck)
 
-        XCTAssertEqual(deckRepository.data[deck0.id]!.deck.color, .darkBlue)
+        XCTAssertEqual(deckRepository.data[deck.id]!.deck.color, .darkBlue)
     }
 
     func testEditDeckIcon() throws {
-        XCTAssertEqual(deckRepository.data[deck0.id]!.deck.icon, IconNames.atom.rawValue)
+        XCTAssertEqual(deckRepository.data[deck.id]!.deck.icon, IconNames.atom.rawValue)
 
         sut.currentSelectedIcon = IconNames.books
-        try sut.editDeck(editingDeck: deckRepository.data[deck0.id]!.deck)
+        try sut.editDeck(editingDeck: deckRepository.data[deck.id]!.deck)
 
-        XCTAssertEqual(deckRepository.data[deck0.id]!.deck.icon, IconNames.books.rawValue)
+        XCTAssertEqual(deckRepository.data[deck.id]!.deck.icon, IconNames.books.rawValue)
     }
 
     func testEditDeckError() throws {
-        XCTAssertEqual(deckRepository.data[deck0.id]!.deck.color, .red)
+        XCTAssertEqual(deckRepository.data[deck.id]!.deck.color, .red)
 
         deckRepository.shouldThrowError = true
         sut.currentSelectedColor = CollectionColor.darkBlue
-        XCTAssertThrowsError(try sut.editDeck(editingDeck: deckRepository.data[deck0.id]!.deck))
+        XCTAssertThrowsError(try sut.editDeck(editingDeck: deckRepository.data[deck.id]!.deck))
 
-        XCTAssertNotEqual(deckRepository.data[deck0.id]!.deck.color, CollectionColor.darkBlue)
+        XCTAssertNotEqual(deckRepository.data[deck.id]!.deck.color, CollectionColor.darkBlue)
     }
 
     func testDeleteDeckSuccessfully() throws {
-        let id = deck0.id
+        let id = deck.id
 
         let containsDeck = deckRepository.data.values.map(\.deck).contains(where: {
             $0.id == id
@@ -225,7 +224,7 @@ class NewDeckViewModelTests: XCTestCase {
 
         XCTAssertTrue(containsDeck)
 
-        try sut.deleteDeck(editingDeck: deckRepository.data[deck0.id]!.deck)
+        try sut.deleteDeck(editingDeck: deckRepository.data[deck.id]!.deck)
 
         let deletedDeck = deckRepository.data.values.map(\.deck).contains(where: {
             $0.id == id
@@ -235,7 +234,7 @@ class NewDeckViewModelTests: XCTestCase {
     }
 
     func testDeleteDeckError() throws {
-        let id = deck0.id
+        let id = deck.id
 
         let containsDeck = deckRepository.data.values.map(\.deck).contains(where: {
             $0.id == id
@@ -244,17 +243,13 @@ class NewDeckViewModelTests: XCTestCase {
         XCTAssertTrue(containsDeck)
 
         deckRepository.shouldThrowError = true
-        XCTAssertThrowsError(try sut.deleteDeck(editingDeck: deckRepository.data[deck0.id]!.deck))
+        XCTAssertThrowsError(try sut.deleteDeck(editingDeck: deckRepository.data[deck.id]!.deck))
 
         let deletedDeck = deckRepository.data.values.map(\.deck).contains(where: {
             $0.id == id
         })
 
         XCTAssertTrue(deletedDeck)
-    }
-    
-    enum WoodpeckerState {
-        case review, learn
     }
     
     func createCards() {
@@ -299,7 +294,7 @@ class NewDeckViewModelTests: XCTestCase {
     }
     
     func createDecks() {
-        deck0 = newDeck()
+        deck = newDeck()
         
     }
     
@@ -316,6 +311,10 @@ class NewDeckViewModelTests: XCTestCase {
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
              storeId: nil)
+    }
+    
+    enum WoodpeckerState {
+        case review, learn
     }
 
 }

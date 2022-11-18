@@ -23,10 +23,8 @@ final class DeckViewModelTests: XCTestCase {
     var uuidGenerator: UUIDGeneratorProtocol!
     var cancellables: Set<AnyCancellable>!
     
-    var deck0: Deck!
-    var deck1: Deck!
-    var deck2: Deck!
-    var deck3: Deck!
+    var deckWithCards: Deck!
+    var deckWithoutCards: Deck!
     var cards: [Card]!
 
     override func setUp() {
@@ -37,17 +35,15 @@ final class DeckViewModelTests: XCTestCase {
         sut = DeckViewModel()
         cancellables = .init()
         createData()
-        sut.startup(deckRepositoryMock.data[deck0.id]!.deck)
+        sut.startup(deckRepositoryMock.data[deckWithCards.id]!.deck)
     }
     
     func createData() {
         createCards()
         createDecks()
         
-        try? deckRepositoryMock.createDeck(deck0, cards: cards)
-        try? deckRepositoryMock.createDeck(deck1, cards: [])
-        try? deckRepositoryMock.createDeck(deck2, cards: [])
-        try? deckRepositoryMock.createDeck(deck3, cards: [])
+        try? deckRepositoryMock.createDeck(deckWithCards, cards: cards)
+        try? deckRepositoryMock.createDeck(deckWithoutCards, cards: [])
     }
 
     override func tearDown() {
@@ -55,10 +51,9 @@ final class DeckViewModelTests: XCTestCase {
         deckRepositoryMock = nil
         cancellables.forEach({$0.cancel()})
         cancellables = nil
-        deck0 = nil
-        deck1 = nil
-        deck2 = nil
-        deck3 = nil
+        deckWithCards = nil
+        deckWithoutCards = nil
+
         
         cards = nil
     }
@@ -66,11 +61,11 @@ final class DeckViewModelTests: XCTestCase {
     func testStartup() throws {
         let cardExpectation = expectation(description: "card reacting to Repository Action")
 
-        try deckRepositoryMock.addCard(Card(id: UUID(), front: NSAttributedString(), back: NSAttributedString(), color: .red, datesLogs: DateLogs(), deckID: deck0.id, woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), history: []), to: deckRepositoryMock.data[deck0.id]!.deck)
+        try deckRepositoryMock.addCard(Card(id: UUID(), front: NSAttributedString(), back: NSAttributedString(), color: .red, datesLogs: DateLogs(), deckID: deckWithCards.id, woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), history: []), to: deckRepositoryMock.data[deckWithCards.id]!.deck)
 
         sut.$cards
             .sink {[unowned self] cards in
-                XCTAssertEqual(cards, self.deckRepositoryMock.data[deck0.id]!.cards.sorted {c1, c2 in c1.datesLogs.createdAt > c2.datesLogs.createdAt})
+                XCTAssertEqual(cards, self.deckRepositoryMock.data[deckWithCards.id]!.cards.sorted {c1, c2 in c1.datesLogs.createdAt > c2.datesLogs.createdAt})
                 cardExpectation.fulfill()
             }
             .store(in: &cancellables)
@@ -80,15 +75,15 @@ final class DeckViewModelTests: XCTestCase {
 
     func testDeleteFlashcard() throws {
 
-        let containsCard = deckRepositoryMock.data[deck0.id]!.cards.contains(where: {
+        let containsCard = deckRepositoryMock.data[deckWithCards.id]!.cards.contains(where: {
             $0.id == self.cards[0].id
         })
 
         XCTAssertTrue(containsCard)
 
-        try sut.deleteFlashcard(card: deckRepositoryMock.data[deck0.id]!.cards.first(where: { cards[0].id == $0.id })!)
+        try sut.deleteFlashcard(card: deckRepositoryMock.data[deckWithCards.id]!.cards.first(where: { cards[0].id == $0.id })!)
 
-        let deletedDeck = deckRepositoryMock.data[deck0.id]!.cards.contains(where: {
+        let deletedDeck = deckRepositoryMock.data[deckWithCards.id]!.cards.contains(where: {
             $0.id == self.cards[0].id
         })
 
@@ -100,7 +95,7 @@ final class DeckViewModelTests: XCTestCase {
 
         let count = sut.cardsSearched.count
 
-        XCTAssertEqual(count, deckRepositoryMock.data[deck0.id]!.cards.count)
+        XCTAssertEqual(count, deckRepositoryMock.data[deckWithCards.id]!.cards.count)
     }
 
     func testSearchCardBack() {
@@ -108,7 +103,7 @@ final class DeckViewModelTests: XCTestCase {
 
         let count = sut.cardsSearched.count
 
-        XCTAssertEqual(count, deckRepositoryMock.data[deck0.id]!.cards.count)
+        XCTAssertEqual(count, deckRepositoryMock.data[deckWithCards.id]!.cards.count)
     }
 
     func testSearchNoResults() {
@@ -120,39 +115,35 @@ final class DeckViewModelTests: XCTestCase {
     }
 
     func testCanStudyTrue() {
-        XCTAssertTrue(sut.checkIfCanStudy(deckRepositoryMock.data[deck0.id]!.deck))
+        XCTAssertTrue(sut.checkIfCanStudy(deckRepositoryMock.data[deckWithCards.id]!.deck))
     }
 
     func testCanStudyFalse() {
         sut = DeckViewModel()
-        sut.startup(deckRepositoryMock.data[deck2.id]!.deck)
+        sut.startup(deckRepositoryMock.data[deckWithoutCards.id]!.deck)
 
-        XCTAssertFalse(sut.checkIfCanStudy(deckRepositoryMock.data[deck2.id]!.deck))
+        XCTAssertFalse(sut.checkIfCanStudy(deckRepositoryMock.data[deckWithoutCards.id]!.deck))
     }
 
     func testCheckIfcanStudyWithSession() throws {
-        let session = Session(cardIds: deckRepositoryMock.data[deck0.id]!.deck.cardsIds, date: dateHandler.today, deckId: deck0.id, id: uuidGenerator.newId())
-        try deckRepositoryMock.createSession(session, for: deckRepositoryMock.data[deck0.id]!.deck)
-        sut.startup(deckRepositoryMock.data[deck0.id]!.deck)
-        XCTAssertTrue(sut.checkIfCanStudy(deckRepositoryMock.data[deck0.id]!.deck))
+        let session = Session(cardIds: deckRepositoryMock.data[deckWithCards.id]!.deck.cardsIds, date: dateHandler.today, deckId: deckWithCards.id, id: uuidGenerator.newId())
+        try deckRepositoryMock.createSession(session, for: deckRepositoryMock.data[deckWithCards.id]!.deck)
+        sut.startup(deckRepositoryMock.data[deckWithCards.id]!.deck)
+        XCTAssertTrue(sut.checkIfCanStudy(deckRepositoryMock.data[deckWithCards.id]!.deck))
     }
 
     func testCheckIfcanStudyWithEmptySession() throws {
-        let session = Session(cardIds: deckRepositoryMock.data[deck2.id]!.deck.cardsIds, date: dateHandler.today, deckId: deck2.id, id: uuidGenerator.newId())
-        try deckRepositoryMock.createSession(session, for: deckRepositoryMock.data[deck2.id]!.deck)
-        sut.startup(deckRepositoryMock.data[deck2.id]!.deck)
-        XCTAssertFalse(sut.checkIfCanStudy(deckRepositoryMock.data[deck2.id]!.deck))
+        let session = Session(cardIds: deckRepositoryMock.data[deckWithoutCards.id]!.deck.cardsIds, date: dateHandler.today, deckId: deckWithoutCards.id, id: uuidGenerator.newId())
+        try deckRepositoryMock.createSession(session, for: deckRepositoryMock.data[deckWithoutCards.id]!.deck)
+        sut.startup(deckRepositoryMock.data[deckWithoutCards.id]!.deck)
+        XCTAssertFalse(sut.checkIfCanStudy(deckRepositoryMock.data[deckWithoutCards.id]!.deck))
     }
 
     func testCheckIfLastAccessIsChanged() {
         dateHandler.customToday = Date(timeIntervalSince1970: 1000)
-        sut.startup(deckRepositoryMock.data[deck0.id]!.deck)
+        sut.startup(deckRepositoryMock.data[deckWithCards.id]!.deck)
 
-        XCTAssertEqual(dateHandler.customToday, deckRepositoryMock.data[deck0.id]!.deck.datesLogs.lastAccess)
-    }
-    
-    enum WoodpeckerState {
-        case review, learn
+        XCTAssertEqual(dateHandler.customToday, deckRepositoryMock.data[deckWithCards.id]!.deck.datesLogs.lastAccess)
     }
     
     func createCards() {
@@ -197,10 +188,8 @@ final class DeckViewModelTests: XCTestCase {
     }
     
     func createDecks() {
-        deck0 = newDeck()
-        deck1 = newDeck()
-        deck2 = newDeck()
-        deck3 = newDeck()
+        deckWithCards = newDeck()
+        deckWithoutCards = newDeck()
     }
     
     func newDeck() -> Deck {
@@ -220,6 +209,10 @@ final class DeckViewModelTests: XCTestCase {
     
     func sortById<T: Identifiable>(d0: T, d1: T) -> Bool where T.ID == UUID {
         return d0.id.uuidString > d1.id.uuidString
+    }
+    
+    enum WoodpeckerState {
+        case review, learn
     }
 
 }

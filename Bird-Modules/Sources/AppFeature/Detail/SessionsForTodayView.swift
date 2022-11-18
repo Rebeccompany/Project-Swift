@@ -24,28 +24,20 @@ struct SessionsForTodayView: View {
                         Button {
                             selectedDeck = deck
                         } label: {
-                            
                             DeckForTodayCell(deck: deck)
-                                
                         }
                     } else {
                         Button {
                             selectedDeck = deck
                         } label: {
-                            
                             Label(deck.name, systemImage: deck.icon)
-                                
                         }
                         .buttonStyle(.bordered)
                         .tint(HBColor.color(for: deck.color))
                         .buttonBorderShape(.capsule)
                     }
-                    
-
-                    
                 }
             }
-            
             .padding(.leading)
         }
         .fullScreenCover(item: $selectedDeck) { deck in

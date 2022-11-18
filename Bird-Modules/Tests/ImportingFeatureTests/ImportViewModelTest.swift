@@ -19,7 +19,7 @@ final class ImportViewModelTest: XCTestCase {
     var dateHandler: DateHandlerMock!
     var uuidGenerator: UUIDHandlerMock!
     
-    var deck0: Deck!
+    var deck: Deck!
     var cards: [Card]!
 
     override func setUp() {
@@ -35,7 +35,7 @@ final class ImportViewModelTest: XCTestCase {
         createCards()
         createDecks()
         
-        try? repository.createDeck(deck0, cards: cards)
+        try? repository.createDeck(deck, cards: cards)
     }
     
     override func tearDown() {
@@ -44,7 +44,7 @@ final class ImportViewModelTest: XCTestCase {
         uuidGenerator = nil
         repository = nil
         
-        deck0 = nil
+        deck = nil
         cards = nil
     }
 
@@ -52,18 +52,14 @@ final class ImportViewModelTest: XCTestCase {
         let cards = try DeckConverter()
             .convert(DummyCSVData.dummyData.first!)
             .map {
-                ImportedCardInfoTransformer.transformToCard($0, deckID: deck0.id, cardColor: .red, dateHandler: dateHandler, uuidHandler: uuidGenerator)!
+                ImportedCardInfoTransformer.transformToCard($0, deckID: deck.id, cardColor: .red, dateHandler: dateHandler, uuidHandler: uuidGenerator)!
             }
 
-        let cardsInitialCount = (repository.data[deck0.id]?.deck.cardCount)!
+        let cardsInitialCount = (repository.data[deck.id]?.deck.cardCount)!
 
-        sut.save(cards, to: repository.data[deck0.id]!.deck)
+        sut.save(cards, to: repository.data[deck.id]!.deck)
 
-        XCTAssertEqual(cards.count, repository.data[deck0.id]!.deck.cardCount - cardsInitialCount)
-    }
-    
-    enum WoodpeckerState {
-        case review, learn
+        XCTAssertEqual(cards.count, repository.data[deck.id]!.deck.cardCount - cardsInitialCount)
     }
     
     func createCards() {
@@ -108,8 +104,7 @@ final class ImportViewModelTest: XCTestCase {
     }
     
     func createDecks() {
-        deck0 = newDeck()
-        
+        deck = newDeck()
     }
     
     func newDeck() -> Deck {
@@ -125,6 +120,10 @@ final class ImportViewModelTest: XCTestCase {
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
              storeId: nil)
+    }
+    
+    enum WoodpeckerState {
+        case review, learn
     }
 
 }

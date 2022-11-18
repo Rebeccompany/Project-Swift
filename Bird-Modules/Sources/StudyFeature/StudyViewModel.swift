@@ -90,10 +90,6 @@ public class StudyViewModel: ObservableObject {
     
     private func saveCardIdsToCache(deck: Deck, ids: SchedulerResponse) throws {
         try deckRepository.createSession(Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
-        
-    }
-    
-    init() {
     }
     
     // MARK: - Startup
@@ -170,8 +166,6 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func transformIdsIntoPublishers(ids: SchedulerResponse) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
-        
-        
         Publishers.CombineLatest3(fetchCardsPublisher(for: ids.todayLearningCards),
                                   fetchCardsPublisher(for: ids.todayReviewingCards),
                                   fetchCardsPublisher(for: ids.toModify))
@@ -179,8 +173,6 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func transformIdsIntoPublishersWithDate(ids: SchedulerResponse, date: Date) -> AnyPublisher<([Card], [Card], [Card], Date), RepositoryError> {
-        
-        
         Publishers.CombineLatest4(fetchCardsPublisher(for: ids.todayLearningCards),
                                   fetchCardsPublisher(for: ids.todayReviewingCards),
                                   fetchCardsPublisher(for: ids.toModify),
@@ -189,7 +181,6 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func fetchCardsPublisher(for ids: [UUID]) -> AnyPublisher<[Card], RepositoryError> {
-        
         if ids.isEmpty {
             return Just<[Card]>([]).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
         } else {
@@ -212,7 +203,6 @@ public class StudyViewModel: ObservableObject {
     }
     
     private func saveToCache(deck: Deck, ids: [UUID], cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
-    
         var isFirstSession: Bool = true
         if let session = deck.session {
             try deckRepository.deleteSession(session, for: deck)
@@ -292,7 +282,6 @@ public class StudyViewModel: ObservableObject {
     
     // MARK: - Study Logic
     func pressedButton(for userGrade: UserGrade, deck: Deck, mode: StudyMode, cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
-        
         if mode == .spaced {
             try spacedFlow(userGrade: userGrade, deck: deck)
         } else {
@@ -305,8 +294,7 @@ public class StudyViewModel: ObservableObject {
         }
         
         timefromLastCard = dateHandler.today
-        cards = cards.prefix(2) + lastCards
-        
+        cards = cards.prefix(2) + lastCards  
     }
     
     private func crammingFlow(userGrade: UserGrade, numberOfSteps: Int) throws {

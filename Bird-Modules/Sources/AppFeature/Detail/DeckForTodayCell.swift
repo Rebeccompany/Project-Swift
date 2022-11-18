@@ -14,7 +14,6 @@ struct DeckForTodayCell: View {
     var deck: Deck
     
     var body: some View {
-        
         HStack {
             IconCircleView(iconName: deck.icon)
                 .padding(.vertical, 4)
@@ -35,7 +34,6 @@ struct DeckForTodayCell: View {
             RoundedRectangle(cornerRadius: 8)
                 .fill(HBColor.color(for: deck.color))
         }
-        
     }
     
 }

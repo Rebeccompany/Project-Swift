@@ -107,7 +107,6 @@ public final class ContentViewModel: ObservableObject {
             .tryMap(filterDecksForToday)
             .replaceError(with: [])
             .assign(to: &$todayDecks)
-        
     }
     
     func bindingToDeck(_ deck: Deck) -> Binding<Deck> {
