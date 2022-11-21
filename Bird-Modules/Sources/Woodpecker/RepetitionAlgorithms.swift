@@ -185,7 +185,7 @@ public struct Woodpecker {
             result.interval = 1
         } else {
             result.isGraduated = false
-            result.interval = 0
+            result.interval = 1
             result.streak = 0
         }
         result.easeFactor = easeFactor + calculateEaseFactor(userGrade)

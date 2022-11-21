@@ -322,7 +322,7 @@ class StudyViewModelTests: XCTestCase {
         }
 
 
-        XCTAssertEqual(modCard?.woodpeckerCardInfo, WoodpeckerCardInfo(step: 0, isGraduated: false, easeFactor: 1.7, streak: 0, interval: 0, hasBeenPresented: true))
+        XCTAssertEqual(modCard?.woodpeckerCardInfo, WoodpeckerCardInfo(step: 0, isGraduated: false, easeFactor: 1.7, streak: 0, interval: 1, hasBeenPresented: true))
         XCTAssertEqual(modCard?.history.count, 2)
         XCTAssertFalse(sut.cards.contains(where: { $0.id == oldCard.id }))
         XCTAssertTrue(sut.cardsToEdit.contains(where: { $0.id == oldCard.id }))
