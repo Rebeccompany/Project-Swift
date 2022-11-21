@@ -60,23 +60,11 @@ public class DeckViewModel: ObservableObject {
     }
     
     func checkIfCanStudy(_ deck: Deck) -> Bool {
-        do {
-            if let session = deck.session, dateHandler.isToday(date: session.date) {
-                return !session.cardIds.isEmpty
-            }
-            
-            let cardsInfo = cards.map { OrganizerCardInfo(card: $0) }
-            let cardsToStudy = try Woodpecker.scheduler(cardsInfo: cardsInfo, config: deck.spacedRepetitionConfig)
-            let todayCards = cardsToStudy.todayLearningCards + cardsToStudy.todayReviewingCards
-            if !todayCards.isEmpty {
-                return true
-            } else {
-                return false
-            }
-        } catch {
-            return false
-        }
+        if cards.isEmpty { return false }
+        guard let session = deck.session else { return true }
+        guard !session.cardIds.isEmpty else { return false }
         
+        return dateHandler.isToday(date: session.date) || session.date < dateHandler.today   
     }
     
     func deleteFlashcard(card: Card) throws {

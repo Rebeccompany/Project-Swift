@@ -14,7 +14,7 @@ final class WpSm2Tests: XCTestCase {
     //UserGrade == .wrongHard
     func testNewCardBackToLearning() {
         let card0 = WoodpeckerCardInfo(step: 0, isGraduated: true, easeFactor: 2.5, streak: 0, interval: 0, hasBeenPresented: false)
-        let card1 = WoodpeckerCardInfo(step: 0, isGraduated: false, easeFactor: 1.7, streak: 0, interval: 0, hasBeenPresented: false)
+        let card1 = WoodpeckerCardInfo(step: 0, isGraduated: false, easeFactor: 1.7, streak: 0, interval: 1, hasBeenPresented: false)
 
         let newCard = try! Woodpecker.wpSm2(card0, userGrade: .wrongHard)
         XCTAssertEqual(newCard, card1)

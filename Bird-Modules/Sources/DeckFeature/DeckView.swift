@@ -219,8 +219,7 @@ struct DeckView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             DeckView(
-                deck: .constant(DeckRepositoryMock()
-                    .decks[1])
+                deck: .constant(Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil))
             )
         }
         .preferredColorScheme(.dark)
