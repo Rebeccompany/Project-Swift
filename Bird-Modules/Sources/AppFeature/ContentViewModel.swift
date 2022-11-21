@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ContentViewModel.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 14/09/22.
@@ -11,6 +11,7 @@ import Combine
 import Storage
 import DeckFeature
 import Habitat
+import Utils
 import SwiftUI
 import Tweet
 
@@ -20,6 +21,7 @@ public final class ContentViewModel: ObservableObject {
     // MARK: Collections
     @Published var collections: [DeckCollection]
     @Published var decks: [Deck]
+    @Published var todayDecks: [Deck]
     
     // MARK: View Bindings
     @Published var sidebarSelection: SidebarRoute? = .allDecks
@@ -34,13 +36,14 @@ public final class ContentViewModel: ObservableObject {
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
     @Dependency(\.notificationCenter) private var notificationCenter: NotificationServiceProtocol
+    @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
     
     private var cancellables: Set<AnyCancellable>
     
     var detailTitle: String {
         switch sidebarSelection ?? .allDecks {
         case .allDecks:
-            return NSLocalizedString("todos_os_baralhos", bundle: .module, comment: "")
+            return NSLocalizedString("baralhos_title", bundle: .module, comment: "")
         case .decksFromCollection(let collection):
             return collection.name
         }
@@ -59,6 +62,7 @@ public final class ContentViewModel: ObservableObject {
         self.collections = []
         self.cancellables = .init()
         self.decks = []
+        self.todayDecks = []
         self.selection = .init()
         self.searchText = ""
         self.detailType = .grid
@@ -102,6 +106,10 @@ public final class ContentViewModel: ObservableObject {
         shouldReturnToGrid = detailType == .grid
         
         notificationCenter.requestAuthorizationForNotifications()
+        $decks
+            .tryMap(filterDecksForToday)
+            .replaceError(with: [])
+            .assign(to: &$todayDecks)
     }
     
     func callNotification() {
@@ -148,6 +156,16 @@ public final class ContentViewModel: ObservableObject {
             return decks
         } else {
             return decks.filter { $0.name.capitalized.contains(searchText.capitalized) }
+        }
+    }
+    
+    private func filterDecksForToday(_ decks: [Deck]) -> [Deck] {
+        
+        decks.filter {
+            guard let session = $0.session else { return false }
+
+            guard !session.cardIds.isEmpty else { return false }
+            return dateHandler.isToday(date: session.date) || session.date < dateHandler.today
         }
     }
     

@@ -33,6 +33,7 @@ public class StudyViewModel: ObservableObject {
     // MARK: Flags
     @Published var shouldButtonsBeDisabled: Bool = true
     @Published var isVOOn: Bool = getIsVOOn()
+    @Published var shouldDismiss: Bool = false
     
     // MARK: Combine Vars
     private var cancellables: Set<AnyCancellable> = .init()
@@ -71,8 +72,8 @@ public class StudyViewModel: ObservableObject {
             .tryMap { [dateHandler] cards in
                 try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: dateHandler.today)
             }
-            .handleEvents(receiveOutput: { [weak self] in
-                self?.saveCardIdsToCache(deck: deck, ids: $0)
+            .handleEvents(receiveOutput: { [weak self] ids in
+                try? self?.saveCardIdsToCache(deck: deck, ids: ids)
             })
             .mapError { _ in
                 RepositoryError.internalError
@@ -87,7 +88,8 @@ public class StudyViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    init() {
+    private func saveCardIdsToCache(deck: Deck, ids: SchedulerResponse) throws {
+        try deckRepository.createSession(Session(cardIds: ids.todayReviewingCards + ids.todayLearningCards, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
     }
     
     // MARK: - Startup
@@ -163,12 +165,18 @@ public class StudyViewModel: ObservableObject {
         }
     }
     
-    private func transformIdsIntoPublishers(ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID])) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
-        
-        
+    private func transformIdsIntoPublishers(ids: SchedulerResponse) -> AnyPublisher<([Card], [Card], [Card]), RepositoryError> {
         Publishers.CombineLatest3(fetchCardsPublisher(for: ids.todayLearningCards),
                                   fetchCardsPublisher(for: ids.todayReviewingCards),
                                   fetchCardsPublisher(for: ids.toModify))
+        .eraseToAnyPublisher()
+    }
+    
+    private func transformIdsIntoPublishersWithDate(ids: SchedulerResponse, date: Date) -> AnyPublisher<([Card], [Card], [Card], Date), RepositoryError> {
+        Publishers.CombineLatest4(fetchCardsPublisher(for: ids.todayLearningCards),
+                                  fetchCardsPublisher(for: ids.todayReviewingCards),
+                                  fetchCardsPublisher(for: ids.toModify),
+                                  Just(date).setFailureType(to: RepositoryError.self))
         .eraseToAnyPublisher()
     }
     
@@ -185,28 +193,95 @@ public class StudyViewModel: ObservableObject {
         guard mode == .spaced else { return }
         try cardsToEdit.forEach { card in
             try deckRepository.editCard(card)
-            guard let lastSnapshot = card.history.last else { return }
+            
+            guard let lastSnapshot = card.history.max(by: { $0.date.timeIntervalSince1970 < $1.date.timeIntervalSince1970 }) else { return }
+
             try deckRepository.addHistory(lastSnapshot, to: card)
         }
         
         try saveToCache(deck: deck, ids: cards.map(\.id))
     }
     
-    private func saveToCache(deck: Deck, ids: [UUID]) throws {
+    private func saveToCache(deck: Deck, ids: [UUID], cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
+        var isFirstSession: Bool = true
         if let session = deck.session {
             try deckRepository.deleteSession(session, for: deck)
+            isFirstSession = false
         }
         
-        try deckRepository.createSession(Session(cardIds: ids, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
+        if ids.isEmpty {
+            handleWhenStudySessionIsOver(deck: deck, cardSortingFunc: cardSortingFunc)
+        } else {
+            try deckRepository.createSession(Session(cardIds: ids, date: dateHandler.today, deckId: deck.id, id: uuidGenerator.newId()), for: deck)
+            if !isFirstSession {
+                shouldDismiss = true
+            }
+        }
     }
     
-    private func saveCardIdsToCache(deck: Deck, ids: (todayReviewingCards: [UUID], todayLearningCards: [UUID], toModify: [UUID])) {
-        try? saveToCache(deck: deck, ids: ids.todayReviewingCards + ids.todayLearningCards)
+    private func handleWhenStudySessionIsOver(deck: Deck, cardSortingFunc: @escaping (Card, Card) -> Bool) {
+        deckRepository.fetchCardsByIds(deck.cardsIds)
+            .map {
+                $0.map(OrganizerCardInfo.init(card:))
+            }
+            .tryMap {[weak self] (cards: [OrganizerCardInfo]) in
+                guard let self else { throw RepositoryError.internalError }
+                return try self.getSchedule(deck: deck, cards: cards)
+            }
+            .mapError { _ in
+                RepositoryError.internalError
+            }
+            .flatMap { [weak self] (date: Date, scheduledCardsIds: SchedulerResponse) in
+                guard let self = self else {
+                    return Fail<([Card], [Card], [Card], Date), RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
+                }
+                
+                return self.transformIdsIntoPublishersWithDate(ids: scheduledCardsIds, date: date)
+                
+            }
+            .sink { [ weak self ] completion in
+                switch completion {
+                case .finished:
+                    self?.shouldDismiss = true
+                case .failure(_):
+                    print("error")
+                }
+                
+            } receiveValue: { [weak self] (data: ([Card], [Card], [Card], Date)) in
+
+                guard let self = self else { return }
+                self.editCardsToModify(cards: data.2, date: data.3)
+                
+                try? self.createNewSessionAtEndOfStudy(deck: deck, cards: data.0 + data.1, date: data.3, cardSortingFunc: cardSortingFunc)
+                
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func getSchedule(deck: Deck, cards: [OrganizerCardInfo]) throws -> (Date, SchedulerResponse) {
+        let date = cards.compactMap(\.dueDate).min() ?? dateHandler.dayAfterToday(1)
+        let scheduledCardsIds = try Woodpecker.scheduler(cardsInfo: cards, config: deck.spacedRepetitionConfig, currentDate: date)
+        return (date, scheduledCardsIds)
+    }
+    
+    private func editCardsToModify(cards: [Card], date: Date) {
+        let cardsToEdit = cards.map { card in
+            var newCard = card
+            newCard.dueDate = date.addingTimeInterval(86400)
+            return newCard
+        }
+        cardsToEdit.forEach { card in
+            try? self.deckRepository.editCard(card)
+        }
+    }
+    
+    private func createNewSessionAtEndOfStudy(deck: Deck, cards: [Card], date: Date, cardSortingFunc: @escaping (Card, Card) -> Bool) throws {
+        let cards = (cards).sorted(by: cardSortingFunc)
+        try self.deckRepository.createSession(Session(cardIds: cards.map(\.id), date: date, deckId: deck.id, id: self.uuidGenerator.newId()), for: deck)
     }
     
     // MARK: - Study Logic
     func pressedButton(for userGrade: UserGrade, deck: Deck, mode: StudyMode, cardSortingFunc: @escaping (Card, Card) -> Bool = Woodpecker.cardSorter) throws {
-        
         if mode == .spaced {
             try spacedFlow(userGrade: userGrade, deck: deck)
         } else {
@@ -219,8 +294,7 @@ public class StudyViewModel: ObservableObject {
         }
         
         timefromLastCard = dateHandler.today
-        cards = cards.prefix(2) + lastCards
-        
+        cards = cards.prefix(2) + lastCards  
     }
     
     private func crammingFlow(userGrade: UserGrade, numberOfSteps: Int) throws {

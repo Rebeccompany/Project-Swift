@@ -32,7 +32,7 @@ struct CollectionsSidebar: View {
         
         List(selection: $selection) {
             NavigationLink(value: SidebarRoute.allDecks) {
-                Label(NSLocalizedString("todos_os_baralhos", bundle: .module, comment: ""), systemImage: "square.stack")
+                Label(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), systemImage: "square.stack")
             }
             .listRowBackground(
                 isCompact ? HBColor.secondaryBackground : nil
@@ -106,7 +106,7 @@ struct CollectionsSidebar: View {
         .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
         .scrollContentBackground(.hidden)
         .viewBackgroundColor(HBColor.primaryBackground)
-        .navigationTitle("Spixii")
+        .navigationTitle(NSLocalizedString("colecoes_title", bundle: .module, comment: ""))
         .toolbar {
             ToolbarItem {
                 Button {

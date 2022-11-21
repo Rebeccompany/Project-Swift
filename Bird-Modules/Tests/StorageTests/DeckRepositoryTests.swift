@@ -624,7 +624,7 @@ final class DeckRepositoryTests: XCTestCase {
     }
     
     func testAddCardsToSession() throws {
-        var deck = DeckDummy.dummy
+        let deck = DeckDummy.dummy
         let cards = createMultipleCardsSorted(into: deck)
         
         try sut.createDeck(deck, cards: cards)
