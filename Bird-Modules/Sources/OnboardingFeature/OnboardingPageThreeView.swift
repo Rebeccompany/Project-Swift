@@ -73,7 +73,6 @@ struct OnboardingPageThreeView: View {
                     .frame(width: 150, height: 60)
             }
             .padding()
-        .viewBackgroundColor(HBColor.primaryBackground)
         }
     }
 }
