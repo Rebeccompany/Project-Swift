@@ -74,10 +74,26 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
             return Fail(outputType: String.self, failure: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()
         }
         
-        return session.dataTaskPublisher(for: .sendAnDeck(jsonData))
-            .decodeWhenSuccess(to: String.self)
-            .receive(on: RunLoop.main)
-            .eraseToAnyPublisher()
+        if let jwt {
+            print("jwt", jwt)
+            return session.dataTaskPublisher(for: .sendAnDeck(jsonData), authToken: jwt)
+                .decodeWhenSuccess(to: String.self)
+                .receive(on: RunLoop.main)
+                .eraseToAnyPublisher()
+        } else {
+            return authenticate()
+                .flatMap {[weak self] token in
+                    guard let self else { preconditionFailure("self is deinitialized") }
+                    print(token)
+                    print(try! String(data: jsonData, encoding: .utf8))
+                    return self.session.dataTaskPublisher(for: .sendAnDeck(jsonData), authToken: token)
+                        .print()
+                        .decodeWhenSuccess(to: String.self)
+                        .receive(on: RunLoop.main)
+                        .eraseToAnyPublisher()
+                }
+                .eraseToAnyPublisher()
+        }
     }
     
     public func deleteDeck(_ deck: Deck) -> AnyPublisher<Void, URLError> {
