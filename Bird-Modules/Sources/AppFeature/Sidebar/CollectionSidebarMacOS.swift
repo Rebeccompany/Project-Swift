@@ -28,37 +28,47 @@ struct CollectionsSidebarMacOS: View {
         VStack {
             List(selection: $selection) {
                 Button { viewModel.sidebarSelection = .allDecks } label: {
-                    Label(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), systemImage: "square.stack")
+                    HStack {
+                        Label(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), systemImage: "square.stack")
+                            .foregroundColor(viewModel.sidebarSelection == .allDecks ? Color.white : nil)
+                        Spacer()
+                    }
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .listRowBackground( viewModel.sidebarSelection == .allDecks ? Color.accentColor : nil)
                 
                 Section {
-                        ForEach(viewModel.collections) { collection in
-                            Button { viewModel.sidebarSelection = .decksFromCollection(collection) } label: {
-                                HStack {
-                                    Label(collection.name, systemImage: collection.icon.rawValue)
-                                }
+                    ForEach(viewModel.collections) { collection in
+                        Button { viewModel.sidebarSelection = .decksFromCollection(collection) } label: {
+                            HStack {
+                                Label(collection.name, systemImage: collection.icon.rawValue)
+                                    .foregroundColor(viewModel.sidebarSelection == .decksFromCollection(collection) ? Color.white : nil)
+                                Spacer()
                             }
-                            .buttonStyle(.plain)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .listRowBackground( viewModel.sidebarSelection == .decksFromCollection(collection) ? Color.accentColor : nil)
+                        
+                        .contextMenu {
+                            Button {
+                                editingCollection = collection
+                                presentCollectionCreation = true
+                            } label: {
+                                Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
+                            }
                             
-                            .contextMenu {
-                                Button {
-                                    editingCollection = collection
-                                    presentCollectionCreation = true
-                                } label: {
-                                    Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
-                                }
+                            Button(role: .destructive) {
+                                try? viewModel.deleteCollection(collection)
+                                editingCollection = nil
+                                selection = .allDecks
                                 
-                                Button(role: .destructive) {
-                                    try? viewModel.deleteCollection(collection)
-                                    editingCollection = nil
-                                    selection = .allDecks
-
-                                } label: {
-                                    Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
-                                }
+                            } label: {
+                                Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
                             }
                         }
+                    }
                     
                 } header: {
                     Text(NSLocalizedString("colecoes", bundle: .module, comment: ""))

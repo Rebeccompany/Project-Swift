@@ -33,6 +33,7 @@ public struct DetailViewMacOS: View {
                 .frame(minWidth: 600, maxHeight: 600)
         }
         .searchable(text: $viewModel.searchText)
+        .navigationTitle(viewModel.detailTitle)
         .toolbar {
             ToolbarItem {
                 Button {
