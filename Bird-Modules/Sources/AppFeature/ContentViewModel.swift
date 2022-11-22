@@ -93,8 +93,8 @@ public final class ContentViewModel: ObservableObject {
     }
     
     var filteredDecks: [Deck] {
-        var filteredBySelection = mapDecksBySidebarSelection(decks: decks, sidebarSelection: sidebarSelection)
-        var filteredBySearch = filterDecksBySearchText(filteredBySelection, searchText: searchText)
+        let filteredBySelection = mapDecksBySidebarSelection(decks: decks, sidebarSelection: sidebarSelection)
+        let filteredBySearch = filterDecksBySearchText(filteredBySelection, searchText: searchText)
         return filteredBySearch
     }
     

@@ -63,7 +63,7 @@ public struct FlashcardTextEditorViewMacOS: View {
     
     private func updateFromPhotoSelection(_ photoPickerItem: PhotosPickerItem?) async {
         if let selectedPhotoData = try? await photoPickerItem?.loadTransferable(type: Data.self),
-           let rawImageData = NSImage(data: selectedPhotoData),//.aspectFittedToHeight(150),
+           let rawImageData = NSImage(data: selectedPhotoData), //.aspectFittedToHeight(150),
            let compressedImage = rawImageData.jpegData(compressionQuality: 0.5),
            let image = ImageRepresentable(data: compressedImage) {
             let lowerBound = context.selectedRange.lowerBound
