@@ -57,6 +57,15 @@ public struct DetailView: View {
                     shouldDisplayAlert = true
                 }
                 .foregroundColor(.red)
+                .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                    Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                        try? viewModel.deleteDecks()
+                        editingDeck = nil
+                    }
+                    .disabled(viewModel.selection.isEmpty)
+                } message: {
+                    Text(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                }
             }
             
             
@@ -118,19 +127,8 @@ public struct DetailView: View {
             if newValue == .active {
                 viewModel.changeDetailType(for: .table)
             } else if viewModel.shouldReturnToGrid {
-                print(viewModel.shouldReturnToGrid)
                 viewModel.changeDetailType(for: .grid)
             }
-            
-        }
-        .alert(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""), isPresented: $shouldDisplayAlert) {
-            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                try? viewModel.deleteDecks()
-                editingDeck = nil
-            }
-            .disabled(viewModel.selection.isEmpty)
-            
-            Button(NSLocalizedString("cancelar", bundle: .module, comment: ""), role: .cancel) { }
         }
         .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
         .navigationTitle(viewModel.detailTitle)

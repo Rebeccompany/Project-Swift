@@ -86,13 +86,26 @@ public struct NewFlashcardView: View {
                 .onAppear {
                     viewModel.startUp(editingFlashcard: editingFlashcard)
                 }
-                .alert(isPresented: $showingAlert) {
-                    customAlert()
+                .confirmationDialog("Are you sure you want to delete this flashcard?", isPresented: $showingAlert) {
+                    Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                        do {
+                            try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
+                            dismiss()
+                        } catch {
+                            activeAlert = .error
+                            showingAlert = true
+                            selectedErrorMessage = .deleteCard
+                        }
+                    }
+                } message: {
+                    switch activeAlert {
+                    case .error:
+                        Text(NSLocalizedString("alert_delete_flashcard_error_text", bundle: .module, comment: ""))
+                    case .confirm:
+                        Text(NSLocalizedString("alert_delete_flashcard", bundle: .module, comment: ""))
+                    }
                 }
                 .toolbar {
-//                    ToolbarItemGroup(placement: .keyboard) {
-//                        customrightToolbarItemGroup
-//                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         customNavigationToolbar
                     }
@@ -161,60 +174,6 @@ public struct NewFlashcardView: View {
         .buttonStyle(DeleteButtonStyle())
 
     }
-    
-    private func customAlert() -> Alert {
-        switch activeAlert {
-        case .error:
-            return Alert(title: Text(selectedErrorMessage.texts.title),
-                         message: Text(selectedErrorMessage.texts.message),
-                         dismissButton: .default(Text("fechar", bundle: .module)))
-        case .confirm:
-            return Alert(title: Text("alert_delete_flashcard", bundle: .module),
-                         message: Text("alert_delete_flashcard_text", bundle: .module),
-                         primaryButton: .destructive(Text("deletar", bundle: .module)) {
-                    do {
-                        try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
-                        dismiss()
-                    } catch {
-                        activeAlert = .error
-                        showingAlert = true
-                        selectedErrorMessage = .deleteCard
-                    }
-                         },
-                secondaryButton: .cancel(Text("cancelar", bundle: .module))
-            )
-        }
-    }
-    
-//    @ViewBuilder
-//    private var customrightToolbarItemGroup: some View {
-//        Spacer()
-//        Button {
-//            if focus == .back {
-//                focus = .front
-//            }
-//        } label: {
-//            Image(systemName: "chevron.up")
-//        }
-//        .disabled(focus == .front)
-//        .accessibilityLabel(focus == .front ? NSLocalizedString("moveup_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("moveup_focus", bundle: .module, comment: ""))
-//
-//
-//        Button {
-//            if focus == .front {
-//                focus = .back
-//            }
-//        } label: {
-//            Image(systemName: "chevron.down")
-//        }
-//        .disabled(focus == .back)
-//        .accessibilityLabel(focus == .back ? NSLocalizedString("down_focus_disabled", bundle: .module, comment: "") : NSLocalizedString("down_focus", bundle: .module, comment: ""))
-//
-//        Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
-//            focus = nil
-//        }
-//        .accessibilityLabel(Text("botao_feito", bundle: .module))
-//    }
     
     @ViewBuilder
     private var customNavigationToolbar: some View {

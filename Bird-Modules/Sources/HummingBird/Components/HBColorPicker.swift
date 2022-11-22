@@ -81,8 +81,8 @@ struct HBColorPicker<Label: View>: View {
                                     ZStack {
                                         if color == .clear {
                                             Path { path in
-                                                path.move(to: CGPointMake(100, 100))
-                                                path.addLine(to: CGPointMake(0, 0))
+                                                path.move(to: CGPoint(x: 100, y: 100))
+                                                path.addLine(to: CGPoint.zero)
                                             }
                                             .stroke(.red, lineWidth: 8)
                                         }

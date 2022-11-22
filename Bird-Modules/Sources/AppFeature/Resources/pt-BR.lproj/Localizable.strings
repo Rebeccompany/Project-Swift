@@ -7,7 +7,7 @@
 */
 
 "colecoes" = "Coleções";
-"todos_os_baralhos" = "Todos os Baralhos";
+"baralhos_title" = "Baralhos";
 "editar" = "Editar";
 "deletar" = "Deletar";
 "cancelar" = "Cancelar";
@@ -19,9 +19,12 @@
 "opcoes_organizacao" = "Opções de ordenação";
 "visualizacao" = "Visualização";
 "alert_nada_selecionado" = "Nada foi selecinado";
-"alert_confirmacao_deletar" = "Tem certeza que deseja deletar";
+"alert_confirmacao_deletar" = "Tem certeza que deseja deletar?";
 "criar_baralho" = "Criar Baralho";
 "acessar" = "Acessar";
 "abrir" = "Abrir";
 "cartas" = "cartas";
 "criar_colecao" = "Criar Coleção";
+"baralhos" = "Baralhos";
+"sessões_para_hoje" = "Sessões Para Hoje";
+"colecoes_title" = "Coleções";

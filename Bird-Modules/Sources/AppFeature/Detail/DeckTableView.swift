@@ -30,10 +30,23 @@ struct DeckTableView: View {
     
     @ViewBuilder
     private var content: some View {
-        if horizontalSizeClass == .compact {
-            list
-        } else {
-            table
+        VStack(alignment: .leading) {
+            if !viewModel.todayDecks.isEmpty {
+                Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
+                    .padding(.leading)
+                    .font(.title3)
+                    .bold()
+                SessionsForTodayView()
+            }
+            Text(NSLocalizedString("baralhos", bundle: .module, comment: ""))
+                .padding(.leading)
+                .font(.title3)
+                .bold()
+            if horizontalSizeClass == .compact {
+                list
+            } else {
+                table
+            }
         }
     }
     
@@ -45,9 +58,17 @@ struct DeckTableView: View {
             }
             .swipeActions {
                 Button {
+                    try? viewModel.deleteDeck(deck)
+                } label: {
+                    Text("deletar", bundle: .module)
+                }
+                .tint(.red)
+            }
+            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                Button {
                     editAction(deck)
                 } label: {
-                    Text("Editar")
+                    Text("editar", bundle: .module)
                 }
                 .tint(HBColor.actionColor)
             }
@@ -67,6 +88,13 @@ struct DeckTableView: View {
         }
         .animation(.linear, value: sortedDecks)
         .listStyle(.plain)
+        .onDisappear {
+            Task {
+                await MainActor.run {
+                    viewModel.selection = Set()
+                }
+            }
+        }
     }
     
     @ViewBuilder

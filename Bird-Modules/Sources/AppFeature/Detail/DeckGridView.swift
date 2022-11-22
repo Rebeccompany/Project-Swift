@@ -13,6 +13,8 @@ struct DeckGridView: View {
     
     @EnvironmentObject private var viewModel: ContentViewModel
     var editAction: (Deck) -> Void
+    @State private var shouldDisplayAlert = false
+    @State private var deckToBeDeleted: Deck?
     
     private var sortedDecks: [Deck] {
         viewModel.decks.sorted(using: viewModel.sortOrder)
@@ -20,32 +22,54 @@ struct DeckGridView: View {
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
-                ForEach(sortedDecks) { deck in
-                    NavigationLink(value: StudyRoute.deck(deck)) {
-                        DeckCell(info: DeckCellInfo(deck: deck))
-                        .contextMenu {
-                            Button {
-                                editAction(deck)
-                            } label: {
-                                Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
-                            }
-                                
-                            Button(role: .destructive) {
-                                try? viewModel.deleteDeck(deck)
-                            } label: {
-                                Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
-                            }
-                        }
-                    }
-                    .buttonStyle(DeckCell.Style(color: deck.color))
-                    .padding(2)
-                    .hoverEffect()
+            LazyVStack(alignment: .leading) {
+                if !viewModel.todayDecks.isEmpty {
+                    Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
+                        .padding(.leading)
+                        .font(.title3)
+                        .bold()
+                    SessionsForTodayView()
                 }
+                Text(NSLocalizedString("baralhos", bundle: .module, comment: ""))
+                    .padding(.leading)
+                    .font(.title3)
+                    .bold()
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
+                    ForEach(sortedDecks) { deck in
+                        NavigationLink(value: StudyRoute.deck(deck)) {
+                            DeckCell(info: DeckCellInfo(deck: deck))
+                                .contextMenu {
+                                    Button {
+                                        editAction(deck)
+                                    } label: {
+                                        Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
+                                    }
+                                    
+                                    Button(role: .destructive) {
+                                        try? viewModel.deleteDeck(deck)
+                                    } label: {
+                                        Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
+                                    }
+                                }
+                        }
+                        .buttonStyle(DeckCell.Style(color: deck.color))
+                            .hoverEffect(.lift)
+                            .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                                Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                                    guard let deckToBeDeleted else { return }
+                                    try? viewModel.deleteDeck(deckToBeDeleted)
+                                }
+                            } message: {
+                                Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                            }
+                    }
+                   
+                }
+                .animation(.linear, value: viewModel.sortOrder)
+                .padding([.horizontal], 12)
+                .padding(.top, 24)
             }
-            .animation(.linear.speed(2), value: sortedDecks)
-            .padding([.horizontal], 12)
-            .padding(.top, 24)
         }
     }
+    
 }
