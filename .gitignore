@@ -91,3 +91,4 @@ iOSInjectionProject/
 .DS_STORE
 Bird-Modules/Sources/Puffins/Secrets/*
 ApiKeys.swift
+Bird-Modules/Sources/Puffins/Secrets/ApiKeys.swift
