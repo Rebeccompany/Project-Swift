@@ -17,7 +17,7 @@ public final class NotificationService: NotificationServiceProtocol {
     private let not3: String = NSLocalizedString("notification3", bundle: .module, comment: "")
     private let not3_secondPart: String = NSLocalizedString("notification3_awaits", bundle: .module, comment: "")
     
-    public init(center: UserNotificationServiceProtocol = UNUserNotificationCenter.current(), dateHandler: DateHandlerProtocol = DateHandler()) {
+    public init(center: UNUserNotificationCenter = UNUserNotificationCenter.current(), dateHandler: DateHandlerProtocol = DateHandler()) {
         self.center = center
         self.dateHandler = dateHandler
     }
@@ -25,8 +25,8 @@ public final class NotificationService: NotificationServiceProtocol {
     public func scheduleNotification(for deck: Deck, at time: TimeInterval) {
         let content = sortNotification(for: deck)
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeTrigger(for: time), repeats: false)
-        let request = UNNotificationRequest(identifier: "identifier", content: content, trigger: trigger)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5.0, repeats: false)
+        let request = UNNotificationRequest(identifier: deck.id.uuidString, content: content, trigger: trigger)
         
         center.add(request, withCompletionHandler: nil)
     }
@@ -66,4 +66,3 @@ public final class NotificationService: NotificationServiceProtocol {
         return content
     }
 }
-

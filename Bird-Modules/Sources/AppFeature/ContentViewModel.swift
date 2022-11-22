@@ -113,7 +113,8 @@ public final class ContentViewModel: ObservableObject {
     }
     
     func callNotification() {
-        notificationCenter.scheduleNotification(for: Deck(id: UUID(), name: "oi", icon: "plus", color: .red, collectionId: UUID(), cardsIds: [], category: .arts, storeId: ""), at: Date().timeIntervalSince1970)
+        notificationCenter.scheduleNotification(for: Deck(id: UUID(), name: "oi", icon: "plus", color: .red, collectionId: UUID(), cardsIds: [], category: .arts, storeId: ""), at: dateHandler.today.timeIntervalSince1970)
+        
     }
         
     func bindingToDeck(_ deck: Deck) -> Binding<Deck> {
