@@ -11,7 +11,7 @@ import Models
 
 #if os(macOS)
 @SceneBuilder
-public var newFlashcardWindow: some Scene {
+public var NewFlashcardWindow: some Scene {
     WindowGroup("New Flashcard", for: NewFlashcardWindowData.self) { $data in
         if let data {
             NewFlashcardViewMacOS(data: data)

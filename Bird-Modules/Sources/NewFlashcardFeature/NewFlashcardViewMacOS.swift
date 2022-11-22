@@ -13,8 +13,6 @@ import Habitat
 import RichTextKit
 import Combine
 #warning("Tamanho da letra nao muda só de clicar no lado que está editando")
-#warning("Clicar numa coleção estando dentro de um deck faz o app carregar infinitamente")
-#warning("Estudar um deck pela primeira vez faz o app carregar infinitamente")
 #if os(macOS)
 public struct NewFlashcardViewMacOS: View {
     @StateObject private var viewModel = NewFlashcardViewModelMacOS()
@@ -395,6 +393,4 @@ extension NSColor {
         return (brightness > 0.5)
     }
 }
-
-
 #endif
