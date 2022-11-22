@@ -86,7 +86,6 @@ fastlane/test_output
 #
 # After new code Injection tools there's a generated folder /iOSInjectionProject
 # https://github.com/johnno1962/injectionforxcode
-*/secrets.json
+**/secrets.json
 iOSInjectionProject/
 .DS_STORE
-./Bird-Modules/Sources/Puffins/Resources/secrets.json
