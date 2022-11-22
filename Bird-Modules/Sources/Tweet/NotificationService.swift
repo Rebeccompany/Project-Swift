@@ -25,7 +25,7 @@ public final class NotificationService: NotificationServiceProtocol {
     public func scheduleNotification(for deck: Deck, at time: TimeInterval) {
         let content = sortNotification(for: deck)
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5.0, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeTrigger(for: time), repeats: false)
         let request = UNNotificationRequest(identifier: deck.id.uuidString, content: content, trigger: trigger)
         
         center.add(request, withCompletionHandler: nil)
@@ -40,10 +40,15 @@ public final class NotificationService: NotificationServiceProtocol {
         }
     }
     
+    public func cleanNotifications() {
+        let center = UNUserNotificationCenter.current()
+        center.removeAllPendingNotificationRequests()
+    }
+    
     private func timeTrigger(for time: TimeInterval) -> TimeInterval {
-        let today = dateHandler.today.timeIntervalSince1970
+        let today = Date.now.timeIntervalSince1970
         if time > today {
-            let timeTrigger = time - today
+            let timeTrigger = (time - today) - Double(TimeZone.autoupdatingCurrent.secondsFromGMT())
             return timeTrigger
         }
         return time

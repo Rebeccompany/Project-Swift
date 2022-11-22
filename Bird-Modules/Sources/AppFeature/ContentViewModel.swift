@@ -106,10 +106,56 @@ public final class ContentViewModel: ObservableObject {
         shouldReturnToGrid = detailType == .grid
         
         notificationCenter.requestAuthorizationForNotifications()
+        
+        setupDidEnterForeground()
+        setupDidEnterBackgroundPublisher()
+        notificationCenter.cleanNotifications()
+        
         $decks
             .tryMap(filterDecksForToday)
             .replaceError(with: [])
             .assign(to: &$todayDecks)
+    }
+    
+    func setupDidEnterForeground() {
+        NotificationCenter.default
+            .publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { _ in
+                self.notificationCenter.cleanNotifications()
+            }
+            .store(in: &cancellables)
+    }
+    
+    func setupDidEnterBackgroundPublisher() {
+        NotificationCenter.default
+            .publisher(for: UIApplication.didEnterBackgroundNotification)
+            .flatMap { [weak self] _ in
+                guard let self else {
+                    preconditionFailure("self is deinitialized")
+                }
+                return self.deckRepository.deckListener().first()
+            }
+            .replaceError(with: [Deck]())
+            .map { decks in
+                decks.compactMap { [weak self] (deck: Deck) -> Deck? in
+                    guard let date = deck.session?.date,
+                          let self else { return nil }
+                    
+                    if date >= self.dateHandler.today {
+                        return deck
+                    }
+                    return nil
+                }
+            }
+            .sink { [weak self] decks in
+                guard let self else { return }
+                decks.forEach { deck in
+                    guard let date = deck.session?.date else { return }
+                    let timeInterval: TimeInterval = date.timeIntervalSince1970 //.addingTimeInterval(-86400 * 3).timeIntervalSince1970
+                    self.notificationCenter.scheduleNotification(for: deck, at: timeInterval)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     func callNotification() {
