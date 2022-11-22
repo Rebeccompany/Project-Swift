@@ -40,10 +40,13 @@ public struct DeckViewMacOS: View {
             } else {
                 grid
             }
-            
+
         }
         .onAppear {
             viewModel.startup(deck)
+        }
+        .onDisappear {
+            viewModel.tearDown()
         }
         .listStyle(.plain)
         .searchable(text: $viewModel.searchFieldContent)
@@ -86,7 +89,7 @@ public struct DeckViewMacOS: View {
                     }
 
                     Button {
-                        
+
                     } label: {
                         Label(
                             NSLocalizedString("import", bundle: .module, comment: ""),

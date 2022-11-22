@@ -19,11 +19,11 @@ struct DeckTableView: View {
     var editAction: (Deck) -> Void
     
     private var sortedDecks: [Deck] {
-        viewModel.decks.sorted(using: viewModel.sortOrder)
+        viewModel.filteredDecks.sorted(using: viewModel.sortOrder)
     }
     
     var body: some View {
-        if viewModel.decks.isEmpty {
+        if viewModel.filteredDecks.isEmpty {
             EmptyStateView(component: .deck)
         } else {
             content

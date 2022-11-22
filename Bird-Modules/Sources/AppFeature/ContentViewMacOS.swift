@@ -27,20 +27,29 @@ public struct ContentViewMacOS: View {
     public init() {}
     
     public var body: some View {
-        NavigationSplitView(columnVisibility: $columnVisibility) {
+        //swiftlint: disable no_navigation_view
+        NavigationView {
             sidebar
-        } detail: {
+            .toolbar {
+                ToolbarItem(placement: .navigation) {
+                    Button(action: toggleSidebar ) {
+                    Image(systemName: "sidebar.left")
+                            .foregroundColor(.blue)
+                    }
+                }
+            }
             detail
         }
+        .navigationViewStyle(.columns)
         .onChange(of: viewModel.sidebarSelection) { _ in
-            path.removeLast(path.count - 1)
+            path.removeLast(path.count)
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
         .sheet(isPresented: $onboarding) {
             OnboardingView()
         }
-        .frame(minWidth: 600, minHeight: 500)
+        .frame(minWidth: 800, minHeight: 700)
     }
     
     @ViewBuilder
@@ -52,13 +61,24 @@ public struct ContentViewMacOS: View {
     
     @ViewBuilder
     private var detail: some View {
-        Router(path: $path) {
+        NavigationStack(path: $path) {
             DetailViewMacOS()
-                .environmentObject(viewModel)
-        } destination: { (route: StudyRoute) in
-            StudyRoutes.destination(for: route, viewModel: viewModel)
+            .environmentObject(viewModel)
+            .navigationDestination(for: StudyRoute.self) { route in
+                StudyRoutes.destination(for: route, viewModel: viewModel)
+            }
         }
     }
+    
+    func toggleSidebar() {
+        #if os(macOS)
+        NSApp
+          .keyWindow?
+          .firstResponder?
+          .tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)),
+                        with: nil)
+        #endif
+      }
 }
 
 struct ContentViewMacOS_Previews: PreviewProvider {
