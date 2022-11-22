@@ -204,7 +204,8 @@ let package = Package(
         ),
         
         .target(
-            name: "Models"
+            name: "Models",
+            dependencies: ["Utils"]
         ),
         
         .target(

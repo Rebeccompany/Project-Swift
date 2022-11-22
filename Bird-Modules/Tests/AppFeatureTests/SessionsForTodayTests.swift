@@ -35,7 +35,7 @@ final class SessionsForTodayTests: XCTestCase {
                     collectionId: nil,
                     cardsIds: [],
                     category: .arts,
-                    storeId: nil)
+                    storeId: nil, description: "" )
     
     override func setUp() {
         deckRepositoryMock = DeckRepositoryMock()

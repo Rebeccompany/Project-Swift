@@ -2,17 +2,18 @@
 //  SessionEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Rebecca Mello on 25/10/22.
+//  Created by Gabriel Ferreira de Carvalho on 22/11/22.
 //
 //
 
 import Foundation
 import CoreData
+import Storage
 
 extension SessionEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<SessionEntity> {
-        NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
+        return NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
     }
 
     @NSManaged public var date: Date?

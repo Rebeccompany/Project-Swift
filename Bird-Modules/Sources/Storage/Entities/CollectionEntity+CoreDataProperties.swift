@@ -2,17 +2,18 @@
 //  CollectionEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Rebecca Mello on 25/10/22.
+//  Created by Gabriel Ferreira de Carvalho on 22/11/22.
 //
 //
 
 import Foundation
 import CoreData
+import Storage
 
 extension CollectionEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CollectionEntity> {
-        NSFetchRequest<CollectionEntity>(entityName: "CollectionEntity")
+        return NSFetchRequest<CollectionEntity>(entityName: "CollectionEntity")
     }
 
     @NSManaged public var createdAt: Date?

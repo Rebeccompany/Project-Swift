@@ -35,7 +35,9 @@ public struct Deck: Identifiable, Equatable, Hashable, Codable {
     
     public var storeId: String?
     
-    public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs = DateLogs(), collectionId: UUID?, cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig = SpacedRepetitionConfig(), session: Session? = nil, category: DeckCategory, storeId: String?) {
+    public var description: String
+    
+    public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs = DateLogs(), collectionId: UUID?, cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig = SpacedRepetitionConfig(), session: Session? = nil, category: DeckCategory, storeId: String?, description: String) {
         self.id = id
         self.name = name
         self.icon = icon
@@ -47,5 +49,6 @@ public struct Deck: Identifiable, Equatable, Hashable, Codable {
         self.session = session
         self.category = category
         self.storeId = storeId
+        self.description = description
     }
 }

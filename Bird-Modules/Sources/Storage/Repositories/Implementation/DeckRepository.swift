@@ -96,6 +96,7 @@ public final class DeckRepository: DeckRepositoryProtocol {
         entity.color = Int16(deck.color.rawValue)
         entity.storeId = deck.storeId
         entity.category = deck.category.rawValue
+        entity.deckDescription = deck.description
         
         try deckRepository.save()
     }

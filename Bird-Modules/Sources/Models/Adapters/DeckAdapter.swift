@@ -42,7 +42,8 @@ public enum DeckAdapter {
             collectionId: nil,
             cardsIds: [],
             category: dto.category,
-            storeId: dto.id
+            storeId: dto.id,
+            description: dto.description
         )
         
         let cards = dto.cards.compactMap { card -> Card? in

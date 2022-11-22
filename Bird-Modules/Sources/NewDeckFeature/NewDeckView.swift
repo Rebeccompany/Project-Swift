@@ -46,7 +46,7 @@ public struct NewDeckView: View {
                     }
                     
                     Section {
-                        TextEditor(text: .constant("Editor"))
+                        TextEditor(text: $viewModel.description)
                             .focused($selectedField, equals: 1)
                             .frame(height: 150)
                             .padding()

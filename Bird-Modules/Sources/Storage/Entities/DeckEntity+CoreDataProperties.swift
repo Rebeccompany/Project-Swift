@@ -2,22 +2,24 @@
 //  DeckEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Rebecca Mello on 25/10/22.
+//  Created by Gabriel Ferreira de Carvalho on 22/11/22.
 //
 //
 
 import Foundation
 import CoreData
+import Storage
 
 extension DeckEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<DeckEntity> {
-        NSFetchRequest<DeckEntity>(entityName: "DeckEntity")
+        return NSFetchRequest<DeckEntity>(entityName: "DeckEntity")
     }
 
     @NSManaged public var category: String?
     @NSManaged public var color: Int16
     @NSManaged public var createdAt: Date?
+    @NSManaged public var deckDescription: String?
     @NSManaged public var icon: String?
     @NSManaged public var id: UUID?
     @NSManaged public var lastAccess: Date?

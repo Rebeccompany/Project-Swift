@@ -204,7 +204,7 @@ final class DeckViewModelTests: XCTestCase {
              cardsIds: [],
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
-             storeId: nil)
+             storeId: nil, description: "" )
     }
     
     func sortById<T: Identifiable>(d0: T, d1: T) -> Bool where T.ID == UUID {
