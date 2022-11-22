@@ -32,6 +32,7 @@ struct CardSnapshotTransformer: ModelEntityTransformer {
         entity.userGrade = Int32(model.userGrade.rawValue)
         entity.timeSpend = model.timeSpend
         entity.date = model.date
+        entity.interval = Int32(model.woodpeckerCardInfo.interval)
         
         return entity
     }

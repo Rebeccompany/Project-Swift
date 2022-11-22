@@ -12,10 +12,11 @@
 "apagar_deck" = "Apagar Baralho";
 "fechar" = "Fechar";
 "alert_delete_deck" = "Tem certeza de que deseja deletar o baralho?";
-"alert_delete_deck_text" = "Você perderá permanentemente o conteúdo deste baralho.";
 "deletar" = "Apagar";
 "cancelar" = "Cancelar";
 "criar_deck" = "Criar Baralho";
 "editar_deck" = "Editar Baralho";
 "feito" = "Feito";
 "botao_feito" = "Botão de feito";
+"alert_delete_deck_error" = "Erro ao tentar deletar baralho";
+"alert_delete_deck_error_text" = "Algo deu errado! Por favor, tente novamente.";

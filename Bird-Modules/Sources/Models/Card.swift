@@ -23,18 +23,15 @@ public struct Card: Identifiable, Equatable, Hashable {
     /// The due date for the card to appear to the user
     public var dueDate: Date? {
         get {
-            let newestItem = history.max { card0, card1 in
-            card0.date > card1.date
-            }
-            return newestItem?.date.advanced(by: TimeInterval(86400 * woodpeckerCardInfo.interval))
+            let newestItem = history.map(\.date).max()
+            return newestItem?.advanced(by: TimeInterval(86400 * woodpeckerCardInfo.interval))
         }
         set {
-            guard let newValue = newValue, let newestItem = history.max(by: { card0, card1 in
-            card0.date > card1.date
-            }) else {
-                return
-            }
-            let increment = Int((newValue.addingTimeInterval(-newestItem.date.timeIntervalSince1970)).timeIntervalSince1970 / 86400)
+            guard let newValue = newValue, let newestItem = history.map(\.date).max()
+                else {
+                    return
+                }
+            let increment = Int((newValue.addingTimeInterval(-newestItem.timeIntervalSince1970)).timeIntervalSince1970 / 86400)
             let newInterval = woodpeckerCardInfo.interval + increment
             if newInterval < 0 {
                 woodpeckerCardInfo.interval = 0

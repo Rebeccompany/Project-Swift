@@ -36,6 +36,13 @@ class CardModelTests: XCTestCase {
         XCTAssertEqual(card.woodpeckerCardInfo.interval, 0)
     }
     
+    // Testing get dueDate
+    func testGetDueDate() {
+        var card = getCard(sut: sut, snapshotDate: Date(timeIntervalSince1970: 0), interval: 0)
+        card.history.append(CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(step: 1, isGraduated: true, easeFactor: 2.5, streak: 2, interval: 2, hasBeenPresented: true), userGrade: .correct, timeSpend: 3, date: Date(timeIntervalSince1970: 86400)))
+        XCTAssertEqual(card.dueDate,Date(timeIntervalSince1970: 86400))
+    }
+    
     // I = interval; H = Hour of last snapshot
     // Testing the dueDate for a card with interval = 0 and last snapshot at 01/01/1970 12:00
     func testI0H12() {

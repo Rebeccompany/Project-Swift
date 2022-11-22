@@ -46,28 +46,24 @@ public struct DeckView: View {
         }
         .listStyle(.plain)
         .searchable(text: $viewModel.searchFieldContent, placement: .navigationBarDrawer(displayMode: .always))
-        .alert(isPresented: $showingAlert) {
+        .confirmationDialog("Are you sure you want to delete the flashcard?", isPresented: $showingAlert) {
+            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                if deletedCard != nil {
+                    guard let deletedCard else { return }
+                    try? viewModel.deleteFlashcard(card: deletedCard)
+                    self.deletedCard = nil
+                } else {
+                    activeAlert = .error
+                    showingAlert = true
+                    selectedErrorMessage = .deleteCard
+                }
+            }
+        } message: {
             switch activeAlert {
             case .error:
-                return Alert(title: Text(NSLocalizedString("alert_delete_flashcard_error", bundle: .module, comment: "")),
-                             message: Text(NSLocalizedString("alert_delete_flashcard_error_text", bundle: .module, comment: "")),
-                             dismissButton: .default(Text(NSLocalizedString("fechar", bundle: .module, comment: ""))))
+                Text(NSLocalizedString("alert_delete_flashcard_error_text", bundle: .module, comment: ""))
             case .confirm:
-                return Alert(title: Text(NSLocalizedString("alert_delete_flashcard", bundle: .module, comment: "")),
-                             message: Text(NSLocalizedString("alert_delete_flashcard_text", bundle: .module, comment: "")),
-                             primaryButton: .destructive(Text(NSLocalizedString("deletar", bundle: .module, comment: ""))) {
-                    do {
-                        guard let deletedCard else { return }
-                        try viewModel.deleteFlashcard(card: deletedCard)
-                        self.deletedCard = nil
-                    } catch {
-                        activeAlert = .error
-                        showingAlert = true
-                        selectedErrorMessage = .deleteCard
-                    }
-                             },
-                secondaryButton: .cancel(Text(NSLocalizedString("cancelar", bundle: .module, comment: "")))
-                )
+                Text(NSLocalizedString("alert_delete_flashcard_text", bundle: .module, comment: ""))
             }
         }
         .navigationTitle(deck.name)
@@ -223,8 +219,7 @@ struct DeckView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             DeckView(
-                deck: .constant(DeckRepositoryMock()
-                    .decks[1])
+                deck: .constant(Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil))
             )
         }
         .preferredColorScheme(.dark)

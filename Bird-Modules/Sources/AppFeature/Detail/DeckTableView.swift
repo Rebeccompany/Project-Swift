@@ -30,10 +30,23 @@ struct DeckTableView: View {
     
     @ViewBuilder
     private var content: some View {
-        if horizontalSizeClass == .compact {
-            list
-        } else {
-            table
+        VStack(alignment: .leading) {
+            if !viewModel.todayDecks.isEmpty {
+                Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
+                    .padding(.leading)
+                    .font(.title3)
+                    .bold()
+                SessionsForTodayView()
+            }
+            Text(NSLocalizedString("baralhos", bundle: .module, comment: ""))
+                .padding(.leading)
+                .font(.title3)
+                .bold()
+            if horizontalSizeClass == .compact {
+                list
+            } else {
+                table
+            }
         }
     }
     

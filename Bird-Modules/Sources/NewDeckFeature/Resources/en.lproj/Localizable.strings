@@ -12,10 +12,11 @@
 "apagar_deck" = "Delete Deck";
 "fechar" = "Close";
 "alert_delete_deck" = "Are you sure you want to delete it?";
-"alert_delete_deck_text" = "You'll lose its content permanently.";
 "deletar" = "Delete";
 "cancelar" = "Cancel";
 "criar_deck" = "Create Deck";
 "editar_deck" = "Edit Deck";
 "feito" = "Done";
 "botao_feito" = "Done button";
+"alert_delete_deck_error" = "An error occured when trying to delete deck";
+"alert_delete_deck_error_text" = "Something went wrong! Please try again.";
