@@ -60,6 +60,7 @@ public struct ContentView: View {
                     Label("Loja", systemImage: "bag")
                 }
             }
+            .toolbarBackground(.visible, for: .tabBar)
         } else {
             NavigationSplitView(columnVisibility: $columnVisibility) {
                 sidebar
