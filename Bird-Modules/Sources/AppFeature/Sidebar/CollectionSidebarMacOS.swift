@@ -27,17 +27,20 @@ struct CollectionsSidebarMacOS: View {
         
         VStack {
             List(selection: $selection) {
-                NavigationLink(value: SidebarRoute.allDecks) {
-                    Label(NSLocalizedString("todos_os_baralhos", bundle: .module, comment: ""), systemImage: "square.stack")
+                Button { viewModel.sidebarSelection = .allDecks } label: {
+                    Label(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), systemImage: "square.stack")
                 }
+                .buttonStyle(.plain)
+                
                 Section {
                         ForEach(viewModel.collections) { collection in
-                            NavigationLink(value: SidebarRoute.decksFromCollection(collection)) {
+                            Button { viewModel.sidebarSelection = .decksFromCollection(collection) } label: {
                                 HStack {
                                     Label(collection.name, systemImage: collection.icon.rawValue)
-                                    Spacer()
                                 }
                             }
+                            .buttonStyle(.plain)
+                            
                             .contextMenu {
                                 Button {
                                     editingCollection = collection

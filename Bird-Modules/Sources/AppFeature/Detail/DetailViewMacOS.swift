@@ -22,7 +22,7 @@ public struct DetailViewMacOS: View {
     
     public var body: some View {
         Group {
-            if viewModel.decks.isEmpty {
+            if viewModel.filteredDecks.isEmpty {
                 emptyState
             } else {
                 content
@@ -113,6 +113,7 @@ public struct DetailViewMacOS: View {
                 Text(NSLocalizedString("criar_baralho", bundle: .module, comment: ""))
             }
             .buttonStyle(LargeButtonStyle(isDisabled: false))
+            
             .padding()
         }
         
