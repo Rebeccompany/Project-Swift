@@ -323,6 +323,9 @@ let package = Package(
             name: "Puffins",
             dependencies: [
                 "Models"
+            ],
+            resources: [
+                .process("Resources")
             ]
         ),
         

@@ -46,6 +46,15 @@ public struct Endpoint {
         
         return request
     }
+    
+    func authorizedRequest(token: String) -> URLRequest {
+        var request = self.request
+        
+        request.setValue("Bearer \(token)",
+                         forHTTPHeaderField: "Authorization")
+        
+        return request
+    }
 }
 
 public enum HTTPMethod: String {

@@ -18,7 +18,7 @@ extension Endpoint {
     }
     
     static func deck(id: String) -> Endpoint {
-        return Endpoint(path: "api/decks/\(id)")
+        Endpoint(path: "api/decks/\(id)")
     }
     
     static func sendAnDeck(_ dto: Data) -> Endpoint {
@@ -27,5 +27,9 @@ extension Endpoint {
     
     static func deleteDeck(with id: String) -> Endpoint {
         Endpoint(path: "api/decks/\(id)", method: .delete)
+    }
+    
+    static var login: Endpoint {
+        Endpoint(path: "api/auth", method: .post, body: try? JSONEncoder().encode(Secrets.shared))
     }
 }
