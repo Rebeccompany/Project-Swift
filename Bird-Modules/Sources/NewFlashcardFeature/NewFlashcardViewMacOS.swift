@@ -30,9 +30,9 @@ public struct NewFlashcardViewMacOS: View {
     var data: NewFlashcardWindowData
     
     var activeContext: RichTextContext? {
-        if frontContext.isEditingText || frontContext.hasSelectedRange {
+        if frontContext.isEditingText {
             return frontContext
-        } else if backContext.isEditingText || backContext.hasSelectedRange {
+        } else if backContext.isEditingText {
             return backContext
         } else { return nil }
     }
@@ -160,6 +160,22 @@ public struct NewFlashcardViewMacOS: View {
         }
         .onChange(of: size) { newValue in
             activeContext?.fontSize = newValue
+        }
+        .onChange(of: frontContext.isEditingText) { newValue in
+            if newValue && backContext.isEditingText {
+                backContext.toggleIsEditing()
+                backContext.resetSelectedRange()
+                backContext.resetHighlightedRange()
+                size = frontContext.fontSize
+            }
+        }
+        .onChange(of: backContext.isEditingText) { newValue in
+            if newValue && frontContext.isEditingText {
+                frontContext.toggleIsEditing()
+                frontContext.resetSelectedRange()
+                frontContext.resetHighlightedRange()
+                size = backContext.fontSize
+            }
         }
     }
     

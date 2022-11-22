@@ -34,7 +34,7 @@ public struct ContentViewMacOS: View {
                 ToolbarItem(placement: .navigation) {
                     Button(action: toggleSidebar ) {
                     Image(systemName: "sidebar.left")
-                            .foregroundColor(.blue)
+                            .foregroundColor(HBColor.actionColor)
                     }
                 }
             }
