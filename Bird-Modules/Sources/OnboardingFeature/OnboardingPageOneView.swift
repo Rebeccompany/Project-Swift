@@ -23,7 +23,6 @@ struct OnboardingPageOneView: View {
                 .padding(.all)
                 .multilineTextAlignment(.center)
         }
-        .viewBackgroundColor(HBColor.primaryBackground)
     }
 }
 

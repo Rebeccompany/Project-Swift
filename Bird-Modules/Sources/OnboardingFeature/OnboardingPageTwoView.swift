@@ -44,7 +44,6 @@ struct OnboardingPageTwoView: View {
             HBImages.cardsOnboarding
         }
         .padding()
-        .viewBackgroundColor(HBColor.primaryBackground)
     }
 }
 

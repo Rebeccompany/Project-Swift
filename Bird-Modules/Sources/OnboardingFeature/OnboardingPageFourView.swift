@@ -61,7 +61,6 @@ struct OnboardingPageFourView: View {
                 
             }
             .padding()
-        .viewBackgroundColor(HBColor.primaryBackground)
         }
     }
 }
