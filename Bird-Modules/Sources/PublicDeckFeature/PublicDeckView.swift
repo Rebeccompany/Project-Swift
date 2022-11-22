@@ -26,18 +26,32 @@ public struct PublicDeckView: View {
         let state = store.deckState
         
         Group {
-            if let deck = state.deck {
-                loadedView(deck)
-            } else {
+            switch state.viewState {
+            case .loaded:
+                if let deck = state.deck {
+                    loadedView(deck)
+                } else {
+                    Text("")
+                }
+            case .loading:
                 loadingView()
+            case .error:
+                Text("error")
             }
         }
         .onAppear {
-            store.deckState = .init()
+            if let deckId = store.deckState.deck?.id, deckId != deck.id {
+                store.deckState = .init()
+            }
             startUp()
         }
         .navigationBarTitleDisplayMode(.inline)
         .animation(.linear, value: state.cards)
+        .alert("Download Concluido", isPresented: $store.deckState.shouldDisplayDownloadedAlert) {
+            Button("Okay") {
+                
+            }
+        }
         .viewBackgroundColor(HBColor.primaryBackground)
     }
     
@@ -107,7 +121,8 @@ public struct PublicDeckView: View {
             
             HStack {
                 Button {
-                    
+                    guard let id = deck.id else { return }
+                    interactor.send(.downloadDeck(id: id))
                 } label: {
                     Image(systemName: "square.and.arrow.down")
                     Text("Download")
@@ -117,33 +132,23 @@ public struct PublicDeckView: View {
                 .tint(HBColor.actionColor.opacity(0.15))
                 .foregroundColor(HBColor.actionColor)
                 .padding(.bottom)
-                
-                Button {
-                    
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                    Text("Compartilhar")
-                }
-                .bold()
-                .buttonStyle(.borderedProminent)
-                .tint(HBColor.actionColor.opacity(0.15))
-                .foregroundColor(HBColor.actionColor)
-                .padding(.bottom)
             }
             
-            VStack(alignment: .leading) {
-                Text(store.deckState.deck?.description ?? "")
+            if !deck.description.isEmpty {
+                VStack(alignment: .leading) {
+                    Text(deck.description)
+                }
+                .foregroundColor(.primary)
+                .multilineTextAlignment(.leading)
+                .padding([.horizontal, .bottom], 16)
+                .scrollContentBackground(.hidden)
+                .frame(maxWidth: .infinity, minHeight: 150)
+                .background(HBColor.secondaryBackground)
+                .clipShape(
+                    RoundedRectangle(cornerRadius: 16)
+                )
+                .padding(.bottom)
             }
-            .foregroundColor(.primary)
-            .multilineTextAlignment(.leading)
-            .padding([.horizontal, .bottom], 16)
-            .scrollContentBackground(.hidden)
-            .frame(maxWidth: .infinity, minHeight: 150)
-            .background(HBColor.secondaryBackground)
-            .clipShape(
-                RoundedRectangle(cornerRadius: 16)
-            )
-            .padding(.bottom)
         }
     }
     

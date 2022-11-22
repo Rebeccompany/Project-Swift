@@ -50,8 +50,7 @@ public struct Endpoint {
     func authorizedRequest(token: String) -> URLRequest {
         var request = self.request
         
-        request.setValue("Bearer \(token)",
-                         forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         return request
     }

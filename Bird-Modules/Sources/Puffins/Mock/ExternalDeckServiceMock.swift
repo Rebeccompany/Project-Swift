@@ -135,4 +135,8 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         }
         return Just(Void()).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
+    
+    public func downloadDeck(with id: String) -> AnyPublisher<DeckDTO, URLError> {
+        fatalError()
+    }
 }

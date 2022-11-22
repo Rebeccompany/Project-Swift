@@ -15,5 +15,5 @@ public protocol Interactor: ObservableObject {
     
     func send(_ action: Action)
     func bind(to store: Store)
-    func reduce( _ currentState: inout State, action: Action) -> AnyPublisher<State, Error>
+    func reduce( _ currentState: inout State, action: Action) -> AnyPublisher<State, Never>
 }

@@ -17,12 +17,14 @@ enum PublicDeckActions: Equatable {
     case loadDeck(id: String)
     case loadCards(id: String, page: Int)
     case reloadCards(id: String)
+    case downloadDeck(id: String)
     case exitDeck
 }
 
 final class PublicDeckInteractor: Interactor {
     
-    @Dependency(\.externalDeckService) var deckService
+    @Dependency(\.externalDeckService) private var deckService
+    @Dependency(\.deckRepository) private var deckRepository
     
     private var actionDispatcher: PassthroughSubject<PublicDeckActions, Never> = .init()
     private var cancellables = Set<AnyCancellable>()
@@ -34,12 +36,13 @@ final class PublicDeckInteractor: Interactor {
     func bind(to store: ShopStore) {
         actionDispatcher
             .receive(on: RunLoop.main)
-            .flatMap { [weak self, weak store] action -> AnyPublisher<PublicDeckState, Error> in
+            .flatMap { [weak self, weak store] action -> AnyPublisher<PublicDeckState, Never> in
                 guard let self, let store else {
-                    return Fail(outputType: PublicDeckState.self, failure: NSError()).eraseToAnyPublisher()
+                    preconditionFailure("there is no Store or Error")
                 }
                 return self.reduce(&store.deckState, action: action)
             }
+            .replaceError(with: store.deckState)
             .sink { _ in
                 
             } receiveValue: { [weak store] newState in
@@ -50,9 +53,10 @@ final class PublicDeckInteractor: Interactor {
             .store(in: &cancellables)
     }
     
-    func reduce( _ currentState: inout PublicDeckState, action: PublicDeckActions) -> AnyPublisher<PublicDeckState, Error> {
+    func reduce( _ currentState: inout PublicDeckState, action: PublicDeckActions) -> AnyPublisher<PublicDeckState, Never> {
         switch action {
         case .loadDeck(let id):
+            currentState.viewState = .loading
             return loadDeckEffect(id: id, currentState: currentState)
         case .loadCards(let id, let page):
             currentState.currentPage += 1
@@ -62,23 +66,31 @@ final class PublicDeckInteractor: Interactor {
             currentState.currentPage = 0
             return reloadCardsEffect(currentState, id: id)
         case .exitDeck:
-            return Just(PublicDeckState()).setFailureType(to: Error.self).eraseToAnyPublisher()
+            return Just(PublicDeckState()).eraseToAnyPublisher()
+        case .downloadDeck(let id):
+            currentState.viewState = .loading
+            return downloadCardsEffect(currentState, id: id).eraseToAnyPublisher()
         }
     }
     
-    private func loadDeckEffect(id: String, currentState: PublicDeckState) -> AnyPublisher<PublicDeckState, Error> {
+    private func loadDeckEffect(id: String, currentState: PublicDeckState) -> AnyPublisher<PublicDeckState, Never> {
         deckService
             .getDeck(by: id)
             .map { deck in
                 var newState = currentState
                 newState.deck = deck
+                newState.viewState = .loaded
                 return newState
             }
-            .mapError { $0 as Error }
+            .replaceError(with: {
+                var newState = currentState
+                newState.viewState = .error
+                return newState
+            }())
             .eraseToAnyPublisher()
     }
     
-    private func loadNewCardsEffect(_ currentState: PublicDeckState, id: String, page: Int) -> AnyPublisher<PublicDeckState, Error> {
+    private func loadNewCardsEffect(_ currentState: PublicDeckState, id: String, page: Int) -> AnyPublisher<PublicDeckState, Never> {
         deckService
             .getCardsFor(deckId: id, page: page)
             .map { cards in
@@ -88,11 +100,15 @@ final class PublicDeckInteractor: Interactor {
                 newState.shouldLoadMore = !cards.isEmpty
                 return newState
             }
-            .mapError { $0 as Error }
+            .replaceError(with: {
+                var newState = currentState
+                newState.viewState = .error
+                return newState
+            }())
             .eraseToAnyPublisher()
     }
     
-    private func reloadCardsEffect(_ currentState: PublicDeckState, id: String) -> AnyPublisher<PublicDeckState, Error> {
+    private func reloadCardsEffect(_ currentState: PublicDeckState, id: String) -> AnyPublisher<PublicDeckState, Never> {
         deckService
             .getCardsFor(deckId: id, page: 0)
             .map { cards in
@@ -101,7 +117,30 @@ final class PublicDeckInteractor: Interactor {
                 newState.currentPage = 1
                 return newState
             }
-            .mapError { $0 as Error }
+            .replaceError(with: {
+                var newState = currentState
+                newState.viewState = .error
+                return newState
+            }())
             .eraseToAnyPublisher()
+    }
+    
+    private func downloadCardsEffect(_ currentState: PublicDeckState, id: String) -> some Publisher<PublicDeckState, Never> {
+        deckService.downloadDeck(with: id)
+            .map(DeckAdapter.adapt)
+            .handleEvents(receiveOutput: {[weak deckRepository] deck, cards in
+                try? deckRepository?.createDeck(deck, cards: cards)
+            })
+            .map { _ in
+                var newState = currentState
+                newState.viewState = .loaded
+                newState.shouldDisplayDownloadedAlert = true
+                return newState
+            }
+            .replaceError(with: {
+                var newState = currentState
+                newState.viewState = .error
+                return newState
+            }())
     }
 }

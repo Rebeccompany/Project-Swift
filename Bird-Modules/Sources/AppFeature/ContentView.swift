@@ -24,6 +24,7 @@ public struct ContentView: View {
     @State private var editModeForCollection: EditMode = .inactive
     @State private var editModeForDeck: EditMode = .inactive
     @State private var path: NavigationPath = .init()
+    @State private var storePath: NavigationPath = .init()
     
     @StateObject private var viewModel: ContentViewModel = ContentViewModel()
     @StateObject private var shopStore = ShopStore()
@@ -52,7 +53,7 @@ public struct ContentView: View {
                     Label("Baralhos", systemImage: "rectangle.portrait.on.rectangle.portrait.angled")
                 }
                 
-                NavigationStack {
+                NavigationStack(path: $storePath) {
                     StoreView(store: shopStore)
                 }
                 .tabItem {

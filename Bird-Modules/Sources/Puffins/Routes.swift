@@ -32,4 +32,8 @@ extension Endpoint {
     static var login: Endpoint {
         Endpoint(path: "api/auth", method: .post, body: try? JSONEncoder().encode(Secrets.shared))
     }
+    
+    static func download(id: String) -> Endpoint {
+        Endpoint(path: "api/decks/\(id)/download")
+    }
 }

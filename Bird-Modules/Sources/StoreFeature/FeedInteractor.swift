@@ -31,22 +31,20 @@ final class FeedInteractor: Interactor {
     func bind(to store: ShopStore) {
         actionDispatcher
             .receive(on: RunLoop.main)
-            .flatMap { [weak self, weak store] action -> AnyPublisher<FeedState, Error> in
+            .flatMap { [weak self, weak store] action -> AnyPublisher<FeedState, Never> in
                 guard let self, let store else {
-                    return Fail(outputType: FeedState.self, failure: NSError()).eraseToAnyPublisher()
+                    preconditionFailure("Store is deinit")
                 }
                 return self.reduce(&store.feedState, action: action)
             }
-            .sink {[weak store] _ in
-                store?.feedState.viewState = .error
-            } receiveValue: {[weak store] newState in
+            .sink {[weak store] newState in
                 guard newState != store?.feedState else { return }
                 store?.feedState = newState
             }
             .store(in: &cancellables)
     }
     
-    func reduce(_ currentState: inout FeedState, action: FeedAction) -> AnyPublisher<FeedState, Error> {
+    func reduce(_ currentState: inout FeedState, action: FeedAction) -> AnyPublisher<FeedState, Never> {
         switch action {
         case .loadFeed:
             currentState.viewState = .loading
@@ -55,7 +53,7 @@ final class FeedInteractor: Interactor {
         }
     }
     
-    private func loadFeedEffect(currentState: FeedState) -> AnyPublisher<FeedState, Error> {
+    private func loadFeedEffect(currentState: FeedState) -> AnyPublisher<FeedState, Never> {
         externalDeckService
             .getDeckFeed()
             .receive(on: RunLoop.main)
@@ -65,7 +63,11 @@ final class FeedInteractor: Interactor {
                 newState.viewState = .loaded
                 return newState
             }
-            .mapError { $0 as Error }
+            .replaceError(with: {
+                var errorState = currentState
+                errorState.viewState = .error
+                return errorState
+            }())
             .eraseToAnyPublisher()
     }
 }
