@@ -117,9 +117,15 @@ let package = Package(
             targets: ["StoreFeature"]
         ),
         .library(
+            name: "PublicDeckFeature",
+            targets: ["PublicDeckFeature"]
+        ),
+        .library(
             name: "Puffins",
             targets: ["Puffins"]
-        )
+        ),
+        .library(name: "Peacock", targets: ["Peacock"]),
+        .library(name: "StoreState", targets: ["StoreState"])
     ],
     
     dependencies: [
@@ -152,7 +158,8 @@ let package = Package(
                 "Habitat",
                 "NewFlashcardFeature",
                 "OnboardingFeature",
-                "StoreFeature"
+                "StoreFeature",
+                "StoreState"
             ]
         ),
         
@@ -168,7 +175,8 @@ let package = Package(
                 "NewFlashcardFeature",
                 "StudyFeature",
                 "ImportingFeature",
-                "Habitat"
+                "Habitat",
+                "Puffins"
             ]
         ),
             
@@ -270,6 +278,9 @@ let package = Package(
         ),
         
         .target(
+            name: "Peacock"
+        ),
+        .target(
             name: "Habitat",
             dependencies: [
                 "Storage",
@@ -301,7 +312,10 @@ let package = Package(
                 "HummingBird",
                 "DeckFeature",
                 "Puffins",
-                "Habitat"
+                "Habitat",
+                "PublicDeckFeature",
+                "Peacock",
+                "StoreState"
             ]
         ),
         
@@ -309,7 +323,26 @@ let package = Package(
             name: "Puffins",
             dependencies: [
                 "Models"
+            ],
+            resources: [
+                .process("Resources")
             ]
+        ),
+        
+        .target(
+            name: "PublicDeckFeature",
+            dependencies: [
+                "Models",
+                "HummingBird",
+                "Habitat",
+                "Peacock",
+                "StoreState"
+            ]
+        ),
+        
+        .target(
+            name: "StoreState",
+            dependencies: ["Models"]
         ),
         
         // MARK: Test Targets
@@ -430,14 +463,27 @@ let package = Package(
             dependencies: [
                 "Puffins",
                 "StoreFeature",
-                "Habitat"
+                "Habitat",
+                "StoreState"
             ]
         ),
         
         .testTarget(
             name: "PuffinsTests",
             dependencies: [
+                "Puffins",
                 "StoreFeature",
+                "Habitat"
+            ]
+        ),
+        
+        .testTarget(
+            name: "PublicDeckFeatureTests",
+            dependencies: [
+                "PublicDeckFeature",
+                "StoreState",
+                "Models",
+                "Puffins",
                 "Habitat"
             ]
         )

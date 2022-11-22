@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+#warning("Adicionar Description aqui e no banco de dados")
 /// A deck of flashcards.
 public struct Deck: Identifiable, Equatable, Hashable, Codable {
     public let id: UUID

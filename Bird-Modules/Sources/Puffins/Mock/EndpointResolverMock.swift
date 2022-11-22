@@ -10,6 +10,10 @@ import Combine
 import Models
 
 public final class EndpointResolverMock: EndpointResolverProtocol {
+    
+    
+    
+    
     var shouldThrowError: Bool = false
     var errorType: URLError?
     var data: Data?
@@ -21,6 +25,14 @@ public final class EndpointResolverMock: EndpointResolverProtocol {
         
         let response = URLResponse(url: endpoint.url, mimeType: nil, expectedContentLength: 1, textEncodingName: nil)
         return Just((data: self.data!, response: response)).setFailureType(to: URLSession.DataTaskPublisher.Failure.self).eraseToAnyPublisher()
+    }
+    
+    public func dataTaskPublisher(for endpoint: Endpoint, authToken: String) -> AnyPublisher<URLSession.DataTaskPublisher.Output, URLSession.DataTaskPublisher.Failure> {
+        dataTaskPublisher(for: endpoint)
+    }
+    
+    public func dataTaskPublisher(for endpoint: Endpoint, data: Data?) -> AnyPublisher<URLSession.DataTaskPublisher.Output, URLSession.DataTaskPublisher.Failure> {
+        fatalError()
     }
     
     public var externalSection: [ExternalSection] = [
