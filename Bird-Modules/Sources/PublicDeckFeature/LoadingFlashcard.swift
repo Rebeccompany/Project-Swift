@@ -9,8 +9,8 @@ import SwiftUI
 import HummingBird
 
 struct LoadingFlashcard: View {
-    @State var startPoint = UnitPoint.topLeading
-    @State var endPoint = UnitPoint.bottomTrailing
+    @State private var startPoint = UnitPoint.topLeading
+    @State private var endPoint = UnitPoint.bottomTrailing
     
     var body: some View {
         Rectangle()
