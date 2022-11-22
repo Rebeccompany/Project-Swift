@@ -20,6 +20,7 @@ struct StudyRoutes {
             DeckViewiOS(deck: viewModel.bindingToDeck(deck))
             #elseif os(macOS)
             DeckViewMacOS(deck: viewModel.bindingToDeck(deck))
+            //Text("deck: \(deck.name)")
             #endif
         case .card(let card):
             Text("card \(card.id.uuidString)")

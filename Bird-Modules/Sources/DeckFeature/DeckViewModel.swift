@@ -37,26 +37,19 @@ public class DeckViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func deckListener(_ deck: Deck) -> AnyPublisher<Deck, RepositoryError> {
-        deckRepository
-            .cardListener(forId: deck.id)
-            .flatMap {[weak self, deck] _ in
-                guard let self = self else {
-                    return Fail<Deck, RepositoryError>(error: .errorOnListening).eraseToAnyPublisher()
-                }
-                
-                return self.deckRepository.fetchDeckById(deck.id)
-            }
-            .eraseToAnyPublisher()
-    }
-    
     func startup(_ deck: Deck) {
         cardListener(deck)
-            .assign(to: &$cards)
+            .sink { [weak self] cards in self?.cards = cards }
+            .store(in: &cancellables)
         
         var deck = deck
         deck.datesLogs.lastAccess = dateHandler.today
         try? deckRepository.editDeck(deck)
+    }
+    
+    func tearDown() {
+        cancellables
+            .forEach { $0.cancel() }
     }
     
     func checkIfCanStudy(_ deck: Deck) -> Bool {

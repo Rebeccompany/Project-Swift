@@ -107,8 +107,7 @@ struct FlashcardView: View {
             if content == viewModel.card.front {
                 SpixiiShapeFront()
                     .foregroundColor(HBColor.color(for: viewModel.card.color))
-            }
-            else {
+            } else {
                 SpixiiShapeBack()
                     .foregroundColor(HBColor.color(for: viewModel.card.color))
                     .brightness(0.1)

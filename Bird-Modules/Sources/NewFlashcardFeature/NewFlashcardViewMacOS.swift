@@ -311,7 +311,7 @@ public struct NewFlashcardViewMacOS: View {
                     showingAlert = true
                     selectedErrorMessage = .deleteCard
                 }
-            },
+                         },
                          secondaryButton: .cancel(Text("cancelar", bundle: .module))
             )
         }
@@ -388,7 +388,7 @@ struct NewFlashcardViewMacOS_Previews: PreviewProvider {
 
 extension NSColor {
     var isLight: Bool {
-        guard let components = cgColor.components, components.count > 2 else {return false}
+        guard let components = cgColor.components, components.count > 2 else { return false }
         let brightness = ((components[0] * 299) + (components[1] * 587) + (components[2] * 114)) / 1000
         return (brightness > 0.5)
     }

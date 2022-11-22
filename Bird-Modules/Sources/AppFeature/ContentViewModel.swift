@@ -89,16 +89,13 @@ public final class ContentViewModel: ObservableObject {
             .deckListener()
             .handleEvents(receiveCompletion: { [weak self] completion in self?.handleCompletion(completion) })
             .replaceError(with: [])
-            .combineLatest($sidebarSelection)
-            .compactMap { [weak self] decks, selection in
-                self?.mapDecksBySidebarSelection(decks: decks, sidebarSelection: selection)
-            }
-            .combineLatest($searchText)
-            .compactMap { [weak self] decks, searchText in
-                self?.filterDecksBySearchText(decks, searchText: searchText)
-            }
-            .replaceNil(with: [])
             .eraseToAnyPublisher()
+    }
+    
+    var filteredDecks: [Deck] {
+        let filteredBySelection = mapDecksBySidebarSelection(decks: decks, sidebarSelection: sidebarSelection)
+        let filteredBySearch = filterDecksBySearchText(filteredBySelection, searchText: searchText)
+        return filteredBySearch
     }
     
     func startup() {

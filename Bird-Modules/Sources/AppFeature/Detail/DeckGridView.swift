@@ -17,7 +17,7 @@ struct DeckGridView: View {
     @State private var deckToBeDeleted: Deck?
     
     private var sortedDecks: [Deck] {
-        viewModel.decks.sorted(using: viewModel.sortOrder)
+        viewModel.filteredDecks.sorted(using: viewModel.sortOrder)
     }
     
     var body: some View {

@@ -45,6 +45,7 @@ public struct LargeButtonStyle: ButtonStyle {
                     .stroke(backgroundColor.opacity(configuration.isPressed ? 0.5 : 1), lineWidth: 1.5)
             )
             .shadow(color: foregroundColor.opacity(configuration.isPressed ? 0 : 0.2), radius: 6, x: 2, y: 2)
+            .frame(maxWidth: 250)
         } else {
             HStack {
                 Spacer()
@@ -61,6 +62,7 @@ public struct LargeButtonStyle: ButtonStyle {
                     .stroke(HBColor.disabledStudyButtonForeground.opacity(configuration.isPressed ? 0.5 : 1), lineWidth: 1.5)
             )
             .shadow(color: HBColor.disabledStudyButtonForeground.opacity(configuration.isPressed ? 0 : 0.2), radius: 6, x: 2, y: 2)
+            .frame(maxWidth: 400)
         }
     }
 }
