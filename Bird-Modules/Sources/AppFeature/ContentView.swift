@@ -43,6 +43,18 @@ public struct ContentView: View {
         .sheet(isPresented: $onboarding) {
             OnboardingView()
         }
+        .onOpenURL { url in
+            let string = url.absoluteString
+            var id: String = ""
+            if string.count > 9 {
+                id = String(string.suffix(string.count - 9))
+            }
+            if let deck = viewModel.decks.first(where: { id == $0.storeId }) {
+                path.append(StudyRoute.deck(deck))
+            } else {
+                #warning("aqui vai baixar o deck")
+            }
+        }
     }
     
     @ViewBuilder
