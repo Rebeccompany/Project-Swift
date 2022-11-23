@@ -15,10 +15,26 @@ public struct DeckDTO: Codable {
     public let color: CollectionColor
     public let category: DeckCategory
     public let cards: [CardDTO]
+    
+    public init(id: String?, name: String, description: String, icon: IconNames, color: CollectionColor, category: DeckCategory, cards: [CardDTO]) {
+        self.id = id
+        self.name = name
+        self.description = description
+        self.icon = icon
+        self.color = color
+        self.category = category
+        self.cards = cards
+    }
 }
 
 public struct CardDTO: Codable {
     public let front: String
     public let back: String
     public let color: CollectionColor
+    
+    public init(front: String, back: String, color: CollectionColor) {
+        self.front = front
+        self.back = back
+        self.color = color
+    }
 }

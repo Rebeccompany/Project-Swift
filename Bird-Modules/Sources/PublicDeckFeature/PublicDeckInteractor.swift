@@ -18,7 +18,6 @@ enum PublicDeckActions: Equatable {
     case loadCards(id: String, page: Int)
     case reloadCards(id: String)
     case downloadDeck(id: String)
-    case exitDeck
 }
 
 final class PublicDeckInteractor: Interactor {
@@ -65,8 +64,6 @@ final class PublicDeckInteractor: Interactor {
             currentState.cards = []
             currentState.currentPage = 0
             return reloadCardsEffect(currentState, id: id)
-        case .exitDeck:
-            return Just(PublicDeckState()).eraseToAnyPublisher()
         case .downloadDeck(let id):
             currentState.viewState = .loading
             return downloadCardsEffect(currentState, id: id).eraseToAnyPublisher()
@@ -114,6 +111,7 @@ final class PublicDeckInteractor: Interactor {
             .map { cards in
                 var newState = currentState
                 newState.cards = cards
+                newState.shouldLoadMore = !cards.isEmpty
                 newState.currentPage = 1
                 return newState
             }
