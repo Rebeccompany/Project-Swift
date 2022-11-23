@@ -102,7 +102,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         return Just(expectedUploadString).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
     
-    public func deleteDeck(_ deck: Models.Deck) -> AnyPublisher<Void, URLError> {
+    public func deleteDeck(_ deck: Deck) -> AnyPublisher<Void, URLError> {
         if shouldError {
             return Fail(outputType: Void.self, failure: error!).eraseToAnyPublisher()
         }

@@ -12,6 +12,7 @@ import Models
 import HummingBird
 import Combine
 import Utils
+import Puffins
 import Habitat
 
 @MainActor
@@ -21,6 +22,7 @@ final class DeckViewModelTests: XCTestCase {
     var deckRepositoryMock: DeckRepositoryMock!
     var dateHandler: DateHandlerMock!
     var uuidGenerator: UUIDGeneratorProtocol!
+    var externalDeckService: ExternalDeckServiceMock!
     var cancellables: Set<AnyCancellable>!
     
     var deckWithCards: Deck!
@@ -31,7 +33,8 @@ final class DeckViewModelTests: XCTestCase {
         deckRepositoryMock = DeckRepositoryMock()
         dateHandler = DateHandlerMock()
         uuidGenerator = UUIDHandlerMock()
-        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, dateHandler: dateHandler, uuidGenerator: uuidGenerator)
+        externalDeckService = ExternalDeckServiceMock()
+        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, dateHandler: dateHandler, uuidGenerator: uuidGenerator, externalDeckService: externalDeckService)
         sut = DeckViewModel()
         cancellables = .init()
         createData()
@@ -49,6 +52,7 @@ final class DeckViewModelTests: XCTestCase {
     override func tearDown() {
         sut = nil
         deckRepositoryMock = nil
+        externalDeckService = nil
         cancellables.forEach({$0.cancel()})
         cancellables = nil
         deckWithCards = nil
@@ -144,6 +148,50 @@ final class DeckViewModelTests: XCTestCase {
         sut.startup(deckRepositoryMock.data[deckWithCards.id]!.deck)
 
         XCTAssertEqual(dateHandler.customToday, deckRepositoryMock.data[deckWithCards.id]!.deck.datesLogs.lastAccess)
+    }
+    
+    func testUploadDeck() async throws {
+        externalDeckService.expectedUploadString = "store_id"
+        let deck = deckRepositoryMock.data.values.first!.deck
+        sut.publishDeck(deck)
+        XCTAssertEqual(sut.loadingPhase, .loading)
+        try await Task.sleep(for: .seconds(0.5))
+        XCTAssertEqual(sut.loadingPhase, .showSuccess)
+        XCTAssertEqual(deckRepositoryMock.data.values.first!.deck.storeId, externalDeckService.expectedUploadString)
+    }
+    
+    func testUploadDeckFailed() async throws {
+        externalDeckService.expectedUploadString = "store_id"
+        externalDeckService.error = URLError(.badServerResponse)
+        externalDeckService.shouldError = true
+        let deck = deckRepositoryMock.data.values.first!.deck
+        sut.publishDeck(deck)
+        XCTAssertEqual(sut.loadingPhase, .loading)
+        try await Task.sleep(for: .seconds(0.5))
+        XCTAssertEqual(sut.loadingPhase, .showFailure)
+        XCTAssertEqual(deckRepositoryMock.data.values.first!.deck.storeId, nil)
+    }
+    
+    func testDeletePublicDeck() async throws {
+        externalDeckService.expectedUploadString = "store_id"
+        let deck = deckRepositoryMock.data.values.first!.deck
+        sut.deletePublicDeck(deck)
+        XCTAssertEqual(sut.loadingPhase, .loading)
+        try await Task.sleep(for: .seconds(0.5))
+        XCTAssertEqual(sut.loadingPhase, .showSuccess)
+        XCTAssertEqual(deckRepositoryMock.data.values.first!.deck.storeId, nil)
+    }
+    
+    func testDeletePublicDecFailedk() async throws {
+        externalDeckService.expectedUploadString = "store_id"
+        externalDeckService.error = URLError(.badServerResponse)
+        externalDeckService.shouldError = true
+        let deck = deckRepositoryMock.data.values.first!.deck
+        sut.deletePublicDeck(deck)
+        XCTAssertEqual(sut.loadingPhase, .loading)
+        try await Task.sleep(for: .seconds(0.5))
+        XCTAssertEqual(sut.loadingPhase, .showFailure)
+        XCTAssertEqual(deckRepositoryMock.data.values.first!.deck.storeId, nil)
     }
     
     func createCards() {

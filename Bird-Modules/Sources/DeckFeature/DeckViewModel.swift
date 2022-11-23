@@ -89,7 +89,6 @@ public class DeckViewModel: ObservableObject {
         }
     }
     
-    #warning("Testes unitarios dessa função")
     func publishDeck(_ deck: Deck) {
         loadingPhase = .loading
         
@@ -110,7 +109,6 @@ public class DeckViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    #warning("Testes unitarios dessa função")
     func deletePublicDeck(_ deck: Deck) {
         loadingPhase = .loading
         
