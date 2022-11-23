@@ -13,6 +13,7 @@ import DeckFeature
 import Habitat
 import Utils
 import SwiftUI
+import Puffins
 
 //swiftlint:disable trailing_closure
 public final class ContentViewModel: ObservableObject {
@@ -35,6 +36,7 @@ public final class ContentViewModel: ObservableObject {
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
     @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
+    @Dependency(\.externalDeckService) private var externalDeckService: ExternalDeckServiceProtocol
     
     private var cancellables: Set<AnyCancellable>
     
@@ -153,7 +155,6 @@ public final class ContentViewModel: ObservableObject {
     }
     
     private func filterDecksForToday(_ decks: [Deck]) -> [Deck] {
-        
         decks.filter {
             guard let session = $0.session else { return false }
 
@@ -225,6 +226,47 @@ public final class ContentViewModel: ObservableObject {
     func didCollectionPresentationStatusChanged(_ status: Bool) {
         guard status == false else {
             return
+        }
+    }
+    
+    func openDeckWith(url: URL, _ completionHandler: @escaping (Deck) -> Void) {
+        let string = url.absoluteString
+        var id: String = ""
+        if string.count > 9 {
+            id = String(string.suffix(string.count - 9))
+        }
+        
+        if let deck = decks.first(where: { id == $0.storeId }) {
+            completionHandler(deck)
+        } else {
+            externalDeckService
+                .downloadDeck(with: id)
+                .map(DeckAdapter.adapt)
+                .handleEvents(receiveOutput: { [weak deckRepository] (deck: Deck, cards: [Card]) in
+                    try? deckRepository?.createDeck(deck, cards: cards)
+                })
+                .mapError {
+                    $0 as Error
+                }
+                .flatMap { [weak deckRepository] (_: Deck, _: [Card]) -> AnyPublisher<[Deck], Error> in
+                    guard let deckRepository else {
+                        return Fail(outputType: [Deck].self, failure: RepositoryError.failedFetching as Error).eraseToAnyPublisher()
+                    }
+                    return deckRepository
+                        .deckListener()
+                        .first()
+                        .mapError { $0 as Error }
+                        .eraseToAnyPublisher()
+                }
+                .compactMap { decks in
+                    decks.first(where: { $0.storeId == id })
+                }
+                .sink { _ in
+                    
+                } receiveValue: { deck in
+                    completionHandler(deck)
+                }
+                .store(in: &cancellables)
         }
     }
 }
