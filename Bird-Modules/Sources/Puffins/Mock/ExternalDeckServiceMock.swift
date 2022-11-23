@@ -13,7 +13,7 @@ import Combine
 public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     
     public var shouldError = false
-    public var error: URLError? = nil
+    public var error: URLError?
     public var expectedUploadString = ""
     
     public var feed: [ExternalSection] = [
@@ -39,7 +39,8 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
             back: "1",
             color: .darkBlue,
             deckId: "1"
-        )}
+            )
+        }
         
     }
     

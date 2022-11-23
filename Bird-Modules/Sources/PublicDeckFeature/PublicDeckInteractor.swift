@@ -115,6 +115,7 @@ final class PublicDeckInteractor: Interactor {
             .eraseToAnyPublisher()
     }
     
+    //swiftlint: disable trailing_closure
     private func downloadCardsEffect(_ currentState: PublicDeckState, id: String) -> some Publisher<PublicDeckState, Never> {
         deckService.downloadDeck(with: id)
             .map(DeckAdapter.adapt)

@@ -120,7 +120,7 @@ public class DeckViewModel: ObservableObject {
                 switch completion {
                 case .finished:
                     self?.loadingPhase = .showSuccess
-                case .failure(let error):
+                case .failure(_):
                     self?.loadingPhase = .showFailure
                 }
             } receiveValue: { [weak self] _ in
