@@ -38,7 +38,7 @@ public struct FlashcardCell: View {
                 HStack {
                     Text(isFront ? "frente" : "verso", bundle: .module)
                         .font(.system(size: 15))
-                        .foregroundColor(card.color == .white ? .black : .white)
+                        .foregroundColor(color == .white ? .black : .white)
                     Spacer()
                 }
                 Spacer()
