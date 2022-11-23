@@ -89,3 +89,4 @@ fastlane/test_output
 **/secrets.json
 iOSInjectionProject/
 .DS_STORE
+secrets*
