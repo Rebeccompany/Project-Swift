@@ -49,7 +49,7 @@ public struct NewDeckView: View {
                         .bold()
                     
                     IconColorGridView {
-                        ForEach(viewModel.colors, id: \.self) { color in
+                        ForEach(viewModel.colors.filter { $0 != CollectionColor.white }, id: \.self) { color in
                             Button {
                                 viewModel.currentSelectedColor = color
                             } label: {

@@ -8,8 +8,10 @@
 import Foundation
 import SwiftUI
 
-struct SpixiiShapeBack: Shape {
-    func path(in rect: CGRect) -> Path {
+public struct SpixiiShapeBack: Shape {
+    public init() {}
+    
+    public func path(in rect: CGRect) -> Path {
         var path = Path()
         let width = rect.size.width
         let height = rect.size.height
@@ -44,8 +46,10 @@ struct SpixiiShapeBack: Shape {
 }
 
 
-struct SpixiiShapeFront: Shape {
-    func path(in rect: CGRect) -> Path {
+public struct SpixiiShapeFront: Shape {
+    public init() {}
+    
+    public func path(in rect: CGRect) -> Path {
         var path = Path()
         let width = rect.size.width
         let height = rect.size.height
