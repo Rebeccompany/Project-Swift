@@ -228,45 +228,4 @@ public final class ContentViewModel: ObservableObject {
             return
         }
     }
-    
-    func openDeckWith(url: URL, _ completionHandler: @escaping (Deck) -> Void) {
-        let string = url.absoluteString
-        var id: String = ""
-        if string.count > 9 {
-            id = String(string.suffix(string.count - 9))
-        }
-        
-        if let deck = decks.first(where: { id == $0.storeId }) {
-            completionHandler(deck)
-        } else {
-            externalDeckService
-                .downloadDeck(with: id)
-                .map(DeckAdapter.adapt)
-                .handleEvents(receiveOutput: { [weak deckRepository] (deck: Deck, cards: [Card]) in
-                    try? deckRepository?.createDeck(deck, cards: cards)
-                })
-                .mapError {
-                    $0 as Error
-                }
-                .flatMap { [weak deckRepository] (_: Deck, _: [Card]) -> AnyPublisher<[Deck], Error> in
-                    guard let deckRepository else {
-                        return Fail(outputType: [Deck].self, failure: RepositoryError.failedFetching as Error).eraseToAnyPublisher()
-                    }
-                    return deckRepository
-                        .deckListener()
-                        .first()
-                        .mapError { $0 as Error }
-                        .eraseToAnyPublisher()
-                }
-                .compactMap { decks in
-                    decks.first(where: { $0.storeId == id })
-                }
-                .sink { _ in
-                    
-                } receiveValue: { deck in
-                    completionHandler(deck)
-                }
-                .store(in: &cancellables)
-        }
-    }
 }

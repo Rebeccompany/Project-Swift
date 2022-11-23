@@ -23,84 +23,55 @@ public struct ContentView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @State private var editModeForCollection: EditMode = .inactive
     @State private var editModeForDeck: EditMode = .inactive
-    @State private var path: NavigationPath = .init()
-    @State private var storePath: NavigationPath = .init()
     
     @StateObject private var viewModel: ContentViewModel = ContentViewModel()
-    @StateObject private var shopStore = ShopStore()
+    @StateObject private var appRouter: AppRouter = AppRouter()
+    @StateObject private var shopStore: ShopStore = ShopStore()
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     public init() {}
     
     public var body: some View {
-        if horizontalSizeClass == .compact {
-            TabView {
-                NavigationSplitView(columnVisibility: $columnVisibility) {
-                    sidebar
-                } detail: {
-                    detail
-                }
-                .onChange(of: viewModel.sidebarSelection) { _ in
-                    path.removeLast(path.count - 1)
-                }
-                .onAppear(perform: viewModel.startup)
-                .navigationSplitViewStyle(.balanced)
-                .sheet(isPresented: $onboarding) {
-                    OnboardingView()
-                }
-                .tabItem {
-                    Label("Baralhos", systemImage: "rectangle.portrait.on.rectangle.portrait.angled")
+        Group {
+            if horizontalSizeClass == .compact {
+                TabView(selection: $appRouter.selectedTab) {
+                    mainView
+                        .tabItem {
+                            Label("Baralhos", systemImage: "rectangle.portrait.on.rectangle.portrait.angled")
+                        }
+                        .tag(AppRouter.Tab.study)
+                    
+                    NavigationStack(path: $appRouter.storePath) {
+                        StoreView(store: shopStore)
+                    }
+                    .tabItem {
+                        Label("Loja", systemImage: "bag")
+                    }
+                    .tag(AppRouter.Tab.store)
                 }
                 
-                NavigationStack(path: $storePath) {
-                    StoreView(store: shopStore)
-                }
-                .tabItem {
-                    Label("Loja", systemImage: "bag")
-                }
-            }
-            .onOpenURL { url in
-                viewModel.openDeckWith(url: url) { deck in
-                    path.append(StudyRoute.deck(deck))
-                }
-            }
-        } else {
-            NavigationSplitView(columnVisibility: $columnVisibility) {
-                sidebar
-            } detail: {
-                detail
-            }
-            .onChange(of: viewModel.sidebarSelection) { _ in
-                path.removeLast(path.count - 1)
-            }
-            .onAppear(perform: viewModel.startup)
-            .navigationSplitViewStyle(.balanced)
-            .sheet(isPresented: $onboarding) {
-                OnboardingView()
-            }
-            .onOpenURL { url in
-                viewModel.openDeckWith(url: url) { deck in
-                    path.append(StudyRoute.deck(deck))
-                }
+            } else {
+                mainView
             }
         }
+        .navigationSplitViewStyle(.balanced)
+        .sheet(isPresented: $onboarding) {
+            OnboardingView()
+        }
+        .onChange(of: viewModel.sidebarSelection) { _ in
+            appRouter.path.removeLast(appRouter.path.count - 1)
+        }
+        .onAppear(perform: viewModel.startup)
+        .onOpenURL(perform: appRouter.onOpen)
     }
     
-@ViewBuilder
+    @ViewBuilder
     private var mainView: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             sidebar
         } detail: {
             detail
-        }
-        .onChange(of: viewModel.sidebarSelection) { _ in
-            path.removeLast(path.count - 1)
-        }
-        .onAppear(perform: viewModel.startup)
-        .navigationSplitViewStyle(.balanced)
-        .sheet(isPresented: $onboarding) {
-            OnboardingView()
         }
     }
     
@@ -118,7 +89,7 @@ public struct ContentView: View {
     
     @ViewBuilder
     private var detail: some View {
-        Router(path: $path) {
+        Router(path: $appRouter.path) {
             DetailView(editMode: $editModeForDeck)
                 .toolbar(
                     editModeForDeck.isEditing ? .hidden :

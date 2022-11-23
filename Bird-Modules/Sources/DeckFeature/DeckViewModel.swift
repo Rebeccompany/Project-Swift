@@ -101,10 +101,8 @@ public class DeckViewModel: ObservableObject {
                     self?.loadingPhase = .showSuccess
                 case .failure(let error):
                     self?.loadingPhase = .showFailure
-                    print(error.localizedDescription)
                 }
             } receiveValue: { [weak self] storeId in
-                print("store id \(storeId)")
                 var deckWithStoreId = deck
                 deckWithStoreId.storeId = storeId
                 try? self?.deckRepository.editDeck(deckWithStoreId)
@@ -124,7 +122,6 @@ public class DeckViewModel: ObservableObject {
                     self?.loadingPhase = .showSuccess
                 case .failure(let error):
                     self?.loadingPhase = .showFailure
-                    print(error.localizedDescription)
                 }
             } receiveValue: { [weak self] _ in
                 var deckWithStoreId = deck

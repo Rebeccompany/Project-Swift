@@ -126,7 +126,8 @@ final class PublicDeckInteractor: Interactor {
     }
     
     private func downloadCardsEffect(_ currentState: PublicDeckState, id: String) -> some Publisher<PublicDeckState, Never> {
-        deckService.downloadDeck(with: id)
+        deckService
+            .downloadDeck(with: id)
             .map(DeckAdapter.adapt)
             .handleEvents(receiveOutput: {[weak deckRepository] deck, cards in
                 try? deckRepository?.createDeck(deck, cards: cards)
