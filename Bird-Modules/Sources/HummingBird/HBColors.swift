@@ -59,6 +59,14 @@ public enum HBColor {
         Color("CollectionDarkBlue", bundle: .module)
     }
     
+    public static var collectionWhite: Color {
+        Color("CollectionWhite", bundle: .module)
+    }
+    
+    public static var collectionBlack: Color {
+        Color("CollectionBlack", bundle: .module)
+    }
+    
     public static var actionColor: Color {
         Color("ActionColor", bundle: .module)
     }
@@ -202,7 +210,10 @@ public enum HBColor {
             return Self.collectionGray
         case .darkBlue:
             return Self.collectionDarkBlue
-        
+        case .white:
+            return Self.collectionWhite
+        case .black:
+            return Self.collectionBlack
         }
     }
 }

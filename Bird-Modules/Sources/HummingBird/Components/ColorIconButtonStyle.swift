@@ -23,7 +23,7 @@ public struct ColorIconButtonStyle: ButtonStyle {
             .padding(5)
             .overlay(
             Circle()
-                .stroke(HBColor.actionColor, lineWidth: isSelected ? 3 : 0)
+                .stroke(isSelected ? HBColor.actionColor : .secondary, lineWidth: isSelected ? 3 : 1)
         )
     }
 }

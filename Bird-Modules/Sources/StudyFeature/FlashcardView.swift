@@ -101,7 +101,7 @@ struct FlashcardView: View {
                     .font(.system(size: 30))
             }
         }
-        .foregroundColor(.white)
+        .foregroundColor(viewModel.card.color == CollectionColor.white ? .black : .white)
         .padding(24)
         .background {
             if content == viewModel.card.front {
@@ -110,12 +110,12 @@ struct FlashcardView: View {
             } else {
                 SpixiiShapeBack()
                     .foregroundColor(HBColor.color(for: viewModel.card.color))
-                    .brightness(0.1)
+                    .brightness(0.04)
             }
         }
         .background {
             if content == viewModel.card.front {
-                HBColor.color(for: viewModel.card.color).brightness(0.1)
+                HBColor.color(for: viewModel.card.color).brightness(0.04)
             } else {
                 HBColor.color(for: viewModel.card.color)
             }
