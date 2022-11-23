@@ -37,11 +37,11 @@ struct CollectionsSidebar: View {
             .listRowBackground(
                 isCompact ? HBColor.secondaryBackground : nil
             )
-            NavigationLink {
-                StoreView()
-            } label: {
-                Label("Store", systemImage: "bag")
-            }
+//            NavigationLink {
+//                StoreView()
+//            } label: {
+//                Label("Store", systemImage: "bag")
+//            }
             .listRowBackground(
                 isCompact ? HBColor.secondaryBackground : nil
             )
