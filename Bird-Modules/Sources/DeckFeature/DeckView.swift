@@ -21,6 +21,7 @@ public struct DeckView: View {
     @State private var shouldDisplayNewFlashcard: Bool = false
     @State private var shouldDisplayImport: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
+    @State private var shouldDisplayPublishConfirmation: Bool = false
     @State private var studyMode: StudyMode = .spaced
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
@@ -32,7 +33,7 @@ public struct DeckView: View {
     public init(deck: Binding<Deck>) {
         self._deck = deck
     }
-    
+        
     public var body: some View {
         Group {
             if viewModel.cards.isEmpty {
@@ -41,8 +42,18 @@ public struct DeckView: View {
                 grid
             }
         }
+        .overlay(content: loadingOverlay)
         .onAppear {
             viewModel.startup(deck)
+        }
+        .onChange(of: viewModel.loadingPhase) { newValue in
+            guard newValue != nil else { return }
+            
+            if newValue == .showFailure || newValue == .showSuccess {
+                withAnimation(.linear(duration: 0.2).delay(0.5)) {
+                    viewModel.loadingPhase = nil
+                }
+            }
         }
         .listStyle(.plain)
         .searchable(text: $viewModel.searchFieldContent, placement: .navigationBarDrawer(displayMode: .always))
@@ -69,6 +80,40 @@ public struct DeckView: View {
         .navigationTitle(deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Button {
+                    shouldDisplayPublishConfirmation = true
+                } label: {
+                    Label(
+                        NSLocalizedString("publicar", bundle: .module, comment: ""),
+                        systemImage: "globe.americas"
+                    )
+                }
+                .confirmationDialog(
+                    NSLocalizedString("confirmar_publicao", bundle: .module, comment: ""),
+                    isPresented: $shouldDisplayPublishConfirmation
+                ) {
+                    Button(NSLocalizedString("confirmar", bundle: .module, comment: ""), role: deck.storeId != nil ? .destructive : nil) {
+                        if deck.storeId != nil {
+                            viewModel.deletePublicDeck(deck)
+                        } else {
+                            viewModel.publishDeck(deck)
+                        }
+                    }
+                } message: {
+                    if deck.storeId != nil {
+                        Text(
+                            "confirmar_publicao_delete",
+                            bundle: .module
+                        )
+                    } else {
+                        Text(
+                            "confirmar_publicao_publicar",
+                            bundle: .module
+                        )
+                    }
+                }
+                .disabled(deck.cardCount == 0)
+                
                 Menu {
                     Button {
                         editingFlashcard = nil
@@ -110,6 +155,7 @@ public struct DeckView: View {
         .sheet(isPresented: $shouldDisplayImport) {
             ImportView(deck: deck, isPresenting: $shouldDisplayImport)
         }
+
     }
     
     @ViewBuilder
@@ -140,7 +186,7 @@ public struct DeckView: View {
                     .font(.title3)
                     .bold()
                     .padding(.leading)
-                    .padding(.bottom)
+                    .padding(.bottom, 8)
                 if !viewModel.checkIfCanStudy(deck) && !viewModel.cards.isEmpty {
                     Text(NSLocalizedString("no_study_allowed", bundle: .module, comment: ""))
                         .padding(.leading)
@@ -159,7 +205,7 @@ public struct DeckView: View {
                 .listRowInsets(.zero)
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
-                .padding()
+                .padding(.horizontal)
 
                 Button(NSLocalizedString("intenso", bundle: .module, comment: "")) {
                     studyMode = .cramming
@@ -205,14 +251,49 @@ public struct DeckView: View {
                         .padding(2)
                         .hoverEffect()
                     }
+                    .padding(.horizontal, -2)
                     .listRowSeparator(.hidden)
                 }
                 .padding(.horizontal)
             }.scrollContentBackground(.hidden)
-                
-                
         }
     }
+    
+    @ViewBuilder
+    private func loadingOverlay() -> some View {
+        if viewModel.loadingPhase == .loading {
+            ZStack {
+                Color.black.opacity(0.5)
+                ProgressView()
+            }
+        } else if viewModel.loadingPhase == .showSuccess {
+            ZStack {
+                Color.black.opacity(0.5)
+                Image(systemName: "checkmark")
+                    .foregroundColor(HBColor.collectionGreen)
+                    .font(.title.bold())
+                    .padding()
+                    .background {
+                        Circle()
+                            .fill(HBColor.secondaryBackground)
+                    }
+                    
+            }
+        } else if viewModel.loadingPhase == .showFailure {
+            ZStack {
+                Color.black.opacity(0.5)
+                Image(systemName: "xmark")
+                    .foregroundColor(HBColor.collectionRed)
+                    .font(.title.bold())
+                    .padding()
+                    .background {
+                        Circle()
+                            .fill(HBColor.secondaryBackground)
+                    }
+            }
+        }
+    }
+
 }
 
 struct DeckView_Previews: PreviewProvider {
