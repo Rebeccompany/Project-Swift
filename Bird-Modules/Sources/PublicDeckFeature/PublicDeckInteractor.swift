@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PublicDeckInteractor.swift
 //  
 //
 //  Created by Rebecca Mello on 28/10/22.
@@ -11,14 +11,6 @@ import Combine
 import Habitat
 import Peacock
 import StoreState
-
-
-enum PublicDeckActions: Equatable {
-    case loadDeck(id: String)
-    case loadCards(id: String, page: Int)
-    case reloadCards(id: String)
-    case downloadDeck(id: String)
-}
 
 final class PublicDeckInteractor: Interactor {
     

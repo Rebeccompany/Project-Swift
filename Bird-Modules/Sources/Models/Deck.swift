@@ -6,7 +6,6 @@
 //
 
 import Foundation
-#warning("Adicionar Description aqui e no banco de dados")
 /// A deck of flashcards.
 public struct Deck: Identifiable, Equatable, Hashable, Codable {
     public let id: UUID
@@ -30,11 +29,12 @@ public struct Deck: Identifiable, Equatable, Hashable, Codable {
     public var cardCount: Int {
         cardsIds.count
     }
-
+    
+    /// Category of an deck
     public var category: DeckCategory
-    
+    /// Id saved in the public in database
     public var storeId: String?
-    
+    /// Description
     public var description: String
     
     public init(id: UUID, name: String, icon: String, color: CollectionColor, datesLogs: DateLogs = DateLogs(), collectionId: UUID?, cardsIds: [UUID], spacedRepetitionConfig: SpacedRepetitionConfig = SpacedRepetitionConfig(), session: Session? = nil, category: DeckCategory, storeId: String?, description: String) {

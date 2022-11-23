@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  LoadingFlashcard.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 07/11/22.

@@ -54,7 +54,7 @@ public struct NewDeckView: View {
                             .cornerRadius(12)
                         
                     } header: {
-                        Text("Description")
+                        Text("description", bundle: .module)
                             .font(.callout)
                             .bold()
                     }
@@ -65,7 +65,7 @@ public struct NewDeckView: View {
                                 getCategoryLabel(category: category)
                             }
                         } label: {
-                            Text("Categoria selecionada")
+                            Text("categoria_selecionada", bundle: .module)
                         }
                         .pickerStyle(.navigationLink
                         )

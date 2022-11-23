@@ -27,8 +27,6 @@ struct HeaderPublicDeckView: View {
             .font(.title2)
             .bold()
             .padding(.top, 20)
-        
-        Text(" ")
     }
 }
 

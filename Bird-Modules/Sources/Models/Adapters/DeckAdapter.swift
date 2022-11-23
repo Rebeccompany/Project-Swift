@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  DeckAdapter.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 08/11/22.
@@ -14,7 +14,7 @@ public enum DeckAdapter {
         ExternalDeck(
             id: deck.storeId,
             name: deck.name,
-            description: "",
+            description: deck.description,
             icon: IconNames(rawValue: deck.icon) ?? .brain,
             color: deck.color,
             category: deck.category

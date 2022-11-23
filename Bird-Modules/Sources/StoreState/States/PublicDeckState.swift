@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PublicDeckState.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 08/11/22.

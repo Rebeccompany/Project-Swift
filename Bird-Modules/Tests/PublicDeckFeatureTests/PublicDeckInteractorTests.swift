@@ -1,28 +1,18 @@
 //
-//  File.swift
+//  PublicDeckInteractorTests.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 18/11/22.
 //
 
+@testable import PublicDeckFeature
 import XCTest
 import Combine
-
-@testable import PublicDeckFeature
 import Habitat
 import Puffins
 import StoreState
 import Models
 import Storage
-
-/*
- enum PublicDeckActions: Equatable {
-     case loadDeck(id: String)
-     case loadCards(id: String, page: Int)
-     case reloadCards(id: String)
-     case downloadDeck(id: String)
- }
- */
 
 final class PublicDeckInteractorTests: XCTestCase {
     

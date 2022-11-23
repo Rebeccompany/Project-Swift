@@ -12,7 +12,6 @@ import Habitat
 import StoreState
 
 public struct PublicDeckView: View {
-    #warning("isso aqui ta estranho")
     var deck: ExternalDeck
     
     @StateObject private var interactor: PublicDeckInteractor = PublicDeckInteractor()
@@ -47,7 +46,7 @@ public struct PublicDeckView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .animation(.linear, value: state.cards)
-        .alert("Download Concluido", isPresented: $store.deckState.shouldDisplayDownloadedAlert) {
+        .alert(NSLocalizedString("download_concluded", bundle: .module, comment: ""), isPresented: $store.deckState.shouldDisplayDownloadedAlert) {
             Button("Okay") {
                 
             }

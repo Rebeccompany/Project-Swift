@@ -6,7 +6,6 @@
 //
 
 import Foundation
-
 import XCTest
 @testable import StoreFeature
 import Puffins
@@ -72,6 +71,5 @@ final class StoreFeatureTests: XCTestCase {
 
         
         wait(for: [deckExpectation], timeout: 1)
-        //XCTAssertEqual(sut.viewState, .error)
     }
 }

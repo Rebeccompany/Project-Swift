@@ -85,7 +85,7 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         
         return authenticatePublisher {[weak self] token in
             guard let self else { preconditionFailure("self is deinitialized") }
-            return self.session.dataTaskPublisher(for: .sendAnDeck(jsonData), authToken: token)
+            return self.session.dataTaskPublisher(for: .sendADeck(jsonData), authToken: token)
                 .decodeWhenSuccess(to: String.self)
                 .receive(on: RunLoop.main)
         }

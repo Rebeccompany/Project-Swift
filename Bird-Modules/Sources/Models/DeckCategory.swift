@@ -55,13 +55,3 @@ public func getCategoryLabel(category: DeckCategory) -> some View {
         Label(getCategoryString(category: category), systemImage: "tag")
     }
 }
-
-/*
- Lang abc
- Stem testtube.2
- Humanities globe.desk
- Law text.book.closed
- Medicine stethoscope
- Arts theatermask.and.paintbrush
- Other tag
- */

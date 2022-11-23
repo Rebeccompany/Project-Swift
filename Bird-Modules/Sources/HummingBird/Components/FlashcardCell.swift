@@ -17,7 +17,6 @@ public struct FlashcardCell: View {
     private var color: CollectionColor
     
     public init(card: Card, isFront: Bool = true, action: @escaping () -> Void) {
-        //self.card = card
         self.action = action
         self.isFront = isFront
         self.front = card.front
