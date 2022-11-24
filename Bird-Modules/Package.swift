@@ -125,7 +125,8 @@ let package = Package(
             targets: ["Puffins"]
         ),
         .library(name: "Peacock", targets: ["Peacock"]),
-        .library(name: "StoreState", targets: ["StoreState"])
+        .library(name: "StoreState", targets: ["StoreState"]),
+        .library(name: "Authentication", targets: ["Authentication"])
     ],
     
     dependencies: [
@@ -344,6 +345,10 @@ let package = Package(
         .target(
             name: "StoreState",
             dependencies: ["Models"]
+        ),
+        
+        .target(
+            name: "Authentication"
         ),
         
         // MARK: Test Targets
