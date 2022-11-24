@@ -38,11 +38,11 @@ public struct ContentView: View {
                 TabView(selection: $appRouter.selectedTab) {
                     mainView
                         .tabItem {
-                           Label {
-                        Text("baralhos", bundle: .module)
-                    } icon: {
-                        Image(systemName: "rectangle.portrait.on.rectangle.portrait.angled")
-                    }
+                            Label {
+                                Text("baralhos", bundle: .module)
+                            } icon: {
+                                Image(systemName: "rectangle.portrait.on.rectangle.portrait.angled")
+                            }
                         }
                         .tag(AppRouter.Tab.study)
                     
@@ -51,10 +51,10 @@ public struct ContentView: View {
                     }
                     .tabItem {
                         Label {
-                        Text("library", bundle: .module)
-                    } icon: {
-                        Image(systemName: "books.vertical")
-                    }
+                            Text("library", bundle: .module)
+                        } icon: {
+                            Image(systemName: "books.vertical")
+                        }
                     }
                     .tag(AppRouter.Tab.store)
                 }
