@@ -17,7 +17,6 @@ public struct FlashcardCell: View {
     private var color: CollectionColor
     
     public init(card: Card, isFront: Bool = true, action: @escaping () -> Void) {
-        //self.card = card
         self.action = action
         self.isFront = isFront
         self.front = card.front
@@ -39,6 +38,7 @@ public struct FlashcardCell: View {
                 HStack {
                     Text(isFront ? "frente" : "verso", bundle: .module)
                         .font(.system(size: 15))
+                        .foregroundColor(color == .white ? .black : .white)
                     Spacer()
                 }
                 Spacer()
@@ -61,12 +61,14 @@ public struct FlashcardCell: View {
             configuration.label
             .foregroundColor(.white)
             .padding()
-            .background(HBColor.color(for: color))
+            .background {
+                SpixiiShapeFront()
+                    .foregroundColor(HBColor.color(for: color))
+            }
+            .background {
+                HBColor.color(for: color).brightness(0.04)
+            }
             .cornerRadius(16)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.white, lineWidth: 3)
-            )
         }
     }
 }

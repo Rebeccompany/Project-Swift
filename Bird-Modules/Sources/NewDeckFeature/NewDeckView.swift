@@ -46,7 +46,7 @@ public struct NewDeckView: View {
                     }
                     
                     Section {
-                        TextEditor(text: .constant("Editor"))
+                        TextEditor(text: $viewModel.description)
                             .focused($selectedField, equals: 1)
                             .frame(height: 150)
                             .padding()
@@ -54,7 +54,7 @@ public struct NewDeckView: View {
                             .cornerRadius(12)
                         
                     } header: {
-                        Text("Description")
+                        Text("description", bundle: .module)
                             .font(.callout)
                             .bold()
                     }
@@ -65,7 +65,7 @@ public struct NewDeckView: View {
                                 getCategoryLabel(category: category)
                             }
                         } label: {
-                            Text("Categoria selecionada")
+                            Text("categoria_selecionada", bundle: .module)
                         }
                         .pickerStyle(.navigationLink
                         )
@@ -81,7 +81,7 @@ public struct NewDeckView: View {
 
                     Section {
                         IconColorGridView {
-                            ForEach(viewModel.colors, id: \.self) { color in
+                            ForEach(viewModel.colors.filter { $0 != CollectionColor.white }, id: \.self) { color in
                                 Button {
                                     viewModel.currentSelectedColor = color
                                 } label: {

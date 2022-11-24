@@ -34,7 +34,7 @@ final class RouterStoreTests: XCTestCase {
             collectionId: nil,
             cardsIds: [],
             category: DeckCategory.arts,
-            storeId: nil
+            storeId: nil, description: "" 
         )
         return StudyRoute.deck(dummyDeck)
     }

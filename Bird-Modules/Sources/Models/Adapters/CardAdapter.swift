@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  CardAdapter.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 10/11/22.

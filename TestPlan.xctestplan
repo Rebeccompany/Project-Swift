@@ -106,6 +106,27 @@
         "identifier" : "5B9440BF28DBF2D50060EB4F",
         "name" : "Project-BirdUITests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "PublicDeckFeatureTests",
+        "name" : "PublicDeckFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "PuffinsTests",
+        "name" : "PuffinsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "StoreFeatureTests",
+        "name" : "StoreFeatureTests"
+      }
     }
   ],
   "version" : 1

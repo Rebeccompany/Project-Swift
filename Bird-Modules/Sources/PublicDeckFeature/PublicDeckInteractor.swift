@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PublicDeckInteractor.swift
 //  
 //
 //  Created by Rebecca Mello on 28/10/22.
@@ -11,15 +11,6 @@ import Combine
 import Habitat
 import Peacock
 import StoreState
-
-
-enum PublicDeckActions: Equatable {
-    case loadDeck(id: String)
-    case loadCards(id: String, page: Int)
-    case reloadCards(id: String)
-    case downloadDeck(id: String)
-    case exitDeck
-}
 
 final class PublicDeckInteractor: Interactor {
     
@@ -65,8 +56,6 @@ final class PublicDeckInteractor: Interactor {
             currentState.cards = []
             currentState.currentPage = 0
             return reloadCardsEffect(currentState, id: id)
-        case .exitDeck:
-            return Just(PublicDeckState()).eraseToAnyPublisher()
         case .downloadDeck(let id):
             currentState.viewState = .loading
             return downloadCardsEffect(currentState, id: id).eraseToAnyPublisher()
@@ -114,6 +103,7 @@ final class PublicDeckInteractor: Interactor {
             .map { cards in
                 var newState = currentState
                 newState.cards = cards
+                newState.shouldLoadMore = !cards.isEmpty
                 newState.currentPage = 1
                 return newState
             }
@@ -125,10 +115,9 @@ final class PublicDeckInteractor: Interactor {
             .eraseToAnyPublisher()
     }
     
-    //swiftlint:disable trailing_closure
+    //swiftlint: disable trailing_closure
     private func downloadCardsEffect(_ currentState: PublicDeckState, id: String) -> some Publisher<PublicDeckState, Never> {
-        deckService
-            .downloadDeck(with: id)
+        deckService.downloadDeck(with: id)
             .map(DeckAdapter.adapt)
             .handleEvents(receiveOutput: {[weak deckRepository] deck, cards in
                 try? deckRepository?.createDeck(deck, cards: cards)

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-
 import XCTest
 @testable import StoreFeature
 import Puffins
@@ -64,13 +63,8 @@ final class StoreFeatureTests: XCTestCase {
 
         sut
             .reduce(&newState, action: .loadFeed)
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    XCTAssertTrue(false)
-                case .failure(_):
-                    XCTAssertTrue(true)
-                }
+            .sink { newState in
+                XCTAssertEqual(newState.viewState, .error)
                 deckExpectation.fulfill()
             } receiveValue: { _ in
                 
@@ -79,6 +73,5 @@ final class StoreFeatureTests: XCTestCase {
 
         
         wait(for: [deckExpectation], timeout: 1)
-        //XCTAssertEqual(sut.viewState, .error)
     }
 }

@@ -38,7 +38,11 @@ public struct ContentView: View {
                 TabView(selection: $appRouter.selectedTab) {
                     mainView
                         .tabItem {
-                            Label("Baralhos", systemImage: "rectangle.portrait.on.rectangle.portrait.angled")
+                           Label {
+                        Text("baralhos", bundle: .module)
+                    } icon: {
+                        Image(systemName: "rectangle.portrait.on.rectangle.portrait.angled")
+                    }
                         }
                         .tag(AppRouter.Tab.study)
                     
@@ -46,7 +50,11 @@ public struct ContentView: View {
                         StoreView(store: shopStore)
                     }
                     .tabItem {
-                        Label("Loja", systemImage: "bag")
+                        Label {
+                        Text("library", bundle: .module)
+                    } icon: {
+                        Image(systemName: "books.vertical")
+                    }
                     }
                     .tag(AppRouter.Tab.store)
                 }

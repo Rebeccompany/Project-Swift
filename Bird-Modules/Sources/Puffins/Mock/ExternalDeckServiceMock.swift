@@ -7,6 +7,7 @@
 
 import Foundation
 import Models
+import Utils
 import Combine
 
 public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
@@ -32,65 +33,32 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     }
     
     public var cards: [ExternalCard] {
-        [
-            ExternalCard(
-                id: UUID().uuidString,
-                front: "Lavender Hazer",
-                back: "1",
-                color: .darkBlue,
-                deckId: "1"
-            ),
-            ExternalCard(
-                id: UUID().uuidString,
-                front: "Lavender Hazer",
-                back: "1",
-                color: .darkBlue,
-                deckId: "1"
-            ),
-            ExternalCard(
-                id: UUID().uuidString,
-                front: "Lavender Hazer",
-                back: "1",
-                color: .darkBlue,
-                deckId: "1"
-            ),
-            ExternalCard(
-                id: UUID().uuidString,
-                front: "Lavender Hazer",
-                back: "1",
-                color: .darkBlue,
-                deckId: "1"
-            ),
-            ExternalCard(
-                id: UUID().uuidString,
-                front: "Lavender Hazer",
-                back: "1",
-                color: .darkBlue,
-                deckId: "1"
-            ),
-            ExternalCard(
-                id: UUID().uuidString,
-                front: "Lavender Hazer",
-                back: "1",
-                color: .darkBlue,
-                deckId: "1"
-            ),
-            ExternalCard(
-                id: UUID().uuidString,
-                front: "Lavender Hazer",
-                back: "1",
-                color: .darkBlue,
-                deckId: "1"
-            ),
-            ExternalCard(
-                id: UUID().uuidString,
-                front: "Lavender Hazer",
-                back: "1",
-                color: .darkBlue,
-                deckId: "1"
+        Array(1...10).map { ExternalCard(
+            id: "\($0)",
+            front: "Lavender Hazer",
+            back: "1",
+            color: .darkBlue,
+            deckId: "1"
             )
-        ]
+        }
         
+    }
+    
+    public func deckDTO(id: String) -> DeckDTO {
+        DeckDTO(
+            id: id,
+            name: "DTO",
+            description: "description",
+            icon: .leaf,
+            color: .darkPurple,
+            category: .languages,
+            cards: Array(1...10).map { _ in
+                CardDTO(
+                    front: String(data: NSAttributedString(string: "front").rtfData()!, encoding: .utf8)!,
+                    back: String(data: NSAttributedString(string: "back").rtfData()!, encoding: .utf8)!,
+                    color: .darkBlue)
+            }
+        )
     }
     
     public init() {
@@ -119,7 +87,12 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         if shouldError {
             return Fail(outputType: [ExternalCard].self, failure: error!).eraseToAnyPublisher()
         }
-        return Just(cards).setFailureType(to: URLError.self).eraseToAnyPublisher()
+        
+        if page == 0 {
+            return Just(cards).setFailureType(to: URLError.self).eraseToAnyPublisher()
+        } else {
+            return Just([]).setFailureType(to: URLError.self).eraseToAnyPublisher()
+        }
     }
     
     public func uploadNewDeck(_ deck: Deck, with cards: [Card]) -> AnyPublisher<String, URLError> {
@@ -129,7 +102,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         return Just(expectedUploadString).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
     
-    public func deleteDeck(_ deck: Models.Deck) -> AnyPublisher<Void, URLError> {
+    public func deleteDeck(_ deck: Deck) -> AnyPublisher<Void, URLError> {
         if shouldError {
             return Fail(outputType: Void.self, failure: error!).eraseToAnyPublisher()
         }
@@ -137,6 +110,9 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     }
     
     public func downloadDeck(with id: String) -> AnyPublisher<DeckDTO, URLError> {
-        fatalError()
+        if shouldError {
+            return Fail(outputType: DeckDTO.self, failure: error!).eraseToAnyPublisher()
+        }
+        return Just(deckDTO(id: id)).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
 }

@@ -46,7 +46,7 @@ public struct NewFlashcardView: View {
                             FlashcardTextEditorView(
                                 text: $viewModel.flashcardFront, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                                 side: NSLocalizedString("frente", bundle: .module, comment: ""),
-                                context: frontContext
+                                context: frontContext, isFront: true
                             )
                             .id(NewFlashcardFocus.front)
                             .frame(minHeight: horizontalSizeClass == . compact ? 400 : 600)
@@ -54,7 +54,7 @@ public struct NewFlashcardView: View {
                             FlashcardTextEditorView(
                                 text: $viewModel.flashcardBack, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                                 side: NSLocalizedString("verso", bundle: .module, comment: ""),
-                                context: backContext
+                                context: backContext, isFront: false
                             )
                             .id(NewFlashcardFocus.back)
                             .frame(minHeight: horizontalSizeClass == . compact ? 400 : 600)
@@ -218,7 +218,7 @@ extension View {
 struct NewFlashcardView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
-            NewFlashcardView(deck: Deck(id: UUID(), name: "Nome", icon: "chove", color: .darkBlue, collectionId: nil, cardsIds: [], category: DeckCategory.arts, storeId: nil), editingFlashcard: nil)
+            NewFlashcardView(deck: Deck(id: UUID(), name: "Nome", icon: "chove", color: .darkBlue, collectionId: nil, cardsIds: [], category: DeckCategory.arts, storeId: nil, description: ""), editingFlashcard: nil)
         }
     }
 }

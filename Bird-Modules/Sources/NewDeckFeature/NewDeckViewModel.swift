@@ -19,6 +19,7 @@ public class NewDeckViewModel: ObservableObject {
     @Published var currentSelectedColor: CollectionColor? = CollectionColor.red
     @Published var currentSelectedIcon: IconNames? = IconNames.gamecontroller
     @Published var currentSelectedCategory: DeckCategory = .others
+    @Published var description: String = ""
     @Published var canSubmit: Bool = false
     @Published var showingErrorAlert: Bool = false
     
@@ -34,6 +35,7 @@ public class NewDeckViewModel: ObservableObject {
         deckName = deck.name
         currentSelectedColor = deck.color
         currentSelectedIcon = IconNames(rawValue: deck.icon)
+        description = deck.description
     }
     
     private var canSubmitPublisher: AnyPublisher<Bool, Never> {
@@ -68,7 +70,8 @@ public class NewDeckViewModel: ObservableObject {
                         cardsIds: [],
                         spacedRepetitionConfig: SpacedRepetitionConfig(),
                         category: currentSelectedCategory,
-                        storeId: nil)
+                        storeId: nil,
+                        description: description)
         
         try deckRepository.createDeck(deck, cards: [])
         
@@ -86,6 +89,7 @@ public class NewDeckViewModel: ObservableObject {
         editingDeck.color = selectedColor
         editingDeck.icon = selectedIcon.rawValue.description
         editingDeck.datesLogs.lastAccess = dateHandler.today
+        editingDeck.description = description
         editingDeck.datesLogs.lastEdit = dateHandler.today
         try deckRepository.editDeck(editingDeck)
     }
