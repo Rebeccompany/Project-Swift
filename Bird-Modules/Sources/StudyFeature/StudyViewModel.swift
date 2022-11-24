@@ -244,7 +244,7 @@ public class StudyViewModel: ObservableObject {
                 case .finished:
                     self?.shouldDismiss = true
                 case .failure(_):
-                    print("error")
+                    break
                 }
                 
             } receiveValue: { [weak self] (data: ([Card], [Card], [Card], Date)) in

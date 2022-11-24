@@ -22,3 +22,8 @@
 "add" = "Add";
 "import"= "Import";
 "modos_de_estudo" = "Study Modes";
+"publicar" = "Publish";
+"confirmar" = "Confirm";
+"confirmar_publicao" = "Deck publication into the library";
+"confirmar_publicao_delete" = "Are you sure you want to remove it from the library?";
+"confirmar_publicao_publicar" = "Are you sure want to publish it into the library?";

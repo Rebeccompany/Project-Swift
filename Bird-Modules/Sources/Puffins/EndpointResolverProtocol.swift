@@ -10,4 +10,5 @@ import Combine
 
 public protocol EndpointResolverProtocol {
     func dataTaskPublisher(for endpoint: Endpoint) -> AnyPublisher<URLSession.DataTaskPublisher.Output, URLSession.DataTaskPublisher.Failure>
+    func dataTaskPublisher(for endpoint: Endpoint, authToken: String) -> AnyPublisher<URLSession.DataTaskPublisher.Output, URLSession.DataTaskPublisher.Failure>
 }
