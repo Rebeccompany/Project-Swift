@@ -109,25 +109,6 @@ public final class ContentViewModel: ObservableObject {
             .tryMap(filterDecksForToday)
             .replaceError(with: [])
             .assign(to: &$todayDecks)
-        
-        deckRepository
-            .deckListener()
-            .first()
-            .map {
-                $0.filter { deck in deck.storeId != nil }
-            }
-            .sink { sinkCompletion in
-                switch sinkCompletion {
-                case .finished:
-                    print("completion disso aqui")
-                case .failure(_):
-                    print("failure disso aqui")
-                }
-            } receiveValue: { decks in
-                CLSDeckLibrary.shared.addDecks(decks)
-                
-            }
-            .store(in: &cancellables)
     }
     
     func bindingToDeck(_ deck: Deck) -> Binding<Deck> {

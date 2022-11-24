@@ -20,6 +20,12 @@ let package = Package(
                 "AppFeature"
             ]
         ),
+        .library(
+            name: "ClassKitFeature",
+            targets: [
+                "ClassKitFeature"
+            ]
+        ),
         
         .library(
             name: "DeckFeature",
@@ -159,7 +165,16 @@ let package = Package(
                 "NewFlashcardFeature",
                 "OnboardingFeature",
                 "StoreFeature",
-                "StoreState"
+                "StoreState",
+                "ClassKitFeature"
+            ]
+        ),
+        
+        .target(
+            name: "ClassKitFeature",
+            dependencies: [
+                "Storage",
+                "Models"
             ]
         ),
         

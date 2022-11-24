@@ -8,6 +8,7 @@
 import SwiftUI
 import Habitat
 import Models
+import ClassKitFeature
 
 //swiftlint: disable discouraged_optional_collection
 
@@ -20,7 +21,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         
         setupHabitatForProduction()
-        
+        CLSDeckLibrary.shared.addStoreDecks()
         return true
     }
 }
