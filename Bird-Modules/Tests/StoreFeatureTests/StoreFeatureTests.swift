@@ -10,6 +10,7 @@ import XCTest
 @testable import StoreFeature
 import Puffins
 import Habitat
+import Models
 import Combine
 import StoreState
 
@@ -64,10 +65,8 @@ final class StoreFeatureTests: XCTestCase {
         sut
             .reduce(&newState, action: .loadFeed)
             .sink { newState in
-                XCTAssertEqual(newState.viewState, .error)
+                XCTAssertEqual(newState.viewState, ViewState.error)
                 deckExpectation.fulfill()
-            } receiveValue: { _ in
-                
             }
             .store(in: &cancelables)
 

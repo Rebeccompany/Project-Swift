@@ -482,7 +482,8 @@ let package = Package(
                 "Puffins",
                 "StoreFeature",
                 "Habitat",
-                "StoreState"
+                "StoreState",
+                "Models"
             ]
         ),
         
