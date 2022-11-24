@@ -98,7 +98,7 @@ extension CLSDeckLibrary: CLSDataStoreDelegate {
         }
         
         let context = CLSContext(type: deckNode.contextType, identifier: identifier, title: deckNode.identifier)
-        context.topic = .math
+        context.topic = .science
         context.title = deckNode.title
         
         context.universalLinkURL = URL(string: "spixii://" + deckIdentifier)
