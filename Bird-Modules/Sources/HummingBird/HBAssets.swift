@@ -26,4 +26,8 @@ public enum HBAssets {
     public static var endOfStudy: Image {
         Image("endOfStudy", bundle: .module)
     }
+    
+    public static var logo: Image {
+        Image("logo", bundle: .module)
+    }
 }

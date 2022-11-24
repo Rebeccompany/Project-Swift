@@ -348,7 +348,10 @@ let package = Package(
         ),
         
         .target(
-            name: "Authentication"
+            name: "Authentication",
+            dependencies: [
+                "HummingBird"
+            ]
         ),
         
         // MARK: Test Targets
