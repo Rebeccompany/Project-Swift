@@ -11,11 +11,14 @@ import Habitat
 import Models
 import Peacock
 import PublicDeckFeature
+import Authentication
 import StoreState
 
 public struct StoreView: View {
     @ObservedObject private var store: ShopStore
     @StateObject private var interactor = FeedInteractor()
+    @StateObject private var authModel = AuthenticationModel()
+    @State private var showLogin = false
     
     public init(store: ShopStore) {
         self.store = store
@@ -48,6 +51,17 @@ public struct StoreView: View {
         .onAppear {
             interactor.bind(to: store)
             interactor.send(.loadFeed)
+        }
+        .task {
+            do {
+                let isSignedIn = try await authModel.isSignedIn()
+                showLogin = !isSignedIn
+            } catch {
+                showLogin = true
+            }
+        }
+        .fullScreenCover(isPresented: $showLogin) {
+            AuthenticationView(model: authModel)
         }
         .viewBackgroundColor(HBColor.primaryBackground)
     }

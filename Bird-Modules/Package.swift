@@ -317,7 +317,8 @@ let package = Package(
                 "Habitat",
                 "PublicDeckFeature",
                 "Peacock",
-                "StoreState"
+                "StoreState",
+                "Authentication"
             ]
         ),
         

@@ -11,8 +11,9 @@ import SwiftUI
 
 public final class AuthenticationModel: ObservableObject {
     
-    @Published var currentLogedInUserIdentifer: String?
-    @Published var didOcurredErrorOnSignInCompletion: Bool = false
+    @Published public var currentLogedInUserIdentifer: String?
+    @Published public var didOcurredErrorOnSignInCompletion: Bool = false
+    @Published var shouldDismiss = false
     
     private let idProvider = ASAuthorizationAppleIDProvider()
     private let keychainService: KeychainServiceProtocol
@@ -58,12 +59,13 @@ public final class AuthenticationModel: ObservableObject {
         }
     }
     
-    func isSignedIn() async throws -> Bool {
+    public func isSignedIn() async throws -> Bool {
         guard let currentLogedInUserIdentifer else { return false }
         
         let state = try await idProvider.credentialState(forUserID: currentLogedInUserIdentifer)
         switch state {
         case .authorized:
+            self.shouldDismiss = true
             return true
         case .notFound, .revoked:
             return false

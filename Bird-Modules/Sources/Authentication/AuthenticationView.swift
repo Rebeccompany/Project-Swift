@@ -10,6 +10,7 @@ import HummingBird
 import SwiftUI
 
 public struct AuthenticationView: View {
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject private var model: AuthenticationModel
     
     public init(model: AuthenticationModel) {
@@ -44,6 +45,11 @@ public struct AuthenticationView: View {
             .signInWithAppleButtonStyle(.white)
             .padding(.horizontal, 24)
             .frame(width: 330, height: 60)
+        }
+        .onChange(of: model.shouldDismiss) { newValue in
+            if newValue {
+                dismiss()
+            }
         }
         .viewBackgroundColor(HBColor.collectionBlack)
     }
