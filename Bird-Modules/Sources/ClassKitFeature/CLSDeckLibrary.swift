@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  CLSDeckLibrary.swift
 //  
 //
 //  Created by Marcos Chevis on 23/11/22.
@@ -50,7 +50,6 @@ public final class CLSDeckLibrary: NSObject {
                 }
             } receiveValue: { decks in
                 self.addDecks(decks, creatingContexts: false)
-                
             }
             .store(in: &cancellables)
     }
@@ -105,6 +104,5 @@ extension CLSDeckLibrary: CLSDataStoreDelegate {
         
         return context
     }
-    
     
 }
