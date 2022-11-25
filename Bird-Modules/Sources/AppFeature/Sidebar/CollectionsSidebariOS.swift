@@ -11,22 +11,28 @@ import NewCollectionFeature
 import HummingBird
 import StoreFeature
 import OnboardingFeature
+import StoreState
 
 #if os(iOS)
 struct CollectionsSidebariOS: View {
     @State private var onboarding: Bool = false
-    @Binding private var editMode: EditMode
-    @EnvironmentObject private var viewModel: ContentViewModel
     @State private var presentCollectionEdition = false
     @State private var presentCollectionCreation = false
     @State private var editingCollection: DeckCollection?
+    @Binding private var editMode: EditMode
     @Binding private var selection: SidebarRoute?
-    private var isCompact: Bool
+    @EnvironmentObject private var viewModel: ContentViewModel
+    @EnvironmentObject private var store: ShopStore
     
-    init(isCompact: Bool, editMode: Binding<EditMode>, selection: Binding<SidebarRoute?>) {
-        self._editMode = editMode
-        self.isCompact = isCompact
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
+    
+    init(selection: Binding<SidebarRoute?>, editMode: Binding<EditMode>) {
         self._selection = selection
+        self._editMode = editMode
     }
     
     var body: some View {
@@ -38,15 +44,20 @@ struct CollectionsSidebariOS: View {
             .listRowBackground(
                 isCompact ? HBColor.secondaryBackground : nil
             )
-            NavigationLink {
-                StoreView()
-            } label: {
-                Label("Store", systemImage: "bag")
-            }
-            .listRowBackground(
-                isCompact ? HBColor.secondaryBackground : nil
-            )
+            
+            if !isCompact {
+                NavigationLink {
+                    NavigationStack {
+                        StoreView(store: store)
+                    }
+                } label: {
+                    Label("Store", systemImage: "bag")
+                }
+                .listRowBackground(
+                    isCompact ? HBColor.secondaryBackground : nil
+                )
 
+            }
             
             Section {
                 if viewModel.collections.isEmpty {

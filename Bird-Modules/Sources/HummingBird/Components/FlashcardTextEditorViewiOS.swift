@@ -16,6 +16,7 @@ import Utils
 public struct FlashcardTextEditorViewiOS: View {
     var color: Color
     var side: String
+    var isFront: Bool
     
     @State private var isPhotoPickerPresented = false
     @State private var photoSelection: PhotosPickerItem?
@@ -23,18 +24,19 @@ public struct FlashcardTextEditorViewiOS: View {
     
     @ObservedObject private var context: RichTextContext
 
-    public init(text: Binding<NSAttributedString>, color: Color, side: String, context: RichTextContext) {
+    public init(text: Binding<NSAttributedString>, color: Color, side: String, context: RichTextContext, isFront: Bool) {
         self._text = text
         self.color = color
         self.side = side
         self.context = context
+        self.isFront = isFront
     }
     
     public var body: some View {
         VStack {
             VStack(alignment: .leading) {
                 Text(side)
-                    .foregroundColor(.white)
+                    .foregroundColor(color == HBColor.collectionWhite ? .black : .white)
                     .padding([.leading, .top])
                     .font(.system(size: 16))
                 
@@ -49,11 +51,23 @@ public struct FlashcardTextEditorViewiOS: View {
                     .background(.thinMaterial)
             }
         }
-        .background(color)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(.white, lineWidth: 3)
-        )
+        .background {
+            if isFront {
+                SpixiiShapeFront()
+                    .foregroundColor(color)
+            } else {
+                SpixiiShapeBack()
+                    .foregroundColor(color)
+                    .brightness(0.04)
+            }
+        }
+        .background {
+            if isFront {
+                color.brightness(0.04)
+            } else {
+                color
+            }
+        }
         .cornerRadius(16)
         .photosPicker(isPresented: $isPhotoPickerPresented,
                       selection: $photoSelection,
@@ -188,7 +202,7 @@ public struct FlashcardTextEditorViewiOS: View {
 
 struct FlashcardTextEditorViewiOS_Previews: PreviewProvider {
     static var previews: some View {
-        FlashcardTextEditorViewiOS(text: .constant(NSAttributedString("")), color: .blue, side: "Frente", context: RichTextContext())
+        FlashcardTextEditorViewiOS(text: .constant(NSAttributedString("")), color: .blue, side: "Frente", context: RichTextContext(), isFront: true)
             .environment(\.sizeCategory, .medium)
     }
 }

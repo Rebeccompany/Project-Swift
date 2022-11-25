@@ -2,7 +2,7 @@
 //  DeckEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Rebecca Mello on 25/10/22.
+//  Created by Gabriel Ferreira de Carvalho on 22/11/22.
 //
 //
 
@@ -18,6 +18,7 @@ extension DeckEntity {
     @NSManaged public var category: String?
     @NSManaged public var color: Int16
     @NSManaged public var createdAt: Date?
+    @NSManaged public var deckDescription: String?
     @NSManaged public var icon: String?
     @NSManaged public var id: UUID?
     @NSManaged public var lastAccess: Date?
