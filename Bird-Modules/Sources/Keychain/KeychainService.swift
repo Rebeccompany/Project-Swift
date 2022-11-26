@@ -117,10 +117,14 @@ public struct KeychainService: KeychainServiceProtocol {
     }
 }
 
-final class KeychainServiceMock: KeychainServiceProtocol {
+public final class KeychainServiceMock: KeychainServiceProtocol {
     var values: [String: String] = [:]
     
-    func get(forKey key: String, inService service: String, inGroup group: String) throws -> String {
+    public init(values: [String : String] = [:]) {
+        self.values = values
+    }
+    
+    public func get(forKey key: String, inService service: String, inGroup group: String) throws -> String {
         guard let value = values[key] else {
             throw KeychainError.itemNotFound
         }
@@ -129,11 +133,11 @@ final class KeychainServiceMock: KeychainServiceProtocol {
 
     }
     
-    func set(_ value: String, forKey key: String, inService service: String, inGroup group: String) throws {
+    public func set(_ value: String, forKey key: String, inService service: String, inGroup group: String) throws {
         values[key] = value
     }
     
-    func delete(forKey key: String, inService service: String, inGroup group: String) throws {
+    public func delete(forKey key: String, inService service: String, inGroup group: String) throws {
         values.removeValue(forKey: key)
     }
     

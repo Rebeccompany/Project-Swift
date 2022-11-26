@@ -7,6 +7,7 @@
 
 import AuthenticationServices
 import HummingBird
+import Keychain
 import SwiftUI
 
 public struct AuthenticationView: View {

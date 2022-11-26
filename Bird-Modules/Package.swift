@@ -126,7 +126,8 @@ let package = Package(
         ),
         .library(name: "Peacock", targets: ["Peacock"]),
         .library(name: "StoreState", targets: ["StoreState"]),
-        .library(name: "Authentication", targets: ["Authentication"])
+        .library(name: "Authentication", targets: ["Authentication"]),
+        .library(name: "Keychain", targets: ["Keychain"])
     ],
     
     dependencies: [
@@ -287,7 +288,8 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Utils",
-                "Puffins"
+                "Puffins",
+                "Keychain"
             ]
         ),
         
@@ -353,9 +355,12 @@ let package = Package(
             dependencies: [
                 "HummingBird",
                 "Puffins",
-                "Habitat"
+                "Habitat",
+                "Keychain"
             ]
         ),
+        
+        .target(name: "Keychain"),
         
         // MARK: Test Targets
         .testTarget(
