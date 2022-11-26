@@ -38,6 +38,34 @@ public final class AuthenticationModel: ObservableObject {
         self.currentLogedInUserIdentifer = try? keychainService.get(forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
     }
     
+    public func isSignedIn() async throws -> Bool {
+        guard let currentLogedInUserIdentifer else { return false }
+        
+        let state = try await idProvider.credentialState(forUserID: currentLogedInUserIdentifer)
+        switch state {
+        case .authorized:
+            self.shouldDismiss = true
+            return true
+        case .notFound, .revoked:
+            return false
+        default:
+            return false
+        }
+    }
+    
+    public func signOut() {
+        do {
+            try keychainService.delete(forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
+            currentLogedInUserIdentifer = nil
+        } catch {
+            didOcurredErrorOnSignInCompletion = true
+        }
+    }
+    
+    public func deleteAccount() {
+        
+    }
+    
     func onSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
         request.requestedScopes = [.fullName]
     }
@@ -79,26 +107,11 @@ public final class AuthenticationModel: ObservableObject {
     
     private func saveIdInKeychain(_ id: String) {
         do {
-            try! keychainService.set(id, forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
+            try keychainService.set(id, forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
             currentLogedInUserIdentifer = id
             shouldDismiss = true
         } catch {
             didOcurredErrorOnSignInCompletion = true
-        }
-    }
-    
-    public func isSignedIn() async throws -> Bool {
-        guard let currentLogedInUserIdentifer else { return false }
-        
-        let state = try await idProvider.credentialState(forUserID: currentLogedInUserIdentifer)
-        switch state {
-        case .authorized:
-            self.shouldDismiss = true
-            return true
-        case .notFound, .revoked:
-            return false
-        default:
-            return false
         }
     }
 }

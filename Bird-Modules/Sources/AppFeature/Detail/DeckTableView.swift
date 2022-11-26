@@ -87,6 +87,7 @@ struct DeckTableView: View {
             }
         }
         .animation(.linear, value: sortedDecks)
+        .toolbarBackground(.visible, for: .tabBar)
         .listStyle(.plain)
         .onDisappear {
             Task {

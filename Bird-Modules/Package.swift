@@ -161,7 +161,8 @@ let package = Package(
                 "NewFlashcardFeature",
                 "OnboardingFeature",
                 "StoreFeature",
-                "StoreState"
+                "StoreState",
+                "Authentication"
             ]
         ),
         
@@ -178,7 +179,8 @@ let package = Package(
                 "StudyFeature",
                 "ImportingFeature",
                 "Habitat",
-                "Puffins"
+                "Puffins",
+                "Authentication"
             ]
         ),
             
@@ -341,7 +343,8 @@ let package = Package(
                 "HummingBird",
                 "Habitat",
                 "Peacock",
-                "StoreState"
+                "StoreState",
+                "Authentication"
             ]
         ),
         

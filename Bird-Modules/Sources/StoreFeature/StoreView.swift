@@ -17,8 +17,8 @@ import StoreState
 public struct StoreView: View {
     @ObservedObject private var store: ShopStore
     @StateObject private var interactor = FeedInteractor()
-    @StateObject private var authModel = AuthenticationModel()
-    @State private var showLogin = false
+    @EnvironmentObject private var authModel: AuthenticationModel
+    @State private var showLogin: Bool = false
     
     public init(store: ShopStore) {
         self.store = store
@@ -29,22 +29,11 @@ public struct StoreView: View {
         Group {
             switch state.viewState {
             case .loaded:
-                ScrollView {
-                    LazyVStack(alignment: .leading) {
-                        ForEach(state.sections.filter { !$0.decks.isEmpty }) { section in
-                            PublicSection(section: section)
-                            
-                        }
-                    }
-                }
-                .navigationDestination(for: ExternalDeck.self) { deck in
-                    PublicDeckView(deck: deck)
-                        .environmentObject(store)
-                }
+                loadedFeed(state: state)
             case .error:
-                Text("Error")
+                errorView()
             case .loading:
-                ProgressView()
+                loadingView()
             }
         }
         .navigationTitle(NSLocalizedString("baralhos_publicos", bundle: .module, comment: ""))
@@ -52,18 +41,72 @@ public struct StoreView: View {
             interactor.bind(to: store)
             interactor.send(.loadFeed)
         }
-        .task {
-            do {
-                let isSignedIn = try await authModel.isSignedIn()
-                showLogin = !isSignedIn
-            } catch {
-                showLogin = true
+        .viewBackgroundColor(HBColor.primaryBackground)
+    }
+    
+    @ViewBuilder
+    private func loadedFeed(state: FeedState) -> some View {
+        ScrollView {
+            LazyVStack(alignment: .leading) {
+                ForEach(state.sections.filter { !$0.decks.isEmpty }) { section in
+                    PublicSection(section: section)
+                    
+                }
+            }
+        }
+        .navigationDestination(for: ExternalDeck.self) { deck in
+            PublicDeckView(deck: deck)
+                .environmentObject(store)
+                .environmentObject(authModel)
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                signInMenu
             }
         }
         .fullScreenCover(isPresented: $showLogin) {
             AuthenticationView(model: authModel)
         }
-        .viewBackgroundColor(HBColor.primaryBackground)
+    }
+    
+    @ViewBuilder
+    private var signInMenu: some View {
+        Menu {
+            if authModel.currentLogedInUserIdentifer == nil {
+                Button("signin".localized(.module)) {
+                    showLogin = true
+                }
+            } else {
+                Text("Username")
+                Button("signout".localized(.module)) {
+                    authModel.signOut()
+                }
+                Button("delete_account".localized(.module), role: .destructive) {
+                    authModel.deleteAccount()
+                }
+            }
+        } label: {
+            Label {
+                Text("Account")
+            } icon: {
+                Image(
+                    systemName: authModel.currentLogedInUserIdentifer != nil ?
+                    "person.crop.circle" :
+                    "person.crop.circle.badge.xmark"
+                )
+            }
+
+        }
+    }
+    
+    @ViewBuilder
+    private func errorView() -> some View {
+        Text("error")
+    }
+    
+    @ViewBuilder
+    private func loadingView() -> some View {
+        ProgressView()
     }
 }
 
@@ -72,7 +115,15 @@ struct StoreView_Previews: PreviewProvider {
         HabitatPreview {
             NavigationStack {
                 StoreView(store: ShopStore())
+                    .environmentObject(AuthenticationModel())
             }
         }
+    }
+}
+
+#warning("Mover para Utils")
+extension String {
+    public func localized(_ bundle: Bundle) -> String {
+        NSLocalizedString(self, bundle: bundle, comment: "")
     }
 }

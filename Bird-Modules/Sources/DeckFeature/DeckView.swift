@@ -5,19 +5,21 @@
 //  Created by Marcos Chevis on 30/08/22.
 //
 
-import Foundation
-import SwiftUI
-import Models
-import HummingBird
-import NewFlashcardFeature
-import ImportingFeature
-import StudyFeature
-import Storage
 import Flock
 import Utils
+import Models
+import Storage
+import SwiftUI
+import Foundation
+import HummingBird
+import StudyFeature
+import Authentication
+import ImportingFeature
+import NewFlashcardFeature
 
 public struct DeckView: View {
     @StateObject private var viewModel: DeckViewModel = DeckViewModel()
+    @EnvironmentObject private var authModel: AuthenticationModel
     @State private var shouldDisplayNewFlashcard: Bool = false
     @State private var shouldDisplayImport: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
