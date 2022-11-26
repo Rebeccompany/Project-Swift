@@ -8,7 +8,7 @@ import Foundation
 import Security
 
 public protocol KeychainServiceProtocol {
-    func get(forKey key: String, inService service: String , inGroup group: String) throws -> String
+    func get(forKey key: String, inService service: String, inGroup group: String) throws -> String
     func set(_ value: String, forKey key: String, inService service: String, inGroup group: String) throws
     func delete(forKey key: String, inService service: String, inGroup group: String) throws
 }
@@ -22,7 +22,6 @@ public struct KeychainService: KeychainServiceProtocol {
             kSecAttrService as String: service as AnyObject,
             kSecAttrAccount as String: key as AnyObject,
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccessGroup as String: group as AnyObject,
             kSecMatchLimit as String: kSecMatchLimitOne,
             kSecReturnData as String: kCFBooleanTrue
         ]
@@ -59,7 +58,6 @@ public struct KeychainService: KeychainServiceProtocol {
             kSecAttrService as String: service as AnyObject,
             kSecAttrAccount as String: key as AnyObject,
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccessGroup as String: group as AnyObject,
             kSecValueData as String: data as AnyObject
         ]
         
@@ -69,7 +67,6 @@ public struct KeychainService: KeychainServiceProtocol {
             try update(value, service: service, inKey: key, inGroup: group)
             
         } else if status != errSecSuccess {
-            print(status)
             throw KeychainError.unexpectedStatus(status)
         }
     }
@@ -80,7 +77,6 @@ public struct KeychainService: KeychainServiceProtocol {
         let query: [String: AnyObject] = [
             kSecAttrService as String: service as AnyObject,
             kSecAttrAccount as String: key as AnyObject,
-            kSecAttrAccessGroup as String: group as AnyObject,
             kSecClass as String: kSecClassGenericPassword
         ]
 
@@ -108,7 +104,6 @@ public struct KeychainService: KeychainServiceProtocol {
         let query: [String: AnyObject] = [
             kSecAttrService as String: service as AnyObject,
             kSecAttrAccount as String: key as AnyObject,
-            kSecAttrAccessGroup as String: group as AnyObject,
             kSecClass as String: kSecClassGenericPassword
         ]
         
@@ -122,8 +117,8 @@ public struct KeychainService: KeychainServiceProtocol {
     }
 }
 
-class KeychainServiceMock: KeychainServiceProtocol {
-    var values: [String : String] = [:]
+final class KeychainServiceMock: KeychainServiceProtocol {
+    var values: [String: String] = [:]
     
     func get(forKey key: String, inService service: String, inGroup group: String) throws -> String {
         guard let value = values[key] else {

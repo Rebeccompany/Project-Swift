@@ -18,6 +18,7 @@ public func setupHabitatForProduction() {
     Habitat[\.systemObserver] = SystemObserver.shared
     Habitat[\.displayCacher] = DisplayCacher()
     Habitat[\.externalDeckService] = ExternalDeckService.shared
+    Habitat[\.externalUserService] = ExternalUserService.shared
 }
 
 public func setupHabitatForIsolatedTesting(

@@ -351,7 +351,9 @@ let package = Package(
         .target(
             name: "Authentication",
             dependencies: [
-                "HummingBird"
+                "HummingBird",
+                "Puffins",
+                "Habitat"
             ]
         ),
         

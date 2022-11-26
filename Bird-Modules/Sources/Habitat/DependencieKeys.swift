@@ -39,6 +39,10 @@ private struct DisplayCacherKey: HabitatKey {
     static var currentValue: DisplayCacherProtocol = DisplayCacher()
 }
 
+private struct ExternalUserServiceKey: HabitatKey {
+    static var currentValue: ExternalUserServiceProtocol = ExternalUserService.shared
+}
+
 // MARK: Extension
 extension Habitat {
     public var deckRepository: DeckRepositoryProtocol {
@@ -74,5 +78,10 @@ extension Habitat {
     public var externalDeckService: ExternalDeckServiceProtocol {
         get { Self[ExternalDeckServiceKey.self] }
         set { Self[ExternalDeckServiceKey.self] = newValue }
+    }
+    
+    public var externalUserService: ExternalUserServiceProtocol {
+        get { Self[ExternalUserServiceKey.self] }
+        set { Self[ExternalUserServiceKey.self] = newValue }
     }
 }

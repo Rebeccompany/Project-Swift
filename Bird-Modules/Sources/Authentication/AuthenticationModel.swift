@@ -6,17 +6,27 @@
 //
 
 import Foundation
+import Habitat
+import Puffins
 import AuthenticationServices
-import SwiftUI
+import Combine
+import Models
 
+@MainActor
 public final class AuthenticationModel: ObservableObject {
+    
+    @Dependency(\.externalUserService) private var userService
     
     @Published public var currentLogedInUserIdentifer: String?
     @Published public var didOcurredErrorOnSignInCompletion: Bool = false
     @Published var shouldDismiss = false
     
     private let idProvider = ASAuthorizationAppleIDProvider()
+    
+    //COLOCAR NO HABITAT
     private let keychainService: KeychainServiceProtocol
+    
+    private var cancellables = Set<AnyCancellable>()
     
     private let credentialKey = "userCredential"
     private let accessGroup = "com.projectbird.birdmodules.authentication"
@@ -28,7 +38,7 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     func onSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
-        request.requestedScopes = [.email, .fullName]
+        request.requestedScopes = [.fullName]
     }
     
     func onSignInCompletion(_ result: Result<ASAuthorization, Error>) {
@@ -50,10 +60,27 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     private func onAppleIdCredentialReceived(_ appleIDCredential: ASAuthorizationAppleIDCredential) {
+        userService.singUp(user: UserDTO(appleIdentifier: appleIDCredential.user, userName: appleIDCredential.fullName?.formatted() ?? " "))
+            .receive(on: RunLoop.main)
+            .sink {[weak self] completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(_):
+                    self?.didOcurredErrorOnSignInCompletion = true
+                }
+            } receiveValue: {[weak self] user in
+                self?.saveIdInKeychain(user.appleIdentifier)
+            }
+            .store(in: &cancellables)
+
+    }
+    
+    private func saveIdInKeychain(_ id: String) {
         do {
-            try keychainService.set(appleIDCredential.user, forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
-            currentLogedInUserIdentifer = appleIDCredential.user
-            //Save no back
+            try! keychainService.set(id, forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
+            currentLogedInUserIdentifer = id
+            shouldDismiss = true
         } catch {
             didOcurredErrorOnSignInCompletion = true
         }
