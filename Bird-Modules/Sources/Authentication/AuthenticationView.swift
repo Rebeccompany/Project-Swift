@@ -21,11 +21,11 @@ public struct AuthenticationView: View {
     
     public var body: some View {
         NavigationStack(path: $path) {
-            SignInView(model: model, path: $path)
+            SignInView(model: model, path: $path) { dismiss() }
                 .navigationDestination(for: AuthenticationRoute.self) { route in
                     switch route {
                     case .fillInfo:
-                        FillInfoView(model: model, path: $path)
+                        FillInfoView(model: model, path: $path) { dismiss() }
                     }
                 }
         }
@@ -38,14 +38,15 @@ enum AuthenticationRoute: Hashable {
 
 struct FillInfoView: View {
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.dismiss) private var dismiss
     @Binding private var path: NavigationPath
     @ObservedObject private var model: AuthenticationModel
     @State private var userNameField: String = ""
+    private var dismiss: () -> Void
     
-    init(model: AuthenticationModel, path: Binding<NavigationPath>) {
+    init(model: AuthenticationModel, path: Binding<NavigationPath>, dismiss: @escaping () -> Void) {
         self.model = model
         self._path = path
+        self.dismiss = dismiss
     }
     
     var body: some View {
@@ -111,7 +112,7 @@ struct FillInfoView: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 Button {
-                    
+                    dismiss()
                 } label: {
                     Text("Cancel")
                         .frame(maxWidth: .infinity)
@@ -121,7 +122,7 @@ struct FillInfoView: View {
                 .padding(.bottom, 8)
                 
                 Button {
-                    
+                    model.completeSignUp(username: userNameField)
                 } label: {
                     Text("Finish")
                         .fontWeight(.bold)
@@ -129,6 +130,7 @@ struct FillInfoView: View {
                 }
                 .tint(HBColor.actionColor)
                 .buttonStyle(.borderedProminent)
+                .disabled(userNameField.isEmpty)
             }
             .padding([.horizontal, .bottom])
             .frame(maxWidth: 450)
@@ -138,13 +140,15 @@ struct FillInfoView: View {
 }
 
 struct SignInView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
     @ObservedObject private var model: AuthenticationModel
     @Binding private var path: NavigationPath
+    private var dismiss: () -> Void
     
-    init(model: AuthenticationModel, path: Binding<NavigationPath>) {
+    init(model: AuthenticationModel, path: Binding<NavigationPath>, dismiss: @escaping () -> Void) {
         self.model = model
         self._path = path
+        self.dismiss = dismiss
     }
     
     var body: some View {
@@ -178,6 +182,7 @@ struct SignInView: View {
                 onRequest: model.onSignInRequest,
                 onCompletion: model.onSignInCompletion
             )
+            .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
             .frame(height: 44)
             .padding(.horizontal)
             .frame(maxWidth: 450)

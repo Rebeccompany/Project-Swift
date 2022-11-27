@@ -36,8 +36,7 @@ public final class AuthenticationModel: ObservableObject {
     public init(keychainService: KeychainServiceProtocol = KeychainService()) {
         self.keychainService = keychainService
         self.currentLogedInUserIdentifer = try? keychainService.get(forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
-        print("User_ID", currentLogedInUserIdentifer)
-        //pegar id e buscar usuario
+        signIn(id: currentLogedInUserIdentifer)
     }
     
     public func isSignedIn() async throws -> Bool {
@@ -81,6 +80,24 @@ public final class AuthenticationModel: ObservableObject {
         }
     }
     
+    func completeSignUp(username: String) {
+        guard let currentLogedInUserIdentifer else { return }
+        userService.singUp(user: UserDTO(appleIdentifier: currentLogedInUserIdentifer, userName: username))
+            .receive(on: RunLoop.main)
+            .sink {[weak self] completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(_):
+                    self?.didOcurredErrorOnSignInCompletion = true
+                }
+            } receiveValue: {[weak self] user in
+                self?.saveIdInKeychain(user.appleIdentifier)
+                self?.user = user
+            }
+            .store(in: &cancellables)
+    }
+    
     private func onSignInSuccess(_ auth: ASAuthorization) {
         switch auth.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
@@ -92,21 +109,6 @@ public final class AuthenticationModel: ObservableObject {
     
     private func onAppleIdCredentialReceived(_ appleIDCredential: ASAuthorizationAppleIDCredential) {
         currentLogedInUserIdentifer = appleIDCredential.user
-        print("User_ID", appleIDCredential.user)
-//        userService.singUp(user: UserDTO(appleIdentifier: appleIDCredential.user, userName: appleIDCredential.fullName?.formatted() ?? " "))
-//            .receive(on: RunLoop.main)
-//            .sink {[weak self] completion in
-//                switch completion {
-//                case .finished:
-//                    break
-//                case .failure(_):
-//                    self?.didOcurredErrorOnSignInCompletion = true
-//                }
-//            } receiveValue: {[weak self] user in
-//                self?.saveIdInKeychain(user.appleIdentifier)
-//            }
-//            .store(in: &cancellables)
-
     }
     
     private func saveIdInKeychain(_ id: String) {
@@ -117,5 +119,15 @@ public final class AuthenticationModel: ObservableObject {
         } catch {
             didOcurredErrorOnSignInCompletion = true
         }
+    }
+    
+    private func signIn(id: String?) {
+        guard let id else { return }
+        
+        userService
+            .signIn(id: id)
+            .map { $0 as UserDTO? }
+            .replaceError(with: nil)
+            .assign(to: &$user)
     }
 }

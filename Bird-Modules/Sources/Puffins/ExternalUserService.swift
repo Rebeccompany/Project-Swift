@@ -18,9 +18,9 @@ public final class ExternalUserService: ExternalUserServiceProtocol {
         self.session = session
     }
     
-    public func signIn(user: UserDTO) -> AnyPublisher<String, Error> {
-        session.dataTaskPublisher(for: .signin(user: user))
-            .decodeWhenSuccess(to: String.self)
+    public func signIn(id: String) -> AnyPublisher<UserDTO, Error> {
+        session.dataTaskPublisher(for: .signin(id: id))
+            .decodeWhenSuccess(to: UserDTO.self)
             .mapError { $0 as Error }
             .eraseToAnyPublisher()
     }

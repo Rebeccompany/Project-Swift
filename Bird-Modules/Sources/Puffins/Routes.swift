@@ -37,8 +37,8 @@ extension Endpoint {
         Endpoint(path: "api/decks/\(id)/download")
     }
     
-    static func signin(user: UserDTO) -> Endpoint {
-        Endpoint(path: "api/auth/signin", method: .post, body: try? JSONEncoder().encode(user))
+    static func signin(id: String) -> Endpoint {
+        Endpoint(path: "api/auth/signin", method: .post, body: id.data(using: .utf8))
     }
     
     static func signup(user: UserDTO) -> Endpoint {

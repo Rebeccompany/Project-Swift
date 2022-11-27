@@ -10,6 +10,6 @@ import Combine
 import Models
 
 public protocol ExternalUserServiceProtocol {
-    func signIn(user: UserDTO) -> AnyPublisher<String, Error>
+    func signIn(id: String) -> AnyPublisher<UserDTO, Error>
     func singUp(user: UserDTO) -> AnyPublisher<UserDTO, Error>
 }
