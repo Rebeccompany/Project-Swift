@@ -12,6 +12,7 @@ import SwiftUI
 
 public struct AuthenticationView: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var path = NavigationPath()
     @ObservedObject private var model: AuthenticationModel
     
     public init(model: AuthenticationModel) {
@@ -19,40 +20,193 @@ public struct AuthenticationView: View {
     }
     
     public var body: some View {
+        NavigationStack(path: $path) {
+            SignInView(model: model, path: $path)
+                .navigationDestination(for: AuthenticationRoute.self) { route in
+                    switch route {
+                    case .fillInfo:
+                        FillInfoView(model: model, path: $path)
+                    }
+                }
+        }
+    }
+}
+
+enum AuthenticationRoute: Hashable {
+    case fillInfo
+}
+
+struct FillInfoView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dismiss) private var dismiss
+    @Binding private var path: NavigationPath
+    @ObservedObject private var model: AuthenticationModel
+    @State private var userNameField: String = ""
+    
+    init(model: AuthenticationModel, path: Binding<NavigationPath>) {
+        self.model = model
+        self._path = path
+    }
+    
+    var body: some View {
         VStack {
-            Spacer()
-            VStack {
-                HBAssets.logo
+            HStack {
+                HBImages.simplifiedSpixiiHeart
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                Text("Spixii")
-                    .foregroundColor(.white)
-                    .font(.largeTitle.bold())
+                HBImages.simplifiedSpixiiParty
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                HBImages.simplifiedSpixiiHeart
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
             }
             .padding()
-            .frame(width: 300, height: 300)
-            .background {
-                RoundedRectangle(
-                    cornerRadius: 32
-                )
-                .fill(HBColor.collectionBlack)
-                .brightness(0.08)
+            .padding(.vertical, 48)
+            .frame(maxWidth: .infinity)
+            .background(colorScheme == .dark ? HBColor.collectionBlack.brightness(0) : HBColor.collectionLightBlue.brightness(0.1))
+            .ignoresSafeArea()
+            
+            VStack(alignment: .leading) {
+                Text("Just one more step")
+                    .font(.title.bold())
+                    .padding(.bottom, 4)
+                
+                Text("We would love to know how to call you! So please type in the field below a username.")
+                    .padding(.bottom, 4)
+                Text("Your username is going to show in all your public decks, so everyone knows the amazing pearson who built that Deck")
+                    .padding(.bottom, 4)
+                
             }
+            .padding(.horizontal)
+            .frame(maxWidth: 450)
+            
             Spacer()
+            
+            
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("Username")
+                        .font(.headline)
+                    Spacer()
+                    Text("\(24 - userNameField.count)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                }
+                TextField("type your username here", text: $userNameField)
+                    .onChange(of: userNameField) { newValue in
+                        if userNameField.count > 24 {
+                            userNameField = String(newValue.prefix(24))
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(HBColor.primaryBackground)
+                    .cornerRadius(8)
+                    .padding(.bottom, 16)
+            }
+            .padding(.horizontal)
+            .frame(maxWidth: 450)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Button {
+                    
+                } label: {
+                    Text("Cancel")
+                        .frame(maxWidth: .infinity)
+                }
+                .tint(.red)
+                .buttonStyle(.bordered)
+                .padding(.bottom, 8)
+                
+                Button {
+                    
+                } label: {
+                    Text("Finish")
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity)
+                }
+                .tint(HBColor.actionColor)
+                .buttonStyle(.borderedProminent)
+            }
+            .padding([.horizontal, .bottom])
+            .frame(maxWidth: 450)
+        }
+        .navigationBarBackButtonHidden()
+    }
+}
+
+struct SignInView: View {
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var model: AuthenticationModel
+    @Binding private var path: NavigationPath
+    
+    init(model: AuthenticationModel, path: Binding<NavigationPath>) {
+        self.model = model
+        self._path = path
+    }
+    
+    var body: some View {
+        VStack {
+            VStack {
+                HBImages.spixiiBeach
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            }
+            .padding([.horizontal])
+            .frame(maxWidth: .infinity)
+            .background(HBColor.collectionLightBlue.brightness(0.12))
+            .ignoresSafeArea()
+            
+            VStack(alignment: .leading) {
+                Text("Hello!")
+                    .font(.title.bold())
+                    .padding(.bottom, 4)
+                Text("To use our online features we need you to sign in. you just got to press the **Sign in with Apple** button below.")
+                    .padding(.bottom, 4)
+                Text("You will be able to **download** and **upload** your decks and more features are coming your way in the future.")
+                    .padding(.bottom, 4)
+                Text("If you do not wish to Sign in you can just press the **cancel** button")
+            }
+            .padding()
+            .frame(maxWidth: 450)
+            .padding(.bottom, 32)
+            
+            
             SignInWithAppleButton(
                 onRequest: model.onSignInRequest,
                 onCompletion: model.onSignInCompletion
             )
-            .signInWithAppleButtonStyle(.white)
-            .padding(.horizontal, 24)
-            .frame(width: 330, height: 60)
+            .frame(height: 44)
+            .padding(.horizontal)
+            .frame(maxWidth: 450)
+            
+            Button {
+                dismiss()
+            } label: {
+                Text("Cancelar")
+                    .frame(maxWidth: .infinity)
+            }
+            .tint(.red)
+            .buttonStyle(.bordered)
+            .frame(height: 44)
+            .padding([.horizontal, .bottom])
+            .frame(maxWidth: 450)
+            
         }
         .onChange(of: model.shouldDismiss) { newValue in
             if newValue {
                 dismiss()
             }
         }
-        .viewBackgroundColor(HBColor.collectionBlack)
+        .onChange(of: model.currentLogedInUserIdentifer) { newValue in
+            if newValue != nil {
+                path.append(AuthenticationRoute.fillInfo)
+            }
+        }
+        .toolbar(.hidden, for: .navigationBar)
+        
     }
 }
 

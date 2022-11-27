@@ -13,12 +13,12 @@ import AuthenticationServices
 import Combine
 import Models
 
-@MainActor
 public final class AuthenticationModel: ObservableObject {
     
     @Dependency(\.externalUserService) private var userService
     
     @Published public var currentLogedInUserIdentifer: String?
+    @Published public var user: UserDTO?
     @Published public var didOcurredErrorOnSignInCompletion: Bool = false
     @Published var shouldDismiss = false
     
@@ -36,6 +36,8 @@ public final class AuthenticationModel: ObservableObject {
     public init(keychainService: KeychainServiceProtocol = KeychainService()) {
         self.keychainService = keychainService
         self.currentLogedInUserIdentifer = try? keychainService.get(forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
+        print("User_ID", currentLogedInUserIdentifer)
+        //pegar id e buscar usuario
     }
     
     public func isSignedIn() async throws -> Bool {
@@ -67,7 +69,7 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     func onSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
-        request.requestedScopes = [.fullName]
+        request.requestedScopes = [.fullName, .email]
     }
     
     func onSignInCompletion(_ result: Result<ASAuthorization, Error>) {
@@ -89,19 +91,21 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     private func onAppleIdCredentialReceived(_ appleIDCredential: ASAuthorizationAppleIDCredential) {
-        userService.singUp(user: UserDTO(appleIdentifier: appleIDCredential.user, userName: appleIDCredential.fullName?.formatted() ?? " "))
-            .receive(on: RunLoop.main)
-            .sink {[weak self] completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(_):
-                    self?.didOcurredErrorOnSignInCompletion = true
-                }
-            } receiveValue: {[weak self] user in
-                self?.saveIdInKeychain(user.appleIdentifier)
-            }
-            .store(in: &cancellables)
+        currentLogedInUserIdentifer = appleIDCredential.user
+        print("User_ID", appleIDCredential.user)
+//        userService.singUp(user: UserDTO(appleIdentifier: appleIDCredential.user, userName: appleIDCredential.fullName?.formatted() ?? " "))
+//            .receive(on: RunLoop.main)
+//            .sink {[weak self] completion in
+//                switch completion {
+//                case .finished:
+//                    break
+//                case .failure(_):
+//                    self?.didOcurredErrorOnSignInCompletion = true
+//                }
+//            } receiveValue: {[weak self] user in
+//                self?.saveIdInKeychain(user.appleIdentifier)
+//            }
+//            .store(in: &cancellables)
 
     }
     
