@@ -16,6 +16,7 @@ import Models
 public final class AuthenticationModel: ObservableObject {
     
     @Dependency(\.externalUserService) private var userService
+    @Dependency(\.keychainService) private var keychainService
     
     @Published public var currentLogedInUserIdentifer: String?
     @Published public var user: UserDTO?
@@ -24,17 +25,13 @@ public final class AuthenticationModel: ObservableObject {
     
     private let idProvider = ASAuthorizationAppleIDProvider()
     
-    //COLOCAR NO HABITAT
-    private let keychainService: KeychainServiceProtocol
-    
     private var cancellables = Set<AnyCancellable>()
     
     private let credentialKey = "userCredential"
     private let accessGroup = "com.projectbird.birdmodules.authentication"
     private let serviceKey = "com.projectbird.spixii"
     
-    public init(keychainService: KeychainServiceProtocol = KeychainService()) {
-        self.keychainService = keychainService
+    public init() {
         self.currentLogedInUserIdentifer = try? keychainService.get(forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
         signIn(id: currentLogedInUserIdentifer)
     }

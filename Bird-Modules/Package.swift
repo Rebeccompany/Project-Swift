@@ -184,16 +184,17 @@ let package = Package(
             ]
         ),
             
-        .target(name: "StudyFeature",
-                dependencies: [
-                     "Models",
-                     "HummingBird",
-                     "Woodpecker",
-                     "Storage",
-                     "Utils",
-                     "Habitat",
-                     "FlashcardsOnboardingFeature"
-                ]
+        .target(
+            name: "StudyFeature",
+            dependencies: [
+                "Models",
+                "HummingBird",
+                "Woodpecker",
+                "Storage",
+                "Utils",
+                "Habitat",
+                "FlashcardsOnboardingFeature"
+            ]
         ),
         
         .target(
@@ -506,6 +507,16 @@ let package = Package(
                 "Puffins",
                 "Habitat"
             ]
-        )
+        ),
+        
+            .testTarget(
+                name: "AuthenticationTests",
+                dependencies: [
+                    "Authentication",
+                    "Keychain",
+                    "Models",
+                    "Puffins"
+                ]
+            )
     ]
 )

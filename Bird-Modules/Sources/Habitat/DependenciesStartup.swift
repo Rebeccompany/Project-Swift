@@ -31,6 +31,7 @@ public func setupHabitatForIsolatedTesting(
     systemObserver: SystemObserverProtocol = SystemObserverMock(),
     displayCacher: DisplayCacherProtocol = DisplayCacher(localStorage: LocalStorageMock()),
     externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock(),
+    externalUserService: ExternalUserServiceProtocol = ExternalUserServiceMock(),
     keychainService: KeychainServiceProtocol = KeychainServiceMock()
 ) {
     Habitat[\.deckRepository] = deckRepository
@@ -40,6 +41,7 @@ public func setupHabitatForIsolatedTesting(
     Habitat[\.systemObserver] = systemObserver
     Habitat[\.displayCacher] = displayCacher
     Habitat[\.externalDeckService] = externalDeckService
+    Habitat[\.externalUserService] = externalUserService
     Habitat[\.keychainService] = keychainService
 }
 

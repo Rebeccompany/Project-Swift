@@ -7,7 +7,7 @@
 
 import AuthenticationServices
 import HummingBird
-import Keychain
+import Habitat
 import SwiftUI
 
 public struct AuthenticationView: View {
@@ -222,6 +222,8 @@ struct SignInView: View {
 
 struct AuthenticationView_Previews: PreviewProvider {
     static var previews: some View {
-        AuthenticationView(model: .init(keychainService: KeychainServiceMock()))
+        HabitatPreview {
+            AuthenticationView(model: .init())
+        }
     }
 }
