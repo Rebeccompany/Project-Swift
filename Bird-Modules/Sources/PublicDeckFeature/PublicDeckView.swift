@@ -44,7 +44,9 @@ public struct PublicDeckView: View {
             }
             startUp()
         }
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .animation(.linear, value: state.cards)
         .alert(NSLocalizedString("download_concluded", bundle: .module, comment: ""), isPresented: $store.deckState.shouldDisplayDownloadedAlert) {
             Button("Okay") {

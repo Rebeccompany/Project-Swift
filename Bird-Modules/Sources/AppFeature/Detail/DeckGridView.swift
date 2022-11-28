@@ -26,6 +26,9 @@ struct DeckGridView: View {
                 if !viewModel.todayDecks.isEmpty {
                     Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
                         .padding(.leading)
+                    #if os(macOS)
+                        .padding(.top)
+                    #endif
                         .font(.title3)
                         .bold()
                     SessionsForTodayView()

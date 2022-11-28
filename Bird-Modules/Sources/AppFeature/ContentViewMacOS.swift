@@ -15,6 +15,7 @@ import NewCollectionFeature
 import Habitat
 import Storage
 import OnboardingFeature
+import StoreState
 
 #if os(macOS)
 public struct ContentViewMacOS: View {
@@ -23,6 +24,7 @@ public struct ContentViewMacOS: View {
     @State private var path: NavigationPath = .init()
     
     @StateObject private var viewModel: ContentViewModel = ContentViewModel()
+    @StateObject private var shopStore = ShopStore()
     
     public init() {}
     
@@ -56,6 +58,7 @@ public struct ContentViewMacOS: View {
     private var sidebar: some View {
         CollectionsSidebarMacOS(selection: $viewModel.sidebarSelection)
             .environmentObject(viewModel)
+            .environmentObject(shopStore)
             .frame(minWidth: 250)
     }
     

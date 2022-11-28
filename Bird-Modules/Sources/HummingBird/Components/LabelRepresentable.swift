@@ -10,28 +10,29 @@ import SwiftUI
 
 #if os(macOS)
 import AppKit
-
+import RichTextKit
 public struct TextViewRepresentable: NSViewRepresentable {
     private var text: NSAttributedString
-    
+
     public init(text: NSAttributedString) {
         self.text = text
     }
-    
-    public func makeNSView(context: Context) -> NSTextField {
-        let label = NSTextField()
+
+    public func makeNSView(context: Context) -> RichTextView {
+        let label = RichTextView.scrollableTextView().documentView as? RichTextView ?? RichTextView()
+        
+        label.attributedString = text
         label.backgroundColor = .clear
-        label.maximumNumberOfLines = 0
-        label.isBezeled = false
         label.isEditable = false
-        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        label.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
-        label.attributedStringValue = text
+        label.isSelectable = false
+        
+        
+
         return label
     }
-    
-    public func updateNSView(_ nsView: NSTextField, context: Context) {
-        nsView.attributedStringValue = text
+
+    public func updateNSView(_ nsView: RichTextView, context: Context) {
+        nsView.attributedString = text
     }
 }
 

@@ -32,6 +32,7 @@
 		5B9440C028DBF2D50060EB4F /* Project-BirdUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Project-BirdUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B9440C228DBF2D60060EB4F /* Project_BirdUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project_BirdUITests.swift; sourceTree = "<group>"; };
 		5B9440C428DBF2D60060EB4F /* Project_BirdUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project_BirdUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		BA2D684029315EEC008AA2DA /* Project-Bird--macOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Project-Bird--macOS--Info.plist"; sourceTree = "<group>"; };
 		BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project_BirdApp.swift; sourceTree = "<group>"; };
 		BA654EE028A142F400EF72C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BA654EE528A142F400EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,6 +88,7 @@
 		BA654ED828A142F100EF72C8 = {
 			isa = PBXGroup;
 			children = (
+				BA2D684029315EEC008AA2DA /* Project-Bird--macOS--Info.plist */,
 				BA654F1C28A14BF400EF72C8 /* Bird-Modules */,
 				5B07663728C2789F00221DE8 /* macOS */,
 				BA654EDD28A142F100EF72C8 /* Shared */,
@@ -572,6 +574,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Project-Bird--macOS--Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Spixii;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -606,6 +609,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Project-Bird--macOS--Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Spixii;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";

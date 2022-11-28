@@ -29,7 +29,11 @@ struct DeckForTodayCell: View {
             Spacer()
         }
         .padding(.horizontal)
+        #if os(iOS)
         .frame(width: 250, height: 80)
+        #elseif os(macOS)
+        .frame(width: 250, height: 80 * 0.6)
+        #endif
         .background {
             RoundedRectangle(cornerRadius: 8)
                 .fill(HBColor.color(for: deck.color))
@@ -43,12 +47,22 @@ private struct IconCircleView: View {
     let opacity: [Double] = [0.5, 0.7, 0.3]
     let iconName: String
     
+#if os(macOS)
+    let radius = 20 * 0.65
+#elseif os(iOS)
+    let radius = 20
+#endif
+    
     var body: some View {
-        IconCircle(radius: 20, angle: 90) {
+        IconCircle(radius: radius, angle: 90) {
             ForEach(0..<3) { icon in
                 Image(systemName: iconName)
                     .foregroundColor(Color.white)
+                #if os(macOS)
+                    .font(.body)
+                #elseif os(iOS)
                     .font(.title2)
+                #endif
                     .opacity(opacity[icon])
                     .rotationEffect(angle[icon])
             }

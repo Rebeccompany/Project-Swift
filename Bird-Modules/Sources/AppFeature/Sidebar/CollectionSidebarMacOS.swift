@@ -10,11 +10,14 @@ import Models
 import NewCollectionFeature
 import HummingBird
 import OnboardingFeature
+import StoreState
+import StoreFeature
 
 #if os(macOS)
 struct CollectionsSidebarMacOS: View {
     @State private var onboarding: Bool = false
     @EnvironmentObject private var viewModel: ContentViewModel
+    @EnvironmentObject private var store: ShopStore
     @State private var presentCollectionCreation = false
     @State private var editingCollection: DeckCollection?
     @Binding private var selection: SidebarRoute
