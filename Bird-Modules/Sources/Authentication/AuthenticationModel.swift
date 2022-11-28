@@ -39,6 +39,7 @@ public final class AuthenticationModel: ObservableObject {
         signIn(id: currentLogedInUserIdentifer)
     }
     
+    @MainActor
     public func isSignedIn() async throws -> Bool {
         guard let currentLogedInUserIdentifer else { return false }
         
@@ -82,7 +83,7 @@ public final class AuthenticationModel: ObservableObject {
     
     func completeSignUp(username: String) {
         guard let currentLogedInUserIdentifer else { return }
-        userService.singUp(user: UserDTO(appleIdentifier: currentLogedInUserIdentifer, userName: username))
+        userService.signUp(user: UserDTO(appleIdentifier: currentLogedInUserIdentifer, userName: username))
             .receive(on: RunLoop.main)
             .sink {[weak self] completion in
                 switch completion {
@@ -108,7 +109,21 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     private func onAppleIdCredentialReceived(_ appleIDCredential: ASAuthorizationAppleIDCredential) {
-        currentLogedInUserIdentifer = appleIDCredential.user
+        userService.signIn(id: appleIDCredential.user)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(_):
+                    self?.currentLogedInUserIdentifer = appleIDCredential.user
+                }
+            } receiveValue: { [weak self] user in
+                self?.user = user
+                self?.saveIdInKeychain(user.appleIdentifier)
+            }
+            .store(in: &cancellables)
+
     }
     
     private func saveIdInKeychain(_ id: String) {

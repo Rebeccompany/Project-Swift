@@ -72,17 +72,17 @@ public struct StoreView: View {
     @ViewBuilder
     private var signInMenu: some View {
         Menu {
-            if authModel.currentLogedInUserIdentifer == nil {
-                Button("signin".localized(.module)) {
-                    showLogin = true
-                }
-            } else {
-                Text("Username")
+            if let user = authModel.user {
+                Text(user.username)
                 Button("signout".localized(.module)) {
                     authModel.signOut()
                 }
                 Button("delete_account".localized(.module), role: .destructive) {
                     authModel.deleteAccount()
+                }
+            } else {
+                Button("signin".localized(.module)) {
+                    showLogin = true
                 }
             }
         } label: {
@@ -92,10 +92,10 @@ public struct StoreView: View {
                 Image(
                     systemName: authModel.currentLogedInUserIdentifer != nil ?
                     "person.crop.circle" :
-                    "person.crop.circle.badge.xmark"
+                        "person.crop.circle.badge.xmark"
                 )
             }
-
+            
         }
     }
     

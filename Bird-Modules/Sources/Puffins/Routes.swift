@@ -38,7 +38,7 @@ extension Endpoint {
     }
     
     static func signin(id: String) -> Endpoint {
-        Endpoint(path: "api/auth/signin", method: .post, body: id.data(using: .utf8))
+        Endpoint(path: "api/auth/signin", method: .post, body: try? JSONEncoder().encode(id))
     }
     
     static func signup(user: UserDTO) -> Endpoint {

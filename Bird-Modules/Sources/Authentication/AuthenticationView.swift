@@ -29,6 +29,11 @@ public struct AuthenticationView: View {
                     }
                 }
         }
+        .onChange(of: model.user) { newValue in
+            if newValue != nil {
+                dismiss()
+            }
+        }
     }
 }
 

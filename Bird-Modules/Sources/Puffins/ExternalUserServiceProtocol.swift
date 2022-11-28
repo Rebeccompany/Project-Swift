@@ -11,5 +11,5 @@ import Models
 
 public protocol ExternalUserServiceProtocol {
     func signIn(id: String) -> AnyPublisher<UserDTO, Error>
-    func singUp(user: UserDTO) -> AnyPublisher<UserDTO, Error>
+    func signUp(user: UserDTO) -> AnyPublisher<UserDTO, Error>
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct UserDTO: Codable {
+public struct UserDTO: Codable, Equatable {
     public let appleIdentifier: String
     public let username: String
     
