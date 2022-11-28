@@ -50,8 +50,8 @@ public struct ContentViewMacOS: View {
         .navigationSplitViewStyle(.balanced)
         .sheet(isPresented: $onboarding) {
             OnboardingView()
+                .frame(minWidth: 400, minHeight: 500)
         }
-        .frame(minWidth: 800, minHeight: 700)
     }
     
     @ViewBuilder

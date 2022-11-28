@@ -12,9 +12,7 @@ import Storage
 import Habitat
 import RichTextKit
 import Combine
-#warning("Tamanho da letra nao muda só de clicar no lado que está editando")
-#warning("Clicar numa coleção estando dentro de um deck faz o app carregar infinitamente")
-#warning("Estudar um deck pela primeira vez faz o app carregar infinitamente")
+
 #if os(macOS)
 public struct NewFlashcardViewMacOS: View {
     @StateObject private var viewModel = NewFlashcardViewModelMacOS()
@@ -52,7 +50,8 @@ public struct NewFlashcardViewMacOS: View {
                             FlashcardTextEditorViewMacOS(
                                 text: $viewModel.flashcardFront, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                                 side: NSLocalizedString("frente", bundle: .module, comment: ""),
-                                context: frontContext
+                                context: frontContext,
+                                isFront: true
                             )
                             .id(NewFlashcardFocus.front)
                             .frame(minHeight: 450)
@@ -60,7 +59,8 @@ public struct NewFlashcardViewMacOS: View {
                             FlashcardTextEditorViewMacOS(
                                 text: $viewModel.flashcardBack, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                                 side: NSLocalizedString("verso", bundle: .module, comment: ""),
-                                context: backContext
+                                context: backContext,
+                                isFront: false
                             )
                             .id(NewFlashcardFocus.back)
                             .frame(minHeight: 450)
@@ -301,6 +301,7 @@ public struct NewFlashcardViewMacOS: View {
                 Spacer()
                 Text("Salvar")
                     .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(HBColor.collectionTextColor)
                 Spacer()
             }
             .frame(height: 46)

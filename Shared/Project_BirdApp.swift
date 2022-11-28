@@ -20,6 +20,7 @@ struct Project_BirdApp: App {
             ContentViewiOS()
             #elseif os(macOS)
             ContentViewMacOS()
+                .frame(minWidth: 800, minHeight: 500)
             #endif
         }
         

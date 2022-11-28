@@ -111,7 +111,7 @@ struct CollectionsSidebarMacOS: View {
         }
         .sheet(isPresented: $onboarding) {
             OnboardingView()
-                .frame(minWidth: 400, minHeight: 700)
+                .frame(minWidth: 400, minHeight: 500)
         }
         .onChange(of: presentCollectionCreation, perform: viewModel.didCollectionPresentationStatusChanged)
         .scrollContentBackground(.hidden)

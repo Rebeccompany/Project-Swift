@@ -155,12 +155,15 @@ public struct DeckViewMacOS: View {
                     .frame(maxWidth: 350)
                     .padding(.horizontal, 5)
                     
-                    Button("Spixii") {
+                    Button {
                         studyMode = .spaced
                         shouldDisplayStudyView = true
                         
                         let model = StudyWindowData(deck: deck, mode: studyMode)
                         openWindow(value: model)
+                    } label: {
+                        Text("Spixii")
+                            .foregroundColor(HBColor.collectionTextColor)
                     }
                     .disabled(!viewModel.checkIfCanStudy(deck))
                     .buttonStyle(LargeButtonStyle(isDisabled: !viewModel.checkIfCanStudy(deck), isFilled: true))

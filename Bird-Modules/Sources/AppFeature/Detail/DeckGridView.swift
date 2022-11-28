@@ -35,6 +35,7 @@ struct DeckGridView: View {
                 }
                 Text(NSLocalizedString("baralhos", bundle: .module, comment: ""))
                     .padding(.leading)
+                    .padding(.top)
                     .font(.title3)
                     .bold()
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {

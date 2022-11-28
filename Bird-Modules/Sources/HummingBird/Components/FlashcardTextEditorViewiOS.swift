@@ -69,14 +69,6 @@ public struct FlashcardTextEditorViewiOS: View {
             }
         }
         .cornerRadius(16)
-        .photosPicker(isPresented: $isPhotoPickerPresented,
-                      selection: $photoSelection,
-                      matching: .all(of: [.images, .not(.livePhotos)]))
-        .onChange(of: photoSelection) { newValue in
-            Task {
-                await updateFromPhotoSelection(newValue)
-            }
-        }
         .onAppear {
             context.foregroundColor = ColorRepresentable.white
             context.shouldUpdateTextField()

@@ -54,7 +54,7 @@ private struct IconCircleView: View {
 #endif
     
     var body: some View {
-        IconCircle(radius: radius, angle: 90) {
+        IconCircle(radius: CGFloat(radius), angle: 90) {
             ForEach(0..<3) { icon in
                 Image(systemName: iconName)
                     .foregroundColor(Color.white)
