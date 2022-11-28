@@ -13,6 +13,7 @@ struct FillInfoView: View {
     @Binding private var path: NavigationPath
     @ObservedObject private var model: AuthenticationModel
     @State private var userNameField: String = ""
+    @FocusState private var focusState: Int?
     private var dismiss: () -> Void
     
     init(model: AuthenticationModel, path: Binding<NavigationPath>, dismiss: @escaping () -> Void) {
@@ -73,6 +74,7 @@ struct FillInfoView: View {
                             userNameField = String(newValue.prefix(24))
                         }
                     }
+                    .focused($focusState, equals: 0)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
                     .background(HBColor.primaryBackground)
@@ -108,5 +110,12 @@ struct FillInfoView: View {
             .frame(maxWidth: 450)
         }
         .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .keyboard) {
+                Button("Done") {
+                    focusState = nil
+                }
+            }
+        }
     }
 }
