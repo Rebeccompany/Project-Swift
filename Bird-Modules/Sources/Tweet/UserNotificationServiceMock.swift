@@ -10,8 +10,11 @@ import SwiftUI
 
 public class UserNotificationServiceMock: UserNotificationServiceProtocol {
     
+    
     public var requests: [UNNotificationRequest] = []
     public var shouldThrowError: Bool = false
+    
+    public init() {}
     
     public func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> Void)?) {
         requests.append(request)
@@ -23,4 +26,17 @@ public class UserNotificationServiceMock: UserNotificationServiceProtocol {
             completionHandler(nil)
         }
     }
+    
+    public func requestAuthorization(options: UNAuthorizationOptions, completionHandler: @escaping (Bool, Error?) -> Void) {
+        if shouldThrowError {
+            completionHandler(true, nil)
+        } else {
+            completionHandler(false, nil)
+        }
+    }
+    
+    public func removeAllPendingNotificationRequests() {
+        requests = []
+    }
+
 }

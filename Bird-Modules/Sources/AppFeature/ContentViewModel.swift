@@ -117,7 +117,7 @@ public final class ContentViewModel: ObservableObject {
             .assign(to: &$todayDecks)
     }
     
-    func setupDidEnterForeground() {
+    private func setupDidEnterForeground() {
         NotificationCenter.default
             .publisher(for: UIApplication.willEnterForegroundNotification)
             .sink { _ in
@@ -126,7 +126,7 @@ public final class ContentViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func setupDidEnterBackgroundPublisher() {
+    private func setupDidEnterBackgroundPublisher() {
         NotificationCenter.default
             .publisher(for: UIApplication.didEnterBackgroundNotification)
             .flatMap { [weak self] _ in
@@ -150,17 +150,11 @@ public final class ContentViewModel: ObservableObject {
             .sink { [weak self] decks in
                 guard let self else { return }
                 decks.forEach { deck in
-                    guard let date = deck.session?.date else { return }
-                    let timeInterval: TimeInterval = date.timeIntervalSince1970 //.addingTimeInterval(-86400 * 3).timeIntervalSince1970
-                    self.notificationCenter.scheduleNotification(for: deck, at: timeInterval)
+                    //guard let date = deck.session?.date else { return }
+                    self.notificationCenter.scheduleNotification(for: deck, at: self.dateHandler.today)
                 }
             }
             .store(in: &cancellables)
-    }
-    
-    func callNotification() {
-        notificationCenter.scheduleNotification(for: Deck(id: UUID(), name: "oi", icon: "plus", color: .red, collectionId: UUID(), cardsIds: [], category: .arts, storeId: ""), at: dateHandler.today.timeIntervalSince1970)
-        
     }
         
     func bindingToDeck(_ deck: Deck) -> Binding<Deck> {

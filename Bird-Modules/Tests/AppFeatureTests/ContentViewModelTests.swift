@@ -312,6 +312,15 @@ final class ContentViewModelTests: XCTestCase {
         XCTAssertEqual(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), sut.detailTitle)
     }
     
+    #warning("fazer testes")
+    func testSetupDidEnterForeground() {
+        
+    }
+    
+    func testSetupDidEnterBackgroundPublisher() {
+        
+    }
+    
     func createCards() {
         cards = []
         var i = 0

@@ -9,6 +9,7 @@ import Foundation
 import Storage
 import Puffins
 import Utils
+import Tweet
 
 public func setupHabitatForProduction() {
     Habitat[\.deckRepository] = DeckRepository.shared
@@ -18,6 +19,7 @@ public func setupHabitatForProduction() {
     Habitat[\.systemObserver] = SystemObserver.shared
     Habitat[\.displayCacher] = DisplayCacher()
     Habitat[\.externalDeckService] = ExternalDeckService.shared
+    Habitat[\.notificationCenter] = NotificationService()
 }
 
 public func setupHabitatForIsolatedTesting(
@@ -27,7 +29,8 @@ public func setupHabitatForIsolatedTesting(
     uuidGenerator: UUIDGeneratorProtocol = UUIDHandlerMock(),
     systemObserver: SystemObserverProtocol = SystemObserverMock(),
     displayCacher: DisplayCacherProtocol = DisplayCacher(localStorage: LocalStorageMock()),
-    externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock()
+    externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock(),
+    notificationCenter: NotificationServiceProtocol = NotificationService(center: UserNotificationServiceMock(), dateHandler: DateHandlerMock())
 ) {
     Habitat[\.deckRepository] = deckRepository
     Habitat[\.collectionRepository] = collectionRepository
@@ -36,6 +39,7 @@ public func setupHabitatForIsolatedTesting(
     Habitat[\.systemObserver] = systemObserver
     Habitat[\.displayCacher] = displayCacher
     Habitat[\.externalDeckService] = externalDeckService
+    Habitat[\.notificationCenter] = notificationCenter
 }
 
 public func setupHabitatForIntegrationTesting() {

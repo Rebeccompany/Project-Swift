@@ -146,10 +146,6 @@ public struct DetailView: View {
             }
             .buttonStyle(LargeButtonStyle(isDisabled: false))
             .padding()
-            
-            Button("Schedule Notification") {
-                viewModel.callNotification()
-            }
         }
     }
     

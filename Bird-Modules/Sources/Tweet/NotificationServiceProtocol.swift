@@ -9,7 +9,7 @@ import Foundation
 import Models
 
 public protocol NotificationServiceProtocol {
-    func scheduleNotification(for deck: Deck, at time: TimeInterval)
+    func scheduleNotification(for deck: Deck, at date: Date)
     func requestAuthorizationForNotifications()
     func cleanNotifications()
 }

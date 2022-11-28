@@ -41,7 +41,7 @@ private struct DisplayCacherKey: HabitatKey {
 }
 
 private struct NotificationCenterKey: HabitatKey {
-    static var currentValue: NotificationServiceProtocol = NotificationService()
+    static var currentValue: NotificationServiceProtocol = NotificationService(center: UserNotificationServiceMock(), dateHandler: DateHandler())
 }
 
 // MARK: Extension

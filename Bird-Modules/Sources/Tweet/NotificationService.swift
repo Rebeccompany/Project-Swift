@@ -17,31 +17,28 @@ public final class NotificationService: NotificationServiceProtocol {
     private let not3: String = NSLocalizedString("notification3", bundle: .module, comment: "")
     private let not3_secondPart: String = NSLocalizedString("notification3_awaits", bundle: .module, comment: "")
     
-    public init(center: UNUserNotificationCenter = UNUserNotificationCenter.current(), dateHandler: DateHandlerProtocol = DateHandler()) {
+    public init(center: UserNotificationServiceProtocol = UNUserNotificationCenter.current(), dateHandler: DateHandlerProtocol = DateHandler()) {
         self.center = center
         self.dateHandler = dateHandler
     }
     
-    public func scheduleNotification(for deck: Deck, at time: TimeInterval) {
+    public func scheduleNotification(for deck: Deck, at date: Date) {
         let content = sortNotification(for: deck)
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeTrigger(for: time), repeats: false)
+        let components = Calendar.autoupdatingCurrent.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
         let request = UNNotificationRequest(identifier: deck.id.uuidString, content: content, trigger: trigger)
         
         center.add(request, withCompletionHandler: nil)
     }
     
     public func requestAuthorizationForNotifications() {
-        let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .sound, .badge]) { result, error in
-            if let error = error {
-                print(error)
-            }
-        }
+        center.requestAuthorization(options: [UNAuthorizationOptions.alert, UNAuthorizationOptions.sound, UNAuthorizationOptions.badge]) { _, _ in }
     }
     
     public func cleanNotifications() {
-        let center = UNUserNotificationCenter.current()
+        
         center.removeAllPendingNotificationRequests()
     }
     

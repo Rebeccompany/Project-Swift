@@ -12,6 +12,7 @@ import XCTest
 import Models
 import Combine
 import Utils
+import Habitat
 
 final class NotificationServiceTests: XCTestCase {
     var sut: NotificationService!
@@ -25,6 +26,7 @@ final class NotificationServiceTests: XCTestCase {
         dateHandler = DateHandlerMock()
         deck = Deck(id: UUID(), name: "deck1", icon: "plus", color: .red, collectionId: UUID(), cardsIds: [], category: .arts, storeId: "")
         center = UserNotificationServiceMock()
+        setupHabitatForIsolatedTesting()
         sut = NotificationService(center: center, dateHandler: dateHandler)
     }
     
@@ -39,14 +41,14 @@ final class NotificationServiceTests: XCTestCase {
     }
     
     func testTimeTrigger() {
-        sut.scheduleNotification(for: deck, at: 5)
+        sut.scheduleNotification(for: deck, at: dateHandler.today.addingTimeInterval(5))
         let trigger = center.requests.first?.trigger as? UNTimeIntervalNotificationTrigger
         let time = trigger?.nextTriggerDate()?.timeIntervalSince1970
         XCTAssertNotEqual(time, 0)
     }
     
     func testSortNotification() {
-        sut.scheduleNotification(for: deck, at: 5)
+        sut.scheduleNotification(for: deck, at: dateHandler.today.addingTimeInterval(5))
         let content = center.requests.first?.content
         XCTAssertNotEqual(content, nil)
     }
