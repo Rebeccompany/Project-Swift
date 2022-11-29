@@ -50,6 +50,7 @@ public struct ContentView: View {
                     
                     NavigationStack(path: $appRouter.storePath) {
                         StoreView(store: shopStore)
+                            .environmentObject(authModel)
                     }
                     .tabItem {
                         Label {
