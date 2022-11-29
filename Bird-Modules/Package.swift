@@ -401,7 +401,8 @@ let package = Package(
                 "AppFeature",
                 "Models",
                 "Storage",
-                "Habitat"
+                "Habitat",
+                "Puffins"
             ]
         ),
         
