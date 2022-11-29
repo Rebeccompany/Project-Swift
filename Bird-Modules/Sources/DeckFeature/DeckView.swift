@@ -23,6 +23,7 @@ public struct DeckView: View {
     @State private var shouldDisplayNewFlashcard: Bool = false
     @State private var shouldDisplayImport: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
+    @State private var shouldDisplayLoginView: Bool = false
     @State private var shouldDisplayPublishConfirmation: Bool = false
     @State private var studyMode: StudyMode = .spaced
     @State private var showingAlert: Bool = false
@@ -156,6 +157,9 @@ public struct DeckView: View {
         }
         .sheet(isPresented: $shouldDisplayImport) {
             ImportView(deck: deck, isPresenting: $shouldDisplayImport)
+        }
+        .fullScreenCover(isPresented: $shouldDisplayLoginView) {
+            AuthenticationView(model: authModel)
         }
 
     }

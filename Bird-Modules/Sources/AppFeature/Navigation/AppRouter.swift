@@ -13,6 +13,7 @@ import Storage
 import Habitat
 
 //swiftlint:disable trailing_closure
+@MainActor
 final class AppRouter: ObservableObject {
     @Published var path: NavigationPath = .init()
     @Published var storePath: NavigationPath = .init()

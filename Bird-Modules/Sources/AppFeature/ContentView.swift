@@ -112,6 +112,7 @@ public struct ContentView: View {
                 .environment(\.editMode, $editModeForDeck)
         } destination: { (route: StudyRoute) in
             StudyRoutes.destination(for: route, viewModel: viewModel)
+                .environmentObject(authModel)
         }
     }
 }
