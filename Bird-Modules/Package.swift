@@ -527,14 +527,14 @@ let package = Package(
             ]
         ),
         
-            .testTarget(
-                name: "AuthenticationTests",
-                dependencies: [
-                    "Authentication",
-                    "Keychain",
-                    "Models",
-                    "Puffins"
-                ]
-            )
+        .testTarget(
+            name: "AuthenticationTests",
+            dependencies: [
+                "Authentication",
+                "Keychain",
+                "Models",
+                "Puffins"
+            ]
+        )
     ]
 )
