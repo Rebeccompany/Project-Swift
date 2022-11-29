@@ -120,7 +120,7 @@ public struct KeychainService: KeychainServiceProtocol {
 public final class KeychainServiceMock: KeychainServiceProtocol {
     var values: [String: String] = [:]
     
-    public init(values: [String : String] = [:]) {
+    public init(values: [String: String] = [:]) {
         self.values = values
     }
     

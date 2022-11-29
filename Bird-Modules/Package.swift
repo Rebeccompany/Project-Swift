@@ -20,6 +20,12 @@ let package = Package(
                 "AppFeature"
             ]
         ),
+        .library(
+            name: "ClassKitFeature",
+            targets: [
+                "ClassKitFeature"
+            ]
+        ),
         
         .library(
             name: "DeckFeature",
@@ -162,7 +168,16 @@ let package = Package(
                 "OnboardingFeature",
                 "StoreFeature",
                 "StoreState",
+                "ClassKitFeature",
                 "Authentication"
+            ]
+        ),
+        
+        .target(
+            name: "ClassKitFeature",
+            dependencies: [
+                "Storage",
+                "Models"
             ]
         ),
         
@@ -210,7 +225,9 @@ let package = Package(
         
         .target(
             name: "Models",
-            dependencies: ["Utils"]
+            dependencies: [
+                "Utils"
+            ]
         ),
         
         .target(
@@ -384,7 +401,8 @@ let package = Package(
                 "AppFeature",
                 "Models",
                 "Storage",
-                "Habitat"
+                "Habitat",
+                "Puffins"
             ]
         ),
         
@@ -485,7 +503,8 @@ let package = Package(
                 "Puffins",
                 "StoreFeature",
                 "Habitat",
-                "StoreState"
+                "StoreState",
+                "Models"
             ]
         ),
         
@@ -509,14 +528,14 @@ let package = Package(
             ]
         ),
         
-            .testTarget(
-                name: "AuthenticationTests",
-                dependencies: [
-                    "Authentication",
-                    "Keychain",
-                    "Models",
-                    "Puffins"
-                ]
-            )
+        .testTarget(
+            name: "AuthenticationTests",
+            dependencies: [
+                "Authentication",
+                "Keychain",
+                "Models",
+                "Puffins"
+            ]
+        )
     ]
 )
