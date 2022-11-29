@@ -98,8 +98,8 @@ public struct DeckView: View {
                     Button(NSLocalizedString("confirmar", bundle: .module, comment: ""), role: deck.storeId != nil ? .destructive : nil) {
                         if deck.storeId != nil {
                             viewModel.deletePublicDeck(deck)
-                        } else {
-                            viewModel.publishDeck(deck)
+                        } else if let user = authModel.user {
+                            viewModel.publishDeck(deck, user: user)
                         }
                     }
                 } message: {
@@ -306,7 +306,7 @@ struct DeckView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             DeckView(
-                deck: .constant(Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil, description: ""))
+                deck: .constant(Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil, description: "", ownerId: nil))
             )
         }
         .preferredColorScheme(.dark)

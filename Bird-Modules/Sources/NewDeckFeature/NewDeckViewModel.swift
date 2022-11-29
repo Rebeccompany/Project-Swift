@@ -71,7 +71,8 @@ public class NewDeckViewModel: ObservableObject {
                         spacedRepetitionConfig: SpacedRepetitionConfig(),
                         category: currentSelectedCategory,
                         storeId: nil,
-                        description: description)
+                        description: description,
+                        ownerId: nil)
         
         try deckRepository.createDeck(deck, cards: [])
         

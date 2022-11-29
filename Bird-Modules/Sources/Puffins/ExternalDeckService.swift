@@ -76,8 +76,8 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         }
     }
     
-    public func uploadNewDeck(_ deck: Deck, with cards: [Card]) -> AnyPublisher<String, URLError> {
-        let dto = DeckAdapter.adapt(deck, with: cards)
+    public func uploadNewDeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<String, URLError> {
+        let dto = DeckAdapter.adapt(deck, with: cards, owner: owner)
         let jsonEncoder = JSONEncoder()
         guard let jsonData = try? jsonEncoder.encode(dto) else {
             return Fail(outputType: String.self, failure: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()

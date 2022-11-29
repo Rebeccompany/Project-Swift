@@ -52,6 +52,8 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
             icon: .leaf,
             color: .darkPurple,
             category: .languages,
+            ownerId: "owner",
+            ownerName: "ownerName",
             cards: Array(1...10).map { _ in
                 CardDTO(
                     front: String(data: NSAttributedString(string: "front").rtfData()!, encoding: .utf8)!,
@@ -95,7 +97,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         }
     }
     
-    public func uploadNewDeck(_ deck: Deck, with cards: [Card]) -> AnyPublisher<String, URLError> {
+    public func uploadNewDeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<String, URLError> {
         if shouldError {
             return Fail(outputType: String.self, failure: error!).eraseToAnyPublisher()
         }

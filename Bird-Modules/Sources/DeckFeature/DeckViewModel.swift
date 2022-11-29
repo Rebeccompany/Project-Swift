@@ -89,10 +89,10 @@ public class DeckViewModel: ObservableObject {
         }
     }
     
-    func publishDeck(_ deck: Deck) {
+    func publishDeck(_ deck: Deck, user: UserDTO) {
         loadingPhase = .loading
         
-        externalDeckService.uploadNewDeck(deck, with: cards)
+        externalDeckService.uploadNewDeck(deck, with: cards, owner: user)
             .receive(on: RunLoop.main)
             .sink { [weak self] completion in
                 switch completion {
@@ -104,6 +104,7 @@ public class DeckViewModel: ObservableObject {
             } receiveValue: { [weak self] storeId in
                 var deckWithStoreId = deck
                 deckWithStoreId.storeId = storeId
+                deckWithStoreId.ownerId = user.appleIdentifier
                 try? self?.deckRepository.editDeck(deckWithStoreId)
             }
             .store(in: &cancellables)

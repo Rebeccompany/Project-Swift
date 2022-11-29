@@ -2,17 +2,18 @@
 //  CardSnapshotEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Gabriel Ferreira de Carvalho on 22/11/22.
+//  Created by Gabriel Ferreira de Carvalho on 29/11/22.
 //
 //
 
 import Foundation
 import CoreData
+import Storage
 
 extension CardSnapshotEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CardSnapshotEntity> {
-        NSFetchRequest<CardSnapshotEntity>(entityName: "CardSnapshotEntity")
+        return NSFetchRequest<CardSnapshotEntity>(entityName: "CardSnapshotEntity")
     }
 
     @NSManaged public var date: Date?
