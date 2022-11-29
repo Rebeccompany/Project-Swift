@@ -84,7 +84,7 @@ struct CollectionsSidebarMacOS: View {
                     presentCollectionCreation = true
                 } label: {
                     Label {
-                        Text("Nova Coleção")
+                        Text(NSLocalizedString("nova_colecao", bundle: .module, comment: ""))
                     } icon: {
                         Image(systemName: "plus.circle")
                     }

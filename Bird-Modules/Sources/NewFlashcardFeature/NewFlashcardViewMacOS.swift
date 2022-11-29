@@ -300,7 +300,7 @@ public struct NewFlashcardViewMacOS: View {
         } label: {
             HStack {
                 Spacer()
-                Text("Salvar")
+                Text(NSLocalizedString("salvar", bundle: .module, comment: ""))
                     .font(.system(size: 14, weight: .bold))
                     .foregroundColor(HBColor.collectionTextColor)
                 Spacer()

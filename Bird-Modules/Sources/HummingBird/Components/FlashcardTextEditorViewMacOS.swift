@@ -45,8 +45,11 @@ public struct FlashcardTextEditorViewMacOS: View {
             }
         }
         .onAppear {
-            context.foregroundColor = ColorRepresentable.white
+            if text.string.isEmpty {
+                text = NSAttributedString(string: "", attributes: [.foregroundColor: NSColor.black])
+            }
             context.shouldUpdateTextField()
+            context.foregroundColorBinding.wrappedValue = .black
         }
         .background {
             if isFront {

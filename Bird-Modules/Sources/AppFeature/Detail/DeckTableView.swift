@@ -36,6 +36,7 @@ struct DeckTableView: View {
             if !viewModel.todayDecks.isEmpty {
                 Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
                     .padding(.leading)
+                    .padding(.top)
                     .font(.title3)
                     .bold()
                 SessionsForTodayView()

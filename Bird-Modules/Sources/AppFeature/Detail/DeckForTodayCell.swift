@@ -22,7 +22,9 @@ struct DeckForTodayCell: View {
                     .font(.title3)
                     .bold()
                 
-                Text("\(deck.session?.cardIds.count ?? 404) cartas para hoje")
+                let cardsForToday = deck.session?.cardIds.count ?? 404
+                
+                Text(String.localizedStringWithFormat(NSLocalizedString("%d cartas_hoje", bundle: .module, comment: ""), cardsForToday))
                     .font(.subheadline)
             }
             .foregroundColor(Color.white)
