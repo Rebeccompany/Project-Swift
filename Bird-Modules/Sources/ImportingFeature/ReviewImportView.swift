@@ -13,6 +13,7 @@ struct ReviewImportView: View {
     @EnvironmentObject private var viewModel: ImportViewModel
     @Binding var isPresentingSheet: Bool
     @Binding var cards: [Card]
+    @Binding var showAlert: Bool
     let deck: Deck
     
     var body: some View {
@@ -39,6 +40,7 @@ struct ReviewImportView: View {
                 Button {
                     viewModel.save(cards, to: deck)
                     isPresentingSheet = false
+                    showAlert = true
                 } label: {
                     Text("add_button", bundle: .module)
                 }
@@ -54,5 +56,10 @@ struct ReviewImportView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Flashcards salvos!", bundle: .module),
+                         message: Text("Essa janela pode ser fechada.", bundle: .module),
+                  dismissButton: .default(Text("OK")))
+        }
     }
 }

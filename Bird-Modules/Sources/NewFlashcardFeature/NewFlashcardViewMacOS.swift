@@ -12,7 +12,6 @@ import Storage
 import Habitat
 import RichTextKit
 import Combine
-
 #if os(macOS)
 public struct NewFlashcardViewMacOS: View {
     @StateObject private var viewModel = NewFlashcardViewModelMacOS()
@@ -413,6 +412,4 @@ extension NSColor {
         return (brightness > 0.5)
     }
 }
-
-
 #endif

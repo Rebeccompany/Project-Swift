@@ -89,7 +89,8 @@ public struct DeckViewMacOS: View {
                     }
 
                     Button {
-
+                        let model = ImportWindowData(deck: deck)
+                        openWindow(value: model)
                     } label: {
                         Label(
                             NSLocalizedString("import", bundle: .module, comment: ""),

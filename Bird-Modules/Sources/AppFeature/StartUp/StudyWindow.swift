@@ -12,7 +12,7 @@ import StudyFeature
 
 #if os(macOS)
 @SceneBuilder
-public var studyWindow: some Scene {
+public var StudyWindow: some Scene {
     WindowGroup("Study", for: StudyWindowData.self) { $data in
         if let data {
             StudyViewMacOS(data: data)

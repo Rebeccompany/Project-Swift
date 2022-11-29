@@ -15,27 +15,32 @@ public struct ImportView: View {
     @State private var path: NavigationPath = .init()
     @State private var cards: [Card] = []
     @State private var presentFileSheet = false
+    @State private var showAlert: Bool = false
     @StateObject private var viewModel = ImportViewModel()
     @Binding private var isPresenting: Bool
-    private let deck: Deck
+    private let data: ImportWindowData
     
-    public init(deck: Deck, isPresenting: Binding<Bool>) {
-        self.deck = deck
+    public init(data: ImportWindowData, isPresenting: Binding<Bool>) {
+        self.data = data
         self._isPresenting = isPresenting
     }
     
     public var body: some View {
         Router(path: $path) {
+            #if os(iOS)
             ImportSelectionView(isPresenting: $isPresenting, presentFileSheet: $presentFileSheet)
                 .sheet(isPresented: $presentFileSheet) {
-                    DocumentPicker(fileContent: $cards, deckId: deck.id) {
+                    DocumentPicker(fileContent: $cards, deckId: data.deck.id) {
                         isPresenting = false
                     }
                 }
+            #elseif os(macOS)
+            ImportSelectionView(fileContent: $cards, deckId: data.deck.id)
+            #endif
         } destination: { (route: ImportRoute) in
             switch route {
             case .preview:
-                ReviewImportView(isPresentingSheet: $isPresenting, cards: $cards, deck: deck)
+                ReviewImportView(isPresentingSheet: $isPresenting, cards: $cards, showAlert: $showAlert, deck: data.deck)
             }
         }
         .onChange(of: presentFileSheet) { newValue in
@@ -50,6 +55,6 @@ public struct ImportView: View {
 
 struct ImportView_Previews: PreviewProvider {
     static var previews: some View {
-        ImportView(deck: Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil, description: ""), isPresenting: .constant(true))
+        ImportView(data: ImportWindowData(deck: DeckRepositoryMock().decks[0]) , isPresenting: .constant(true))
     }
 }

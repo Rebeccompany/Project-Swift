@@ -25,8 +25,9 @@ struct Project_BirdApp: App {
         }
         
         #if os(macOS)
-        newFlashcardWindow
-        studyWindow
+        NewFlashcardWindow
+        StudyWindow
+        ImportWindow
         #endif
     }
 }
