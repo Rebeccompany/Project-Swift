@@ -12,6 +12,8 @@ import Models
 import Storage
 import Habitat
 import Combine
+import Tweet
+import Utils
 
 
 final class ContentViewModelTests: XCTestCase {
@@ -21,6 +23,9 @@ final class ContentViewModelTests: XCTestCase {
     var displayCacherMock: DisplayCacher!
     var localStorageMock: LocalStorageMock!
     var collectionRepositoryMock: CollectionRepositoryMock!
+    var userNotificationService: UserNotificationServiceMock!
+    var notificationService: NotificationService!
+    var dateHandler: DateHandlerMock!
     var cancelables: Set<AnyCancellable>!
     var deck0: Deck!
     var deck1: Deck!
@@ -33,7 +38,11 @@ final class ContentViewModelTests: XCTestCase {
         collectionRepositoryMock = CollectionRepositoryMock()
         localStorageMock = LocalStorageMock()
         displayCacherMock = DisplayCacher(localStorage: localStorageMock)
-        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock, displayCacher: displayCacherMock)
+        userNotificationService = UserNotificationServiceMock()
+        dateHandler = DateHandlerMock()
+        notificationService = NotificationService(center: userNotificationService, dateHandler: dateHandler)
+        
+        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock, displayCacher: displayCacherMock, notificationService: notificationService)
         sut = ContentViewModel()
         cancelables = Set<AnyCancellable>()
         createData()
@@ -58,6 +67,9 @@ final class ContentViewModelTests: XCTestCase {
         collectionRepositoryMock = nil
         deckRepositoryMock = nil
         cancelables = nil
+        dateHandler = nil
+        notificationService = nil
+        userNotificationService = nil
         
         deck0 = nil
         deck1 = nil
@@ -312,15 +324,56 @@ final class ContentViewModelTests: XCTestCase {
         XCTAssertEqual(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), sut.detailTitle)
     }
     
-    #warning("fazer testes")
-    func testSetupDidEnterForeground() {
-        
-    }
-    
     func testSetupDidEnterBackgroundPublisher() {
         
+        var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "")
+        
+        var cards = [Card(id: UUID(), front: NSAttributedString(string: ""), back: NSAttributedString(string: ""), color: .white, datesLogs: DateLogs(), deckID: deck.id, woodpeckerCardInfo: WoodpeckerCardInfo(interval: 2, hasBeenPresented: true), history: [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), userGrade: .correctEasy, timeSpend: 10, date: dateHandler.today.addingTimeInterval(-86400))])]
+        
+        deck.session = Session(cardIds: cards.map(\.id), date: dateHandler.today.addingTimeInterval(86400), deckId: deck.id, id: UUID())
+        
+        cards = cards.map { var card = $0; card.deckID = deck.id; return card}
+        deck.cardsIds = cards.map(\.id)
+        
+        
+        try? deckRepositoryMock.createDeck(deck, cards: cards)
+        
+        sut.startup()
+        let not0 = Notification(name: UIApplication.didEnterBackgroundNotification)
+        NotificationCenter.default.post(not0)
+
+        let seconds = 1.0
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+            XCTAssert(self.userNotificationService.requests.count == 1)
+        }
     }
     
+    func testSetupDidEnterForeground() throws {
+        
+        var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "")
+        
+        var cards = [Card(id: UUID(), front: NSAttributedString(string: ""), back: NSAttributedString(string: ""), color: .white, datesLogs: DateLogs(), deckID: deck.id, woodpeckerCardInfo: WoodpeckerCardInfo(interval: 2, hasBeenPresented: true), history: [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), userGrade: .correctEasy, timeSpend: 10, date: dateHandler.today.addingTimeInterval(-86400))])]
+        
+        deck.session = Session(cardIds: cards.map(\.id), date: dateHandler.today.addingTimeInterval(86400), deckId: deck.id, id: UUID())
+        
+        cards = cards.map { var card = $0; card.deckID = deck.id; return card}
+        deck.cardsIds = cards.map(\.id)
+        
+        
+        try? deckRepositoryMock.createDeck(deck, cards: cards)
+        
+        sut.startup()
+        let not0 = Notification(name: UIApplication.didEnterBackgroundNotification)
+        NotificationCenter.default.post(not0)
+        let not = Notification(name: UIApplication.didBecomeActiveNotification)
+        NotificationCenter.default.post(not)
+        
+        let seconds = 1.0
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+            XCTAssert(self.userNotificationService.requests.isEmpty)
+        }
+    }
+
     func createCards() {
         cards = []
         var i = 0

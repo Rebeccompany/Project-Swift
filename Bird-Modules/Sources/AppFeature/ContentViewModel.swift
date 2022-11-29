@@ -35,7 +35,7 @@ public final class ContentViewModel: ObservableObject {
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
-    @Dependency(\.notificationCenter) private var notificationCenter: NotificationServiceProtocol
+    @Dependency(\.notificationService) private var notificationService: NotificationServiceProtocol
     @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
     
     private var cancellables: Set<AnyCancellable>
@@ -105,11 +105,11 @@ public final class ContentViewModel: ObservableObject {
         detailType = displayCacher.getCurrentDetailType() ?? .grid
         shouldReturnToGrid = detailType == .grid
         
-        notificationCenter.requestAuthorizationForNotifications()
+        notificationService.requestAuthorizationForNotifications()
         
         setupDidEnterForeground()
         setupDidEnterBackgroundPublisher()
-        notificationCenter.cleanNotifications()
+        notificationService.cleanNotifications()
         
         $decks
             .tryMap(filterDecksForToday)
@@ -121,7 +121,7 @@ public final class ContentViewModel: ObservableObject {
         NotificationCenter.default
             .publisher(for: UIApplication.willEnterForegroundNotification)
             .sink { _ in
-                self.notificationCenter.cleanNotifications()
+                self.notificationService.cleanNotifications()
             }
             .store(in: &cancellables)
     }
@@ -150,8 +150,7 @@ public final class ContentViewModel: ObservableObject {
             .sink { [weak self] decks in
                 guard let self else { return }
                 decks.forEach { deck in
-                    //guard let date = deck.session?.date else { return }
-                    self.notificationCenter.scheduleNotification(for: deck, at: self.dateHandler.today)
+                    self.notificationService.scheduleNotification(for: deck, at: self.dateHandler.today)
                 }
             }
             .store(in: &cancellables)

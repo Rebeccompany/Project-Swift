@@ -40,7 +40,7 @@ private struct DisplayCacherKey: HabitatKey {
     static var currentValue: DisplayCacherProtocol = DisplayCacher()
 }
 
-private struct NotificationCenterKey: HabitatKey {
+private struct NotificationServiceKey: HabitatKey {
     static var currentValue: NotificationServiceProtocol = NotificationService(center: UserNotificationServiceMock(), dateHandler: DateHandler())
 }
 
@@ -81,8 +81,8 @@ extension Habitat {
         set { Self[ExternalDeckServiceKey.self] = newValue }
     }
     
-    public var notificationCenter: NotificationServiceProtocol {
-        get { Self[NotificationCenterKey.self] }
-        set { Self[NotificationCenterKey.self] = newValue }
+    public var notificationService: NotificationServiceProtocol {
+        get { Self[NotificationServiceKey.self] }
+        set { Self[NotificationServiceKey.self] = newValue }
     }
 }

@@ -19,7 +19,7 @@ public func setupHabitatForProduction() {
     Habitat[\.systemObserver] = SystemObserver.shared
     Habitat[\.displayCacher] = DisplayCacher()
     Habitat[\.externalDeckService] = ExternalDeckService.shared
-    Habitat[\.notificationCenter] = NotificationService()
+    Habitat[\.notificationService] = NotificationService()
 }
 
 public func setupHabitatForIsolatedTesting(
@@ -30,7 +30,7 @@ public func setupHabitatForIsolatedTesting(
     systemObserver: SystemObserverProtocol = SystemObserverMock(),
     displayCacher: DisplayCacherProtocol = DisplayCacher(localStorage: LocalStorageMock()),
     externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock(),
-    notificationCenter: NotificationServiceProtocol = NotificationService(center: UserNotificationServiceMock(), dateHandler: DateHandlerMock())
+    notificationService: NotificationServiceProtocol = NotificationService(center: UserNotificationServiceMock(), dateHandler: DateHandlerMock())
 ) {
     Habitat[\.deckRepository] = deckRepository
     Habitat[\.collectionRepository] = collectionRepository
@@ -39,7 +39,7 @@ public func setupHabitatForIsolatedTesting(
     Habitat[\.systemObserver] = systemObserver
     Habitat[\.displayCacher] = displayCacher
     Habitat[\.externalDeckService] = externalDeckService
-    Habitat[\.notificationCenter] = notificationCenter
+    Habitat[\.notificationService] = notificationService
 }
 
 public func setupHabitatForIntegrationTesting() {
