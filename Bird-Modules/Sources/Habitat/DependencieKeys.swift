@@ -9,6 +9,7 @@ import Storage
 import Puffins
 import Utils
 import Tweet
+import Keychain
 
 // MARK: Keys
 
@@ -42,6 +43,14 @@ private struct DisplayCacherKey: HabitatKey {
 
 private struct NotificationServiceKey: HabitatKey {
     static var currentValue: NotificationServiceProtocol = NotificationService(center: UserNotificationServiceMock(), dateHandler: DateHandler())
+}
+
+private struct ExternalUserServiceKey: HabitatKey {
+    static var currentValue: ExternalUserServiceProtocol = ExternalUserService.shared
+}
+
+private struct KeychainServiceKey: HabitatKey {
+    static var currentValue: KeychainServiceProtocol = KeychainService()
 }
 
 // MARK: Extension
@@ -84,5 +93,15 @@ extension Habitat {
     public var notificationService: NotificationServiceProtocol {
         get { Self[NotificationServiceKey.self] }
         set { Self[NotificationServiceKey.self] = newValue }
+    }
+    
+    public var externalUserService: ExternalUserServiceProtocol {
+        get { Self[ExternalUserServiceKey.self] }
+        set { Self[ExternalUserServiceKey.self] = newValue }
+    }
+    
+    public var keychainService: KeychainServiceProtocol {
+        get { Self[KeychainServiceKey.self] }
+        set { Self[KeychainServiceKey.self] = newValue }
     }
 }
