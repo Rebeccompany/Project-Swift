@@ -121,9 +121,4 @@ struct StoreView_Previews: PreviewProvider {
     }
 }
 
-#warning("Mover para Utils")
-extension String {
-    public func localized(_ bundle: Bundle) -> String {
-        NSLocalizedString(self, bundle: bundle, comment: "")
-    }
-}
+

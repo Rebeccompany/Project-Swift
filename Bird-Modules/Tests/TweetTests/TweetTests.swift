@@ -24,7 +24,7 @@ final class NotificationServiceTests: XCTestCase {
     override func setUp() {
         cancellables = .init()
         dateHandler = DateHandlerMock()
-        deck = Deck(id: UUID(), name: "deck1", icon: "plus", color: .red, collectionId: UUID(), cardsIds: [], category: .arts, storeId: "")
+        deck = Deck(id: UUID(), name: "deck1", icon: "plus", color: .red, collectionId: UUID(), cardsIds: [], category: .arts, storeId: "", description: "")
         center = UserNotificationServiceMock()
         setupHabitatForIsolatedTesting()
         sut = NotificationService(center: center, dateHandler: dateHandler)
