@@ -9,14 +9,27 @@ import SwiftUI
 import Models
 
 public struct FlashcardCell: View {
-    var card: Card
-    var isFront: Bool
-    var action: () -> Void
+    //private var card: Card
+    private var isFront: Bool
+    private var action: () -> Void
+    private var front: NSAttributedString
+    private var back: NSAttributedString
+    private var color: CollectionColor
     
     public init(card: Card, isFront: Bool = true, action: @escaping () -> Void) {
-        self.card = card
         self.action = action
         self.isFront = isFront
+        self.front = card.front
+        self.back = card.back
+        self.color = card.color
+    }
+    
+    public init(card: ExternalCard, isFront: Bool = true, action: @escaping () -> Void) {
+        self.front = try! NSTextStorage(rtfData: card.front.data(using: .utf8)!)
+        self.back = try! NSTextStorage(rtfData: card.back.data(using: .utf8)!)
+        self.isFront = isFront
+        self.action = action
+        self.color = card.color
     }
     
     public var body: some View {
@@ -25,14 +38,15 @@ public struct FlashcardCell: View {
                 HStack {
                     Text(isFront ? "frente" : "verso", bundle: .module)
                         .font(.system(size: 15))
+                        .foregroundColor(color == .white ? .black : .white)
                     Spacer()
                 }
                 Spacer()
-                TextViewRepresentable(text: isFront ? card.front.attributedString : card.back.attributedString)
+                TextViewRepresentable(text: isFront ? front : back)
                 Spacer()
             }
         }
-        .buttonStyle(Style(color: card.color))
+        .buttonStyle(Style(color: color))
     }
     
     private struct Style: ButtonStyle {
@@ -47,12 +61,14 @@ public struct FlashcardCell: View {
             configuration.label
             .foregroundColor(.white)
             .padding()
-            .background(HBColor.color(for: color))
+            .background {
+                SpixiiShapeFront()
+                    .foregroundColor(HBColor.color(for: color))
+            }
+            .background {
+                HBColor.color(for: color).brightness(0.04)
+            }
             .cornerRadius(16)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.white, lineWidth: 3)
-            )
         }
     }
 }

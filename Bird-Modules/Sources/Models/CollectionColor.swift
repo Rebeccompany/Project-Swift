@@ -20,6 +20,8 @@ public enum CollectionColor: Int, CaseIterable, Hashable, Codable {
     case beigeBrown
     case gray
     case darkBlue
+    case white
+    case black
     
     public static func getColorString(_ colorName: CollectionColor) -> String {
         switch colorName {
@@ -47,6 +49,10 @@ public enum CollectionColor: Int, CaseIterable, Hashable, Codable {
             return "Cinza"
         case .darkBlue:
             return "Azul Escuro"
+        case .white:
+            return "Branco"
+        case .black:
+            return "Preto"
         }
     }
 }

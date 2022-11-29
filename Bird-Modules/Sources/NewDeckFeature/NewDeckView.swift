@@ -34,50 +34,91 @@ public struct NewDeckView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
-                    Text("nome", bundle: .module)
-                        .font(.callout)
-                        .bold()
+                    Section {
+                        TextField("", text: $viewModel.deckName)
+                            .textFieldStyle(CollectionDeckTextFieldStyle())
+                            .padding(.bottom)
+                            .focused($selectedField, equals: 0)
+                    } header: {
+                        Text("nome", bundle: .module)
+                            .font(.callout)
+                            .bold()
+                    }
                     
-                    TextField("", text: $viewModel.deckName)
-                        .textFieldStyle(CollectionDeckTextFieldStyle())
-                        .padding(.bottom)
-                        .focused($selectedField, equals: 0)
+                    Section {
+                        TextEditor(text: $viewModel.description)
+                            .focused($selectedField, equals: 1)
+                            .frame(height: 150)
+                            .padding()
+                            .background(HBColor.secondaryBackground)
+                            .cornerRadius(12)
                         
-                    
-                    Text("cores", bundle: .module)
-                        .font(.callout)
-                        .bold()
-                    
-                    IconColorGridView {
-                        ForEach(viewModel.colors, id: \.self) { color in
-                            Button {
-                                viewModel.currentSelectedColor = color
-                            } label: {
-                                HBColor.color(for: color)
-                                    .frame(width: 45, height: 45)
-                            }
-                            .accessibility(label: Text(CollectionColor.getColorString(color)))
-                            .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
-                        }
+                    } header: {
+                        Text("description", bundle: .module)
+                            .font(.callout)
+                            .bold()
                     }
                     
-                    Text("icones", bundle: .module)
-                        .font(.callout)
-                        .bold()
-                        .padding(.top)
-                    
-                    IconColorGridView {
-                        ForEach(viewModel.icons, id: \.self) { icon in
-                            Button {
-                                viewModel.currentSelectedIcon = icon
-                            } label: {
-                                Image(systemName: icon.rawValue)
-                                    .frame(width: 45, height: 45)
+                    Section {
+                        Picker(selection: $viewModel.currentSelectedCategory) {
+                            ForEach(DeckCategory.allCases, id: \.self) { category in
+                                getCategoryLabel(category: category)
                             }
-                            .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
-                            
+                        } label: {
+                            Text("categoria_selecionada", bundle: .module)
                         }
+                        .pickerStyle(.navigationLink
+                        )
+                        .padding()
+                        .background(HBColor.secondaryBackground)
+                        .cornerRadius(12)
+                        
+                    } header: {
+                        Text("categoria", bundle: .module)
+                            .font(.callout)
+                            .bold()
                     }
+
+                    Section {
+                        IconColorGridView {
+                            ForEach(viewModel.colors.filter { $0 != CollectionColor.white }, id: \.self) { color in
+                                Button {
+                                    viewModel.currentSelectedColor = color
+                                } label: {
+                                    HBColor.color(for: color)
+                                        .frame(width: 45, height: 45)
+                                }
+                                .accessibility(label: Text(CollectionColor.getColorString(color)))
+                                .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
+                            }
+                        }
+                    } header: {
+                        Text("cores", bundle: .module)
+                            .font(.callout)
+                            .bold()
+                    }
+
+                    Section {
+                        IconColorGridView {
+                            ForEach(viewModel.icons, id: \.self) { icon in
+                                Button {
+                                    viewModel.currentSelectedIcon = icon
+                                } label: {
+                                    Image(systemName: icon.rawValue)
+                                        .frame(width: 45, height: 45)
+                                }
+                                .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
+                                
+                            }
+                        }
+                    } header: {
+                        Text("icones", bundle: .module)
+                            .font(.callout)
+                            .bold()
+                            .padding(.top)
+                    }
+
+                    
                     Spacer()
                     
                     if editingDeck != nil {

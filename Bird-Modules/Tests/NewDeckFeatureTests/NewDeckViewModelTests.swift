@@ -310,7 +310,7 @@ class NewDeckViewModelTests: XCTestCase {
              cardsIds: [],
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
-             storeId: nil)
+             storeId: nil, description: "" )
     }
     
     enum WoodpeckerState {

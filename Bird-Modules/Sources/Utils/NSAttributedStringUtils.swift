@@ -21,4 +21,8 @@ extension NSAttributedString {
     public func rtfdData() -> Data? {
         try? data(from: .init(location: 0, length: length), documentAttributes: [.documentType: NSAttributedString.DocumentType.rtfd])
     }
+    
+    public func rtfData() -> Data? {
+        try? data(from: .init(location: 0, length: length), documentAttributes: [.documentType: NSAttributedString.DocumentType.rtf])
+    }
 }

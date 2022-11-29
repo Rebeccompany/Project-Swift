@@ -16,4 +16,24 @@ extension Endpoint {
         let queryItem = URLQueryItem(name: "page", value: "\(page)")
         return Endpoint(path: "api/cards/\(id)", queryItems: [queryItem])
     }
+    
+    static func deck(id: String) -> Endpoint {
+        Endpoint(path: "api/decks/\(id)")
+    }
+    
+    static func sendADeck(_ dto: Data) -> Endpoint {
+        Endpoint(path: "api/decks", method: .post, body: dto)
+    }
+    
+    static func deleteDeck(with id: String) -> Endpoint {
+        Endpoint(path: "api/decks/\(id)", method: .delete)
+    }
+    
+    static var login: Endpoint {
+        Endpoint(path: "api/auth", method: .post, body: try? JSONEncoder().encode(Secrets.shared))
+    }
+    
+    static func download(id: String) -> Endpoint {
+        Endpoint(path: "api/decks/\(id)/download")
+    }
 }
