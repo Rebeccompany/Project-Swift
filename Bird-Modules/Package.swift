@@ -126,13 +126,18 @@ let package = Package(
             name: "Puffins",
             targets: ["Puffins"]
         ),
-        
         .library(
             name: "Tweet",
             targets: ["Tweet"]
+        ),
+        .library(
+            name: "Peacock",
+            targets: ["Peacock"]
+        ),
+        .library(
+            name: "StoreState",
+            targets: ["StoreState"]
         )
-        .library(name: "Peacock", targets: ["Peacock"]),
-        .library(name: "StoreState", targets: ["StoreState"])
     ],
     
     dependencies: [
@@ -166,7 +171,7 @@ let package = Package(
                 "NewFlashcardFeature",
                 "OnboardingFeature",
                 "StoreFeature",
-                "Tweet"
+                "Tweet",
                 "StoreState"
             ]
         ),
@@ -501,6 +506,7 @@ let package = Package(
                 "Habitat",
                 "Tweet"
             ]
+        ),
         .testTarget(
             name: "PublicDeckFeatureTests",
             dependencies: [
