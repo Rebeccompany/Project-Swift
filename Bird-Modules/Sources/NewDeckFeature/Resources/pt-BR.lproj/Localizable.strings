@@ -20,3 +20,6 @@
 "botao_feito" = "Botão de feito";
 "alert_delete_deck_error" = "Erro ao tentar deletar baralho";
 "alert_delete_deck_error_text" = "Algo deu errado! Por favor, tente novamente.";
+"description" = "Descrição";
+"categoria" = "Categoria";
+"categoria_selecionada" = "Categoria Selecionada";

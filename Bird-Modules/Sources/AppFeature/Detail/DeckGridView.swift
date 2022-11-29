@@ -22,31 +22,57 @@ struct DeckGridView: View {
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 188), spacing: 24, alignment: .top)], spacing: 24) {
-                ForEach(sortedDecks) { deck in
-                    NavigationLink(value: StudyRoute.deck(deck)) {
-                        DeckCell(info: DeckCellInfo(deck: deck))
-                            .contextMenu {
-                                Button {
-                                    editAction(deck)
-                                } label: {
-                                    Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
-                                }
-                                
-                                Button(role: .destructive) {
-                                    shouldDisplayAlert = true
-                                    deckToBeDeleted = deck
+            LazyVStack(alignment: .leading) {
+                if !viewModel.todayDecks.isEmpty {
+                    Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
+                        .padding(.leading)
+                    #if os(macOS)
+                        .padding(.top)
+                    #endif
+                        .font(.title3)
+                        .bold()
+                    SessionsForTodayView()
+                }
+                Text(NSLocalizedString("baralhos", bundle: .module, comment: ""))
+                    .padding(.leading)
+                    .padding(.top)
+                    .font(.title3)
+                    .bold()
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
+                    ForEach(sortedDecks) { deck in
+                        NavigationLink(value: StudyRoute.deck(deck)) {
+                            DeckCell(info: DeckCellInfo(deck: deck))
+                                .contextMenu {
+                                    Button {
+                                        editAction(deck)
+                                    } label: {
+                                        Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
+                                    }
                                     
-                                } label: {
-                                    Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
+                                    Button(role: .destructive) {
+                                        try? viewModel.deleteDeck(deck)
+                                    } label: {
+                                        Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
+                                    }
                                 }
+                        }
+                        .buttonStyle(DeckCell.Style(color: deck.color))
+                        #if os(iOS)
+                            .hoverEffect(.lift)
+                        #endif
+                            .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                                Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                                    guard let deckToBeDeleted else { return }
+                                    try? viewModel.deleteDeck(deckToBeDeleted)
+                                }
+                            } message: {
+                                Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
                             }
                     }
                     #if os(iOS)
                     .hoverEffect()
                     .padding(2)
                     #endif
-                    .buttonStyle(DeckCell.Style(color: deck.color))
                     .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
                         Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
                             guard let deckToBeDeleted else { return }
@@ -56,12 +82,11 @@ struct DeckGridView: View {
                         Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
                     }
                 }
+                .animation(.linear, value: viewModel.sortOrder)
+                .padding([.horizontal], 12)
+                .padding(.top, 24)
             }
-            .animation(.linear, value: viewModel.sortOrder)
-            .padding([.horizontal], 12)
-            .padding(.top, 24)
         }
-        
-
     }
+    
 }

@@ -15,6 +15,7 @@ import Utils
 public struct FlashcardTextEditorViewMacOS: View {
     var color: Color
     var side: String
+    var isFront: Bool
     
     @State private var isPhotoPickerPresented = false
     @State private var photoSelection: PhotosPickerItem?
@@ -22,18 +23,19 @@ public struct FlashcardTextEditorViewMacOS: View {
     
     @ObservedObject private var context: RichTextContext
 
-    public init(text: Binding<NSAttributedString>, color: Color, side: String, context: RichTextContext) {
+    public init(text: Binding<NSAttributedString>, color: Color, side: String, context: RichTextContext, isFront: Bool) {
         self._text = text
         self.color = color
         self.side = side
         self.context = context
+        self.isFront = isFront
     }
     
     public var body: some View {
         VStack {
             VStack(alignment: .leading) {
                 Text(side)
-                    .foregroundColor(.white)
+                    .foregroundColor(color == HBColor.collectionWhite ? .black : .white)
                     .padding([.leading, .top])
                     .font(.system(size: 16))
                 
@@ -42,33 +44,32 @@ public struct FlashcardTextEditorViewMacOS: View {
                 }
             }
         }
-        .background(color)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(.white, lineWidth: 3)
-        )
-        .cornerRadius(16)
-        .photosPicker(isPresented: $isPhotoPickerPresented,
-                      selection: $photoSelection,
-                      matching: .all(of: [.images, .not(.livePhotos)]))
-        .onChange(of: photoSelection) { newValue in
-            Task {
-                await updateFromPhotoSelection(newValue)
+        .onAppear {
+            if text.string.isEmpty {
+                text = NSAttributedString(string: "", attributes: [.foregroundColor: NSColor.black])
+            }
+            context.shouldUpdateTextField()
+            context.foregroundColorBinding.wrappedValue = .black
+        }
+        .background {
+            if isFront {
+                SpixiiShapeFront()
+                    .foregroundColor(color)
+            } else {
+                SpixiiShapeBack()
+                    .foregroundColor(color)
+                    .brightness(0.04)
             }
         }
-        .onAppear {
-            context.shouldUpdateTextField()
+        .background {
+            if isFront {
+                color.brightness(0.04)
+            } else {
+                color
+            }
         }
-    }
-    
-    private func updateFromPhotoSelection(_ photoPickerItem: PhotosPickerItem?) async {
-        if let selectedPhotoData = try? await photoPickerItem?.loadTransferable(type: Data.self),
-           let rawImageData = NSImage(data: selectedPhotoData), //.aspectFittedToHeight(150),
-           let compressedImage = rawImageData.jpegData(compressionQuality: 0.5),
-           let image = ImageRepresentable(data: compressedImage) {
-            let lowerBound = context.selectedRange.lowerBound
-            context.pasteImage(image, at: lowerBound)
-        }
+        .cornerRadius(16)
+       
     }
     
     func text(for fontSize: CGFloat) -> some View {
@@ -79,7 +80,7 @@ public struct FlashcardTextEditorViewMacOS: View {
 
 struct FlashcardTextEditorViewMacOS_Previews: PreviewProvider {
     static var previews: some View {
-        FlashcardTextEditorViewMacOS(text: .constant(NSAttributedString("")), color: .blue, side: "Frente", context: RichTextContext())
+        FlashcardTextEditorViewMacOS(text: .constant(NSAttributedString("")), color: .blue, side: "Frente", context: RichTextContext(), isFront: true)
             .environment(\.sizeCategory, .medium)
     }
 }

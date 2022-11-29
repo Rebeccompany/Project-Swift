@@ -68,7 +68,7 @@ struct DifficultyButtonView: View {
     private var content: DifficultyButtonContent
     private let userGrade: UserGrade
     private let action: (UserGrade) -> Void
-    @State var show: Bool = false
+    @State private var show: Bool = false
     @GestureState var press: Bool = false
     @Binding var isVOOn: Bool
     

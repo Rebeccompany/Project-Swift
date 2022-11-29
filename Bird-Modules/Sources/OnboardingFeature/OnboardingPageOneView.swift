@@ -17,7 +17,7 @@ struct OnboardingPageOneView: View {
                 .frame(width: 250, height: 250)
             
             Text(NSLocalizedString("pagina_um", bundle: .module, comment: ""))
-                .font(.title3)
+                .font(.system(size: 16))
                 .fontWeight(.regular)
                 .foregroundColor(HBColor.collectionTextColor)
                 .padding(.all)

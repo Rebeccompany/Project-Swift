@@ -80,11 +80,11 @@ public struct DetailViewMacOS: View {
                 } label: {
                     
                     if viewModel.sortOrder == [KeyPathComparator(\Deck.name)] {
-                        Text("Nome")
+                        Text(NSLocalizedString("nome", bundle: .module, comment: ""))
                     } else if viewModel.sortOrder == [KeyPathComparator(\Deck.cardCount)] {
-                        Text("Quantidade")
+                        Text(NSLocalizedString("quantidade", bundle: .module, comment: ""))
                     } else if viewModel.sortOrder == [KeyPathComparator(\Deck.datesLogs.lastAccess)] {
-                        Text("Último Acesso")
+                        Text(NSLocalizedString("ultimo_acesso", bundle: .module, comment: ""))
                     } else {
                         Text("Sort")
                     }

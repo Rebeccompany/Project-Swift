@@ -100,7 +100,6 @@ public struct StudyViewiOS: View {
                     EndOfStudyViewiOS(mode: mode) {
                         do {
                             try viewModel.saveChanges(deck: deck, mode: mode)
-                            dismiss()
                         } catch {
                             selectedErrorMessage = .saveStudy
                             showingErrorAlert = true
@@ -141,8 +140,10 @@ public struct StudyViewiOS: View {
                         do {
                             if mode == .spaced {
                                 try viewModel.saveChanges(deck: deck, mode: mode)
+                            } else {
+                                dismiss()
                             }
-                            dismiss()
+                            
                         } catch {
                             selectedErrorMessage = .saveStudy
                             showingErrorAlert = true
@@ -165,15 +166,21 @@ public struct StudyViewiOS: View {
                       dismissButton: .default(Text("fechar", bundle: .module)))
             }
         }
+        .onChange(of: viewModel.shouldDismiss) { newValue in
+            if newValue {
+                dismiss()
+            }
+        }
         
     }
+    
 }
 
 struct StudyViewiOS_Previews: PreviewProvider {
     static var repo: DeckRepositoryMock { DeckRepositoryMock() }
-    
+
     static var previews: some View {
-        StudyViewiOS(deck: repo.decks.first { $0.id == repo.deckWithCardsId }!, mode: .spaced)
+        StudyViewiOS(deck: Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil, description: ""), mode: .spaced)
     }
 }
 #endif

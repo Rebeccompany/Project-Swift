@@ -72,7 +72,8 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
                     spacedRepetitionConfig: spacedRepetitionConfig,
                     session: session,
                     category: category,
-                    storeId: entity.storeId
+                    storeId: entity.storeId,
+                    description: entity.deckDescription ?? ""
         )
     }
     
@@ -90,6 +91,7 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
         deck.numberOfSteps = Int16(model.spacedRepetitionConfig.numberOfSteps)
         deck.category = model.category.rawValue
         deck.storeId = model.storeId
+        deck.deckDescription = model.description
         return deck
     }
 }

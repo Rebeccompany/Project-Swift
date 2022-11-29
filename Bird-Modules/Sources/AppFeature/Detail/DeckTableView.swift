@@ -32,15 +32,31 @@ struct DeckTableView: View {
     
     @ViewBuilder
     private var content: some View {
-        #if os(iOS)
-        if horizontalSizeClass == .compact {
-            list
-        } else {
+        VStack(alignment: .leading) {
+            if !viewModel.todayDecks.isEmpty {
+                Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
+                    .padding(.leading)
+                    .padding(.top)
+                    .font(.title3)
+                    .bold()
+                SessionsForTodayView()
+            }
+            Text(NSLocalizedString("baralhos", bundle: .module, comment: ""))
+                .padding(.leading)
+                .font(.title3)
+                .bold()
+#if os(iOS)
+            if horizontalSizeClass == .compact {
+                list
+            } else {
+                table
+            }
+            
+#elseif os(macOS)
             table
+#endif
+            
         }
-        #elseif os(macOS)
-        table
-        #endif
     }
     
     @ViewBuilder
@@ -69,7 +85,7 @@ struct DeckTableView: View {
                 contextMenu(for: deck)
             }
         }
-        .animation(.linear, value: viewModel.sortOrder)
+        .animation(.linear, value: sortedDecks)
         .listStyle(.plain)
         .onDisappear {
             Task {

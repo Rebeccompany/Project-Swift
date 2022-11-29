@@ -39,7 +39,7 @@ public func setupHabitatForIsolatedTesting(
 }
 
 public func setupHabitatForIntegrationTesting() {
-    Habitat[\.deckRepository] = DeckRepositoryMock.shared
+    Habitat[\.deckRepository] = DeckRepositoryMock()
     Habitat[\.collectionRepository] = CollectionRepositoryMock.shared
     Habitat[\.dateHandler] = DateHandlerMock()
     Habitat[\.uuidGenerator] = UUIDHandlerMock()

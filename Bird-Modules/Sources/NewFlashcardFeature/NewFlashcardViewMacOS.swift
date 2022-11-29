@@ -12,7 +12,6 @@ import Storage
 import Habitat
 import RichTextKit
 import Combine
-#warning("Tamanho da letra nao muda só de clicar no lado que está editando")
 #if os(macOS)
 public struct NewFlashcardViewMacOS: View {
     @StateObject private var viewModel = NewFlashcardViewModelMacOS()
@@ -43,14 +42,15 @@ public struct NewFlashcardViewMacOS: View {
     
     public var body: some View {
         NavigationStack {
-            ScrollViewReader { proxy in
+            ScrollViewReader { _ in
                 ScrollView {
                     VStack(alignment: .leading) {
                         HStack {
                             FlashcardTextEditorViewMacOS(
                                 text: $viewModel.flashcardFront, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                                 side: NSLocalizedString("frente", bundle: .module, comment: ""),
-                                context: frontContext
+                                context: frontContext,
+                                isFront: true
                             )
                             .id(NewFlashcardFocus.front)
                             .frame(minHeight: 450)
@@ -58,7 +58,8 @@ public struct NewFlashcardViewMacOS: View {
                             FlashcardTextEditorViewMacOS(
                                 text: $viewModel.flashcardBack, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
                                 side: NSLocalizedString("verso", bundle: .module, comment: ""),
-                                context: backContext
+                                context: backContext,
+                                isFront: false
                             )
                             .id(NewFlashcardFocus.back)
                             .frame(minHeight: 450)
@@ -116,7 +117,8 @@ public struct NewFlashcardViewMacOS: View {
                     customAlert()
                 }
                 .alert(isPresented: $showingCloseAlert) {
-                    return Alert(title: Text("Cartão Salvo!"), message: Text("Seu cartão foi salvo no baralho, essa janela pode ser fechada"))
+                    let alert = Alert(title: Text("Cartão Salvo!"), message: Text("Seu cartão foi salvo no baralho, essa janela pode ser fechada"))
+                    return alert
                 }
                 .toolbar {
                     
@@ -297,8 +299,9 @@ public struct NewFlashcardViewMacOS: View {
         } label: {
             HStack {
                 Spacer()
-                Text("Salvar")
+                Text(NSLocalizedString("salvar", bundle: .module, comment: ""))
                     .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(HBColor.collectionTextColor)
                 Spacer()
             }
             .frame(height: 46)

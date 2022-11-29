@@ -6,7 +6,7 @@
   
 */
 
-"colecoes" = "collections";
+"colecoes" = "Collections";
 "baralhos_title" = "All Decks";
 "editar" = "Edit";
 "deletar" = "Delete";
@@ -25,5 +25,10 @@
 "abrir" = "Open";
 "cartas" = "cards";
 "criar_colecao" = "Create Collection";
+"baralhos" = "Decks";
+"sessões_para_hoje" = "Sessions For Today";
 "colecoes_title" = "Collections";
-"todos_os_baralhos" = "All Decks";
+"baralhos" = "Decks";
+"library" = "Library";
+"nova_colecao" = "New Collection";
+"%d cartas_hoje" = "%d cards for today";

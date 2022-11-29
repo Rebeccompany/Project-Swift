@@ -10,11 +10,14 @@ import Models
 import NewCollectionFeature
 import HummingBird
 import OnboardingFeature
+import StoreState
+import StoreFeature
 
 #if os(macOS)
 struct CollectionsSidebarMacOS: View {
     @State private var onboarding: Bool = false
     @EnvironmentObject private var viewModel: ContentViewModel
+    @EnvironmentObject private var store: ShopStore
     @State private var presentCollectionCreation = false
     @State private var editingCollection: DeckCollection?
     @Binding private var selection: SidebarRoute
@@ -81,7 +84,7 @@ struct CollectionsSidebarMacOS: View {
                     presentCollectionCreation = true
                 } label: {
                     Label {
-                        Text("Nova Coleção")
+                        Text(NSLocalizedString("nova_colecao", bundle: .module, comment: ""))
                     } icon: {
                         Image(systemName: "plus.circle")
                     }
@@ -108,7 +111,7 @@ struct CollectionsSidebarMacOS: View {
         }
         .sheet(isPresented: $onboarding) {
             OnboardingView()
-                .frame(minWidth: 400, minHeight: 700)
+                .frame(minWidth: 400, minHeight: 500)
         }
         .onChange(of: presentCollectionCreation, perform: viewModel.didCollectionPresentationStatusChanged)
         .scrollContentBackground(.hidden)

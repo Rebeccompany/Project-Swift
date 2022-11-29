@@ -52,13 +52,13 @@ struct OnboardingPageThreeView: View {
                             .padding(.bottom)
                         
                         Text(NSLocalizedString("pagina_tres_tres", bundle: .module, comment: ""))
-                            .font(.body)
+                            .font(.system(size: 16))
                             .fontWeight(.regular)
                             .foregroundColor(HBColor.collectionTextColor)
                             .padding(.bottom)
                         
                         Text(NSLocalizedString("pagina_tres_quatro", bundle: .module, comment: ""))
-                            .font(.body)
+                            .font(.system(size: 16))
                             .fontWeight(.regular)
                             .foregroundColor(HBColor.collectionTextColor)
                             .padding(.bottom)
