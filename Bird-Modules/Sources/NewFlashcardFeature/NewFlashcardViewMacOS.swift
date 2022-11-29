@@ -43,7 +43,7 @@ public struct NewFlashcardViewMacOS: View {
     
     public var body: some View {
         NavigationStack {
-            ScrollViewReader { proxy in
+            ScrollViewReader { _ in
                 ScrollView {
                     VStack(alignment: .leading) {
                         HStack {
@@ -118,7 +118,8 @@ public struct NewFlashcardViewMacOS: View {
                     customAlert()
                 }
                 .alert(isPresented: $showingCloseAlert) {
-                    return Alert(title: Text("Cartão Salvo!"), message: Text("Seu cartão foi salvo no baralho, essa janela pode ser fechada"))
+                    let alert = Alert(title: Text("Cartão Salvo!"), message: Text("Seu cartão foi salvo no baralho, essa janela pode ser fechada"))
+                    return alert
                 }
                 .toolbar {
                     

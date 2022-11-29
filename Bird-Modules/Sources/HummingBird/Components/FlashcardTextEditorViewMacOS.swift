@@ -44,6 +44,10 @@ public struct FlashcardTextEditorViewMacOS: View {
                 }
             }
         }
+        .onAppear {
+            context.foregroundColor = ColorRepresentable.white
+            context.shouldUpdateTextField()
+        }
         .background {
             if isFront {
                 SpixiiShapeFront()
@@ -62,10 +66,7 @@ public struct FlashcardTextEditorViewMacOS: View {
             }
         }
         .cornerRadius(16)
-        .onAppear {
-            context.shouldUpdateTextField()
-            context.foregroundColorBinding.wrappedValue = .white
-        }
+       
     }
     
     func text(for fontSize: CGFloat) -> some View {
