@@ -131,7 +131,9 @@ let package = Package(
             targets: ["Puffins"]
         ),
         .library(name: "Peacock", targets: ["Peacock"]),
-        .library(name: "StoreState", targets: ["StoreState"])
+        .library(name: "StoreState", targets: ["StoreState"]),
+        .library(name: "Authentication", targets: ["Authentication"]),
+        .library(name: "Keychain", targets: ["Keychain"])
     ],
     
     dependencies: [
@@ -166,7 +168,8 @@ let package = Package(
                 "OnboardingFeature",
                 "StoreFeature",
                 "StoreState",
-                "ClassKitFeature"
+                "ClassKitFeature",
+                "Authentication"
             ]
         ),
         
@@ -191,20 +194,22 @@ let package = Package(
                 "StudyFeature",
                 "ImportingFeature",
                 "Habitat",
-                "Puffins"
+                "Puffins",
+                "Authentication"
             ]
         ),
             
-        .target(name: "StudyFeature",
-                dependencies: [
-                     "Models",
-                     "HummingBird",
-                     "Woodpecker",
-                     "Storage",
-                     "Utils",
-                     "Habitat",
-                     "FlashcardsOnboardingFeature"
-                ]
+        .target(
+            name: "StudyFeature",
+            dependencies: [
+                "Models",
+                "HummingBird",
+                "Woodpecker",
+                "Storage",
+                "Utils",
+                "Habitat",
+                "FlashcardsOnboardingFeature"
+            ]
         ),
         
         .target(
@@ -303,7 +308,8 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Utils",
-                "Puffins"
+                "Puffins",
+                "Keychain"
             ]
         ),
         
@@ -333,7 +339,8 @@ let package = Package(
                 "Habitat",
                 "PublicDeckFeature",
                 "Peacock",
-                "StoreState"
+                "StoreState",
+                "Authentication"
             ]
         ),
         
@@ -354,7 +361,8 @@ let package = Package(
                 "HummingBird",
                 "Habitat",
                 "Peacock",
-                "StoreState"
+                "StoreState",
+                "Authentication"
             ]
         ),
         
@@ -362,6 +370,18 @@ let package = Package(
             name: "StoreState",
             dependencies: ["Models"]
         ),
+        
+        .target(
+            name: "Authentication",
+            dependencies: [
+                "HummingBird",
+                "Puffins",
+                "Habitat",
+                "Keychain"
+            ]
+        ),
+        
+        .target(name: "Keychain"),
         
         // MARK: Test Targets
         .testTarget(
@@ -505,6 +525,16 @@ let package = Package(
                 "Puffins",
                 "Habitat"
             ]
-        )
+        ),
+        
+            .testTarget(
+                name: "AuthenticationTests",
+                dependencies: [
+                    "Authentication",
+                    "Keychain",
+                    "Models",
+                    "Puffins"
+                ]
+            )
     ]
 )

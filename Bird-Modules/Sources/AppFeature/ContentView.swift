@@ -5,18 +5,19 @@
 //  Created by Gabriel Ferreira de Carvalho on 14/09/22.
 //
 
-import SwiftUI
-import Models
-import DeckFeature
-import NewDeckFeature
-import HummingBird
 import Flock
-import NewCollectionFeature
+import Models
+import SwiftUI
 import Habitat
 import Storage
-import StoreFeature
-import OnboardingFeature
 import StoreState
+import DeckFeature
+import HummingBird
+import StoreFeature
+import NewDeckFeature
+import Authentication
+import OnboardingFeature
+import NewCollectionFeature
 
 public struct ContentView: View {
     @AppStorage("com.projectbird.birdmodules.appfeature.onboarding") private var onboarding: Bool = true
@@ -27,6 +28,7 @@ public struct ContentView: View {
     @StateObject private var viewModel: ContentViewModel = ContentViewModel()
     @StateObject private var appRouter: AppRouter = AppRouter()
     @StateObject private var shopStore: ShopStore = ShopStore()
+    @StateObject private var authModel: AuthenticationModel = AuthenticationModel()
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
@@ -91,6 +93,7 @@ public struct ContentView: View {
         )
         .environmentObject(viewModel)
         .environmentObject(shopStore)
+        .environmentObject(authModel)
         .environment(\.editMode, $editModeForCollection)
         .environment(\.horizontalSizeClass, horizontalSizeClass)
     }
@@ -104,6 +107,7 @@ public struct ContentView: View {
                             .automatic,
                     for: .tabBar)
                 .environmentObject(viewModel)
+                .environmentObject(authModel)
                 .environment(\.editMode, $editModeForDeck)
         } destination: { (route: StudyRoute) in
             StudyRoutes.destination(for: route, viewModel: viewModel)

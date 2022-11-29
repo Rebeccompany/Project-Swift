@@ -14,3 +14,6 @@
 "medicine" = "Medicina";
 "law" = "Direito";
 "others" = "Outros";
+"signin" = "Entrar";
+"signout" = "Sair";
+"delete_account" = "Deletar conta";
