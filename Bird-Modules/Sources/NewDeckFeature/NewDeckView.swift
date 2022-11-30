@@ -10,6 +10,7 @@ import HummingBird
 import Models
 import Storage
 import Habitat
+import Puffins
 
 public struct NewDeckView: View {
     @StateObject private var viewModel: NewDeckViewModel = NewDeckViewModel()
@@ -17,6 +18,7 @@ public struct NewDeckView: View {
     @State private var selectedErrorMessage: AlertText = .deleteDeck
     @State private var activeAlert: ActiveAlert = .error
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
     @FocusState private var selectedField: Int?
     @Binding private var editMode: EditMode
     
@@ -30,7 +32,6 @@ public struct NewDeckView: View {
     }
     
     public var body: some View {
-        
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
@@ -171,8 +172,9 @@ public struct NewDeckView: View {
                         
                         if editingDeck == nil {
                             do {
-                                try viewModel.createDeck(collection: collection)
+                                let newId = try viewModel.createDeck(collection: collection)
                                 dismiss()
+                                openURL(DeepLinkURL.url(path: "openlocaldeck/\(newId.uuidString)"))
                             } catch {
                                 activeAlert = .error
                                 showingAlert = true

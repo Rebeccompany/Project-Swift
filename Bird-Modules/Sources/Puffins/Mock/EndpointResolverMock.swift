@@ -29,7 +29,11 @@ public final class EndpointResolverMock: EndpointResolverProtocol {
     }
     
     public var externalSection: [ExternalSection] = [
-        ExternalSection(title: getCategoryString(category: .stem), decks: [ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem), ExternalDeck(id: "2", name: "Stem 2", description: "Stem Desc 2", icon: .abc, color: .darkBlue, category: .stem), ExternalDeck(id: "3", name: "Stem 3", description: "Stem Desc 3", icon: .atom, color: .gray, category: .stem)])
+        ExternalSection(title: getCategoryString(category: .stem), decks: [
+            ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem, ownerId: "id", ownerName: "name", cardCount: 3),
+            ExternalDeck(id: "2", name: "Stem 2", description: "Stem Desc 2", icon: .abc, color: .darkBlue, category: .stem, ownerId: "id", ownerName: "name", cardCount: 3),
+            ExternalDeck(id: "3", name: "Stem 3", description: "Stem Desc 3", icon: .atom, color: .gray, category: .stem, ownerId: "id", ownerName: "name", cardCount: 3)
+        ])
     ]
     
     public var externalSectionData: Data? {

@@ -100,7 +100,7 @@ extension CLSDeckLibrary: CLSDataStoreDelegate {
         context.topic = .science
         context.title = deckNode.title
         
-        context.universalLinkURL = URL(string: "spixii://" + deckIdentifier)
+        context.universalLinkURL = URL(string: "spixii://opendeck/" + deckIdentifier)
         
         return context
     }

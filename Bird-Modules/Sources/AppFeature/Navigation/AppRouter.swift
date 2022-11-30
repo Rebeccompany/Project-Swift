@@ -13,6 +13,7 @@ import Storage
 import Habitat
 
 //swiftlint:disable trailing_closure
+@MainActor
 final class AppRouter: ObservableObject {
     @Published var path: NavigationPath = .init()
     @Published var storePath: NavigationPath = .init()
@@ -51,15 +52,70 @@ final class AppRouter: ObservableObject {
     
     func onOpen(url: URL) {
         let string = url.absoluteString
-        var id: String = ""
+        var routePath: String = ""
         if string.count > 9 {
-            id = String(string.suffix(string.count - 9))
+            routePath = String(string.suffix(string.count - 9))
         }
         
+        guard let route = generateRoute(urlPath: routePath) else {
+            return
+        }
+        
+        openRoute(route)
+    }
+    
+    private func generateRoute(urlPath: String) -> DeepLinkRoute? {
+        if urlPath.hasPrefix("store/") {
+            return .openStore(storeId: String(urlPath.suffix(urlPath.count - "store/".count)))
+        } else if urlPath.hasPrefix("opendeck/") {
+            return .openDeck(storeId: String(urlPath.suffix(urlPath.count - "opendeck/".count)))
+        } else if urlPath.hasPrefix("openlocaldeck/") {
+            return .openLocalDeck(id: String(urlPath.suffix(urlPath.count - "openlocaldeck/".count)))
+        } else {
+            //Rota de 404
+            return nil
+        }
+    }
+    
+    private func openRoute(_ route: DeepLinkRoute) {
+        switch route {
+        case .openDeck(let storeId):
+            openDeck(storeId)
+        case .openStore(let storeId):
+            openStore(storeId)
+        case .openLocalDeck(let id):
+            openLocalDeck(id)
+        }
+    }
+    
+    private func openDeck(_ id: String) {
         if let deck = decks.first(where: { id == $0.storeId }) {
             navigate(to: deck)
         } else {
             navigateToStoreDeck(id: id)
+        }
+    }
+    
+    private func openStore(_ id: String) {
+        externalDeckService.getDeck(by: id)
+            .receive(on: RunLoop.main)
+            .sink { _ in
+                
+            } receiveValue: {[weak self] deck in
+                self?.selectedTab = .store
+                //swiftlint: disable empty_count
+                if let count = self?.storePath.count, count > 0 {
+                    self?.storePath.removeLast(count)
+                }
+                self?.storePath.append(deck)
+            }
+            .store(in: &cancellables)
+
+    }
+    
+    private func openLocalDeck(_ id: String) {
+        if let deck = decks.first(where: { id == $0.id.uuidString }) {
+            navigate(to: deck)
         }
     }
     
@@ -94,6 +150,9 @@ final class AppRouter: ObservableObject {
     
     private func navigate(to deck: Deck) {
         selectedTab = .study
+        if !path.isEmpty {
+            path.removeLast(path.count)
+        }
         path.append(StudyRoute.deck(deck))
     }
 }
@@ -101,5 +160,11 @@ final class AppRouter: ObservableObject {
 extension AppRouter {
     enum Tab {
         case study, store
+    }
+    
+    enum DeepLinkRoute {
+        case openDeck(storeId: String)
+        case openStore(storeId: String)
+        case openLocalDeck(id: String)
     }
 }

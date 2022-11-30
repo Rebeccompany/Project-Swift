@@ -16,7 +16,7 @@ struct PublicSection: View {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 16, alignment: .top)], spacing: 16) {
                 ForEach(section.decks) { deck in
                     NavigationLink(value: deck) {
-                        PublicDeckCell(deck: deck, numberOfCopies: 10, author: "Spixii")
+                        PublicDeckCell(deck: deck)
                     }
                     .frame(height: 200)
                 }

@@ -10,6 +10,7 @@ import HummingBird
 import Habitat
 import Models
 import Peacock
+import Utils
 import PublicDeckFeature
 import Authentication
 import StoreState
@@ -90,7 +91,7 @@ public struct StoreView: View {
                 Text("Account")
             } icon: {
                 Image(
-                    systemName: authModel.currentLogedInUserIdentifer != nil ?
+                    systemName: authModel.user != nil ?
                     "person.crop.circle" :
                         "person.crop.circle.badge.xmark"
                 )
@@ -120,5 +121,3 @@ struct StoreView_Previews: PreviewProvider {
         }
     }
 }
-
-

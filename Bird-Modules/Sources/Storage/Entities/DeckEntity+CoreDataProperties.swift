@@ -2,7 +2,7 @@
 //  DeckEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Gabriel Ferreira de Carvalho on 22/11/22.
+//  Created by Gabriel Ferreira de Carvalho on 29/11/22.
 //
 //
 
@@ -28,6 +28,7 @@ extension DeckEntity {
     @NSManaged public var name: String?
     @NSManaged public var numberOfSteps: Int16
     @NSManaged public var storeId: String?
+    @NSManaged public var ownerId: String?
     @NSManaged public var cards: NSSet?
     @NSManaged public var collection: CollectionEntity?
     @NSManaged public var session: SessionEntity?

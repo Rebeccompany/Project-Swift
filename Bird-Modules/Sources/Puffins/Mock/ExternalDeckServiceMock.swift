@@ -17,19 +17,35 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     public var expectedUploadString = ""
     
     public var feed: [ExternalSection] = [
-        ExternalSection(title: getCategoryString(category: .stem), decks: [ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem), ExternalDeck(id: "2", name: "Stem 2", description: "Stem Desc 2", icon: .abc, color: .darkBlue, category: .stem), ExternalDeck(id: "3", name: "Stem 3", description: "Stem Desc 3", icon: .atom, color: .gray, category: .stem)]),
+        ExternalSection(title: getCategoryString(category: .stem), decks: [
+            ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem, ownerId: "id", ownerName: "name", cardCount: 3),
+            ExternalDeck(id: "2", name: "Stem 2", description: "Stem Desc 2", icon: .abc, color: .darkBlue, category: .stem, ownerId: "id", ownerName: "name", cardCount: 3),
+            ExternalDeck(id: "3", name: "Stem 3", description: "Stem Desc 3", icon: .atom, color: .gray, category: .stem, ownerId: "id", ownerName: "name", cardCount: 3)
+        ]),
         
-        ExternalSection(title: getCategoryString(category: .humanities), decks: [ExternalDeck(id: "4", name: "Humanities 1", description: "Humanities Desc", icon: .gamecontroller, color: .green, category: .humanities)]),
+        ExternalSection(title: getCategoryString(category: .humanities), decks: [
+            ExternalDeck(id: "4", name: "Humanities 1", description: "Humanities Desc", icon: .gamecontroller, color: .green, category: .humanities, ownerId: "id", ownerName: "name", cardCount: 3)
+        ]),
         
-        ExternalSection(title: getCategoryString(category: .languages), decks: [ExternalDeck(id: "5", name: "Languages 1", description: "Languages Desc", icon: .books, color: .lightBlue, category: .languages), ExternalDeck(id: "6", name: "Languages 2", description: "Languages Desc 2", icon: .cloudSun, color: .darkPurple, category: .languages), ExternalDeck(id: "7", name: "Languages 3", description: "Languages Desc 3", icon: .books, color: .pink, category: .languages), ExternalDeck(id: "8", name: "Languages 4", description: "Languages Desc 4", icon: .books, color: .beigeBrown, category: .languages)]),
+        ExternalSection(title: getCategoryString(category: .languages), decks: [
+            ExternalDeck(id: "5", name: "Languages 1", description: "Languages Desc", icon: .books, color: .lightBlue, category: .languages, ownerId: "id", ownerName: "name", cardCount: 3),
+            ExternalDeck(id: "6", name: "Languages 2", description: "Languages Desc 2", icon: .cloudSun, color: .darkPurple, category: .languages, ownerId: "id", ownerName: "name", cardCount: 3),
+            ExternalDeck(id: "7", name: "Languages 3", description: "Languages Desc 3", icon: .books, color: .pink, category: .languages, ownerId: "id", ownerName: "name", cardCount: 3),
+            ExternalDeck(id: "8", name: "Languages 4", description: "Languages Desc 4", icon: .books, color: .beigeBrown, category: .languages, ownerId: "id", ownerName: "name", cardCount: 3)
+        ]),
         
-        ExternalSection(title: getCategoryString(category: .arts), decks: [ExternalDeck(id: "9", name: "Arts 3", description: "Arts Desc 3", icon: .books, color: .orange, category: .arts), ExternalDeck(id: "10", name: "Arts 3", description: "Arts Desc 3", icon: .cpu, color: .lightBlue, category: .arts)]),
+        ExternalSection(title: getCategoryString(category: .arts), decks: [
+            ExternalDeck(id: "9", name: "Arts 3", description: "Arts Desc 3", icon: .books, color: .orange, category: .arts, ownerId: "id", ownerName: "name", cardCount: 3),
+            ExternalDeck(id: "10", name: "Arts 3", description: "Arts Desc 3", icon: .cpu, color: .lightBlue, category: .arts, ownerId: "id", ownerName: "name", cardCount: 3)
+        ]),
         
-        ExternalSection(title: getCategoryString(category: .others), decks: [ExternalDeck(id: "11", name: "Others", description: "Others Desc", icon: .books, color: .darkPurple, category: .others)])
+        ExternalSection(title: getCategoryString(category: .others), decks: [
+            ExternalDeck(id: "11", name: "Others", description: "Others Desc", icon: .books, color: .darkPurple, category: .others, ownerId: "id", ownerName: "name", cardCount: 3)
+        ])
     ]
     
     public func deck(id: String) -> ExternalDeck {
-        ExternalDeck(id: id, name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem)
+        ExternalDeck(id: id, name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem, ownerId: "id", ownerName: "name", cardCount: 3)
     }
     
     public var cards: [ExternalCard] {
@@ -52,6 +68,8 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
             icon: .leaf,
             color: .darkPurple,
             category: .languages,
+            ownerId: "owner",
+            ownerName: "ownerName",
             cards: Array(1...10).map { _ in
                 CardDTO(
                     front: String(data: NSAttributedString(string: "front").rtfData()!, encoding: .utf8)!,
@@ -95,7 +113,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         }
     }
     
-    public func uploadNewDeck(_ deck: Deck, with cards: [Card]) -> AnyPublisher<String, URLError> {
+    public func uploadNewDeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<String, URLError> {
         if shouldError {
             return Fail(outputType: String.self, failure: error!).eraseToAnyPublisher()
         }
@@ -114,5 +132,12 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
             return Fail(outputType: DeckDTO.self, failure: error!).eraseToAnyPublisher()
         }
         return Just(deckDTO(id: id)).setFailureType(to: URLError.self).eraseToAnyPublisher()
+    }
+    
+    public  func updateADeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<Void, URLError> {
+        if shouldError {
+            return Fail(outputType: Void.self, failure: error!).eraseToAnyPublisher()
+        }
+        return Just(Void()).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
 }
