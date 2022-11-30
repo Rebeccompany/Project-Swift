@@ -52,16 +52,57 @@ final class AppRouter: ObservableObject {
     
     func onOpen(url: URL) {
         let string = url.absoluteString
-        var id: String = ""
+        var routePath: String = ""
         if string.count > 9 {
-            id = String(string.suffix(string.count - 9))
+            routePath = String(string.suffix(string.count - 9))
         }
         
+        guard let route = generateRoute(urlPath: routePath) else {
+            return
+        }
+        
+        openRoute(route)
+    }
+    
+    private func generateRoute(urlPath: String) -> DeepLinkRoute? {
+        if urlPath.hasPrefix("store/") {
+            return .openStore(storeId: String(urlPath.suffix(urlPath.count - "store/".count)))
+        } else if urlPath.hasPrefix("opendeck/") {
+            return .openDeck(storeId: String(urlPath.suffix(urlPath.count - "store/".count)))
+        } else {
+            //Rota de 404
+            return nil
+        }
+    }
+    
+    private func openRoute(_ route: DeepLinkRoute) {
+        switch route {
+        case .openDeck(let storeId):
+            openDeck(storeId)
+        case .openStore(let storeId):
+            openStore(storeId)
+        }
+    }
+    
+    private func openDeck(_ id: String) {
         if let deck = decks.first(where: { id == $0.storeId }) {
             navigate(to: deck)
         } else {
             navigateToStoreDeck(id: id)
         }
+    }
+    
+    private func openStore(_ id: String) {
+        externalDeckService.getDeck(by: id)
+            .receive(on: RunLoop.main)
+            .sink { _ in
+                
+            } receiveValue: {[weak self] deck in
+                self?.selectedTab = .store
+                self?.storePath.append(deck)
+            }
+            .store(in: &cancellables)
+
     }
     
     private func navigateToStoreDeck(id: String) {
@@ -102,5 +143,10 @@ final class AppRouter: ObservableObject {
 extension AppRouter {
     enum Tab {
         case study, store
+    }
+    
+    enum DeepLinkRoute {
+        case openDeck(storeId: String)
+        case openStore(storeId: String)
     }
 }
