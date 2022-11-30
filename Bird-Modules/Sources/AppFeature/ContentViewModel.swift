@@ -39,6 +39,7 @@ public final class ContentViewModel: ObservableObject {
     @Dependency(\.notificationService) private var notificationService: NotificationServiceProtocol
     @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
     @Dependency(\.externalDeckService) private var externalDeckService: ExternalDeckServiceProtocol
+    @Dependency(\.notificationCenter) private var notificationCenter: NotificationCenterProtocol
     
     private var cancellables: Set<AnyCancellable>
     
@@ -120,8 +121,8 @@ public final class ContentViewModel: ObservableObject {
     }
     
     private func setupDidEnterForeground() {
-        NotificationCenter.default
-            .publisher(for: UIApplication.willEnterForegroundNotification)
+        notificationCenter
+            .notificationPublisher(for: UIApplication.willEnterForegroundNotification, object: nil)
             .sink { _ in
                 self.notificationService.cleanNotifications()
             }
@@ -129,8 +130,8 @@ public final class ContentViewModel: ObservableObject {
     }
     
     private func setupDidEnterBackgroundPublisher() {
-        NotificationCenter.default
-            .publisher(for: UIApplication.didEnterBackgroundNotification)
+        notificationCenter
+            .notificationPublisher(for: UIApplication.didEnterBackgroundNotification, object: nil)
             .flatMap { [weak self] _ in
                 guard let self else {
                     preconditionFailure("self is deinitialized")

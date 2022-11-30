@@ -23,6 +23,7 @@ public func setupHabitatForProduction() {
     Habitat[\.notificationService] = NotificationService()
     Habitat[\.externalUserService] = ExternalUserService.shared
     Habitat[\.keychainService] = KeychainService()
+    Habitat[\.notificationCenter] = NotificationCenter.default
 }
 
 public func setupHabitatForIsolatedTesting(
@@ -35,7 +36,8 @@ public func setupHabitatForIsolatedTesting(
     externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock(),
     notificationService: NotificationServiceProtocol = NotificationService(center: UserNotificationServiceMock(), dateHandler: DateHandlerMock()),
     externalUserService: ExternalUserServiceProtocol = ExternalUserServiceMock(),
-    keychainService: KeychainServiceProtocol = KeychainServiceMock()
+    keychainService: KeychainServiceProtocol = KeychainServiceMock(),
+    notificationCenter: NotificationCenterProtocol = NotificationCenterMock()
 ) {
     Habitat[\.deckRepository] = deckRepository
     Habitat[\.collectionRepository] = collectionRepository
@@ -45,6 +47,7 @@ public func setupHabitatForIsolatedTesting(
     Habitat[\.displayCacher] = displayCacher
     Habitat[\.externalDeckService] = externalDeckService
     Habitat[\.notificationService] = notificationService
+    Habitat[\.notificationCenter] = notificationCenter
     Habitat[\.externalUserService] = externalUserService
     Habitat[\.keychainService] = keychainService
 }

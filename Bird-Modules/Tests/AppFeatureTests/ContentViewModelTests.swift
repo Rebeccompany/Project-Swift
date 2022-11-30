@@ -25,7 +25,9 @@ final class ContentViewModelTests: XCTestCase {
     var collectionRepositoryMock: CollectionRepositoryMock!
     var userNotificationService: UserNotificationServiceMock!
     var notificationService: NotificationService!
+    var userNotificationServiceMock: UserNotificationServiceMock!
     var dateHandler: DateHandlerMock!
+    var notificationCenter: NotificationCenterMock!
     var cancelables: Set<AnyCancellable>!
     var deck0: Deck!
     var deck1: Deck!
@@ -40,9 +42,11 @@ final class ContentViewModelTests: XCTestCase {
         displayCacherMock = DisplayCacher(localStorage: localStorageMock)
         userNotificationService = UserNotificationServiceMock()
         dateHandler = DateHandlerMock()
-        notificationService = NotificationService(center: userNotificationService, dateHandler: dateHandler)
+        userNotificationServiceMock = UserNotificationServiceMock()
+        notificationService = NotificationService(center: userNotificationServiceMock, dateHandler: dateHandler)
+        notificationCenter = NotificationCenterMock()
         
-        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock, displayCacher: displayCacherMock, notificationService: notificationService)
+        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock, displayCacher: displayCacherMock, notificationService: notificationService, notificationCenter: notificationCenter)
         sut = ContentViewModel()
         cancelables = Set<AnyCancellable>()
         createData()
@@ -70,6 +74,7 @@ final class ContentViewModelTests: XCTestCase {
         dateHandler = nil
         notificationService = nil
         userNotificationService = nil
+        notificationCenter = nil
         
         deck0 = nil
         deck1 = nil
@@ -324,7 +329,7 @@ final class ContentViewModelTests: XCTestCase {
         XCTAssertEqual(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), sut.detailTitle)
     }
     
-    func testSetupDidEnterBackgroundPublisher() {
+    func testSetupDidEnterBackgroundPublisher() async {
         
         var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "")
         
@@ -339,16 +344,16 @@ final class ContentViewModelTests: XCTestCase {
         try? deckRepositoryMock.createDeck(deck, cards: cards)
         
         sut.startup()
-        let not0 = Notification(name: UIApplication.didEnterBackgroundNotification)
-        NotificationCenter.default.post(not0)
-
-        let seconds = 1.0
-        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-            XCTAssert(self.userNotificationService.requests.count == 1)
-        }
+        let not0 = await Notification(name: UIApplication.didEnterBackgroundNotification)
+        notificationCenter.notificationSubject.send(not0)
+        try? await Task.sleep(for: .seconds(1))
+        
+        
+        XCTAssertEqual(self.userNotificationServiceMock.requests.count, 1)
+        
     }
     
-    func testSetupDidEnterForeground() throws {
+    func testSetupDidEnterForeground() async throws {
         
         var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "")
         
@@ -363,17 +368,17 @@ final class ContentViewModelTests: XCTestCase {
         try? deckRepositoryMock.createDeck(deck, cards: cards)
         
         sut.startup()
-        let not0 = Notification(name: UIApplication.didEnterBackgroundNotification)
-        NotificationCenter.default.post(not0)
-        let not = Notification(name: UIApplication.didBecomeActiveNotification)
-        NotificationCenter.default.post(not)
+        let not0 = await Notification(name: UIApplication.didEnterBackgroundNotification)
+        notificationCenter.notificationSubject.send(not0)
+        try? await Task.sleep(for: .seconds(1))
+        let not = await Notification(name: UIApplication.didBecomeActiveNotification)
+        notificationCenter.notificationSubject.send(not)
+        try? await Task.sleep(for: .seconds(1))
         
-        let seconds = 1.0
-        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-            XCTAssert(self.userNotificationService.requests.isEmpty)
-        }
+        XCTAssert(self.userNotificationService.requests.isEmpty)
+        
     }
-
+    
     func createCards() {
         cards = []
         var i = 0

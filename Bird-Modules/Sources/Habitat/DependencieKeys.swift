@@ -45,6 +45,10 @@ private struct NotificationServiceKey: HabitatKey {
     static var currentValue: NotificationServiceProtocol = NotificationService(center: UserNotificationServiceMock(), dateHandler: DateHandler())
 }
 
+private struct NotificationCenterKey: HabitatKey {
+    static var currentValue: NotificationCenterProtocol = NotificationCenter.default
+}
+
 private struct ExternalUserServiceKey: HabitatKey {
     static var currentValue: ExternalUserServiceProtocol = ExternalUserService.shared
 }
@@ -93,6 +97,11 @@ extension Habitat {
     public var notificationService: NotificationServiceProtocol {
         get { Self[NotificationServiceKey.self] }
         set { Self[NotificationServiceKey.self] = newValue }
+    }
+    
+    public var notificationCenter: NotificationCenterProtocol {
+        get { Self[NotificationCenterKey.self] }
+        set { Self[NotificationCenterKey.self] = newValue }
     }
     
     public var externalUserService: ExternalUserServiceProtocol {
