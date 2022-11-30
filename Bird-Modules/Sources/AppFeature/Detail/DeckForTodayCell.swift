@@ -43,7 +43,18 @@ struct DeckForTodayCell: View {
                     .fill(HBColor.color(for: deck.color))
             }
         } else {
-            
+            HStack {
+                Image(systemName: deck.icon)
+                    .foregroundColor(HBColor.color(for: deck.color))
+                Text(deck.name)
+                    .foregroundColor(HBColor.color(for: deck.color))
+            }
+            .padding(5)
+            .padding(.horizontal, 6)
+            .background {
+                RoundedRectangle(cornerRadius: 30)
+                    .fill(HBColor.color(for: deck.color).opacity(0.2))
+            }
         }
     }
     

@@ -35,10 +35,11 @@ struct SessionsForTodayView: View {
                         Button {
                             selectedDeck = deck
                         } label: {
-                            Label(deck.name, systemImage: deck.icon)
+                            DeckForTodayCell(deck: deck, view: .table)
                         }
-                        .buttonStyle(.bordered)
-                        #if os(iOS)
+                        #if os(macOS)
+                        .buttonStyle(.plain)
+                        #elseif os(iOS)
                         .buttonBorderShape(.capsule)
                         #endif
                         .tint(HBColor.color(for: deck.color))
