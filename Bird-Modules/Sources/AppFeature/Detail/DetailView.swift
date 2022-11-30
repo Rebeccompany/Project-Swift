@@ -40,6 +40,7 @@ public struct DetailView: View {
         .searchable(text: $viewModel.searchText, placement: horizontalSizeClass == .compact ? .navigationBarDrawer(displayMode: .always) : .toolbar)
         .toolbar(editMode.isEditing ? .visible : .hidden,
                  for: .bottomBar)
+        .toolbarBackground(.visible, for: .bottomBar)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
                 Button {
@@ -49,7 +50,6 @@ public struct DetailView: View {
                     Text(NSLocalizedString("editar", bundle: .module, comment: ""))
                 }
                 .disabled(viewModel.selection.count != 1)
-                
             }
             
             ToolbarItem(placement: .bottomBar) {

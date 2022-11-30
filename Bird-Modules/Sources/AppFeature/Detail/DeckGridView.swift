@@ -62,9 +62,6 @@ struct DeckGridView: View {
                                     }
                                 }
                         }
-                        .sheet(isPresented: $isCollectionSheetPresented) {
-                            CollectionList(viewModel: viewModel, deck: $deckToBeEdited)
-                        }
                         .buttonStyle(DeckCell.Style(color: deck.color))
                         .hoverEffect(.lift)
                         .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
@@ -81,6 +78,9 @@ struct DeckGridView: View {
                 .animation(.linear, value: viewModel.sortOrder)
                 .padding([.horizontal], 12)
                 .padding(.top, 24)
+            }
+            .sheet(isPresented: $isCollectionSheetPresented) {
+                CollectionList(viewModel: viewModel, deck: $deckToBeEdited)
             }
         }
     }
