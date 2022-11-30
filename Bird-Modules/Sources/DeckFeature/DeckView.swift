@@ -166,9 +166,9 @@ public struct DeckView: View {
             Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
                 viewModel.deletePublicDeck(deck)
             }
-        case .update(_):
+        case .update(let user):
             Button(NSLocalizedString("atualizar", bundle: .module, comment: "")) {
-                
+                viewModel.updatePublicDeck(deck, user: user)
             }
         case .publish(let user):
             Button(NSLocalizedString("publicar", bundle: .module, comment: "")) {

@@ -310,7 +310,7 @@ class NewFlashcardFeatureTests: XCTestCase {
              cardsIds: [],
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
-             storeId: nil, description: "")
+             storeId: nil, description: "", ownerId: nil)
     }
     enum WoodpeckerState {
         case review, learn

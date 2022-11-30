@@ -130,4 +130,22 @@ public class DeckViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func updatePublicDeck(_ deck: Deck, user: UserDTO) {
+        loadingPhase = .loading
+        
+        externalDeckService.updateAnDeck(deck, with: cards, owner: user)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.loadingPhase = .showSuccess
+                case .failure(_):
+                    self?.loadingPhase = .showFailure
+                }
+            } receiveValue: { _ in
+                
+            }
+            .store(in: &cancellables)
+    }
+    
 }

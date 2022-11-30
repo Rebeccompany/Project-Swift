@@ -111,4 +111,18 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
                 .decodeWhenSuccess(to: DeckDTO.self)
         }
     }
+    
+    public func updateAnDeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<Void, URLError> {
+        let dto = DeckAdapter.adapt(deck, with: cards, owner: owner)
+        let jsonEncoder = JSONEncoder()
+        guard let jsonData = try? jsonEncoder.encode(dto), let storeId = deck.storeId else {
+            return Fail(outputType: Void.self, failure: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()
+        }
+        
+        return authenticatePublisher { [weak self] token in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session.dataTaskPublisher(for: .update(id: storeId, jsonData), authToken: token)
+                .verifyVoidSuccess()
+        }
+    }
 }
