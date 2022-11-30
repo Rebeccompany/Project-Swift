@@ -11,6 +11,7 @@ import Models
 import Storage
 import SwiftUI
 import Habitat
+import Puffins
 import Foundation
 import HummingBird
 import StudyFeature
@@ -353,16 +354,24 @@ public struct DeckView: View {
             }
             .disabled(viewModel.isUpdateButtonDisabled(for: deck, user: user))
             
-            Button {
-                
-            } label: {
-                Label {
-                    Text(NSLocalizedString("compartilhar", bundle: .module, comment: ""))
-                } icon: {
-                    Image(systemName: "square.and.arrow.up")
+            if let id = deck.storeId {
+                ShareLink(
+                    item: DeepLinkURL.url(path: "store/\(id)")) {
+                        Label {
+                            Text("compartilhar", bundle: .module)
+                        } icon: {
+                            Image(systemName: "square.and.arrow.up")
+                        }.bold()
+                        
+                        .frame(minWidth: 140)
+
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(HBColor.actionColor.opacity(0.15))
+                .foregroundColor(HBColor.actionColor)
+                .padding(.bottom)
+                .disabled(viewModel.isShareButtonDisabled(for: deck))
             }
-            .disabled(viewModel.isShareButtonDisabled(for: deck))
             
             Button(role: .destructive) {
                 confirmationDialogData = .delete

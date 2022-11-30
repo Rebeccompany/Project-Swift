@@ -38,9 +38,9 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     public func isSignedIn() async throws -> Bool {
-        guard let currentLogedInUserIdentifer else { return false }
+        guard let user else { return false }
         
-        let state = try await idProvider.credentialState(forUserID: currentLogedInUserIdentifer)
+        let state = try await idProvider.credentialState(forUserID: user.appleIdentifier)
         switch state {
         case .authorized:
             self.shouldDismiss = true

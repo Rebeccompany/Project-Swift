@@ -248,7 +248,8 @@ let package = Package(
                 "HummingBird",
                 "Storage",
                 "Utils",
-                "Habitat"
+                "Habitat",
+                "Puffins"
             ]
         ),
         
