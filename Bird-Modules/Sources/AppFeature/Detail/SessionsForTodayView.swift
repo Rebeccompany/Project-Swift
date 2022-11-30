@@ -40,6 +40,7 @@ struct SessionsForTodayView: View {
                         #if os(macOS)
                         .buttonStyle(.plain)
                         #elseif os(iOS)
+                        .buttonStyle(.bordered)
                         .buttonBorderShape(.capsule)
                         #endif
                         .tint(HBColor.color(for: deck.color))

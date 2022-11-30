@@ -43,6 +43,7 @@ struct DeckForTodayCell: View {
                     .fill(HBColor.color(for: deck.color))
             }
         } else {
+            #if os(macOS)
             HStack {
                 Image(systemName: deck.icon)
                     .foregroundColor(HBColor.color(for: deck.color))
@@ -55,6 +56,9 @@ struct DeckForTodayCell: View {
                 RoundedRectangle(cornerRadius: 30)
                     .fill(HBColor.color(for: deck.color).opacity(0.2))
             }
+            #elseif os(iOS)
+            Label(deck.name, systemImage: deck.icon)
+            #endif
         }
     }
     
