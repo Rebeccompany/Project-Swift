@@ -74,7 +74,7 @@ public struct ContentView: View {
             appRouter.path.removeLast(appRouter.path.count - 1)
         }
         .onAppear(perform: viewModel.startup)
-        .onOpenURL(perform: appRouter.onOpen)
+        .onOpenURL { appRouter.onOpen(url: $0) }
     }
     
     @ViewBuilder

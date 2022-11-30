@@ -8,12 +8,11 @@
 
 import Foundation
 import CoreData
-import Storage
 
 extension CardEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CardEntity> {
-        return NSFetchRequest<CardEntity>(entityName: "CardEntity")
+        NSFetchRequest<CardEntity>(entityName: "CardEntity")
     }
 
     @NSManaged public var back: Data?

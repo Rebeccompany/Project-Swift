@@ -10,6 +10,7 @@ import HummingBird
 import Habitat
 import Models
 import Peacock
+import Utils
 import PublicDeckFeature
 import Authentication
 import StoreState
@@ -118,12 +119,5 @@ struct StoreView_Previews: PreviewProvider {
                     .environmentObject(AuthenticationModel())
             }
         }
-    }
-}
-
-#warning("Mover para Utils")
-extension String {
-    public func localized(_ bundle: Bundle) -> String {
-        NSLocalizedString(self, bundle: bundle, comment: "")
     }
 }
