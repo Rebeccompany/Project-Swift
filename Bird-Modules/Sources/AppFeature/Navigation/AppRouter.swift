@@ -68,7 +68,7 @@ final class AppRouter: ObservableObject {
         if urlPath.hasPrefix("store/") {
             return .openStore(storeId: String(urlPath.suffix(urlPath.count - "store/".count)))
         } else if urlPath.hasPrefix("opendeck/") {
-            return .openDeck(storeId: String(urlPath.suffix(urlPath.count - "store/".count)))
+            return .openDeck(storeId: String(urlPath.suffix(urlPath.count - "opendeck/".count)))
         } else {
             //Rota de 404
             return nil
@@ -99,6 +99,10 @@ final class AppRouter: ObservableObject {
                 
             } receiveValue: {[weak self] deck in
                 self?.selectedTab = .store
+                //swiftlint: disable empty_count
+                if let count = self?.storePath.count, count > 0 {
+                    self?.storePath.removeLast(count)
+                }
                 self?.storePath.append(deck)
             }
             .store(in: &cancellables)
@@ -136,6 +140,9 @@ final class AppRouter: ObservableObject {
     
     private func navigate(to deck: Deck) {
         selectedTab = .study
+        if !path.isEmpty {
+            path.removeLast(path.count)
+        }
         path.append(StudyRoute.deck(deck))
     }
 }
