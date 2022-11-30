@@ -44,6 +44,40 @@ public struct NewDeckViewMacOS: View {
                         .padding(.bottom)
                         .focused($selectedField, equals: 0)
                         
+                    Section {
+                        TextEditor(text: $viewModel.description)
+                            .focused($selectedField, equals: 1)
+                            .frame(height: 150)
+                            .padding()
+                            .background(HBColor.secondaryBackground)
+                            .cornerRadius(12)
+                        
+                    } header: {
+                        Text("description", bundle: .module)
+                            .font(.callout)
+                            .bold()
+                    }
+                    
+                    Section {
+                        Picker(selection: $viewModel.currentSelectedCategory) {
+                            ForEach(DeckCategory.allCases, id: \.self) { category in
+                                getCategoryLabel(category: category)
+                            }
+                        } label: {
+                            Text("categoria_selecionada", bundle: .module)
+                        }
+                        .pickerStyle(.automatic)
+                        .padding()
+                        .background(HBColor.secondaryBackground)
+                        .cornerRadius(12)
+                        
+                    } header: {
+                        Text("categoria", bundle: .module)
+                            .font(.callout)
+                            .bold()
+                            .padding(.top)
+                    }
+                    
                     
                     Text("cores", bundle: .module)
                         .font(.callout)

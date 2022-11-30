@@ -26,7 +26,7 @@ struct SessionsForTodayView: View {
                         Button {
                             selectedDeck = deck
                         } label: {
-                            DeckForTodayCell(deck: deck)
+                            DeckForTodayCell(deck: deck, view: .grid)
                         }
                         #if os(macOS)
                         .buttonStyle(.plain)

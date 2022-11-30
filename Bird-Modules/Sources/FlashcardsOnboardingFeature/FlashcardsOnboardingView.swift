@@ -76,8 +76,8 @@ public struct FlashcardsOnboardingView: View {
             .toolbarBackground(.hidden, for: .navigationBar)
             #endif
             .viewBackgroundColor(HBColor.primaryBackground)
+            .environment(\.locale, .autoupdatingCurrent)
         }
-        Spacer()
     }
 }
 

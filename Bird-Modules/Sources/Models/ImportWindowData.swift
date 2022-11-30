@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+#if os(macOS)
 public struct ImportWindowData: Equatable, Hashable, Codable {
     public var deck: Deck
     
@@ -15,3 +16,4 @@ public struct ImportWindowData: Equatable, Hashable, Codable {
         self.deck = deck
     }
 }
+#endif

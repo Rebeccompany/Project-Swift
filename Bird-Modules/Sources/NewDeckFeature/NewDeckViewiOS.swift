@@ -64,8 +64,6 @@ public struct NewDeckViewiOS: View {
                             ForEach(DeckCategory.allCases, id: \.self) { category in
                                 getCategoryLabel(category: category)
                             }
-                            #warning("ve se ta certim")
-                            //.buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedIcon == icon ? true : false))
                         } label: {
                             Text("categoria_selecionada", bundle: .module)
                         }

@@ -12,33 +12,38 @@ import Models
 
 struct DeckForTodayCell: View {
     var deck: Deck
+    var view: DetailDisplayType
     
     var body: some View {
-        HStack {
-            IconCircleView(iconName: deck.icon)
-                .padding(.vertical, 4)
-            VStack(alignment: .leading) {
-                Text(deck.name)
-                    .font(.title3)
-                    .bold()
-                
-                let cardsForToday = deck.session?.cardIds.count ?? 404
-                
-                Text(String.localizedStringWithFormat(NSLocalizedString("%d cartas_hoje", bundle: .module, comment: ""), cardsForToday))
-                    .font(.subheadline)
+        if view == .grid {
+            HStack {
+                IconCircleView(iconName: deck.icon)
+                    .padding(.vertical, 4)
+                VStack(alignment: .leading) {
+                    Text(deck.name)
+                        .font(.title3)
+                        .bold()
+                    
+                    let cardsForToday = deck.session?.cardIds.count ?? 404
+                    
+                    Text(String.localizedStringWithFormat(NSLocalizedString("%d cartas_hoje", bundle: .module, comment: ""), cardsForToday))
+                        .font(.subheadline)
+                }
+                .foregroundColor(Color.white)
+                Spacer()
             }
-            .foregroundColor(Color.white)
-            Spacer()
-        }
-        .padding(.horizontal)
-        #if os(iOS)
-        .frame(width: 250, height: 80)
-        #elseif os(macOS)
-        .frame(width: 250, height: 80 * 0.6)
-        #endif
-        .background {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(HBColor.color(for: deck.color))
+            .padding(.horizontal)
+            #if os(iOS)
+            .frame(width: 250, height: 80)
+            #elseif os(macOS)
+            .frame(width: 250, height: 80 * 0.6)
+            #endif
+            .background {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(HBColor.color(for: deck.color))
+            }
+        } else {
+            
         }
     }
     
@@ -101,7 +106,7 @@ private struct IconCircle: Layout {
 
 struct DeckForTodayCell_Previews: PreviewProvider {
     static var previews: some View {
-        DeckForTodayCell(deck: Deck(id: UUID(), name: "Palavras em Inglês", icon: "flame", color: CollectionColor.darkPurple, datesLogs: DateLogs(), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(), session: Session(cardIds: [UUID(), UUID()], date: Date(), deckId: UUID(), id: UUID()), category: .others, storeId: nil, description: ""))
+        DeckForTodayCell(deck: Deck(id: UUID(), name: "Palavras em Inglês", icon: "flame", color: CollectionColor.darkPurple, datesLogs: DateLogs(), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(), session: Session(cardIds: [UUID(), UUID()], date: Date(), deckId: UUID(), id: UUID()), category: .others, storeId: nil, description: ""), view: .grid)
             .frame(width: 300, height: 100)
             .previewLayout(.sizeThatFits)
             .viewBackgroundColor(Color.blue)

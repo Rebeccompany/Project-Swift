@@ -154,7 +154,11 @@ public struct DeckViewiOS: View {
             )
         }
         .sheet(isPresented: $shouldDisplayImport) {
+            #if os(iOS)
             ImportView(deck: deck, isPresenting: $shouldDisplayImport)
+            #elseif os(macOS)
+            ImportView(data: data, isPresenting: $shouldDisplayImport)
+            #endif
         }
 
     }
