@@ -122,6 +122,7 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         return authenticatePublisher { [weak self] token in
             guard let self else { preconditionFailure("self is deinitialized") }
             return self.session.dataTaskPublisher(for: .update(id: storeId, jsonData), authToken: token)
+                .print("update_deck")
                 .verifyVoidSuccess()
         }
     }
