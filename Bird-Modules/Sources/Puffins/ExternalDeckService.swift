@@ -76,8 +76,8 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         }
     }
     
-    public func uploadNewDeck(_ deck: Deck, with cards: [Card]) -> AnyPublisher<String, URLError> {
-        let dto = DeckAdapter.adapt(deck, with: cards)
+    public func uploadNewDeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<String, URLError> {
+        let dto = DeckAdapter.adapt(deck, with: cards, owner: owner)
         let jsonEncoder = JSONEncoder()
         guard let jsonData = try? jsonEncoder.encode(dto) else {
             return Fail(outputType: String.self, failure: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()
@@ -111,67 +111,18 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
                 .decodeWhenSuccess(to: DeckDTO.self)
         }
     }
-}
-
-extension Publisher where Output == URLSession.DataTaskPublisher.Output, Failure == URLSession.DataTaskPublisher.Failure {
     
-    func verifySuccess() -> some Publisher<Data, Failure> {
-        self
-            .tryMap { data, response in
-                let range = 200...299
-                guard let response = response as? HTTPURLResponse,
-                      range.contains(response.statusCode)
-                else {
-                    throw URLError(.badServerResponse)
-                }
-                return data
-            }
-            .mapError { error in
-                if let error = error as? URLError {
-                    return error
-                } else {
-                    return URLError(.cannotDecodeContentData)
-                }
-            }
-    }
-    
-    func verifyVoidSuccess() -> some Publisher<Void, Failure> {
-        self
-            .tryMap { _, response in
-                let range = 200...299
-                guard let response = response as? HTTPURLResponse,
-                      range.contains(response.statusCode)
-                else {
-                    throw URLError(.badServerResponse)
-                }
-                return Void()
-            }
-            .mapError { error in
-                if let error = error as? URLError {
-                    return error
-                } else {
-                    return URLError(.cannotDecodeContentData)
-                }
-            }
-    }
-    
-    func decodeWhenSuccess<T: Decodable>(to type: T.Type) -> some Publisher<T, URLError> {
-        self
-            .verifySuccess()
-            .decode(type: type, decoder: JSONDecoder())
-            .mapToURLError()
-    }
-}
-
-extension Publisher {
-    func mapToURLError() -> some Publisher<Output, URLError> {
-        self
-            .mapError { error in
-                if let error = error as? URLError {
-                    return error
-                } else {
-                    return URLError(.cannotDecodeContentData)
-                }
-            }
+    public func updateADeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<Void, URLError> {
+        let dto = DeckAdapter.adapt(deck, with: cards, owner: owner)
+        let jsonEncoder = JSONEncoder()
+        guard let jsonData = try? jsonEncoder.encode(dto), let storeId = deck.storeId else {
+            return Fail(outputType: Void.self, failure: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()
+        }
+        
+        return authenticatePublisher { [weak self] token in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session.dataTaskPublisher(for: .update(id: storeId, jsonData), authToken: token)
+                .verifyVoidSuccess()
+        }
     }
 }

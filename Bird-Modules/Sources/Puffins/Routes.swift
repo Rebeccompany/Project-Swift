@@ -4,7 +4,7 @@
 //
 //  Created by Rebecca Mello on 27/10/22.
 //
-
+import Models
 import Foundation
 
 extension Endpoint {
@@ -35,5 +35,17 @@ extension Endpoint {
     
     static func download(id: String) -> Endpoint {
         Endpoint(path: "api/decks/\(id)/download")
+    }
+    
+    static func signin(id: String) -> Endpoint {
+        Endpoint(path: "api/auth/signin", method: .post, body: try? JSONEncoder().encode(id))
+    }
+    
+    static func signup(user: UserDTO) -> Endpoint {
+        Endpoint(path: "api/auth/signup", method: .post, body: try? JSONEncoder().encode(user))
+    }
+    
+    static func update(id: String, _ dto: Data) -> Endpoint {
+        Endpoint(path: "api/decks/\(id)", method: .put, body: dto)
     }
 }

@@ -8,6 +8,7 @@ import Foundation
 import Storage
 import Puffins
 import Utils
+import Keychain
 
 // MARK: Keys
 
@@ -37,6 +38,14 @@ private struct SystemObserverKey: HabitatKey {
 
 private struct DisplayCacherKey: HabitatKey {
     static var currentValue: DisplayCacherProtocol = DisplayCacher()
+}
+
+private struct ExternalUserServiceKey: HabitatKey {
+    static var currentValue: ExternalUserServiceProtocol = ExternalUserService.shared
+}
+
+private struct KeychainServiceKey: HabitatKey {
+    static var currentValue: KeychainServiceProtocol = KeychainService()
 }
 
 // MARK: Extension
@@ -74,5 +83,15 @@ extension Habitat {
     public var externalDeckService: ExternalDeckServiceProtocol {
         get { Self[ExternalDeckServiceKey.self] }
         set { Self[ExternalDeckServiceKey.self] = newValue }
+    }
+    
+    public var externalUserService: ExternalUserServiceProtocol {
+        get { Self[ExternalUserServiceKey.self] }
+        set { Self[ExternalUserServiceKey.self] = newValue }
+    }
+    
+    public var keychainService: KeychainServiceProtocol {
+        get { Self[KeychainServiceKey.self] }
+        set { Self[KeychainServiceKey.self] = newValue }
     }
 }

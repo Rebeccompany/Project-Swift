@@ -10,18 +10,7 @@ import SwiftUI
 import Utils
 
 public enum DeckAdapter {
-    public static func adapt(_ deck: Deck) -> ExternalDeck {
-        ExternalDeck(
-            id: deck.storeId,
-            name: deck.name,
-            description: deck.description,
-            icon: IconNames(rawValue: deck.icon) ?? .brain,
-            color: deck.color,
-            category: deck.category
-        )
-    }
-    
-    public static func adapt(_ deck: Deck, with cards: [Card]) -> DeckDTO {
+    public static func adapt(_ deck: Deck, with cards: [Card], owner: UserDTO) -> DeckDTO {
         DeckDTO(
             id: nil,
             name: deck.name,
@@ -29,6 +18,8 @@ public enum DeckAdapter {
             icon: IconNames(rawValue: deck.icon) ?? .brain,
             color: deck.color,
             category: deck.category,
+            ownerId: owner.appleIdentifier,
+            ownerName: owner.username,
             cards: cards.compactMap(CardAdapter.adapt)
         )
     }
@@ -43,7 +34,8 @@ public enum DeckAdapter {
             cardsIds: [],
             category: dto.category,
             storeId: dto.id,
-            description: dto.description
+            description: dto.description,
+            ownerId: dto.ownerId
         )
         
         let cards = dto.cards.compactMap { card -> Card? in

@@ -13,6 +13,7 @@ import DeckFeature
 import Habitat
 import Utils
 import SwiftUI
+import Puffins
 
 //swiftlint:disable trailing_closure
 public final class ContentViewModel: ObservableObject {
@@ -35,6 +36,7 @@ public final class ContentViewModel: ObservableObject {
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
     @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
+    @Dependency(\.externalDeckService) private var externalDeckService: ExternalDeckServiceProtocol
     
     private var cancellables: Set<AnyCancellable>
     
@@ -153,7 +155,6 @@ public final class ContentViewModel: ObservableObject {
     }
     
     private func filterDecksForToday(_ decks: [Deck]) -> [Deck] {
-        
         decks.filter {
             guard let session = $0.session else { return false }
             

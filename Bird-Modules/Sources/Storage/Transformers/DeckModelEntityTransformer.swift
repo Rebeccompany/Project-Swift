@@ -73,7 +73,8 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
                     session: session,
                     category: category,
                     storeId: entity.storeId,
-                    description: entity.deckDescription ?? ""
+                    description: entity.deckDescription ?? "",
+                    ownerId: entity.ownerId
         )
     }
     
@@ -92,6 +93,7 @@ struct DeckModelEntityTransformer: ModelEntityTransformer {
         deck.category = model.category.rawValue
         deck.storeId = model.storeId
         deck.deckDescription = model.description
+        deck.ownerId = model.ownerId
         return deck
     }
 }

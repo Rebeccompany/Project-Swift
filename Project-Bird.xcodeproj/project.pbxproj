@@ -15,6 +15,10 @@
 		BA654F0728A142F500EF72C8 /* Project_BirdApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */; };
 		BA654F0A28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
 		BA654F0B28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
+		BAA072EB292F099A001D6E4F /* ClassKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAA072EA292F099A001D6E4F /* ClassKit.framework */; };
+		BAA072EE292F099A001D6E4F /* ContextRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA072ED292F099A001D6E4F /* ContextRequestHandler.swift */; };
+		BAA072F3292F099A001D6E4F /* Project-BirdClassKitContextProvider.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BAA072E9292F0999001D6E4F /* Project-BirdClassKitContextProvider.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BAA072FD292F12C4001D6E4F /* ClassKitFeature in Frameworks */ = {isa = PBXBuildFile; productRef = BAA072FC292F12C4001D6E4F /* ClassKitFeature */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,7 +29,28 @@
 			remoteGlobalIDString = BA654EE428A142F400EF72C8;
 			remoteInfo = "Project-Bird (iOS)";
 		};
+		BAA072F1292F099A001D6E4F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BA654ED928A142F100EF72C8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BAA072E8292F0999001D6E4F;
+			remoteInfo = "Project-BirdClassKitContextProvider";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BAA072F4292F099A001D6E4F /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BAA072F3292F099A001D6E4F /* Project-BirdClassKitContextProvider.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		5B07663828C2792E00221DE8 /* macOS.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
@@ -37,6 +62,11 @@
 		BA654EE528A142F400EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA654EEB28A142F500EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA654F1C28A14BF400EF72C8 /* Bird-Modules */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "Bird-Modules"; sourceTree = "<group>"; };
+		BAA072E9292F0999001D6E4F /* Project-BirdClassKitContextProvider.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Project-BirdClassKitContextProvider.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAA072EA292F099A001D6E4F /* ClassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ClassKit.framework; path = System/Library/Frameworks/ClassKit.framework; sourceTree = SDKROOT; };
+		BAA072ED292F099A001D6E4F /* ContextRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextRequestHandler.swift; sourceTree = "<group>"; };
+		BAA072EF292F099A001D6E4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BAA072F0292F099A001D6E4F /* Project_BirdClassKitContextProvider.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Project_BirdClassKitContextProvider.entitlements; sourceTree = "<group>"; };
 		BAD48B7828DB7B8300DF074A /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestPlan.xctestplan; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -61,6 +91,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B07663A28C2797700221DE8 /* AppFeature in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAA072E6292F0999001D6E4F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAA072FD292F12C4001D6E4F /* ClassKitFeature in Frameworks */,
+				BAA072EB292F099A001D6E4F /* ClassKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +130,7 @@
 				5B07663728C2789F00221DE8 /* macOS */,
 				BA654EDD28A142F100EF72C8 /* Shared */,
 				5B9440C128DBF2D60060EB4F /* Project-BirdUITests */,
+				BAA072EC292F099A001D6E4F /* Project-BirdClassKitContextProvider */,
 				BA654EE628A142F400EF72C8 /* Products */,
 				BA654F1D28A14C7C00EF72C8 /* Frameworks */,
 			);
@@ -112,6 +152,7 @@
 				BA654EE528A142F400EF72C8 /* Project-Bird.app */,
 				BA654EEB28A142F500EF72C8 /* Project-Bird.app */,
 				5B9440C028DBF2D50060EB4F /* Project-BirdUITests.xctest */,
+				BAA072E9292F0999001D6E4F /* Project-BirdClassKitContextProvider.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -119,8 +160,19 @@
 		BA654F1D28A14C7C00EF72C8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BAA072EA292F099A001D6E4F /* ClassKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BAA072EC292F099A001D6E4F /* Project-BirdClassKitContextProvider */ = {
+			isa = PBXGroup;
+			children = (
+				BAA072ED292F099A001D6E4F /* ContextRequestHandler.swift */,
+				BAA072EF292F099A001D6E4F /* Info.plist */,
+				BAA072F0292F099A001D6E4F /* Project_BirdClassKitContextProvider.entitlements */,
+			);
+			path = "Project-BirdClassKitContextProvider";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -152,10 +204,12 @@
 				BA654EE228A142F400EF72C8 /* Frameworks */,
 				BA654EE328A142F400EF72C8 /* Resources */,
 				BA654F1A28A143ED00EF72C8 /* Swift Lint */,
+				BAA072F4292F099A001D6E4F /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				BAA072F2292F099A001D6E4F /* PBXTargetDependency */,
 			);
 			name = "Project-Bird (iOS)";
 			packageProductDependencies = (
@@ -186,6 +240,26 @@
 			productReference = BA654EEB28A142F500EF72C8 /* Project-Bird.app */;
 			productType = "com.apple.product-type.application";
 		};
+		BAA072E8292F0999001D6E4F /* Project-BirdClassKitContextProvider */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BAA072F7292F099A001D6E4F /* Build configuration list for PBXNativeTarget "Project-BirdClassKitContextProvider" */;
+			buildPhases = (
+				BAA072E5292F0999001D6E4F /* Sources */,
+				BAA072E6292F0999001D6E4F /* Frameworks */,
+				BAA072E7292F0999001D6E4F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Project-BirdClassKitContextProvider";
+			packageProductDependencies = (
+				BAA072FC292F12C4001D6E4F /* ClassKitFeature */,
+			);
+			productName = "Project-BirdClassKitContextProvider";
+			productReference = BAA072E9292F0999001D6E4F /* Project-BirdClassKitContextProvider.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -193,7 +267,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1400;
+				LastSwiftUpdateCheck = 1410;
 				LastUpgradeCheck = 1400;
 				TargetAttributes = {
 					5B9440BF28DBF2D50060EB4F = {
@@ -205,6 +279,9 @@
 					};
 					BA654EEA28A142F500EF72C8 = {
 						CreatedOnToolsVersion = 13.4.1;
+					};
+					BAA072E8292F0999001D6E4F = {
+						CreatedOnToolsVersion = 14.1;
 					};
 				};
 			};
@@ -225,6 +302,7 @@
 				BA654EE428A142F400EF72C8 /* Project-Bird (iOS) */,
 				BA654EEA28A142F500EF72C8 /* Project-Bird (macOS) */,
 				5B9440BF28DBF2D50060EB4F /* Project-BirdUITests */,
+				BAA072E8292F0999001D6E4F /* Project-BirdClassKitContextProvider */,
 			);
 		};
 /* End PBXProject section */
@@ -250,6 +328,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA654F0B28A142F500EF72C8 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAA072E7292F0999001D6E4F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +406,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BAA072E5292F0999001D6E4F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAA072EE292F099A001D6E4F /* ContextRequestHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -328,6 +421,11 @@
 			isa = PBXTargetDependency;
 			target = BA654EE428A142F400EF72C8 /* Project-Bird (iOS) */;
 			targetProxy = 5B9440C628DBF2D60060EB4F /* PBXContainerItemProxy */;
+		};
+		BAA072F2292F099A001D6E4F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BAA072E8292F0999001D6E4F /* Project-BirdClassKitContextProvider */;
+			targetProxy = BAA072F1292F099A001D6E4F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -489,6 +587,7 @@
 		BA654F0F28A142F500EF72C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Project-Bird (iOS).entitlements";
@@ -523,6 +622,7 @@
 		BA654F1028A142F500EF72C8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Project-Bird (iOS).entitlements";
@@ -619,6 +719,65 @@
 			};
 			name = Release;
 		};
+		BAA072F5292F099A001D6E4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "Project-BirdClassKitContextProvider/Project_BirdClassKitContextProvider.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8JPPDHN68R;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Project-BirdClassKitContextProvider/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Project-BirdClassKitContextProvider";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.6;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.grupo2.Spixii.Project-BirdClassKitContextProvider";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BAA072F6292F099A001D6E4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "Project-BirdClassKitContextProvider/Project_BirdClassKitContextProvider.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8JPPDHN68R;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Project-BirdClassKitContextProvider/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Project-BirdClassKitContextProvider";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.6;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.grupo2.Spixii.Project-BirdClassKitContextProvider";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -658,6 +817,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		BAA072F7292F099A001D6E4F /* Build configuration list for PBXNativeTarget "Project-BirdClassKitContextProvider" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAA072F5292F099A001D6E4F /* Debug */,
+				BAA072F6292F099A001D6E4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -668,6 +836,10 @@
 		9D1A9FC628AEAB950065DE6E /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
+		};
+		BAA072FC292F12C4001D6E4F /* ClassKitFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ClassKitFeature;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

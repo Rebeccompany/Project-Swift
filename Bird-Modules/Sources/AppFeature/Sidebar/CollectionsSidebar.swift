@@ -10,6 +10,7 @@ import Models
 import NewCollectionFeature
 import HummingBird
 import StoreFeature
+import Authentication
 import OnboardingFeature
 import StoreState
 
@@ -22,6 +23,7 @@ struct CollectionsSidebar: View {
     @Binding private var selection: SidebarRoute?
     @EnvironmentObject private var viewModel: ContentViewModel
     @EnvironmentObject private var store: ShopStore
+    @EnvironmentObject private var authModel: AuthenticationModel
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
@@ -48,6 +50,7 @@ struct CollectionsSidebar: View {
                 NavigationLink {
                     NavigationStack {
                         StoreView(store: store)
+                            .environmentObject(authModel)
                     }
                 } label: {
                     Label("Store", systemImage: "bag")
