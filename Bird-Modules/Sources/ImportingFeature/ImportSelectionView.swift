@@ -78,6 +78,6 @@ struct ImportSelectionView: View {
         }
         #endif
         .navigationBarBackButtonHidden(true)
-        .navigationTitle(Text("Importar Flashcards", bundle: .module))
+        .navigationTitle(Text(NSLocalizedString("importar_flashcards", bundle: .module, comment: "")))
     }
 }

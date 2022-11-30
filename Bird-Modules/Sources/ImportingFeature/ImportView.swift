@@ -55,6 +55,6 @@ public struct ImportView: View {
 
 struct ImportView_Previews: PreviewProvider {
     static var previews: some View {
-        ImportView(data: ImportWindowData(deck: DeckRepositoryMock().decks[0]) , isPresenting: .constant(true))
+        ImportView(data: ImportWindowData(deck: Deck(id: UUID(), name: "Deck0", icon: IconNames.abc.rawValue, color: CollectionColor.red, datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0), lastEdit: Date(timeIntervalSince1970: 0), createdAt: Date(timeIntervalSince1970: 0)), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4), category: DeckCategory.arts, storeId: nil, description: "" )), isPresenting: .constant(true))
     }
 }

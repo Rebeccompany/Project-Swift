@@ -26,7 +26,11 @@ final class ImportSelectionViewModel: ObservableObject {
             let importedContent = (try? converter.convert(content)) ?? []
             
             autoreleasepool {
-                fileContent.wrappedValue = importedContent.compactMap { ImportedCardInfoTransformer.transformToCard($0, deckID: deckId, cardColor: CollectionColor.allCases.randomElement() ?? .darkBlue) }
+                fileContent.wrappedValue = importedContent.compactMap { ImportedCardInfoTransformer.transformToCard($0, deckID: deckId, cardColor: CollectionColor.allCases.filter {
+                        $0 != .white
+                }
+                .randomElement() ?? .darkBlue)
+                }
             }
         }
     }
