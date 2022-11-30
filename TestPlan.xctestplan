@@ -127,6 +127,13 @@
         "identifier" : "StoreFeatureTests",
         "name" : "StoreFeatureTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Bird-Modules",
+        "identifier" : "AuthenticationTests",
+        "name" : "AuthenticationTests"
+      }
     }
   ],
   "version" : 1

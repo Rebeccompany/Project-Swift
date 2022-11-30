@@ -56,7 +56,7 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         }
     }
     
-    private func isInPast8Hours(date: Date) -> Bool {
+    func isInPast8Hours(date: Date) -> Bool {
         let jwtDateComponents = Calendar.autoupdatingCurrent.dateComponents([.year, .month, .day, .hour, .minute],
                                                                             from: date)
         let nowDateComponents = Calendar.autoupdatingCurrent.dateComponents([.year, .month, .day, .hour, .minute],
@@ -70,11 +70,10 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
             nowDateComponents.minute! - jwtDateComponents.minute!
         ]
         
-        return  differences[0] <= 0 ||
-                differences[1] <= 0 ||
-                differences[2] <= 0 ||
-                differences[3] <= 8 ||
-                differences[3] == 8 && differences[4] <= 0
+        return  (differences[0] <= 0) &&
+                (differences[1] <= 0) &&
+                (differences[2] <= 0) &&
+                ((differences[3] <  8) || (differences[3] == 7  && differences[4] >= 59))
     }
     
     public func getDeckFeed() -> AnyPublisher<[ExternalSection], URLError> {
