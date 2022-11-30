@@ -340,7 +340,8 @@ let package = Package(
                 "PublicDeckFeature",
                 "Peacock",
                 "StoreState",
-                "Authentication"
+                "Authentication",
+                "Utils"
             ]
         ),
         

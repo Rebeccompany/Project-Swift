@@ -76,8 +76,8 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         }
     }
     
-    public func uploadNewDeck(_ deck: Deck, with cards: [Card]) -> AnyPublisher<String, URLError> {
-        let dto = DeckAdapter.adapt(deck, with: cards)
+    public func uploadNewDeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<String, URLError> {
+        let dto = DeckAdapter.adapt(deck, with: cards, owner: owner)
         let jsonEncoder = JSONEncoder()
         guard let jsonData = try? jsonEncoder.encode(dto) else {
             return Fail(outputType: String.self, failure: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()
@@ -109,6 +109,20 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
             guard let self else { preconditionFailure("self is deinitialized") }
             return self.session.dataTaskPublisher(for: .download(id: id), authToken: token)
                 .decodeWhenSuccess(to: DeckDTO.self)
+        }
+    }
+    
+    public func updateADeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<Void, URLError> {
+        let dto = DeckAdapter.adapt(deck, with: cards, owner: owner)
+        let jsonEncoder = JSONEncoder()
+        guard let jsonData = try? jsonEncoder.encode(dto), let storeId = deck.storeId else {
+            return Fail(outputType: Void.self, failure: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()
+        }
+        
+        return authenticatePublisher { [weak self] token in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session.dataTaskPublisher(for: .update(id: storeId, jsonData), authToken: token)
+                .verifyVoidSuccess()
         }
     }
 }

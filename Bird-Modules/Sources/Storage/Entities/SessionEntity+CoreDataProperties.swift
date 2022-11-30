@@ -2,7 +2,7 @@
 //  SessionEntity+CoreDataProperties.swift
 //  Project-Bird
 //
-//  Created by Gabriel Ferreira de Carvalho on 22/11/22.
+//  Created by Gabriel Ferreira de Carvalho on 29/11/22.
 //
 //
 

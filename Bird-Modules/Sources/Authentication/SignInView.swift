@@ -48,10 +48,11 @@ struct SignInView: View {
             .padding(.bottom, 32)
             
             
-            SignInWithAppleButton(
-                onRequest: model.onSignInRequest,
-                onCompletion: model.onSignInCompletion
-            )
+            SignInWithAppleButton(.signIn) {
+                model.onSignInRequest($0)
+            } onCompletion: {
+                model.onSignInCompletion($0)
+            }
             .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
             .frame(height: 44)
             .padding(.horizontal)
