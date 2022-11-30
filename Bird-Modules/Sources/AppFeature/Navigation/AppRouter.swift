@@ -69,6 +69,8 @@ final class AppRouter: ObservableObject {
             return .openStore(storeId: String(urlPath.suffix(urlPath.count - "store/".count)))
         } else if urlPath.hasPrefix("opendeck/") {
             return .openDeck(storeId: String(urlPath.suffix(urlPath.count - "opendeck/".count)))
+        } else if urlPath.hasPrefix("openlocaldeck/") {
+            return .openLocalDeck(id: String(urlPath.suffix(urlPath.count - "openlocaldeck/".count)))
         } else {
             //Rota de 404
             return nil
@@ -81,6 +83,8 @@ final class AppRouter: ObservableObject {
             openDeck(storeId)
         case .openStore(let storeId):
             openStore(storeId)
+        case .openLocalDeck(let id):
+            openLocalDeck(id)
         }
     }
     
@@ -107,6 +111,12 @@ final class AppRouter: ObservableObject {
             }
             .store(in: &cancellables)
 
+    }
+    
+    private func openLocalDeck(_ id: String) {
+        if let deck = decks.first(where: { id == $0.id.uuidString }) {
+            navigate(to: deck)
+        }
     }
     
     private func navigateToStoreDeck(id: String) {
@@ -155,5 +165,6 @@ extension AppRouter {
     enum DeepLinkRoute {
         case openDeck(storeId: String)
         case openStore(storeId: String)
+        case openLocalDeck(id: String)
     }
 }

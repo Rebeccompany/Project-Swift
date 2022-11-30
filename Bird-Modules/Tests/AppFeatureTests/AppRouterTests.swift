@@ -129,6 +129,24 @@ final class AppRouterTests: XCTestCase {
         XCTAssertEqual(sut.storePath, NavigationPath())
     }
     
+    @MainActor func testOpenURLOnLocalDeckSuccess() async throws {
+        let url = URL(string: "spixii://openlocaldeck/\(deck0.id.uuidString)")!
+        
+        sut.onOpen(url: url)
+        
+        XCTAssertEqual(sut.selectedTab, .study)
+        XCTAssertEqual(sut.path, NavigationPath([StudyRoute.deck(deck0)]))
+    }
+    
+    @MainActor func testOpenURLOnLocalDeckFailed() async throws {
+        let url = URL(string: "spixii://openlocaldeck/\(UUID().uuidString)")!
+        
+        sut.onOpen(url: url)
+        
+        XCTAssertEqual(sut.path, NavigationPath())
+    }
+    
+    
     private var downloadDeck: Deck? {
         deckRepository
             .data
