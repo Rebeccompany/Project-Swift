@@ -25,7 +25,7 @@ final class AppRouterTests: XCTestCase {
     var deck2: Deck!
     var deck3: Deck!
     
-    override func setUp() {
+    @MainActor override func setUp() {
         externalDeckService = .init()
         deckRepository = .init()
         cancellables = .init()
@@ -54,7 +54,7 @@ final class AppRouterTests: XCTestCase {
         deck3 = nil
     }
     
-    func testOpenURLOnExistingDeckSuccessfully() {
+    @MainActor func testOpenURLOnExistingDeckSuccessfully() {
         let url = URL(string: "spixii://\(deck0.storeId!)")!
         
         sut.onOpen(url: url)
@@ -63,7 +63,7 @@ final class AppRouterTests: XCTestCase {
         XCTAssertEqual(sut.path, NavigationPath([StudyRoute.deck(deck0)]))
     }
     
-    func testOpenURLOnDownloadDeckSuccessfully() async throws {
+    @MainActor func testOpenURLOnDownloadDeckSuccessfully() async throws {
         let url = URL(string: "spixii://download1")!
         
         sut.onOpen(url: url)
@@ -78,7 +78,7 @@ final class AppRouterTests: XCTestCase {
         
     }
     
-    func testOpenURLOnDownloadDeckWithCoreDataError() async throws {
+    @MainActor func testOpenURLOnDownloadDeckWithCoreDataError() async throws {
         let url = URL(string: "spixii://download1")!
         deckRepository.shouldThrowError = true
         
@@ -91,7 +91,7 @@ final class AppRouterTests: XCTestCase {
         XCTAssertEqual(sut.path, NavigationPath())
     }
     
-    func testOpenURLOnDOwloadDeckWithNetworkError() async throws {
+    @MainActor func testOpenURLOnDOwloadDeckWithNetworkError() async throws {
         let url = URL(string: "spixii://download1")!
         externalDeckService.error = URLError(.badServerResponse)
         externalDeckService.shouldError = true
@@ -132,7 +132,7 @@ final class AppRouterTests: XCTestCase {
              cardsIds: [],
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
-             storeId: "\(id)", description: "" )
+             storeId: "\(id)", description: "", ownerId: nil )
     }
 
 }

@@ -24,7 +24,7 @@ enum DeckDummy {
                     spacedRepetitionConfig: .init(maxLearningCards: 20,
                                                   maxReviewingCards: 200),
                                                   category: DeckCategory.arts,
-                                                  storeId: nil, description: "")
+                                                  storeId: nil, description: "", ownerId: nil)
     }
     
     static func newDummy(with id: UUID) -> Deck {
@@ -42,6 +42,6 @@ enum DeckDummy {
                     spacedRepetitionConfig: .init(maxLearningCards: 20,
                                                   maxReviewingCards: 200),
                                                   category: DeckCategory.arts,
-                                                  storeId: nil, description: "")
+                                                  storeId: nil, description: "", ownerId: nil)
     }
 }

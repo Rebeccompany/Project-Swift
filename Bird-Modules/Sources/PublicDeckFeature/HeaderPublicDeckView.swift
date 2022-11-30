@@ -32,6 +32,6 @@ struct HeaderPublicDeckView: View {
 
 struct HeaderPublicDeckView_Previews: PreviewProvider {
     static var previews: some View {
-        HeaderPublicDeckView(deck: ExternalDeck(id: "1", name: "Deck exemplo", description: "Uma descrição x", icon: .abc, color: .gray, category: .arts))
+        HeaderPublicDeckView(deck: ExternalDeck(id: "1", name: "Deck exemplo", description: "Uma descrição x", icon: .abc, color: .gray, category: .arts, ownerId: "id", ownerName: "name", cardCount: 3))
     }
 }

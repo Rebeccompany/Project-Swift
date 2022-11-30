@@ -184,7 +184,7 @@ struct PublicDeckView_Previews: PreviewProvider {
         HabitatPreview {
             NavigationStack {
                 NavigationLink {
-                    PublicDeckView(deck: ExternalDeck(id: "id", name: "Albums da Taylor Swift", description: "é Nene", icon: .brain, color: .lightPurple, category: .others))
+                    PublicDeckView(deck: ExternalDeck(id: "id", name: "Albums da Taylor Swift", description: "é Nene", icon: .brain, color: .lightPurple, category: .others, ownerId: "id", ownerName: "name", cardCount: 3))
                 } label: {
                     Text("Navegar")
                 }

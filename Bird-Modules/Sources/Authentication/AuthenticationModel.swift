@@ -13,6 +13,7 @@ import AuthenticationServices
 import Combine
 import Models
 
+@MainActor
 public final class AuthenticationModel: ObservableObject {
     
     @Dependency(\.externalUserService) private var userService
@@ -36,7 +37,6 @@ public final class AuthenticationModel: ObservableObject {
         signIn(id: currentLogedInUserIdentifer)
     }
     
-    @MainActor
     public func isSignedIn() async throws -> Bool {
         guard let currentLogedInUserIdentifer else { return false }
         
@@ -56,6 +56,7 @@ public final class AuthenticationModel: ObservableObject {
         do {
             try keychainService.delete(forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
             currentLogedInUserIdentifer = nil
+            user = nil
         } catch {
             didOcurredErrorOnSignInCompletion = true
         }
@@ -140,6 +141,7 @@ public final class AuthenticationModel: ObservableObject {
             .signIn(id: id)
             .map { $0 as UserDTO? }
             .replaceError(with: nil)
+            .receive(on: RunLoop.main)
             .assign(to: &$user)
     }
 }
