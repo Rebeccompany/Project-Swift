@@ -89,10 +89,10 @@ public class DeckViewModel: ObservableObject {
         }
     }
     
-    func publishDeck(_ deck: Deck) {
+    func publishDeck(_ deck: Deck, user: UserDTO) {
         loadingPhase = .loading
         
-        externalDeckService.uploadNewDeck(deck, with: cards)
+        externalDeckService.uploadNewDeck(deck, with: cards, owner: user)
             .receive(on: RunLoop.main)
             .sink { [weak self] completion in
                 switch completion {
@@ -104,6 +104,7 @@ public class DeckViewModel: ObservableObject {
             } receiveValue: { [weak self] storeId in
                 var deckWithStoreId = deck
                 deckWithStoreId.storeId = storeId
+                deckWithStoreId.ownerId = user.appleIdentifier
                 try? self?.deckRepository.editDeck(deckWithStoreId)
             }
             .store(in: &cancellables)
@@ -127,6 +128,54 @@ public class DeckViewModel: ObservableObject {
                 try? self?.deckRepository.editDeck(deckWithStoreId)
             }
             .store(in: &cancellables)
+    }
+    
+    func updatePublicDeck(_ deck: Deck, user: UserDTO) {
+        loadingPhase = .loading
+        
+        externalDeckService.updateADeck(deck, with: cards, owner: user)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.loadingPhase = .showSuccess
+                case .failure(_):
+                    self?.loadingPhase = .showFailure
+                }
+            } receiveValue: { _ in
+                
+            }
+            .store(in: &cancellables)
+    }
+    
+    /**
+        In order to publish a Deck is necessary that the storeId is nil, meaning there is no deck on the store.
+     */
+    func isPublishButtonDisabled(for deck: Deck) -> Bool {
+        deck.storeId != nil
+    }
+    
+    /**
+        In order to update a Deck is necessary that the storeId is not nil and the user id of the app user is equal to the deck owner
+        this is necessarry in order to block update from users other than the owners
+     */
+    func isUpdateButtonDisabled(for deck: Deck, user: UserDTO) -> Bool {
+        (deck.storeId == nil) || (deck.ownerId != user.appleIdentifier)
+    }
+    
+    /**
+        In order to share a Deck is necessary that the storeId is nil, meaning there is no deck on the store.
+     */
+    func isShareButtonDisabled(for deck: Deck) -> Bool {
+        (deck.storeId == nil)
+    }
+    
+    /**
+        In order to update a Deck is necessary that the storeId is not nil and the user id of the app user is equal to the deck owner
+        this is necessarry in order to block update from users other than the owners
+     */
+    func isDeleteButtonDisabled(for deck: Deck, user: UserDTO) -> Bool {
+        (deck.storeId == nil) || (deck.ownerId != user.appleIdentifier)
     }
     
 }

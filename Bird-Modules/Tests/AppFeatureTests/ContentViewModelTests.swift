@@ -271,7 +271,7 @@ final class ContentViewModelTests: XCTestCase {
     
     func testEditDeckWithWrongDeck() {
         sut.startup()
-        let deck = Deck(id: UUID.init(), name: "deck", icon: IconNames.abc.rawValue, color: .beigeBrown, collectionId: UUID.init(), cardsIds: [], category: DeckCategory.arts, storeId: nil, description: "" )
+        let deck = Deck(id: UUID.init(), name: "deck", icon: IconNames.abc.rawValue, color: .beigeBrown, collectionId: UUID.init(), cardsIds: [], category: DeckCategory.arts, storeId: nil, description: "", ownerId: nil )
         
         sut.selection.insert(deck.id)
         
@@ -372,7 +372,7 @@ final class ContentViewModelTests: XCTestCase {
              cardsIds: [],
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
-             storeId: nil, description: "" )
+             storeId: nil, description: "", ownerId: nil )
     }
     
     func sortById<T: Identifiable>(d0: T, d1: T) -> Bool where T.ID == UUID {

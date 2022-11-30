@@ -97,6 +97,7 @@ public final class DeckRepository: DeckRepositoryProtocol {
         entity.storeId = deck.storeId
         entity.category = deck.category.rawValue
         entity.deckDescription = deck.description
+        entity.ownerId = deck.ownerId
         
         try deckRepository.save()
     }

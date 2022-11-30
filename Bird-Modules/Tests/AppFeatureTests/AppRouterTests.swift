@@ -25,7 +25,7 @@ final class AppRouterTests: XCTestCase {
     var deck2: Deck!
     var deck3: Deck!
     
-    override func setUp() {
+    @MainActor override func setUp() {
         externalDeckService = .init()
         deckRepository = .init()
         cancellables = .init()
@@ -54,8 +54,8 @@ final class AppRouterTests: XCTestCase {
         deck3 = nil
     }
     
-    func testOpenURLOnExistingDeckSuccessfully() {
-        let url = URL(string: "spixii://\(deck0.storeId!)")!
+    @MainActor func testOpenURLOnExistingDeckSuccessfully() {
+        let url = URL(string: "spixii://opendeck/\(deck0.storeId!)")!
         
         sut.onOpen(url: url)
         
@@ -63,14 +63,15 @@ final class AppRouterTests: XCTestCase {
         XCTAssertEqual(sut.path, NavigationPath([StudyRoute.deck(deck0)]))
     }
     
-    func testOpenURLOnDownloadDeckSuccessfully() async throws {
-        let url = URL(string: "spixii://download1")!
+    @MainActor func testOpenURLOnDownloadDeckSuccessfully() async throws {
+        let url = URL(string: "spixii://opendeck/download1")!
         
         sut.onOpen(url: url)
         
         try await Task.sleep(for: .milliseconds(500))
         
         XCTAssertEqual(sut.selectedTab, .study)
+        
         let downloadedDeck = self.downloadDeck
         XCTAssertNotNil(downloadedDeck)
         XCTAssertEqual(sut.path, NavigationPath([StudyRoute.deck(downloadedDeck!)]))
@@ -78,8 +79,8 @@ final class AppRouterTests: XCTestCase {
         
     }
     
-    func testOpenURLOnDownloadDeckWithCoreDataError() async throws {
-        let url = URL(string: "spixii://download1")!
+    @MainActor func testOpenURLOnDownloadDeckWithCoreDataError() async throws {
+        let url = URL(string: "spixii://opendeck/download1")!
         deckRepository.shouldThrowError = true
         
         sut.onOpen(url: url)
@@ -91,8 +92,8 @@ final class AppRouterTests: XCTestCase {
         XCTAssertEqual(sut.path, NavigationPath())
     }
     
-    func testOpenURLOnDOwloadDeckWithNetworkError() async throws {
-        let url = URL(string: "spixii://download1")!
+    @MainActor func testOpenURLOnDowloadDeckWithNetworkError() async throws {
+        let url = URL(string: "spixii://opendeck/download1")!
         externalDeckService.error = URLError(.badServerResponse)
         externalDeckService.shouldError = true
         
@@ -104,6 +105,47 @@ final class AppRouterTests: XCTestCase {
         XCTAssertNil(downloadDeck)
         XCTAssertEqual(sut.path, NavigationPath())
     }
+    
+    @MainActor func testOpenURLOnStoreSuccess() async throws {
+        let url = URL(string: "spixii://store/download1")!
+        
+        sut.onOpen(url: url)
+        
+        try await Task.sleep(for: .milliseconds(500))
+        
+        XCTAssertEqual(sut.selectedTab, .store)
+        XCTAssertEqual(sut.storePath, NavigationPath([externalDeckService.deck(id: "download1")]))
+    }
+    
+    @MainActor func testOpenURLOnStoreFailed() async throws {
+        let url = URL(string: "spixii://store/download1")!
+        externalDeckService.error = URLError(.badServerResponse)
+        externalDeckService.shouldError = true
+        
+        sut.onOpen(url: url)
+        
+        try await Task.sleep(for: .milliseconds(500))
+        
+        XCTAssertEqual(sut.storePath, NavigationPath())
+    }
+    
+    @MainActor func testOpenURLOnLocalDeckSuccess() async throws {
+        let url = URL(string: "spixii://openlocaldeck/\(deck0.id.uuidString)")!
+        
+        sut.onOpen(url: url)
+        
+        XCTAssertEqual(sut.selectedTab, .study)
+        XCTAssertEqual(sut.path, NavigationPath([StudyRoute.deck(deck0)]))
+    }
+    
+    @MainActor func testOpenURLOnLocalDeckFailed() async throws {
+        let url = URL(string: "spixii://openlocaldeck/\(UUID().uuidString)")!
+        
+        sut.onOpen(url: url)
+        
+        XCTAssertEqual(sut.path, NavigationPath())
+    }
+    
     
     private var downloadDeck: Deck? {
         deckRepository
@@ -132,7 +174,7 @@ final class AppRouterTests: XCTestCase {
              cardsIds: [],
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
-             storeId: "\(id)", description: "" )
+             storeId: "\(id)", description: "", ownerId: nil )
     }
 
 }

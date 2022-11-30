@@ -56,12 +56,13 @@ public class NewDeckViewModel: ObservableObject {
         
     }
     
-    func createDeck(collection: DeckCollection?) throws {
+    func createDeck(collection: DeckCollection?) throws -> UUID {
         guard let selectedColor = currentSelectedColor, let selectedIcon = currentSelectedIcon else {
-            return
+            throw RepositoryError.couldNotCreate
         }
-
-        let deck = Deck(id: uuidGenerator.newId(),
+        let newId = uuidGenerator.newId()
+        
+        let deck = Deck(id: newId,
                         name: deckName,
                         icon: selectedIcon.rawValue.description,
                         color: selectedColor,
@@ -71,13 +72,16 @@ public class NewDeckViewModel: ObservableObject {
                         spacedRepetitionConfig: SpacedRepetitionConfig(),
                         category: currentSelectedCategory,
                         storeId: nil,
-                        description: description)
+                        description: description,
+                        ownerId: nil)
         
         try deckRepository.createDeck(deck, cards: [])
         
-        guard let collection
-        else { return }
-        try collectionRepository.addDeck(deck, in: collection)
+        if let collection {
+            try collectionRepository.addDeck(deck, in: collection)
+        }
+        
+        return newId
     }
     
     func editDeck(editingDeck: Deck?) throws {

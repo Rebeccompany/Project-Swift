@@ -44,4 +44,8 @@ extension Endpoint {
     static func signup(user: UserDTO) -> Endpoint {
         Endpoint(path: "api/auth/signup", method: .post, body: try? JSONEncoder().encode(user))
     }
+    
+    static func update(id: String, _ dto: Data) -> Endpoint {
+        Endpoint(path: "api/decks/\(id)", method: .put, body: dto)
+    }
 }
