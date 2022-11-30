@@ -130,7 +130,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         return Just(deckDTO(id: id)).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
     
-    public  func updateAnDeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<Void, URLError> {
+    public  func updateADeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<Void, URLError> {
         if shouldError {
             return Fail(outputType: Void.self, failure: error!).eraseToAnyPublisher()
         }

@@ -339,7 +339,7 @@ public struct DeckView: View {
                 }
 
             }
-            .disabled(deck.storeId != nil)
+            .disabled(viewModel.isPublishButtonDisabled(for: deck))
             
             Button {
                 confirmationDialogData = .update(user: user)
@@ -351,7 +351,7 @@ public struct DeckView: View {
                     Image(systemName: "square.and.pencil")
                 }
             }
-            .disabled(deck.storeId == nil || deck.ownerId != user.appleIdentifier)
+            .disabled(viewModel.isUpdateButtonDisabled(for: deck, user: user))
             
             Button {
                 
@@ -362,7 +362,7 @@ public struct DeckView: View {
                     Image(systemName: "square.and.arrow.up")
                 }
             }
-            .disabled(deck.storeId == nil)
+            .disabled(viewModel.isShareButtonDisabled(for: deck))
             
             Button(role: .destructive) {
                 confirmationDialogData = .delete
@@ -375,7 +375,7 @@ public struct DeckView: View {
                 }
 
             }
-            .disabled(deck.storeId == nil || deck.ownerId != user.appleIdentifier)
+            .disabled(viewModel.isDeleteButtonDisabled(for: deck, user: user))
         }
         Section(NSLocalizedString("usuario", bundle: .module, comment: "")) {
             Button(NSLocalizedString("signout", bundle: .module, comment: "")) {

@@ -112,7 +112,7 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         }
     }
     
-    public func updateAnDeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<Void, URLError> {
+    public func updateADeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<Void, URLError> {
         let dto = DeckAdapter.adapt(deck, with: cards, owner: owner)
         let jsonEncoder = JSONEncoder()
         guard let jsonData = try? jsonEncoder.encode(dto), let storeId = deck.storeId else {
