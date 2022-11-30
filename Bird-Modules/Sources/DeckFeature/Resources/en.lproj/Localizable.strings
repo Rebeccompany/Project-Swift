@@ -12,6 +12,11 @@
 "alert_delete_flashcard" = "Do you want to delete this flashcard?";
 "alert_delete_flashcard_text" = "You'll lose its content permanently.";
 "deletar" = "Delete";
+"atualizar" = "Update";
+"compartilhar" = "Share";
+"usuario" = "User";
+"signout" = "Sign Out";
+"deletar_conta" = "Delete account";
 "cancelar" = "Cancel";
 "criar_flashcard" = "Create Flashcard";
 "no_study_allowed" = "You finished your daily activity for this deck! Come back soon to get back to your studies or use the intense mode";
@@ -27,3 +32,7 @@
 "confirmar_publicao" = "Deck publication into the library";
 "confirmar_publicao_delete" = "Are you sure you want to remove it from the library?";
 "confirmar_publicao_publicar" = "Are you sure want to publish it into the library?";
+"aviso_login" = "You need to be logged in to publish a Deck, you can go to the store tab and log in";
+"aviso_deletar" = "Are you sure? you're going to remove the deck from the library";
+"aviso_atualizar" = "Are you sure? you're going to update the deck from the library";
+"aviso_publicar" = "Are you sure? you're going to publish the deck to the library";

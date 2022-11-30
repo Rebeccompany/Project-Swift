@@ -163,15 +163,15 @@ public struct DeckView: View {
     private func confirmationDialogAction(_ data: PublishConfirmationDialogData) -> some View {
         switch data {
         case .delete:
-            Button("Delete", role: .destructive) {
+            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
                 viewModel.deletePublicDeck(deck)
             }
         case .update(_):
-            Button("Update") {
+            Button(NSLocalizedString("atualizar", bundle: .module, comment: "")) {
                 
             }
         case .publish(let user):
-            Button("Publish") {
+            Button(NSLocalizedString("publicar", bundle: .module, comment: "")) {
                 viewModel.publishDeck(deck, user: user)
             }
         }
@@ -181,11 +181,11 @@ public struct DeckView: View {
     private func confirmationDialogMessage(_ data: PublishConfirmationDialogData) -> some View {
         switch data {
         case .delete:
-            Text("Are you sure? you're going to remove the deck from the library")
+            Text("aviso_deletar", bundle: .module)
         case .update(_):
-            Text("Are you sure? you're going to update the deck from the library")
+            Text("aviso_atualizar", bundle: .module)
         case .publish(_):
-           Text("Are you sure? you're going to publish the deck to the library")
+            Text("aviso_publicar", bundle: .module)
         }
     }
     
@@ -333,7 +333,7 @@ public struct DeckView: View {
                 shouldDisplayPublishConfirmation = true
             } label: {
                 Label {
-                    Text("Publish")
+                    Text(NSLocalizedString("publicar", bundle: .module, comment: ""))
                 } icon: {
                     Image(systemName: "arrow.up")
                 }
@@ -346,7 +346,7 @@ public struct DeckView: View {
                 shouldDisplayPublishConfirmation = true
             } label: {
                 Label {
-                    Text("Update")
+                    Text(NSLocalizedString("atualizar", bundle: .module, comment: ""))
                 } icon: {
                     Image(systemName: "square.and.pencil")
                 }
@@ -357,7 +357,7 @@ public struct DeckView: View {
                 
             } label: {
                 Label {
-                    Text("Share")
+                    Text(NSLocalizedString("compartilhar", bundle: .module, comment: ""))
                 } icon: {
                     Image(systemName: "square.and.arrow.up")
                 }
@@ -369,7 +369,7 @@ public struct DeckView: View {
                 shouldDisplayPublishConfirmation = true
             } label: {
                 Label {
-                    Text("Delete")
+                    Text(NSLocalizedString("deletar", bundle: .module, comment: ""))
                 } icon: {
                     Image(systemName: "trash")
                 }
@@ -377,12 +377,12 @@ public struct DeckView: View {
             }
             .disabled(deck.storeId == nil || deck.ownerId != user.appleIdentifier)
         }
-        Section("User") {
-            Button("Sign out") {
+        Section(NSLocalizedString("usuario", bundle: .module, comment: "")) {
+            Button(NSLocalizedString("signout", bundle: .module, comment: "")) {
                 authModel.signOut()
             }
             
-            Button("Delete Account", role: .destructive) {
+            Button(NSLocalizedString("deletar_conta", bundle: .module, comment: ""), role: .destructive) {
                 authModel.deleteAccount()
             }
         }
@@ -390,7 +390,7 @@ public struct DeckView: View {
     
     @ViewBuilder
     private func loggedOffShareMenu() -> some View {
-        Text("You need to be logged in to publish a Deck, you can go to the store tab and log in")
+        Text("aviso_login", bundle: .module)
     }
 
 }
