@@ -10,6 +10,7 @@ import Utils
 import Models
 import Storage
 import SwiftUI
+import Habitat
 import Foundation
 import HummingBird
 import StudyFeature
@@ -17,13 +18,18 @@ import Authentication
 import ImportingFeature
 import NewFlashcardFeature
 
+enum PublishConfirmationDialogData {
+    case delete
+    case update(user: UserDTO)
+    case publish(user: UserDTO)
+}
+
 public struct DeckView: View {
     @StateObject private var viewModel: DeckViewModel = DeckViewModel()
     @EnvironmentObject private var authModel: AuthenticationModel
     @State private var shouldDisplayNewFlashcard: Bool = false
     @State private var shouldDisplayImport: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
-    @State private var shouldDisplayLoginView: Bool = false
     @State private var shouldDisplayPublishConfirmation: Bool = false
     @State private var studyMode: StudyMode = .spaced
     @State private var showingAlert: Bool = false
@@ -31,6 +37,7 @@ public struct DeckView: View {
     @State private var activeAlert: ActiveAlert = .error
     @State private var deletedCard: Card?
     @State private var editingFlashcard: Card?
+    @State private var confirmationDialogData: PublishConfirmationDialogData?
     @Binding private var deck: Deck
     
     public init(deck: Binding<Deck>) {
@@ -83,37 +90,17 @@ public struct DeckView: View {
         .navigationTitle(deck.name)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button {
-                    shouldDisplayPublishConfirmation = true
+                Menu {
+                    if let user = authModel.user {
+                        loggedInShareMenu(user)
+                    } else {
+                        loggedOffShareMenu()
+                    }
                 } label: {
                     Label(
                         NSLocalizedString("publicar", bundle: .module, comment: ""),
                         systemImage: "globe.americas"
                     )
-                }
-                .confirmationDialog(
-                    NSLocalizedString("confirmar_publicao", bundle: .module, comment: ""),
-                    isPresented: $shouldDisplayPublishConfirmation
-                ) {
-                    Button(NSLocalizedString("confirmar", bundle: .module, comment: ""), role: deck.storeId != nil ? .destructive : nil) {
-                        if deck.storeId != nil {
-                            viewModel.deletePublicDeck(deck)
-                        } else if let user = authModel.user {
-                            viewModel.publishDeck(deck, user: user)
-                        }
-                    }
-                } message: {
-                    if deck.storeId != nil {
-                        Text(
-                            "confirmar_publicao_delete",
-                            bundle: .module
-                        )
-                    } else {
-                        Text(
-                            "confirmar_publicao_publicar",
-                            bundle: .module
-                        )
-                    }
                 }
                 .disabled(deck.cardCount == 0)
                 
@@ -158,10 +145,48 @@ public struct DeckView: View {
         .sheet(isPresented: $shouldDisplayImport) {
             ImportView(deck: deck, isPresenting: $shouldDisplayImport)
         }
-        .fullScreenCover(isPresented: $shouldDisplayLoginView) {
-            AuthenticationView(model: authModel)
+        
+        .confirmationDialog(
+            "Are you sure?",
+            isPresented: $shouldDisplayPublishConfirmation,
+            presenting: confirmationDialogData
+            ) { data in
+                confirmationDialogAction(data)
+            } message: { data in
+                confirmationDialogMessage(data)
         }
 
+
+    }
+    
+    @ViewBuilder
+    private func confirmationDialogAction(_ data: PublishConfirmationDialogData) -> some View {
+        switch data {
+        case .delete:
+            Button("Delete", role: .destructive) {
+                viewModel.deletePublicDeck(deck)
+            }
+        case .update(_):
+            Button("Update") {
+                
+            }
+        case .publish(let user):
+            Button("Publish") {
+                viewModel.publishDeck(deck, user: user)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func confirmationDialogMessage(_ data: PublishConfirmationDialogData) -> some View {
+        switch data {
+        case .delete:
+            Text("Are you sure? you're going to remove the deck from the library")
+        case .update(_):
+            Text("Are you sure? you're going to update the deck from the library")
+        case .publish(_):
+           Text("Are you sure? you're going to publish the deck to the library")
+        }
     }
     
     @ViewBuilder
@@ -299,16 +324,86 @@ public struct DeckView: View {
             }
         }
     }
+    
+    @ViewBuilder
+    private func loggedInShareMenu(_ user: UserDTO) -> some View {
+        Section("Deck") {
+            Button {
+                confirmationDialogData = .publish(user: user)
+                shouldDisplayPublishConfirmation = true
+            } label: {
+                Label {
+                    Text("Publish")
+                } icon: {
+                    Image(systemName: "arrow.up")
+                }
+
+            }
+            .disabled(deck.storeId != nil)
+            
+            Button {
+                confirmationDialogData = .update(user: user)
+                shouldDisplayPublishConfirmation = true
+            } label: {
+                Label {
+                    Text("Update")
+                } icon: {
+                    Image(systemName: "square.and.pencil")
+                }
+            }
+            .disabled(deck.storeId == nil || deck.ownerId != user.appleIdentifier)
+            
+            Button {
+                
+            } label: {
+                Label {
+                    Text("Share")
+                } icon: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+            }
+            .disabled(deck.storeId == nil)
+            
+            Button(role: .destructive) {
+                confirmationDialogData = .delete
+                shouldDisplayPublishConfirmation = true
+            } label: {
+                Label {
+                    Text("Delete")
+                } icon: {
+                    Image(systemName: "trash")
+                }
+
+            }
+            .disabled(deck.storeId == nil || deck.ownerId != user.appleIdentifier)
+        }
+        Section("User") {
+            Button("Sign out") {
+                authModel.signOut()
+            }
+            
+            Button("Delete Account", role: .destructive) {
+                authModel.deleteAccount()
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func loggedOffShareMenu() -> some View {
+        Text("You need to be logged in to publish a Deck, you can go to the store tab and log in")
+    }
 
 }
 
 struct DeckView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            DeckView(
-                deck: .constant(Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil, description: "", ownerId: nil))
-            )
+        HabitatPreview {
+            NavigationStack {
+                DeckView(
+                    deck: .constant(Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil, description: "", ownerId: nil))
+                )
+                .environmentObject(AuthenticationModel())
+            }
         }
-        .preferredColorScheme(.dark)
     }
 }

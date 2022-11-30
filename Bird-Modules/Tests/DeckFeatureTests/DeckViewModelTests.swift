@@ -153,7 +153,7 @@ final class DeckViewModelTests: XCTestCase {
     func testUploadDeck() async throws {
         externalDeckService.expectedUploadString = "store_id"
         let deck = deckRepositoryMock.data.values.first!.deck
-        sut.publishDeck(deck)
+        sut.publishDeck(deck, user: UserDTO(appleIdentifier: "id", userName: "name"))
         XCTAssertEqual(sut.loadingPhase, .loading)
         try await Task.sleep(for: .seconds(0.5))
         XCTAssertEqual(sut.loadingPhase, .showSuccess)
@@ -165,7 +165,7 @@ final class DeckViewModelTests: XCTestCase {
         externalDeckService.error = URLError(.badServerResponse)
         externalDeckService.shouldError = true
         let deck = deckRepositoryMock.data.values.first!.deck
-        sut.publishDeck(deck)
+        sut.publishDeck(deck, user: UserDTO(appleIdentifier: "id", userName: "name"))
         XCTAssertEqual(sut.loadingPhase, .loading)
         try await Task.sleep(for: .seconds(0.5))
         XCTAssertEqual(sut.loadingPhase, .showFailure)
@@ -252,7 +252,7 @@ final class DeckViewModelTests: XCTestCase {
              cardsIds: [],
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
-             storeId: nil, description: "" )
+             storeId: nil, description: "", ownerId: nil )
     }
     
     func sortById<T: Identifiable>(d0: T, d1: T) -> Bool where T.ID == UUID {

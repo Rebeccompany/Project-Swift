@@ -10,17 +10,6 @@ import SwiftUI
 import Utils
 
 public enum DeckAdapter {
-    public static func adapt(_ deck: Deck) -> ExternalDeck {
-        ExternalDeck(
-            id: deck.storeId,
-            name: deck.name,
-            description: deck.description,
-            icon: IconNames(rawValue: deck.icon) ?? .brain,
-            color: deck.color,
-            category: deck.category
-        )
-    }
-    #warning("FAZER")
     public static func adapt(_ deck: Deck, with cards: [Card], owner: UserDTO) -> DeckDTO {
         DeckDTO(
             id: nil,

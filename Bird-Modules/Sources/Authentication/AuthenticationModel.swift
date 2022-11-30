@@ -56,6 +56,7 @@ public final class AuthenticationModel: ObservableObject {
         do {
             try keychainService.delete(forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
             currentLogedInUserIdentifer = nil
+            user = nil
         } catch {
             didOcurredErrorOnSignInCompletion = true
         }
