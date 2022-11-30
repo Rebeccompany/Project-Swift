@@ -24,20 +24,18 @@ struct CollectionList: View {
         NavigationStack {
             VStack {
                 List {
-                    ForEach(viewModel.collections) { collection in
-                        if collection.id != deck?.collectionId {
-                            Button {
-                                guard let deck else { return }
-                                viewModel.change(deck: deck, to: collection)
-                                dismiss()
-                            } label: {
-                                Label {
-                                    Text(collection.name)
-                                } icon: {
-                                    Image(systemName: collection.icon.rawValue)
-                                }
-                                .foregroundColor(HBColor.collectionTextColor)
+                    ForEach(viewModel.collections.filter { $0.id != deck?.collectionId }) { collection in
+                        Button {
+                            guard let deck else { return }
+                            viewModel.change(deck: deck, to: collection)
+                            dismiss()
+                        } label: {
+                            Label {
+                                Text(collection.name)
+                            } icon: {
+                                Image(systemName: collection.icon.rawValue)
                             }
+                            .foregroundColor(HBColor.collectionTextColor)
                         }
                     }
                 }
@@ -52,6 +50,7 @@ struct CollectionList: View {
                     Text("Remover da coleção")
                 }
                 .buttonStyle(DeleteButtonStyle())
+                .disabled(deck?.collectionId == nil)
                 .padding()
             }
             .viewBackgroundColor(HBColor.primaryBackground)

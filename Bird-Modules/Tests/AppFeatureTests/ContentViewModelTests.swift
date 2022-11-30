@@ -312,6 +312,28 @@ final class ContentViewModelTests: XCTestCase {
         XCTAssertEqual(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), sut.detailTitle)
     }
     
+    func testChangeDeckToNewCollection() {
+        let collection = collectionRepositoryMock.collections.first!
+        let deck = deck0!
+        
+        sut.change(deck: deck, to: collection)
+        
+        XCTAssertTrue(collectionRepositoryMock.collections.first!.decksIds.contains(deck.id))
+        
+    }
+    
+    func testRemoveCollectionFromDeck() {
+        sut.startup()
+        var deck = deck0!
+        collectionRepositoryMock.collections[0].decksIds.append(deck.id)
+        deck.collectionId = collectionRepositoryMock.collections.first!.id
+        var count = collectionRepositoryMock.collections[0].decksIds.count
+        
+        sut.change(deck: deck, to: nil)
+        
+        XCTAssertEqual(collectionRepositoryMock.collections.first!.decksIds.count, count - 1)
+    }
+    
     func createCards() {
         cards = []
         var i = 0

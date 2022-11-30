@@ -232,22 +232,8 @@ public final class ContentViewModel: ObservableObject {
     func change(deck: Deck, to collection: DeckCollection?) {
         if let collection {
             try? collectionRepository.addDeck(deck, in: collection)
-        } else {
-            collectionRepository
-                .listener()
-                .first()
-                .map { collections in
-                    collections.first { collection in
-                        collection.id == deck.collectionId
-                    }
-                }
-                .replaceError(with: nil)
-                .sink { [weak self] collection in
-                    guard let self,
-                          let collection else { return }
-                    try? self.collectionRepository.removeDeck(deck, from: collection)
-                }
-                .store(in: &cancellables)
+        } else if let collectionId = deck.collectionId, let collection = collections.first(where: {$0.id == collectionId }) {
+            try? collectionRepository.removeDeck(deck, from: collection)
         }
     }
 }
