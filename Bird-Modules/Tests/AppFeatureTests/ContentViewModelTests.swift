@@ -331,7 +331,7 @@ final class ContentViewModelTests: XCTestCase {
     
     func testSetupDidEnterBackgroundPublisher() async {
         
-        var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "")
+        var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "", ownerId: nil)
         
         var cards = [Card(id: UUID(), front: NSAttributedString(string: ""), back: NSAttributedString(string: ""), color: .white, datesLogs: DateLogs(), deckID: deck.id, woodpeckerCardInfo: WoodpeckerCardInfo(interval: 2, hasBeenPresented: true), history: [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), userGrade: .correctEasy, timeSpend: 10, date: dateHandler.today.addingTimeInterval(-86400))])]
         
@@ -355,7 +355,7 @@ final class ContentViewModelTests: XCTestCase {
     
     func testSetupDidEnterForeground() async throws {
         
-        var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "")
+        var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "", ownerId: nil)
         
         var cards = [Card(id: UUID(), front: NSAttributedString(string: ""), back: NSAttributedString(string: ""), color: .white, datesLogs: DateLogs(), deckID: deck.id, woodpeckerCardInfo: WoodpeckerCardInfo(interval: 2, hasBeenPresented: true), history: [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), userGrade: .correctEasy, timeSpend: 10, date: dateHandler.today.addingTimeInterval(-86400))])]
         
