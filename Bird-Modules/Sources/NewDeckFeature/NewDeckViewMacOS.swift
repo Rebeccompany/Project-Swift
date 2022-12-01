@@ -22,12 +22,15 @@ public struct NewDeckViewMacOS: View {
     
     @FocusState private var selectedField: Int?
     
-    var editingDeck: Deck?
+    @Binding var editingDeck: Deck?
     var collection: DeckCollection?
     
-    public init(collection: DeckCollection?, editingDeck: Deck?) {
+    public init(
+        collection: DeckCollection?,
+        editingDeck: Binding<Deck?>
+    ) {
         self.collection = collection
-        self.editingDeck = editingDeck
+        self._editingDeck = editingDeck
     }
     
     public var body: some View {
@@ -213,7 +216,7 @@ public struct NewDeckViewMacOS: View {
 struct NewDeckViewMacOS_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
-            NewDeckViewMacOS(collection: nil, editingDeck: nil)
+            NewDeckViewMacOS(collection: nil, editingDeck: .constant(nil))
                 .preferredColorScheme(.dark)
         }
     }
