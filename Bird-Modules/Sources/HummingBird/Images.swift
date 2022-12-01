@@ -60,4 +60,8 @@ public enum HBImages {
     public static var spixiiBeach: Image {
         Image("spixii_beach", bundle: .module)
     }
+    
+    public static var errorSpixii: Image {
+        Image("error", bundle: .module)
+    }
 }

@@ -20,9 +20,11 @@ public struct StoreView: View {
     @StateObject private var interactor = FeedInteractor()
     @EnvironmentObject private var authModel: AuthenticationModel
     @State private var showLogin: Bool = false
+    @State private var isFlipped: Bool = false
     
     public init(store: ShopStore) {
         self.store = store
+        
     }
     
     public var body: some View {
@@ -40,7 +42,7 @@ public struct StoreView: View {
         .navigationTitle(NSLocalizedString("baralhos_publicos", bundle: .module, comment: ""))
         .onAppear {
             interactor.bind(to: store)
-            interactor.send(.loadFeed)
+            //interactor.send(.loadFeed)
         }
         .viewBackgroundColor(HBColor.primaryBackground)
     }
@@ -102,12 +104,63 @@ public struct StoreView: View {
     
     @ViewBuilder
     private func errorView() -> some View {
-        Text("error")
+        VStack {
+            HBImages.errorSpixii
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .padding()
+                .clipShape(Circle())
+                .background {
+                    Circle().fill(HBColor.secondaryBackground)
+                }
+                .frame(maxWidth: 300)
+            
+            Text("Oh no!, something is wrong, check your internet connection and press the button bellow to try again.")
+                .font(.headline)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 320)
+                .padding(.bottom)
+            
+            Button {
+                interactor.send(.loadFeed)
+            } label: {
+                Label {
+                    Text("Retry")
+                } icon: {
+                    Image(systemName: "gobackward")
+                }
+
+            }
+            .buttonStyle(LargeButtonStyle(isDisabled: false))
+            .frame(maxWidth: 320)
+        }
     }
     
     @ViewBuilder
     private func loadingView() -> some View {
-        ProgressView()
+        VStack {
+            ZStack {
+                Rectangle()
+                    .fill(HBColor.actionColor)
+                    .brightness(0.1)
+                SpixiiShapeFront()
+                    .fill(HBColor.actionColor)
+            }
+            .frame(width: 80, height: 120)
+            .cornerRadius(8)
+            .rotationEffect(
+                isFlipped ? Angle(degrees: 0) : Angle(degrees: 360),
+                anchor: .center)
+            .onAppear {
+                withAnimation(.easeInOut(duration: 0.5).delay(0.5).repeatForever(autoreverses: true)) {
+                    isFlipped.toggle()
+                }
+            }
+            .onDisappear {
+                isFlipped = false
+            }
+            Text("Loading...")
+        }
     }
 }
 
@@ -115,9 +168,10 @@ struct StoreView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
             NavigationStack {
-                StoreView(store: ShopStore())
+                StoreView(store: ShopStore(feedState: FeedState(sections: [], viewState: .loading)))
                     .environmentObject(AuthenticationModel())
             }
         }
     }
 }
+
