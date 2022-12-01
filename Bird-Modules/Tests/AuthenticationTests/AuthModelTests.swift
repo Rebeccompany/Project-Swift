@@ -19,7 +19,7 @@ final class AuthModelTests: XCTestCase {
     var keychainService: KeychainServiceMock!
     var userService: ExternalUserServiceMock!
 
-    override func setUp() {
+    @MainActor override func setUp() {
         keychainService = KeychainServiceMock()
         userService = ExternalUserServiceMock()
         
@@ -37,7 +37,7 @@ final class AuthModelTests: XCTestCase {
         userService = nil
     }
     
-    func testOnReceiveRequest() {
+    @MainActor func testOnReceiveRequest() {
         let request = ASAuthorizationAppleIDRequest(coder: NSCoder())!
         sut.onSignInRequest(request)
         XCTAssertEqual(request.requestedScopes, [.fullName, .email])

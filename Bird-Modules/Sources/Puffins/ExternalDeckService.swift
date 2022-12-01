@@ -8,6 +8,12 @@
 import Foundation
 import Combine
 import Models
+import Utils
+
+struct Jwt {
+    let key: String
+    let date: Date
+}
 
 public final class ExternalDeckService: ExternalDeckServiceProtocol {
     
@@ -16,23 +22,30 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     
     public static let shared: ExternalDeckService = .init()
     
-    private var jwt: String?
+    private var jwt: Jwt?
     
-    public init(session: EndpointResolverProtocol = URLSession.shared) {
+    private let dateHandler: DateHandlerProtocol
+    
+    public init(session: EndpointResolverProtocol = URLSession.shared,
+                dateHandler: DateHandlerProtocol = DateHandler()) {
         self.session = session
+        self.dateHandler = dateHandler
     }
     
     private func authenticate() -> some Publisher<String, URLError> {
         //swiftlint: disable trailing_closure
         session.dataTaskPublisher(for: .login)
             .decodeWhenSuccess(to: String.self)
-            .handleEvents(receiveOutput: { [weak self] jwt in self?.jwt = jwt })
+            .handleEvents(receiveOutput: { [weak self] jwt in
+                self?.jwt = Jwt(key: jwt, date: self?.dateHandler.today ?? Date.now)
+            })
             .receive(on: RunLoop.main)
     }
     
     private func authenticatePublisher<Output>(_ publisher: @escaping (String) -> some Publisher<Output, URLError>) -> AnyPublisher<Output, URLError> {
-        if let jwt {
-            return publisher(jwt).eraseToAnyPublisher()
+        
+        if let jwt, isInPast8Hours(date: jwt.date) {
+            return publisher(jwt.key).eraseToAnyPublisher()
         } else {
             return authenticate()
                 .flatMap { token in
@@ -41,6 +54,26 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
                 .mapToURLError()
                 .eraseToAnyPublisher()
         }
+    }
+    
+    func isInPast8Hours(date: Date) -> Bool {
+        let jwtDateComponents = Calendar.autoupdatingCurrent.dateComponents([.year, .month, .day, .hour, .minute],
+                                                                            from: date)
+        let nowDateComponents = Calendar.autoupdatingCurrent.dateComponents([.year, .month, .day, .hour, .minute],
+                                                                            from: dateHandler.today)
+        
+        let differences = [
+            nowDateComponents.year! - jwtDateComponents.year!,
+            nowDateComponents.month! - jwtDateComponents.month!,
+            nowDateComponents.day! - jwtDateComponents.day!,
+            nowDateComponents.hour! - jwtDateComponents.hour!,
+            nowDateComponents.minute! - jwtDateComponents.minute!
+        ]
+        
+        return  (differences[0] <= 0) &&
+                (differences[1] <= 0) &&
+                (differences[2] <= 0) &&
+                ((differences[3] <  8) || (differences[3] == 7  && differences[4] >= 59))
     }
     
     public func getDeckFeed() -> AnyPublisher<[ExternalSection], URLError> {
