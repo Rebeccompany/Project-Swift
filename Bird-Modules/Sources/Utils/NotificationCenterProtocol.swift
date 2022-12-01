@@ -22,11 +22,17 @@ extension NotificationCenter: NotificationCenterProtocol {
 public final class NotificationCenterMock: NotificationCenterProtocol {
     
     public var notificationNames: [Notification.Name] = []
-    public var notificationSubject: PassthroughSubject<Notification, Never> = .init()
+    public var notificationSubjects: [Notification.Name: PassthroughSubject<Notification, Never>] = [:]
     
     public init() {}
     
     public func notificationPublisher(for name: Notification.Name, object: AnyObject? = nil) -> AnyPublisher<Notification, Never> {
-        return notificationSubject.eraseToAnyPublisher()
+        if let subject = notificationSubjects[name] {
+            return subject.eraseToAnyPublisher()
+        } else {
+            let subject = PassthroughSubject<Notification, Never>()
+            notificationSubjects[name] = subject
+            return subject.eraseToAnyPublisher()
+        }
     }
 }

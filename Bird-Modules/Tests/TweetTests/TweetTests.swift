@@ -27,7 +27,7 @@ final class NotificationServiceTests: XCTestCase {
         deck = Deck(id: UUID(), name: "deck1", icon: "plus", color: .red, collectionId: UUID(), cardsIds: [], category: .arts, storeId: "", description: "", ownerId: nil)
         center = UserNotificationServiceMock()
         setupHabitatForIsolatedTesting()
-        sut = NotificationService(center: center, dateHandler: dateHandler)
+        sut = NotificationService(center: center)
     }
     
     override func tearDown() {

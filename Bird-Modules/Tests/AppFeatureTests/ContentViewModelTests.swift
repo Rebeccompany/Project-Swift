@@ -41,7 +41,7 @@ final class ContentViewModelTests: XCTestCase {
         displayCacherMock = DisplayCacher(localStorage: localStorageMock)
         userNotificationService = UserNotificationServiceMock()
         dateHandler = DateHandlerMock()
-        notificationService = NotificationService(center: userNotificationService, dateHandler: dateHandler)
+        notificationService = NotificationService(center: userNotificationService)
         notificationCenter = NotificationCenterMock()
         
         setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock, displayCacher: displayCacherMock, notificationService: notificationService, notificationCenter: notificationCenter)
@@ -73,6 +73,8 @@ final class ContentViewModelTests: XCTestCase {
         notificationService = nil
         userNotificationService = nil
         notificationCenter = nil
+        localStorageMock = nil
+        displayCacherMock = nil
         
         deck0 = nil
         deck1 = nil
@@ -327,7 +329,7 @@ final class ContentViewModelTests: XCTestCase {
         XCTAssertEqual(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), sut.detailTitle)
     }
     
-    func testSetupDidEnterBackgroundPublisher() async {
+    @MainActor func testSetupDidEnterBackgroundPublisher() async {
         
         var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "", ownerId: nil)
         
@@ -342,8 +344,8 @@ final class ContentViewModelTests: XCTestCase {
         try? deckRepositoryMock.createDeck(deck, cards: cards)
         
         sut.startup()
-        let not0 = await Notification(name: UIApplication.didEnterBackgroundNotification)
-        notificationCenter.notificationSubject.send(not0)
+        let not0 = Notification(name: UIApplication.didEnterBackgroundNotification)
+        notificationCenter.notificationSubjects[UIApplication.didEnterBackgroundNotification]?.send(not0)
         try? await Task.sleep(for: .seconds(1))
         
         
@@ -351,7 +353,7 @@ final class ContentViewModelTests: XCTestCase {
         
     }
     
-    func testSetupDidEnterForeground() async throws {
+    @MainActor func testSetupDidEnterForeground() async throws {
         
         var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "", ownerId: nil)
         
@@ -366,14 +368,14 @@ final class ContentViewModelTests: XCTestCase {
         try? deckRepositoryMock.createDeck(deck, cards: cards)
         
         sut.startup()
-        let not0 = await Notification(name: UIApplication.didEnterBackgroundNotification)
-        notificationCenter.notificationSubject.send(not0)
-        try? await Task.sleep(for: .seconds(1))
-        let not = await Notification(name: UIApplication.didBecomeActiveNotification)
-        notificationCenter.notificationSubject.send(not)
+        userNotificationService.requests.append(UNNotificationRequest(identifier: "sfd", content: UNNotificationContent(), trigger: nil))
+        
+        
+        let not = Notification(name: UIApplication.willEnterForegroundNotification)
+        notificationCenter.notificationSubjects[UIApplication.willEnterForegroundNotification]?.send(not)
         try? await Task.sleep(for: .seconds(1))
         
-        XCTAssert(self.userNotificationService.requests.isEmpty)
+        XCTAssertTrue(self.userNotificationService.requests.count == 0)
     }
     
     func createCards() {

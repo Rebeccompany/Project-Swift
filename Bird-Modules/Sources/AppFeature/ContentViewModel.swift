@@ -123,6 +123,7 @@ public final class ContentViewModel: ObservableObject {
     private func setupDidEnterForeground() {
         notificationCenter
             .notificationPublisher(for: UIApplication.willEnterForegroundNotification, object: nil)
+            .receive(on: RunLoop.main)
             .sink { _ in
                 self.notificationService.cleanNotifications()
             }
@@ -132,6 +133,7 @@ public final class ContentViewModel: ObservableObject {
     private func setupDidEnterBackgroundPublisher() {
         notificationCenter
             .notificationPublisher(for: UIApplication.didEnterBackgroundNotification, object: nil)
+            .receive(on: RunLoop.main)
             .flatMap { [weak self] _ in
                 guard let self else {
                     preconditionFailure("self is deinitialized")

@@ -13,6 +13,4 @@ public protocol UserNotificationServiceProtocol {
     func removeAllPendingNotificationRequests()
 }
 
-extension UNUserNotificationCenter: UserNotificationServiceProtocol {
-    
-}
+extension UNUserNotificationCenter: UserNotificationServiceProtocol {}
