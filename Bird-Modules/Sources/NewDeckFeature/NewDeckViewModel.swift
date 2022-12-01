@@ -92,6 +92,7 @@ public class NewDeckViewModel: ObservableObject {
         editingDeck.datesLogs.lastAccess = dateHandler.today
         editingDeck.description = description
         editingDeck.datesLogs.lastEdit = dateHandler.today
+        editingDeck.category = currentSelectedCategory
         try deckRepository.editDeck(editingDeck)
     }
     
