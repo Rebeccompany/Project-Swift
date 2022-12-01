@@ -40,13 +40,6 @@ final class NotificationServiceTests: XCTestCase {
         cancellables = nil
     }
     
-    func testTimeTrigger() {
-        sut.scheduleNotification(for: deck, at: dateHandler.today.addingTimeInterval(5))
-        let trigger = center.requests.first?.trigger as? UNTimeIntervalNotificationTrigger
-        let time = trigger?.nextTriggerDate()?.timeIntervalSince1970
-        XCTAssertNotEqual(time, 0)
-    }
-    
     func testSortNotification() {
         sut.scheduleNotification(for: deck, at: dateHandler.today.addingTimeInterval(5))
         let content = center.requests.first?.content

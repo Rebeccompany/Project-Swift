@@ -25,7 +25,6 @@ final class ContentViewModelTests: XCTestCase {
     var collectionRepositoryMock: CollectionRepositoryMock!
     var userNotificationService: UserNotificationServiceMock!
     var notificationService: NotificationService!
-    var userNotificationServiceMock: UserNotificationServiceMock!
     var dateHandler: DateHandlerMock!
     var notificationCenter: NotificationCenterMock!
     var cancelables: Set<AnyCancellable>!
@@ -42,8 +41,7 @@ final class ContentViewModelTests: XCTestCase {
         displayCacherMock = DisplayCacher(localStorage: localStorageMock)
         userNotificationService = UserNotificationServiceMock()
         dateHandler = DateHandlerMock()
-        userNotificationServiceMock = UserNotificationServiceMock()
-        notificationService = NotificationService(center: userNotificationServiceMock, dateHandler: dateHandler)
+        notificationService = NotificationService(center: userNotificationService, dateHandler: dateHandler)
         notificationCenter = NotificationCenterMock()
         
         setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock, displayCacher: displayCacherMock, notificationService: notificationService, notificationCenter: notificationCenter)
@@ -349,7 +347,7 @@ final class ContentViewModelTests: XCTestCase {
         try? await Task.sleep(for: .seconds(1))
         
         
-        XCTAssertEqual(self.userNotificationServiceMock.requests.count, 1)
+        XCTAssertEqual(self.userNotificationService.requests.count, 1)
         
     }
     
@@ -376,7 +374,6 @@ final class ContentViewModelTests: XCTestCase {
         try? await Task.sleep(for: .seconds(1))
         
         XCTAssert(self.userNotificationService.requests.isEmpty)
-        
     }
     
     func createCards() {

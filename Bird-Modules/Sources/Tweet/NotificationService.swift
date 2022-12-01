@@ -42,14 +42,6 @@ public final class NotificationService: NotificationServiceProtocol {
         center.removeAllPendingNotificationRequests()
     }
     
-    private func timeTrigger(for time: TimeInterval) -> TimeInterval {
-        let today = Date.now.timeIntervalSince1970
-        if time > today {
-            let timeTrigger = (time - today) - Double(TimeZone.autoupdatingCurrent.secondsFromGMT())
-            return timeTrigger
-        }
-        return time
-    }
     
     private func sortNotification(for deck: Deck) -> UNMutableNotificationContent {
         let notificationContent = [
