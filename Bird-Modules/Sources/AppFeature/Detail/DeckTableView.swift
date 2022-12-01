@@ -13,6 +13,8 @@ import NewDeckFeature
 struct DeckTableView: View {
     @EnvironmentObject private var viewModel: ContentViewModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var showCollectionSelection = false
+    @State private var deckToBeEdited: Deck?
     
     var editAction: (Deck) -> Void
     
@@ -25,6 +27,9 @@ struct DeckTableView: View {
             EmptyStateView(component: .deck)
         } else {
             content
+                .sheet(isPresented: $showCollectionSelection) {
+                    CollectionList(viewModel: viewModel, deck: $deckToBeEdited)
+                }
         }
     }
     
@@ -47,7 +52,9 @@ struct DeckTableView: View {
             } else {
                 table
             }
+            
         }
+        .toolbarBackground(.visible, for: .bottomBar)
     }
     
     @ViewBuilder
@@ -71,6 +78,13 @@ struct DeckTableView: View {
                     Text("editar", bundle: .module)
                 }
                 .tint(HBColor.actionColor)
+                Button {
+                    deckToBeEdited = deck
+                    showCollectionSelection = true
+                } label: {
+                    Text("mover_colecao", bundle: .module)
+                }
+                .tint(HBColor.collectionYellow)
             }
             .contextMenu {
                 Button {
