@@ -29,9 +29,9 @@ public class UserNotificationServiceMock: UserNotificationServiceProtocol {
     
     public func requestAuthorization(options: UNAuthorizationOptions, completionHandler: @escaping (Bool, Error?) -> Void) {
         if shouldThrowError {
-            completionHandler(true, nil)
+            completionHandler(false, NSError())
         } else {
-            completionHandler(false, nil)
+            completionHandler(true, nil)
         }
     }
     

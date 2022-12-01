@@ -11,15 +11,13 @@ import Utils
 
 public final class NotificationService: NotificationServiceProtocol {
     private let center: UserNotificationServiceProtocol
-    private let dateHandler: DateHandlerProtocol
     private let not1: String = NSLocalizedString("notification1", bundle: .module, comment: "")
     private let not2: String = NSLocalizedString("notification2", bundle: .module, comment: "")
     private let not3: String = NSLocalizedString("notification3", bundle: .module, comment: "")
     private let not3_secondPart: String = NSLocalizedString("notification3_awaits", bundle: .module, comment: "")
     
-    public init(center: UserNotificationServiceProtocol = UNUserNotificationCenter.current(), dateHandler: DateHandlerProtocol = DateHandler()) {
+    public init(center: UserNotificationServiceProtocol = UNUserNotificationCenter.current()) {
         self.center = center
-        self.dateHandler = dateHandler
     }
     
     public func scheduleNotification(for deck: Deck, at date: Date) {
@@ -41,7 +39,6 @@ public final class NotificationService: NotificationServiceProtocol {
         
         center.removeAllPendingNotificationRequests()
     }
-    
     
     private func sortNotification(for deck: Deck) -> UNMutableNotificationContent {
         let notificationContent = [

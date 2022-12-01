@@ -34,7 +34,7 @@ public func setupHabitatForIsolatedTesting(
     systemObserver: SystemObserverProtocol = SystemObserverMock(),
     displayCacher: DisplayCacherProtocol = DisplayCacher(localStorage: LocalStorageMock()),
     externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock(),
-    notificationService: NotificationServiceProtocol = NotificationService(center: UserNotificationServiceMock(), dateHandler: DateHandlerMock()),
+    notificationService: NotificationServiceProtocol = NotificationService(center: UserNotificationServiceMock()),
     externalUserService: ExternalUserServiceProtocol = ExternalUserServiceMock(),
     keychainService: KeychainServiceProtocol = KeychainServiceMock(),
     notificationCenter: NotificationCenterProtocol = NotificationCenterMock()
