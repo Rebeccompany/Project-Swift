@@ -40,7 +40,7 @@ struct EndOfStudyViewMacOS: View {
                 .multilineTextAlignment(.center)
                 .padding()
             
-            Text("Você já pode fechar essa janela!")
+            Text(NSLocalizedString("fim_da_sessao", bundle: .module, comment: ""))
                 .font(.system(size: 18, weight: .bold))
                 .multilineTextAlignment(.center)
                 .padding()
