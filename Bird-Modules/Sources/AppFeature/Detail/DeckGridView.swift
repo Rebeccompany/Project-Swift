@@ -16,6 +16,9 @@ struct DeckGridView: View {
     @State private var shouldDisplayAlert = false
     @State private var deckToBeDeleted: Deck?
     
+    @State private var deckToBeEdited: Deck?
+    @State private var isCollectionSheetPresented = false
+    
     private var sortedDecks: [Deck] {
         viewModel.decks.sorted(using: viewModel.sortOrder)
     }
@@ -50,26 +53,35 @@ struct DeckGridView: View {
                                     } label: {
                                         Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
                                     }
+                                    
+                                    Button {
+                                        deckToBeEdited = deck
+                                        isCollectionSheetPresented = true
+                                    } label: {
+                                        Label(NSLocalizedString("mover_colecao", bundle: .module, comment: ""), systemImage: "tray.and.arrow.down")
+                                    }
                                 }
                         }
                         .buttonStyle(DeckCell.Style(color: deck.color))
-                            .hoverEffect(.lift)
-                            .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
-                                Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                                    guard let deckToBeDeleted else { return }
-                                    try? viewModel.deleteDeck(deckToBeDeleted)
-                                }
-                            } message: {
-                                Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                        .hoverEffect(.lift)
+                        .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                                guard let deckToBeDeleted else { return }
+                                try? viewModel.deleteDeck(deckToBeDeleted)
                             }
+                        } message: {
+                            Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                        }
                     }
-                   
+                    
                 }
                 .animation(.linear, value: viewModel.sortOrder)
                 .padding([.horizontal], 12)
                 .padding(.top, 24)
             }
+            .sheet(isPresented: $isCollectionSheetPresented) {
+                CollectionList(viewModel: viewModel, deck: $deckToBeEdited)
+            }
         }
     }
-    
 }

@@ -31,7 +31,7 @@ public final class ContentViewModel: ObservableObject {
     @Published var detailType: DetailDisplayType
     @Published var sortOrder: [KeyPathComparator<Deck>]
     @Published var shouldReturnToGrid: Bool
-
+    
     // MARK: Repositories
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
@@ -195,7 +195,7 @@ public final class ContentViewModel: ObservableObject {
             }
         }
     }
-            
+    
     private func filterDecksBySearchText(_ decks: [Deck], searchText: String) -> [Deck] {
         if searchText.isEmpty {
             return decks
@@ -207,7 +207,7 @@ public final class ContentViewModel: ObservableObject {
     private func filterDecksForToday(_ decks: [Deck]) -> [Deck] {
         decks.filter {
             guard let session = $0.session else { return false }
-
+            
             guard !session.cardIds.isEmpty else { return false }
             return dateHandler.isToday(date: session.date) || session.date < dateHandler.today
         }
@@ -248,7 +248,7 @@ public final class ContentViewModel: ObservableObject {
             .forEach { deck in
                 try deckRepository.deleteDeck(deck)
             }
-            
+        
         selection = Set()
     }
     
@@ -276,6 +276,14 @@ public final class ContentViewModel: ObservableObject {
     func didCollectionPresentationStatusChanged(_ status: Bool) {
         guard status == false else {
             return
+        }
+    }
+    
+    func change(deck: Deck, to collection: DeckCollection?) {
+        if let collection {
+            try? collectionRepository.addDeck(deck, in: collection)
+        } else if let collectionId = deck.collectionId, let collection = collections.first(where: {$0.id == collectionId }) {
+            try? collectionRepository.removeDeck(deck, from: collection)
         }
     }
 }
