@@ -393,7 +393,7 @@ final class ContentViewModelTests: XCTestCase {
         var deck = deck0!
         collectionRepositoryMock.collections[0].decksIds.append(deck.id)
         deck.collectionId = collectionRepositoryMock.collections.first!.id
-        var count = collectionRepositoryMock.collections[0].decksIds.count
+        let count = collectionRepositoryMock.collections[0].decksIds.count
         
         sut.change(deck: deck, to: nil)
         
