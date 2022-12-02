@@ -48,4 +48,8 @@ extension Endpoint {
     static func update(id: String, _ dto: Data) -> Endpoint {
         Endpoint(path: "api/decks/\(id)", method: .put, body: dto)
     }
+    
+    static func deleteUser(_ user: UserDTO) -> Endpoint {
+        Endpoint(path: "api/auth/revoke", method: .delete, body: try? JSONEncoder().encode(user))
+    }
 }

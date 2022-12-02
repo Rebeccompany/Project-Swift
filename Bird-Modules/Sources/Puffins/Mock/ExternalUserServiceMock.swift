@@ -34,4 +34,9 @@ public final class ExternalUserServiceMock: ExternalUserServiceProtocol {
     public var user: UserDTO {
         UserDTO(appleIdentifier: "appleIdentifier", userName: "userName")
     }
+    
+    //swiftlint:disable trailing_closure
+    public func deleteAccount(user: Models.UserDTO) -> AnyPublisher<Void, Error> {
+        fatalError("deu erro")
+    }
 }

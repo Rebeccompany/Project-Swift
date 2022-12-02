@@ -31,4 +31,11 @@ public final class ExternalUserService: ExternalUserServiceProtocol {
             .mapError { $0 as Error }
             .eraseToAnyPublisher()
     }
+    
+    public func deleteAccount(user: UserDTO) -> AnyPublisher<Void, Error> {
+        session.dataTaskPublisher(for: .deleteUser(user))
+            .verifyVoidSuccess()
+            .mapError { $0 as Error }
+            .eraseToAnyPublisher()
+    }
 }

@@ -232,7 +232,7 @@ public final class ContentViewModel: ObservableObject {
     func change(deck: Deck, to collection: DeckCollection?) {
         if let collection {
             try? collectionRepository.addDeck(deck, in: collection)
-        } else if let collectionId = deck.collectionId, let collection = collections.first(where: {$0.id == collectionId }) {
+        } else if let collectionId = deck.collectionId, let collection = collections.first(where: { $0.id == collectionId }) {
             try? collectionRepository.removeDeck(deck, from: collection)
         }
     }

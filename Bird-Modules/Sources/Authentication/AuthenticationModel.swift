@@ -63,7 +63,19 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     public func deleteAccount() {
-        
+        guard let user else { return }
+        userService.deleteAccount(user: user)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.signOut()
+                case .failure(_):
+                    break
+                }
+            } receiveValue: { _ in
+            }
+            .store(in: &cancellables)
+
     }
     
     func onSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
