@@ -153,7 +153,7 @@ final class DeckViewModelTests: XCTestCase {
     func testUploadDeck() async throws {
         externalDeckService.expectedUploadString = "store_id"
         let deck = deckRepositoryMock.data.values.first!.deck
-        sut.publishDeck(deck, user: UserDTO(appleIdentifier: "id", userName: "name"))
+        sut.publishDeck(deck, user: User(appleIdentifier: "id", userName: "name"))
         XCTAssertEqual(sut.loadingPhase, .loading)
         try await Task.sleep(for: .seconds(0.5))
         XCTAssertEqual(sut.loadingPhase, .showSuccess)
@@ -165,7 +165,7 @@ final class DeckViewModelTests: XCTestCase {
         externalDeckService.error = URLError(.badServerResponse)
         externalDeckService.shouldError = true
         let deck = deckRepositoryMock.data.values.first!.deck
-        sut.publishDeck(deck, user: UserDTO(appleIdentifier: "id", userName: "name"))
+        sut.publishDeck(deck, user: User(appleIdentifier: "id", userName: "name"))
         XCTAssertEqual(sut.loadingPhase, .loading)
         try await Task.sleep(for: .seconds(0.5))
         XCTAssertEqual(sut.loadingPhase, .showFailure)
@@ -197,7 +197,7 @@ final class DeckViewModelTests: XCTestCase {
     func testUpdatePublicDeck() async throws {
         externalDeckService.expectedUploadString = "store_id"
         let deck = deckRepositoryMock.data.values.first!.deck
-        sut.updatePublicDeck(deck, user: UserDTO(appleIdentifier: "id", userName: "name"))
+        sut.updatePublicDeck(deck, user: User(appleIdentifier: "id", userName: "name"))
         XCTAssertEqual(sut.loadingPhase, .loading)
         try await Task.sleep(for: .seconds(0.5))
         XCTAssertEqual(sut.loadingPhase, .showSuccess)
@@ -209,7 +209,7 @@ final class DeckViewModelTests: XCTestCase {
         externalDeckService.error = URLError(.badServerResponse)
         externalDeckService.shouldError = true
         let deck = deckRepositoryMock.data.values.first!.deck
-        sut.updatePublicDeck(deck, user: UserDTO(appleIdentifier: "id", userName: "name"))
+        sut.updatePublicDeck(deck, user: User(appleIdentifier: "id", userName: "name"))
         XCTAssertEqual(sut.loadingPhase, .loading)
         try await Task.sleep(for: .seconds(0.5))
         XCTAssertEqual(sut.loadingPhase, .showFailure)
@@ -227,7 +227,7 @@ final class DeckViewModelTests: XCTestCase {
         var deck = newDeck()
         deck.storeId = "store_id"
         deck.ownerId = "owner_id"
-        let user = UserDTO(appleIdentifier: "owner_id", userName: "name")
+        let user = User(appleIdentifier: "owner_id", userName: "name")
         
         XCTAssertFalse(sut.isUpdateButtonDisabled(for: deck, user: user))
     }
@@ -243,7 +243,7 @@ final class DeckViewModelTests: XCTestCase {
         var deck = newDeck()
         deck.storeId = "store_id"
         deck.ownerId = "owner_id"
-        let user = UserDTO(appleIdentifier: "owner_id", userName: "name")
+        let user = User(appleIdentifier: "owner_id", userName: "name")
         
         XCTAssertFalse(sut.isDeleteButtonDisabled(for: deck, user: user))
     }

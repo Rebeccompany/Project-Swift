@@ -41,7 +41,7 @@ extension Endpoint {
         Endpoint(path: "api/auth/signin", method: .post, body: try? JSONEncoder().encode(id))
     }
     
-    static func signup(user: UserDTO) -> Endpoint {
+    static func signup(user: User) -> Endpoint {
         Endpoint(path: "api/auth/signup", method: .post, body: try? JSONEncoder().encode(user))
     }
     

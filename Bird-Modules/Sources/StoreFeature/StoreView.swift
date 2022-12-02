@@ -21,6 +21,7 @@ public struct StoreView: View {
     @EnvironmentObject private var authModel: AuthenticationModel
     @State private var showLogin: Bool = false
     @State private var isFlipped: Bool = false
+    @State private var showSomething: Bool = false
     
     public init(store: ShopStore) {
         self.store = store
@@ -42,7 +43,7 @@ public struct StoreView: View {
         .navigationTitle(NSLocalizedString("baralhos_publicos", bundle: .module, comment: ""))
         .onAppear {
             interactor.bind(to: store)
-            //interactor.send(.loadFeed)
+            interactor.send(.loadFeed)
         }
         .viewBackgroundColor(HBColor.primaryBackground)
     }
@@ -62,14 +63,24 @@ public struct StoreView: View {
                 .environmentObject(store)
                 .environmentObject(authModel)
         }
+        .navigationDestination(for: FilterRoute.self) { route in
+            switch route {
+            case .search(let category):
+                SearchDeckView()
+            }
+        }
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                NavigationLink(value: FilterRoute.search(category: nil)) {
+                    Label("Search", systemImage: "magnifyingglass")
+                }
                 signInMenu
             }
         }
         .fullScreenCover(isPresented: $showLogin) {
             AuthenticationView(model: authModel)
         }
+        
     }
     
     @ViewBuilder
@@ -175,3 +186,6 @@ struct StoreView_Previews: PreviewProvider {
     }
 }
 
+enum FilterRoute: Hashable {
+    case search(category: DeckCategory?)
+}

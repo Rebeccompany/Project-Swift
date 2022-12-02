@@ -15,23 +15,23 @@ public final class ExternalUserServiceMock: ExternalUserServiceProtocol {
     
     public init() {}
     
-    public func signIn(id: String) -> AnyPublisher<UserDTO, Error> {
+    public func signIn(id: String) -> AnyPublisher<User, Error> {
         if signInSuccess {
-            return Just(UserDTO(appleIdentifier: id, userName: user.username)).setFailureType(to: Error.self).eraseToAnyPublisher()
+            return Just(User(appleIdentifier: id, userName: user.username)).setFailureType(to: Error.self).eraseToAnyPublisher()
         } else {
-            return Fail(outputType: UserDTO.self, failure: URLError(.badServerResponse)).eraseToAnyPublisher()
+            return Fail(outputType: User.self, failure: URLError(.badServerResponse)).eraseToAnyPublisher()
         }
     }
     
-    public func signUp(user: UserDTO) -> AnyPublisher<UserDTO, Error> {
+    public func signUp(user: User) -> AnyPublisher<User, Error> {
         if signInSuccess {
             return Just(user).setFailureType(to: Error.self).eraseToAnyPublisher()
         } else {
-            return Fail(outputType: UserDTO.self, failure: URLError(.badServerResponse)).eraseToAnyPublisher()
+            return Fail(outputType: User.self, failure: URLError(.badServerResponse)).eraseToAnyPublisher()
         }
     }
     
-    public var user: UserDTO {
-        UserDTO(appleIdentifier: "appleIdentifier", userName: "userName")
+    public var user: User {
+        User(appleIdentifier: "appleIdentifier", userName: "userName")
     }
 }

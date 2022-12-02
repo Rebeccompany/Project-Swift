@@ -23,8 +23,17 @@ struct PublicSection: View {
                 .cornerRadius(12)
             }
         } header: {
-            Text(LocalizedStringKey(stringLiteral: section.title), bundle: .module)
-                .font(.title3.bold())
+            HStack {
+                Text(LocalizedStringKey(stringLiteral: section.title), bundle: .module)
+                    .font(.title3.bold())
+                Spacer()
+                NavigationLink(value: FilterRoute.search(category: DeckCategory(rawValue: section.title))) {
+                    HStack {
+                        Text("See all")
+                        Image(systemName: "chevron.right")
+                    }
+                }
+            }
         }
         .padding([.bottom, .leading, .trailing], 16)
     }

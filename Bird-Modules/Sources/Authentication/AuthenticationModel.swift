@@ -20,7 +20,7 @@ public final class AuthenticationModel: ObservableObject {
     @Dependency(\.keychainService) private var keychainService
     
     @Published public var currentLogedInUserIdentifer: String?
-    @Published public var user: UserDTO?
+    @Published public var user: User?
     @Published public var didOcurredErrorOnSignInCompletion: Bool = false
     @Published var shouldDismiss = false
     
@@ -39,7 +39,6 @@ public final class AuthenticationModel: ObservableObject {
     
     public func isSignedIn() async throws -> Bool {
         guard let user else { return false }
-        
         let state = try await idProvider.credentialState(forUserID: user.appleIdentifier)
         switch state {
         case .authorized:
@@ -81,7 +80,7 @@ public final class AuthenticationModel: ObservableObject {
     
     func completeSignUp(username: String) {
         guard let currentLogedInUserIdentifer else { return }
-        userService.signUp(user: UserDTO(appleIdentifier: currentLogedInUserIdentifer, userName: username))
+        userService.signUp(user: User(appleIdentifier: currentLogedInUserIdentifer, userName: username))
             .receive(on: RunLoop.main)
             .sink {[weak self] completion in
                 switch completion {
@@ -107,6 +106,7 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     private func onAppleIdCredentialReceived(_ appleIDCredential: ASAuthorizationAppleIDCredential) {
+        print("totine", String(decoding: appleIDCredential.authorizationCode!, as: Unicode.ASCII.self))
         userService.signIn(id: appleIDCredential.user)
             .receive(on: RunLoop.main)
             .sink { [weak self] completion in
@@ -139,7 +139,7 @@ public final class AuthenticationModel: ObservableObject {
         
         userService
             .signIn(id: id)
-            .map { $0 as UserDTO? }
+            .map { $0 as User? }
             .replaceError(with: nil)
             .receive(on: RunLoop.main)
             .assign(to: &$user)

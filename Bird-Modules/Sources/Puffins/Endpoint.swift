@@ -22,7 +22,7 @@ public struct Endpoint {
     
     var url: URL {
         var components = URLComponents()
-        components.scheme = "http"
+        components.scheme = "https"
         components.host = ApiKeys.baseRoute
         components.path = "/\(path)"
         components.queryItems = queryItems

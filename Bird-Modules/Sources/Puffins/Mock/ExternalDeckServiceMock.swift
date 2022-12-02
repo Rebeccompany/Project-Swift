@@ -113,7 +113,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         }
     }
     
-    public func uploadNewDeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<String, URLError> {
+    public func uploadNewDeck(_ deck: Deck, with cards: [Card], owner: User) -> AnyPublisher<String, URLError> {
         if shouldError {
             return Fail(outputType: String.self, failure: error!).eraseToAnyPublisher()
         }
@@ -134,7 +134,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         return Just(deckDTO(id: id)).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
     
-    public  func updateADeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<Void, URLError> {
+    public  func updateADeck(_ deck: Deck, with cards: [Card], owner: User) -> AnyPublisher<Void, URLError> {
         if shouldError {
             return Fail(outputType: Void.self, failure: error!).eraseToAnyPublisher()
         }

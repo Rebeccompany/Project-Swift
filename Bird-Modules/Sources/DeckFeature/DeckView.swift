@@ -21,8 +21,8 @@ import NewFlashcardFeature
 
 enum PublishConfirmationDialogData {
     case delete
-    case update(user: UserDTO)
-    case publish(user: UserDTO)
+    case update(user: User)
+    case publish(user: User)
 }
 
 public struct DeckView: View {
@@ -327,7 +327,7 @@ public struct DeckView: View {
     }
     
     @ViewBuilder
-    private func loggedInShareMenu(_ user: UserDTO) -> some View {
+    private func loggedInShareMenu(_ user: User) -> some View {
         Section("Deck") {
             Button {
                 confirmationDialogData = .publish(user: user)
