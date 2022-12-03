@@ -8,13 +8,13 @@ import Models
 import Foundation
 
 extension Endpoint {
-    static var feed: Endpoint {
-        Endpoint(path: "api/decks/feed")
-    }
-    
     static func cardsForDeck(id: String, page: Int = 0) -> Endpoint {
         let queryItem = URLQueryItem(name: "page", value: "\(page)")
         return Endpoint(path: "api/cards/\(id)", queryItems: [queryItem])
+    }
+    
+    static var feed: Endpoint {
+        Endpoint(path: "api/decks/feed")
     }
     
     static func deck(id: String) -> Endpoint {
@@ -29,12 +29,20 @@ extension Endpoint {
         Endpoint(path: "api/decks/\(id)", method: .delete)
     }
     
-    static var login: Endpoint {
-        Endpoint(path: "api/auth", method: .post, body: try? JSONEncoder().encode(Secrets.shared))
-    }
-    
     static func download(id: String) -> Endpoint {
         Endpoint(path: "api/decks/\(id)/download")
+    }
+    
+    static func update(id: String, _ dto: Data) -> Endpoint {
+        Endpoint(path: "api/decks/\(id)", method: .put, body: dto)
+    }
+    
+    static func deleteDecksFromUser(id: String) -> Endpoint {
+        Endpoint(path: "api/decks/deleteallfromuser/\(id)", method: .delete)
+    }
+    
+    static var login: Endpoint {
+        Endpoint(path: "api/auth", method: .post, body: try? JSONEncoder().encode(Secrets.shared))
     }
     
     static func signin(user: SignInDTO) -> Endpoint {
@@ -53,7 +61,7 @@ extension Endpoint {
         Endpoint(path: "api/auth/revoke", method: .delete, body: try? JSONEncoder().encode(data))
     }
     
-    static func update(id: String, _ dto: Data) -> Endpoint {
-        Endpoint(path: "api/decks/\(id)", method: .put, body: dto)
+    static func deleteUser(id: String) -> Endpoint {
+        Endpoint(path: "api/auth/delete/\(id)", method: .delete)
     }
 }

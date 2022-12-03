@@ -158,4 +158,12 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
                 .verifyVoidSuccess()
         }
     }
+    
+    public func deleteAllDeckFromUser(id: String) -> AnyPublisher<Void, URLError> {
+        authenticatePublisher {[weak self] jwt in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session.dataTaskPublisher(for: .deleteDecksFromUser(id: id), authToken: jwt)
+                .verifyVoidSuccess()
+        }
+    }
 }

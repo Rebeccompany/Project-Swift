@@ -39,10 +39,18 @@ public final class ExternalUserService: ExternalUserServiceProtocol {
             .eraseToAnyPublisher()
     }
     
-    public func deleteUser(data: SignUpResponse) -> AnyPublisher<Void, Error> {
+    public func revokeUser(data: SignUpResponse) -> AnyPublisher<Void, Error> {
         session.dataTaskPublisher(for: .revokeUser(data: data))
             .verifyVoidSuccess()
             .mapError { $0 as Error }
             .eraseToAnyPublisher()
+    }
+    
+    public func deleteUser(id: String) -> AnyPublisher<Void, Error> {
+        session.dataTaskPublisher(for: .deleteUser(id: id))
+            .verifyVoidSuccess()
+            .mapError { $0 as Error }
+            .eraseToAnyPublisher()
+            
     }
 }

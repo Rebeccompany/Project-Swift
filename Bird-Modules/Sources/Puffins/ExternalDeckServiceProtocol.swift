@@ -17,4 +17,5 @@ public protocol ExternalDeckServiceProtocol {
     func updateADeck(_ deck: Deck, with cards: [Card], owner: User) -> AnyPublisher<Void, URLError>
     func deleteDeck(_ deck: Deck) -> AnyPublisher<Void, URLError>
     func downloadDeck(with id: String) -> AnyPublisher<DeckDTO, URLError>
+    func deleteAllDeckFromUser(id: String) -> AnyPublisher<Void, URLError>
 }

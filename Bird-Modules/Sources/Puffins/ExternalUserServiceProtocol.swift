@@ -13,5 +13,6 @@ public protocol ExternalUserServiceProtocol {
     func signIn(user: SignInDTO) -> AnyPublisher<SignUpResponse, Error>
     func signUp(user: SignInDTO) -> AnyPublisher<SignUpResponse, Error>
     func authUser(id: String) -> AnyPublisher<User, Error>
-    func deleteUser(data: SignUpResponse) -> AnyPublisher<Void, Error>
+    func revokeUser(data: SignUpResponse) -> AnyPublisher<Void, Error>
+    func deleteUser(id: String) -> AnyPublisher<Void, Error>
 }

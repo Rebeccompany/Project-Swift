@@ -13,7 +13,7 @@ public final class ExternalUserServiceMock: ExternalUserServiceProtocol {
     public var signInSuccess = true
     public var signUpSuccess = true
     public var authUserSuccess = true
-    public var deleteAccountDelete = true
+    public var deleteAccountSucess = true
     
     public init() {}
     
@@ -45,8 +45,15 @@ public final class ExternalUserServiceMock: ExternalUserServiceProtocol {
         User(appleIdentifier: "appleIdentifier", userName: "userName")
     }
     
-    public func deleteUser(data: Models.SignUpResponse) -> AnyPublisher<Void, Error> {
-        if authUserSuccess {
+    public func revokeUser(data: Models.SignUpResponse) -> AnyPublisher<Void, Error> {
+        if deleteAccountSucess {
+            return Just(Void()).setFailureType(to: Error.self).eraseToAnyPublisher()
+        }
+        return Fail(outputType: Void.self, failure: URLError(.badServerResponse)).eraseToAnyPublisher()
+    }
+    
+    public func deleteUser(id: String) -> AnyPublisher<Void, Error> {
+        if deleteAccountSucess {
             return Just(Void()).setFailureType(to: Error.self).eraseToAnyPublisher()
         }
         return Fail(outputType: Void.self, failure: URLError(.badServerResponse)).eraseToAnyPublisher()

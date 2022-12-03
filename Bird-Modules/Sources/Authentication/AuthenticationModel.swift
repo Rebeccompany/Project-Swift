@@ -20,6 +20,7 @@ public final class AuthenticationModel: ObservableObject {
     @Dependency(\.externalDeckService) private var externalDeckService
     @Dependency(\.deckRepository) private var deckRepository
     @Dependency(\.keychainService) private var keychainService
+    @Dependency(\.notificationCenter) private var notificationCenter
     
     @Published public var currentLogedInUserIdentifer: String?
     @Published public var user: User?
@@ -40,6 +41,20 @@ public final class AuthenticationModel: ObservableObject {
     public init() {
         let id = try? keychainService.get(forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
         signIn(id: id)
+        setup(id: id)
+    }
+    
+    private func setup(id: String?) {
+        guard let id else { return }
+        
+        notificationCenter.notificationPublisher(
+            for: ASAuthorizationAppleIDProvider.credentialRevokedNotification,
+            object: nil
+        )
+        .sink {[weak self] _ in
+            self?.deleteUserAfterTokenBeenRevoked(cameFromNotification: true, userId: id)
+        }
+        .store(in: &cancellables)
     }
     
     public func isSignedIn() async throws -> Bool {
@@ -75,14 +90,13 @@ public final class AuthenticationModel: ObservableObject {
             return
         }
         
-        #warning("Deletar baralhos")
         userService
-            .deleteUser(data: SignUpResponse(user: user, refreshToken: refreshToken))
+            .revokeUser(data: SignUpResponse(user: user, refreshToken: refreshToken))
             .receive(on: RunLoop.main)
             .sink {[weak self] completion in
                 switch completion {
                 case .finished:
-                    self?.signOut()
+                    self?.deleteUserAfterTokenBeenRevoked(userId: user.appleIdentifier)
                 case.failure(_):
                     break
                 }
@@ -186,5 +200,66 @@ public final class AuthenticationModel: ObservableObject {
             .replaceError(with: nil)
             .receive(on: RunLoop.main)
             .assign(to: &$user)
+    }
+    
+    private func deleteUserAfterTokenBeenRevoked(cameFromNotification: Bool = false, userId: String) {
+        if cameFromNotification {
+            removeUserDataFromServer(userId: userId)
+        }
+        
+        signOut()
+        removeDecksFromServer(userId: userId)
+        removeStoreIdFromDecks(userId: userId)
+    }
+    
+    private func removeStoreIdFromDecks(userId: String) {
+        deckRepository
+            .deckListener()
+            .first()
+            .map { $0.filter { deck in deck.storeId != nil && deck.ownerId == userId } }
+            .replaceError(with: [])
+            .sink {[weak self] decks in
+                decks.forEach { deck in
+                    var editedDeck = deck
+                    editedDeck.storeId = nil
+                    editedDeck.ownerId = nil
+                    try? self?.deckRepository.editDeck(editedDeck)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func removeDecksFromServer(userId: String) {
+        externalDeckService
+            .deleteAllDeckFromUser(id: userId)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(_):
+                    break
+                }
+            } receiveValue: { _ in
+                
+            }
+            .store(in: &cancellables)
+
+    }
+    
+    private func removeUserDataFromServer(userId: String) {
+        userService
+            .deleteUser(id: userId)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(_):
+                    break
+                }
+            } receiveValue: { _ in
+                
+            }
+            .store(in: &cancellables)
+
     }
 }

@@ -140,4 +140,11 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         }
         return Just(Void()).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
+    
+    public func deleteAllDeckFromUser(id: String) -> AnyPublisher<Void, URLError> {
+        if shouldError {
+            return Fail(outputType: Void.self, failure: error!).eraseToAnyPublisher()
+        }
+        return Just(Void()).setFailureType(to: URLError.self).eraseToAnyPublisher()
+    }
 }
