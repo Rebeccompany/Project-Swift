@@ -17,6 +17,8 @@ import Models
 public final class AuthenticationModel: ObservableObject {
     
     @Dependency(\.externalUserService) private var userService
+    @Dependency(\.externalDeckService) private var externalDeckService
+    @Dependency(\.deckRepository) private var deckRepository
     @Dependency(\.keychainService) private var keychainService
     
     @Published public var currentLogedInUserIdentifer: String?
