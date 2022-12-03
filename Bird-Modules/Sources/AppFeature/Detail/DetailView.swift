@@ -12,6 +12,7 @@ import NewDeckFeature
 import DeckFeature
 import Storage
 import Habitat
+import Tweet
 
 
 public struct DetailView: View {
@@ -22,7 +23,6 @@ public struct DetailView: View {
     @State private var shouldDisplayAlert = false
     @State private var editingDeck: Deck?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    
     
     
     init(editMode: Binding<EditMode>) {
@@ -147,7 +147,6 @@ public struct DetailView: View {
             .buttonStyle(LargeButtonStyle(isDisabled: false))
             .padding()
         }
-        
     }
     
     @ViewBuilder

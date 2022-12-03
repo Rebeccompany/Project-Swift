@@ -13,6 +13,7 @@ import DeckFeature
 import Habitat
 import Utils
 import SwiftUI
+import Tweet
 import Puffins
 
 //swiftlint:disable trailing_closure
@@ -35,8 +36,10 @@ public final class ContentViewModel: ObservableObject {
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
+    @Dependency(\.notificationService) private var notificationService: NotificationServiceProtocol
     @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
     @Dependency(\.externalDeckService) private var externalDeckService: ExternalDeckServiceProtocol
+    @Dependency(\.notificationCenter) private var notificationCenter: NotificationCenterProtocol
     
     private var cancellables: Set<AnyCancellable>
     
@@ -105,12 +108,59 @@ public final class ContentViewModel: ObservableObject {
         detailType = displayCacher.getCurrentDetailType() ?? .grid
         shouldReturnToGrid = detailType == .grid
         
+        notificationService.requestAuthorizationForNotifications()
+        
+        setupDidEnterForeground()
+        setupDidEnterBackgroundPublisher()
+        notificationService.cleanNotifications()
+        
         $decks
             .tryMap(filterDecksForToday)
             .replaceError(with: [])
             .assign(to: &$todayDecks)
     }
     
+    private func setupDidEnterForeground() {
+        notificationCenter
+            .notificationPublisher(for: UIApplication.willEnterForegroundNotification, object: nil)
+            .receive(on: RunLoop.main)
+            .sink { _ in
+                self.notificationService.cleanNotifications()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func setupDidEnterBackgroundPublisher() {
+        notificationCenter
+            .notificationPublisher(for: UIApplication.didEnterBackgroundNotification, object: nil)
+            .receive(on: RunLoop.main)
+            .flatMap { [weak self] _ in
+                guard let self else {
+                    preconditionFailure("self is deinitialized")
+                }
+                return self.deckRepository.deckListener().first()
+            }
+            .replaceError(with: [Deck]())
+            .map { decks in
+                decks.compactMap { [weak self] (deck: Deck) -> Deck? in
+                    guard let date = deck.session?.date,
+                          let self else { return nil }
+                    
+                    if date >= self.dateHandler.today {
+                        return deck
+                    }
+                    return nil
+                }
+            }
+            .sink { [weak self] decks in
+                guard let self else { return }
+                decks.forEach { deck in
+                    self.notificationService.scheduleNotification(for: deck, at: self.dateHandler.today)
+                }
+            }
+            .store(in: &cancellables)
+    }
+        
     func bindingToDeck(_ deck: Deck) -> Binding<Deck> {
         Binding<Deck> { [weak self] in
             guard let self = self,

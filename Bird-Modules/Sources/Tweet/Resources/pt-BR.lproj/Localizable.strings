@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Rebecca Mello on 09/11/22.
+  
+*/
+
+"notification1" = "Vem estudar";
+"notification2" = "Ta achando que a vida é fácil, vem estudar";
+"notification3" = "Já tá na hora né, o baralho";
+"notification3_awaits" = "te espera";
+"birdSound" = "Piu!!";

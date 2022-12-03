@@ -11,7 +11,7 @@ import AppFeature
 @main
 struct Project_BirdApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+        
     var body: some Scene {
         WindowGroup {
             ContentView()
