@@ -36,6 +36,7 @@ public class NewDeckViewModel: ObservableObject {
         currentSelectedColor = deck.color
         currentSelectedIcon = IconNames(rawValue: deck.icon)
         description = deck.description
+        currentSelectedCategory = deck.category
     }
     
     private var canSubmitPublisher: AnyPublisher<Bool, Never> {
