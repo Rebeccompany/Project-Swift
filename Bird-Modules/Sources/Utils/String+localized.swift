@@ -1,8 +1,8 @@
 //
-//  File.swift
+//  String+localized.swift
 //  
 //
-//  Created by Gabriel Ferreira de Carvalho on 30/11/22.
+//  Created by Marcos Chevis on 29/11/22.
 //
 
 import Foundation

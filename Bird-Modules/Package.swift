@@ -118,10 +118,12 @@ let package = Package(
             name: "FlashcardsOnboardingFeature",
             targets: ["FlashcardsOnboardingFeature"]
         ),
+        
         .library(
             name: "StoreFeature",
             targets: ["StoreFeature"]
         ),
+        
         .library(
             name: "PublicDeckFeature",
             targets: ["PublicDeckFeature"]
@@ -129,6 +131,10 @@ let package = Package(
         .library(
             name: "Puffins",
             targets: ["Puffins"]
+        ),
+        .library(
+            name: "Tweet",
+            targets: ["Tweet"]
         ),
         .library(name: "Peacock", targets: ["Peacock"]),
         .library(name: "StoreState", targets: ["StoreState"]),
@@ -167,6 +173,7 @@ let package = Package(
                 "NewFlashcardFeature",
                 "OnboardingFeature",
                 "StoreFeature",
+                "Tweet",
                 "StoreState",
                 "ClassKitFeature",
                 "Authentication"
@@ -310,6 +317,7 @@ let package = Package(
                 "Storage",
                 "Utils",
                 "Puffins",
+                "Tweet",
                 "Keychain"
             ]
         ),
@@ -356,6 +364,13 @@ let package = Package(
             ]
         ),
         
+        .target(
+            name: "Tweet",
+            dependencies: [
+                "Models",
+                "Utils"
+            ]
+        ),
         .target(
             name: "PublicDeckFeature",
             dependencies: [
@@ -519,6 +534,14 @@ let package = Package(
             ]
         ),
         
+        .testTarget(
+            name: "TweetTests",
+            dependencies: [
+                "Models",
+                "Habitat",
+                "Tweet"
+            ]
+        ),
         .testTarget(
             name: "PublicDeckFeatureTests",
             dependencies: [
