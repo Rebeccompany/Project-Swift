@@ -76,15 +76,17 @@ public final class AuthenticationModel: ObservableObject {
         #warning("Deletar baralhos")
         userService
             .deleteUser(data: SignUpResponse(user: user, refreshToken: refreshToken))
+            .receive(on: RunLoop.main)
             .sink {[weak self] completion in
                 switch completion {
                 case .finished:
-                    print("signin revoked")
                     self?.signOut()
                 case.failure(_):
                     break
                 }
-            } receiveValue: { _ in }
+            } receiveValue: { _ in
+                
+            }
             .store(in: &cancellables)
 
     }
@@ -103,9 +105,14 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     func completeSignUp(username: String) {
-        guard let currentLogedInUserIdentifer, let authCode else { return }
-        let decodedAuthCode = String(decoding: authCode, as: Unicode.ASCII.self)
-        print("signin", decodedAuthCode)
+        guard
+            let currentLogedInUserIdentifer,
+            let authCode,
+            let decodedAuthCode = String(data: authCode, encoding: .utf8)
+        else {
+            didOcurredErrorOnSignInCompletion = true
+            return
+        }
         userService.signUp(user: SignInDTO(user: User(appleIdentifier: currentLogedInUserIdentifer, userName: username), authorizationCode: decodedAuthCode))
             .receive(on: RunLoop.main)
             .sink {[weak self] completion in
@@ -116,7 +123,6 @@ public final class AuthenticationModel: ObservableObject {
                     self?.didOcurredErrorOnSignInCompletion = true
                 }
             } receiveValue: {[weak self] response in
-                print("signin", response)
                 self?.saveIdInKeychain(response.user.appleIdentifier, refreshToken: response.refreshToken)
                 self?.user = response.user
             }
@@ -133,8 +139,13 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     private func onAppleIdCredentialReceived(_ appleIDCredential: ASAuthorizationAppleIDCredential) {
-        let decodedAuthCode = String(data: appleIDCredential.authorizationCode!, encoding: .utf8)!
-        print("signin", decodedAuthCode)
+        guard
+            let authData = appleIDCredential.authorizationCode,
+            let decodedAuthCode = String(data: authData, encoding: .utf8)
+        else {
+            didOcurredErrorOnSignInCompletion = true
+            return
+        }
         userService.signIn(user: SignInDTO(user: User(appleIdentifier: appleIDCredential.user, userName: ""), authorizationCode: decodedAuthCode))
             .receive(on: RunLoop.main)
             .sink { [weak self] completion in
@@ -146,7 +157,6 @@ public final class AuthenticationModel: ObservableObject {
                     self?.authCode = appleIDCredential.authorizationCode
                 }
             } receiveValue: { [weak self] response in
-                print("signin", response)
                 self?.user = response.user
                 self?.saveIdInKeychain(response.user.appleIdentifier, refreshToken: response.refreshToken)
             }

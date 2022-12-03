@@ -8,11 +8,17 @@
 import Foundation
 
 public struct SignUpResponse: Codable {
-    public let user: User
+    public let appleIdentifier: String
+    public let username: String
     public let refreshToken: String
     
     public init(user: User, refreshToken: String) {
-        self.user = user
+        self.appleIdentifier = user.appleIdentifier
+        self.username = user.username
         self.refreshToken = refreshToken
+    }
+    
+    public var user: User {
+        User(appleIdentifier: appleIdentifier, userName: username)
     }
 }

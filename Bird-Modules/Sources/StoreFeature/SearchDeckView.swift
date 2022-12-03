@@ -16,7 +16,7 @@ struct SearchDeckView: View {
             ForEach(0..<100) { i in
                 HStack {
                     Image(systemName: IconNames.allCases.randomElement()!.rawValue)
-                        .foregroundColor(HBColor.color(for: CollectionColor.allCases.filter {$0 != .white }.randomElement()!))
+                        .foregroundColor(HBColor.color(for: CollectionColor.allCases.filter { $0 != .white }.randomElement()!))
                         .font(.subheadline)
                         .frame(width: 30, height: 30, alignment: .center)
                     VStack(alignment: .leading) {

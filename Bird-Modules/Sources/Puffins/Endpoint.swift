@@ -38,7 +38,7 @@ public struct Endpoint {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         
-        if method == .post || method == .put {
+        if method != .get {
             request.httpBody = body
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue("application/json", forHTTPHeaderField: "Accept")

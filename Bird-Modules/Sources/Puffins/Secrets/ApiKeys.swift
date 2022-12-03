@@ -9,7 +9,7 @@ import Foundation
 
 enum ApiKeys {
     static let baseRoute: String = "spixii.app.br"
-    static let bearerToken: String = "" 
+    static let bearerToken: String = ""
 }
 
 public struct Secrets: Codable {
