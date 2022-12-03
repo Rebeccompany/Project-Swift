@@ -23,18 +23,21 @@ public final class AuthenticationModel: ObservableObject {
     @Published public var user: User?
     @Published public var didOcurredErrorOnSignInCompletion: Bool = false
     @Published var shouldDismiss = false
-    
+
     private let idProvider = ASAuthorizationAppleIDProvider()
     
     private var cancellables = Set<AnyCancellable>()
     
     private let credentialKey = "userCredential"
+    private let refreshTokenKey = "refreshToken"
     private let accessGroup = "com.projectbird.birdmodules.authentication"
     private let serviceKey = "com.projectbird.spixii"
     
+    private var authCode: Data?
+    
     public init() {
-        self.currentLogedInUserIdentifer = try? keychainService.get(forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
-        signIn(id: currentLogedInUserIdentifer)
+        let id = try? keychainService.get(forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
+        signIn(id: id)
     }
     
     public func isSignedIn() async throws -> Bool {
@@ -54,6 +57,7 @@ public final class AuthenticationModel: ObservableObject {
     public func signOut() {
         do {
             try keychainService.delete(forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
+            try keychainService.delete(forKey: refreshTokenKey, inService: serviceKey, inGroup: accessGroup)
             currentLogedInUserIdentifer = nil
             user = nil
         } catch {
@@ -62,7 +66,27 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     public func deleteAccount() {
+        guard
+            let user,
+            let refreshToken = try? keychainService.get(forKey: refreshTokenKey, inService: serviceKey, inGroup: accessGroup)
+        else {
+            return
+        }
         
+        #warning("Deletar baralhos")
+        userService
+            .deleteUser(data: SignUpResponse(user: user, refreshToken: refreshToken))
+            .sink {[weak self] completion in
+                switch completion {
+                case .finished:
+                    print("signin revoked")
+                    self?.signOut()
+                case.failure(_):
+                    break
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
+
     }
     
     func onSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
@@ -79,8 +103,10 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     func completeSignUp(username: String) {
-        guard let currentLogedInUserIdentifer else { return }
-        userService.signUp(user: User(appleIdentifier: currentLogedInUserIdentifer, userName: username))
+        guard let currentLogedInUserIdentifer, let authCode else { return }
+        let decodedAuthCode = String(decoding: authCode, as: Unicode.ASCII.self)
+        print("signin", decodedAuthCode)
+        userService.signUp(user: SignInDTO(user: User(appleIdentifier: currentLogedInUserIdentifer, userName: username), authorizationCode: decodedAuthCode))
             .receive(on: RunLoop.main)
             .sink {[weak self] completion in
                 switch completion {
@@ -89,9 +115,10 @@ public final class AuthenticationModel: ObservableObject {
                 case .failure(_):
                     self?.didOcurredErrorOnSignInCompletion = true
                 }
-            } receiveValue: {[weak self] user in
-                self?.saveIdInKeychain(user.appleIdentifier)
-                self?.user = user
+            } receiveValue: {[weak self] response in
+                print("signin", response)
+                self?.saveIdInKeychain(response.user.appleIdentifier, refreshToken: response.refreshToken)
+                self?.user = response.user
             }
             .store(in: &cancellables)
     }
@@ -106,8 +133,9 @@ public final class AuthenticationModel: ObservableObject {
     }
     
     private func onAppleIdCredentialReceived(_ appleIDCredential: ASAuthorizationAppleIDCredential) {
-        print("totine", String(decoding: appleIDCredential.authorizationCode!, as: Unicode.ASCII.self))
-        userService.signIn(id: appleIDCredential.user)
+        let decodedAuthCode = String(data: appleIDCredential.authorizationCode!, encoding: .utf8)!
+        print("signin", decodedAuthCode)
+        userService.signIn(user: SignInDTO(user: User(appleIdentifier: appleIDCredential.user, userName: ""), authorizationCode: decodedAuthCode))
             .receive(on: RunLoop.main)
             .sink { [weak self] completion in
                 switch completion {
@@ -115,18 +143,21 @@ public final class AuthenticationModel: ObservableObject {
                     break
                 case .failure(_):
                     self?.currentLogedInUserIdentifer = appleIDCredential.user
+                    self?.authCode = appleIDCredential.authorizationCode
                 }
-            } receiveValue: { [weak self] user in
-                self?.user = user
-                self?.saveIdInKeychain(user.appleIdentifier)
+            } receiveValue: { [weak self] response in
+                print("signin", response)
+                self?.user = response.user
+                self?.saveIdInKeychain(response.user.appleIdentifier, refreshToken: response.refreshToken)
             }
             .store(in: &cancellables)
 
     }
     
-    private func saveIdInKeychain(_ id: String) {
+    private func saveIdInKeychain(_ id: String, refreshToken: String) {
         do {
             try keychainService.set(id, forKey: credentialKey, inService: serviceKey, inGroup: accessGroup)
+            try keychainService.set(refreshToken, forKey: refreshTokenKey, inService: serviceKey, inGroup: accessGroup)
             currentLogedInUserIdentifer = id
             shouldDismiss = true
         } catch {
@@ -138,7 +169,7 @@ public final class AuthenticationModel: ObservableObject {
         guard let id else { return }
         
         userService
-            .signIn(id: id)
+            .authUser(id: id)
             .map { $0 as User? }
             .replaceError(with: nil)
             .receive(on: RunLoop.main)

@@ -18,16 +18,30 @@ public final class ExternalUserService: ExternalUserServiceProtocol {
         self.session = session
     }
     
-    public func signIn(id: String) -> AnyPublisher<User, Error> {
-        session.dataTaskPublisher(for: .signin(id: id))
+    public func signIn(user: SignInDTO) -> AnyPublisher<SignUpResponse, Error> {
+        session.dataTaskPublisher(for: .signin(user: user))
+            .decodeWhenSuccess(to: SignUpResponse.self)
+            .mapError { $0 as Error }
+            .eraseToAnyPublisher()
+    }
+    
+    public func signUp(user: SignInDTO) -> AnyPublisher<SignUpResponse, Error> {
+        session.dataTaskPublisher(for: .signup(user: user))
+            .decodeWhenSuccess(to: SignUpResponse.self)
+            .mapError { $0 as Error }
+            .eraseToAnyPublisher()
+    }
+    
+    public func authUser(id: String) -> AnyPublisher<User, Error> {
+        session.dataTaskPublisher(for: .authUser(id: id))
             .decodeWhenSuccess(to: User.self)
             .mapError { $0 as Error }
             .eraseToAnyPublisher()
     }
     
-    public func signUp(user: User) -> AnyPublisher<User, Error> {
-        session.dataTaskPublisher(for: .signup(user: user))
-            .decodeWhenSuccess(to: User.self)
+    public func deleteUser(data: SignUpResponse) -> AnyPublisher<Void, Error> {
+        session.dataTaskPublisher(for: .revokeUser(data: data))
+            .verifyVoidSuccess()
             .mapError { $0 as Error }
             .eraseToAnyPublisher()
     }
