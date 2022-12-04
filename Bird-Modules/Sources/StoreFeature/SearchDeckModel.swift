@@ -21,7 +21,7 @@ final class SearchDeckModel: ObservableObject {
     
     @Dependency(\.externalDeckService) private var deckService
     private var cancellables = Set<AnyCancellable>()
-    var currentPage = 0
+    private var currentPage = 0
     
     enum FilterType: String {
         case name
@@ -103,6 +103,7 @@ final class SearchDeckModel: ObservableObject {
                 if decks.isEmpty {
                     self?.shouldLoadMore = false
                 } else {
+                    self?.shouldLoadMore = true
                     self?.decks.append(contentsOf: decks)
                 }
             }

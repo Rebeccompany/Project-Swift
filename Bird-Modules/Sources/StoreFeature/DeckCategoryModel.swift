@@ -36,7 +36,6 @@ final class DeckCategoryModel: ObservableObject {
     private func loadDecks(from category: DeckCategory, page: Int) {
         deckService
             .decksByCategory(category: category, page: page)
-            .delay(for: .seconds(1), scheduler: RunLoop.main)
             .sink { [weak self] completion in
                 switch completion {
                 case .finished:

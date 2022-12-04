@@ -15,6 +15,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     public var shouldError = false
     public var error: URLError?
     public var expectedUploadString = ""
+    public var lastPageCalled = 0
     
     public var feed: [ExternalSection] = [
         ExternalSection(title: DeckCategory.stem.rawValue, decks: [
@@ -102,6 +103,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     }
     
     public func getCardsFor(deckId: String, page: Int) -> AnyPublisher<[ExternalCard], URLError> {
+        lastPageCalled = page
         if shouldError {
             return Fail(outputType: [ExternalCard].self, failure: error!).eraseToAnyPublisher()
         }
@@ -149,6 +151,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     }
     
     public func searchDecks(type: String, value: String, page: Int) -> AnyPublisher<[ExternalDeck], URLError> {
+        lastPageCalled = page
         if shouldError {
             return Fail(outputType: [ExternalDeck].self, failure: error!).eraseToAnyPublisher()
         } else if page > 3 {
@@ -159,6 +162,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     }
     
     public func decksByCategory(category: DeckCategory, page: Int) -> AnyPublisher<[Models.ExternalDeck], URLError> {
+        lastPageCalled = page
         if shouldError {
             return Fail(outputType: [ExternalDeck].self, failure: error!).eraseToAnyPublisher()
         } else if page > 3 {

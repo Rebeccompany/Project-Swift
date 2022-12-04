@@ -11,7 +11,6 @@ import HummingBird
 import Habitat
 import Utils
 
-#warning("Testes")
 struct SearchDeckView: View {
     
     @StateObject private var model = SearchDeckModel()

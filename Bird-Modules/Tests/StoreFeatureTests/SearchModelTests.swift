@@ -6,30 +6,183 @@
 //
 
 import XCTest
+@testable import StoreFeature
+import Habitat
+import Puffins
+import Combine
 
 final class SearchModelTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    var sut: SearchDeckModel!
+    var deckServiceMock: ExternalDeckServiceMock!
+    var cancellables: Set<AnyCancellable>!
+    
+    override func setUp() {
+        deckServiceMock = .init()
+        setupHabitatForIsolatedTesting(externalDeckService: deckServiceMock)
+        sut = .init()
+        cancellables = .init()
+        sut.startUp()
+    }
+    
+    override func tearDown() {
+        sut = nil
+        cancellables.forEach { $0.cancel() }
+        cancellables = nil
+    }
+    
+    func testSearchTextSuccess() {
+        let expectation = expectation(description: "decks searchs")
+        var callCount = 0
+        sut.searchText = "some string"
+        
+        sut.$decks
+            .sink {[unowned self] decks in
+                if callCount > 0 {
+                    XCTAssertFalse(decks.isEmpty)
+                    XCTAssertEqual(self.sut.viewState, .loaded)
+                    XCTAssertTrue(self.sut.shouldLoadMore)
+                    XCTAssertEqual(self.deckServiceMock.lastPageCalled, 0)
+                    expectation.fulfill()
+                } else {
+                    callCount += 1
+                }
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testSearchTextRemoveDuplicate() {
+        let expectation = expectation(description: "decks searchs")
+        sut.searchText = ""
+        
+        sut.$decks
+            .sink {[unowned self] decks in
+                XCTAssertTrue(decks.isEmpty)
+                XCTAssertEqual(self.sut.viewState, .loaded)
+                XCTAssertFalse(self.sut.shouldLoadMore)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testSearchTextFailed() {
+        let expectation = expectation(description: "decks searchs")
+        var callCount = 0
+        sut.searchText = "some string"
+        deckServiceMock.error = URLError(.badServerResponse)
+        deckServiceMock.shouldError = true
+        
+        sut.$viewState
+            .sink { state in
+                if callCount > 1 {
+                    XCTAssertEqual(state, .error)
+                    expectation.fulfill()
+                } else {
+                    callCount += 1
+                }
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func testLoadMoreDecksSuccess() {
+        let expectation = expectation(description: "decks searchs")
+        var callCount = 0
+        
+        sut.loadMoreDecks()
+        
+        sut.$decks
+            .sink {[unowned self] decks in
+                if callCount > 0 {
+                    XCTAssertFalse(decks.isEmpty)
+                    XCTAssertEqual(self.sut.viewState, .loaded)
+                    XCTAssertTrue(self.sut.shouldLoadMore)
+                    XCTAssertEqual(self.deckServiceMock.lastPageCalled, 1)
+                    expectation.fulfill()
+                } else {
+                    callCount += 1
+                }
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    
+    func testLoadMoreDeckFailed() {
+        let expectation = expectation(description: "decks searchs")
+        var callCount = 0
+        
+        deckServiceMock.error = URLError(.badServerResponse)
+        deckServiceMock.shouldError = true
+        
+        sut.loadMoreDecks()
+        
+        sut.$viewState
+            .sink {[unowned self] state in
+                if callCount > 0 {
+                    XCTAssertEqual(state, .error)
+                    XCTAssertEqual(self.deckServiceMock.lastPageCalled, 1)
+                    expectation.fulfill()
+                } else {
+                    callCount += 1
+                }
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    
+    func testReloadDecksSuccess() {
+        let expectation = self.expectation(description: "decks searchs")
+        var callCount = 0
+        
+        sut.reloadDecks()
+        
+        XCTAssertTrue(sut.decks.isEmpty)
+        XCTAssertEqual(sut.viewState, .loading)
+        
+        sut.$decks
+            .sink {[unowned self] decks in
+                if callCount > 0 {
+                    XCTAssertFalse(decks.isEmpty)
+                    XCTAssertTrue(self.sut.shouldLoadMore)
+                    XCTAssertEqual(self.deckServiceMock.lastPageCalled, 0)
+                    expectation.fulfill()
+                } else {
+                    callCount += 1
+                }
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 2)
     }
-
+    
+    func testReLoadDeckFailed() {
+        let expectation = expectation(description: "decks searchs")
+        var callCount = 0
+        
+        deckServiceMock.error = URLError(.badServerResponse)
+        deckServiceMock.shouldError = true
+        
+        sut.reloadDecks()
+        
+        sut.$viewState
+            .sink {[unowned self] state in
+                if callCount > 0 {
+                    XCTAssertEqual(state, .error)
+                    XCTAssertEqual(self.deckServiceMock.lastPageCalled, 0)
+                    expectation.fulfill()
+                } else {
+                    callCount += 1
+                }
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+    }
 }
