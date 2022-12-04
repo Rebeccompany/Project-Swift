@@ -75,7 +75,7 @@ public struct StoreView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 NavigationLink(value: FilterRoute.search) {
-                    Label("Search", systemImage: "magnifyingglass")
+                    Label("search".localized(.module), systemImage: "magnifyingglass")
                 }
                 signInMenu
             }
@@ -113,73 +113,6 @@ public struct StoreView: View {
                 )
             }
             
-        }
-    }
-}
-
-struct LoadingView: View {
-    @State private var isFlipped: Bool = false
-    
-    var body: some View {
-        VStack {
-            ZStack {
-                Rectangle()
-                    .fill(HBColor.actionColor)
-                    .brightness(0.1)
-                SpixiiShapeFront()
-                    .fill(HBColor.actionColor)
-            }
-            .frame(width: 80, height: 120)
-            .cornerRadius(8)
-            .rotationEffect(
-                isFlipped ? Angle(degrees: 0) : Angle(degrees: 360),
-                anchor: .center)
-            .onAppear {
-                withAnimation(.easeInOut(duration: 0.5).delay(0.5).repeatForever(autoreverses: true)) {
-                    isFlipped.toggle()
-                }
-            }
-            .onDisappear {
-                isFlipped = false
-            }
-            Text("Loading...")
-        }
-    }
-}
-
-struct ErrorView: View {
-    var action: () -> Void
-    
-    var body: some View {
-        VStack {
-            HBImages.errorSpixii
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .padding()
-                .clipShape(Circle())
-                .background {
-                    Circle().fill(HBColor.secondaryBackground)
-                }
-                .frame(maxWidth: 300)
-            
-            Text("Oh no!, something is wrong, check your internet connection and press the button bellow to try again.")
-                .font(.headline)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 320)
-                .padding(.bottom)
-            
-            Button {
-                action()
-            } label: {
-                Label {
-                    Text("Retry")
-                } icon: {
-                    Image(systemName: "gobackward")
-                }
-
-            }
-            .buttonStyle(LargeButtonStyle(isDisabled: false))
-            .frame(maxWidth: 320)
         }
     }
 }
