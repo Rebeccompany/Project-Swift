@@ -42,13 +42,13 @@ struct FillInfoView: View {
             .ignoresSafeArea()
             
             VStack(alignment: .leading) {
-                Text("Just one more step")
+                Text("name_title".localized(.module))
                     .font(.title.bold())
                     .padding(.bottom, 4)
                 
-                Text("We would love to know how to call you! So please type in the field below a username.")
+                Text("name_message_1".localized(.module))
                     .padding(.bottom, 4)
-                Text("Your username is going to show in all your public decks, so everyone knows the amazing pearson who built that Deck")
+                Text("name_message_2".localized(.module))
                     .padding(.bottom, 4)
                 
             }
@@ -60,7 +60,7 @@ struct FillInfoView: View {
             
             VStack(alignment: .leading) {
                 HStack {
-                    Text("Username")
+                    Text("name_textfield_title".localized(.module))
                         .font(.headline)
                     Spacer()
                     Text("\(24 - userNameField.count)")
@@ -68,7 +68,7 @@ struct FillInfoView: View {
                         .foregroundColor(.secondary)
                     
                 }
-                TextField("type your username here", text: $userNameField)
+                TextField("name_textfield_empty_state".localized(.module), text: $userNameField)
                     .onChange(of: userNameField) { newValue in
                         if userNameField.count > 24 {
                             userNameField = String(newValue.prefix(24))
@@ -88,7 +88,7 @@ struct FillInfoView: View {
                 Button {
                     dismiss()
                 } label: {
-                    Text("Cancel")
+                    Text("cancel".localized(.module))
                         .frame(maxWidth: .infinity)
                 }
                 .tint(.red)
@@ -98,7 +98,7 @@ struct FillInfoView: View {
                 Button {
                     model.completeSignUp(username: userNameField)
                 } label: {
-                    Text("Finish")
+                    Text("finish".localized(.module))
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity)
                 }
