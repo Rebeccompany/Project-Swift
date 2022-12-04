@@ -20,8 +20,7 @@ public struct AuthenticationView: View {
     
     public var body: some View {
         NavigationStack(path: $path) {
-            FillInfoView(model: model, path: $path) { dismiss() }
-            //SignInView(model: model, path: $path) { dismiss() }
+            SignInView(model: model, path: $path) { dismiss() }
                 .navigationDestination(for: AuthenticationRoute.self) { route in
                     switch route {
                     case .fillInfo:

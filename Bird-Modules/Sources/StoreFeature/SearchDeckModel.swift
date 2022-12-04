@@ -28,7 +28,6 @@ final class SearchDeckModel: ObservableObject {
         case author
     }
     
-    
     func startUp() {
         searchPublisher
             .receive(on: RunLoop.main)

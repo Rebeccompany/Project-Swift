@@ -27,10 +27,12 @@ struct SearchDeckCell: View {
                 VStack(alignment: .leading) {
                     Text(deck.name)
                         .font(.headline)
-                    Text(deck.description)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
+                    if !deck.description.isEmpty {
+                        Text(deck.description)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
                     HStack {
                         Text("made by \(deck.ownerName)")
                             .font(.subheadline)

@@ -23,7 +23,6 @@ public struct StoreView: View {
     
     public init(store: ShopStore) {
         self.store = store
-        
     }
     
     public var body: some View {
@@ -126,9 +125,4 @@ struct StoreView_Previews: PreviewProvider {
             }
         }
     }
-}
-
-enum FilterRoute: Hashable {
-    case search
-    case category(category: DeckCategory)
 }

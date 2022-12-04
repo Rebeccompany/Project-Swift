@@ -86,16 +86,6 @@ struct FillInfoView: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 Button {
-                    dismiss()
-                } label: {
-                    Text("cancel".localized(.module))
-                        .frame(maxWidth: .infinity)
-                }
-                .tint(.red)
-                .buttonStyle(.bordered)
-                .padding(.bottom, 8)
-                
-                Button {
                     model.completeSignUp(username: userNameField)
                 } label: {
                     Text("finish".localized(.module))
@@ -105,6 +95,16 @@ struct FillInfoView: View {
                 .tint(HBColor.actionColor)
                 .buttonStyle(.borderedProminent)
                 .disabled(userNameField.isEmpty)
+                
+                Button {
+                    dismiss()
+                } label: {
+                    Text("cancel".localized(.module))
+                        .frame(maxWidth: .infinity)
+                }
+                .tint(.red)
+                .buttonStyle(.bordered)
+                .padding(.bottom, 8)
             }
             .padding([.horizontal, .bottom])
             .frame(maxWidth: 450)

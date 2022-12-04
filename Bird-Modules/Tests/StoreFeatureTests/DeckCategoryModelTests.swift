@@ -56,7 +56,6 @@ final class DeckCategoryModelTests: XCTestCase {
         
         sut.startUp(with: .stem)
         
-        
         sut.$decks
             .sink {[unowned self] decks in
                 XCTAssertTrue(decks.isEmpty)

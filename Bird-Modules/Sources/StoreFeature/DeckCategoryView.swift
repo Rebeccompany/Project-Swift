@@ -12,7 +12,6 @@ import Combine
 import Utils
 import Puffins
 
-#warning("Testes")
 struct DeckCategoryView: View {
     
     let category: DeckCategory
