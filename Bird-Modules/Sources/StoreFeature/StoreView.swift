@@ -32,9 +32,9 @@ public struct StoreView: View {
             case .loaded:
                 loadedFeed(state: state)
             case .error:
-                errorView()
+                ErrorView { interactor.send(.loadFeed) }
             case .loading:
-                loadingView()
+                LoadingView()
             }
         }
         .navigationTitle(NSLocalizedString("baralhos_publicos", bundle: .module, comment: ""))
@@ -55,19 +55,34 @@ public struct StoreView: View {
                 }
             }
         }
+        .refreshable {
+            interactor.send(.loadFeed)
+        }
         .navigationDestination(for: ExternalDeck.self) { deck in
             PublicDeckView(deck: deck)
                 .environmentObject(store)
                 .environmentObject(authModel)
         }
+        .navigationDestination(for: FilterRoute.self) { route in
+            switch route {
+            case .search:
+                SearchDeckView()
+            case .category(let category):
+                DeckCategoryView(category: category)
+            }
+        }
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                NavigationLink(value: FilterRoute.search) {
+                    Label("search".localized(.module), systemImage: "magnifyingglass")
+                }
                 signInMenu
             }
         }
         .fullScreenCover(isPresented: $showLogin) {
             AuthenticationView(model: authModel)
         }
+        
     }
     
     @ViewBuilder
@@ -99,23 +114,13 @@ public struct StoreView: View {
             
         }
     }
-    
-    @ViewBuilder
-    private func errorView() -> some View {
-        Text("error")
-    }
-    
-    @ViewBuilder
-    private func loadingView() -> some View {
-        ProgressView()
-    }
 }
 
 struct StoreView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
             NavigationStack {
-                StoreView(store: ShopStore())
+                StoreView(store: ShopStore(feedState: FeedState(sections: [], viewState: .loading)))
                     .environmentObject(AuthenticationModel())
             }
         }

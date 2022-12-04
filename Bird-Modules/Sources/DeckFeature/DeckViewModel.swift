@@ -89,7 +89,7 @@ public class DeckViewModel: ObservableObject {
         }
     }
     
-    func publishDeck(_ deck: Deck, user: UserDTO) {
+    func publishDeck(_ deck: Deck, user: User) {
         loadingPhase = .loading
         
         externalDeckService.uploadNewDeck(deck, with: cards, owner: user)
@@ -130,7 +130,7 @@ public class DeckViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func updatePublicDeck(_ deck: Deck, user: UserDTO) {
+    func updatePublicDeck(_ deck: Deck, user: User) {
         loadingPhase = .loading
         
         externalDeckService.updateADeck(deck, with: cards, owner: user)
@@ -159,7 +159,7 @@ public class DeckViewModel: ObservableObject {
         In order to update a Deck is necessary that the storeId is not nil and the user id of the app user is equal to the deck owner
         this is necessarry in order to block update from users other than the owners
      */
-    func isUpdateButtonDisabled(for deck: Deck, user: UserDTO) -> Bool {
+    func isUpdateButtonDisabled(for deck: Deck, user: User) -> Bool {
         (deck.storeId == nil) || (deck.ownerId != user.appleIdentifier)
     }
     
@@ -174,7 +174,7 @@ public class DeckViewModel: ObservableObject {
         In order to update a Deck is necessary that the storeId is not nil and the user id of the app user is equal to the deck owner
         this is necessarry in order to block update from users other than the owners
      */
-    func isDeleteButtonDisabled(for deck: Deck, user: UserDTO) -> Bool {
+    func isDeleteButtonDisabled(for deck: Deck, user: User) -> Bool {
         (deck.storeId == nil) || (deck.ownerId != user.appleIdentifier)
     }
     

@@ -1,5 +1,5 @@
 //
-//  UserDTO.swift
+//  User.swift
 //  
 //
 //  Created by Gabriel Ferreira de Carvalho on 25/11/22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct UserDTO: Codable, Equatable {
+public struct User: Codable, Equatable {
     public let appleIdentifier: String
     public let username: String
     

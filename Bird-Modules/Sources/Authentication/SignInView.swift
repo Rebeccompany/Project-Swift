@@ -8,6 +8,7 @@
 import SwiftUI
 import AuthenticationServices
 import HummingBird
+import Utils
 
 struct SignInView: View {
     @Environment(\.colorScheme) private var colorScheme
@@ -34,14 +35,14 @@ struct SignInView: View {
             .ignoresSafeArea()
             
             VStack(alignment: .leading) {
-                Text("Hello!")
+                Text("hello".localized(.module))
                     .font(.title.bold())
                     .padding(.bottom, 4)
-                Text("To use our online features we need you to sign in. you just got to press the **Sign in with Apple** button below.")
+                Text("message_1".localized(.module))
                     .padding(.bottom, 4)
-                Text("You will be able to **download** and **upload** your decks and more features are coming your way in the future.")
+                Text("message_2".localized(.module))
                     .padding(.bottom, 4)
-                Text("If you do not wish to Sign in you can just press the **cancel** button")
+                Text("message_3".localized(.module))
             }
             .padding()
             .frame(maxWidth: 450)
@@ -61,7 +62,7 @@ struct SignInView: View {
             Button {
                 dismiss()
             } label: {
-                Text("Cancelar")
+                Text("cancel".localized(.module))
                     .frame(maxWidth: .infinity)
             }
             .tint(.red)

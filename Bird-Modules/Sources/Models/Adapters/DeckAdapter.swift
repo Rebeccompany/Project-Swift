@@ -10,7 +10,7 @@ import SwiftUI
 import Utils
 
 public enum DeckAdapter {
-    public static func adapt(_ deck: Deck, with cards: [Card], owner: UserDTO) -> DeckDTO {
+    public static func adapt(_ deck: Deck, with cards: [Card], owner: User) -> DeckDTO {
         DeckDTO(
             id: nil,
             name: deck.name,

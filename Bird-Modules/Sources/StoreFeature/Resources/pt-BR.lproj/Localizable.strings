@@ -6,7 +6,7 @@
   
 */
 
-"baralhos_publicos" = "Baralhos Públicos";
+"baralhos_publicos" = "Biblioteca";
 "languages" = "Idiomas";
 "humanities" = "Humanas";
 "stem" = "Exatas";
@@ -17,3 +17,12 @@
 "signin" = "Entrar";
 "signout" = "Sair";
 "delete_account" = "Deletar conta";
+"search" = "Buscar";
+"end_of_search" = "Por hoje é só, pessoal";
+"done" = "Feito";
+"name" = "Nome";
+"author" = "Autor";
+"filter" = "Filtrar";
+"retry" = "Tentar novamente";
+"error_message" = "Opa 😢, aconteceu algo errado, verifique sua conexão com a internet e pressione o botão para tentar novamente.";
+"loading" = "Carregando...";

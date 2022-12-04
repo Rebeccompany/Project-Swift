@@ -109,7 +109,7 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         }
     }
     
-    public func uploadNewDeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<String, URLError> {
+    public func uploadNewDeck(_ deck: Deck, with cards: [Card], owner: User) -> AnyPublisher<String, URLError> {
         let dto = DeckAdapter.adapt(deck, with: cards, owner: owner)
         let jsonEncoder = JSONEncoder()
         guard let jsonData = try? jsonEncoder.encode(dto) else {
@@ -145,7 +145,7 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         }
     }
     
-    public func updateADeck(_ deck: Deck, with cards: [Card], owner: UserDTO) -> AnyPublisher<Void, URLError> {
+    public func updateADeck(_ deck: Deck, with cards: [Card], owner: User) -> AnyPublisher<Void, URLError> {
         let dto = DeckAdapter.adapt(deck, with: cards, owner: owner)
         let jsonEncoder = JSONEncoder()
         guard let jsonData = try? jsonEncoder.encode(dto), let storeId = deck.storeId else {
@@ -156,6 +156,32 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
             guard let self else { preconditionFailure("self is deinitialized") }
             return self.session.dataTaskPublisher(for: .update(id: storeId, jsonData), authToken: token)
                 .verifyVoidSuccess()
+        }
+    }
+    
+    public func deleteAllDeckFromUser(id: String) -> AnyPublisher<Void, URLError> {
+        authenticatePublisher {[weak self] jwt in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session.dataTaskPublisher(for: .deleteDecksFromUser(id: id), authToken: jwt)
+                .verifyVoidSuccess()
+        }
+    }
+    
+    public func searchDecks(type: String, value: String, page: Int) -> AnyPublisher<[ExternalDeck], URLError> {
+        authenticatePublisher {[weak self] token in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session
+                .dataTaskPublisher(for: .searchDecks(type: type, value: value, page: page), authToken: token)
+                .decodeWhenSuccess(to: [ExternalDeck].self)
+        }
+    }
+    
+    public func decksByCategory(category: DeckCategory, page: Int) -> AnyPublisher<[ExternalDeck], URLError> {
+        authenticatePublisher {[weak self] token in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session
+                .dataTaskPublisher(for: .decksByCategory(category: category.rawValue, page: page), authToken: token)
+                .decodeWhenSuccess(to: [ExternalDeck].self)
         }
     }
 }
