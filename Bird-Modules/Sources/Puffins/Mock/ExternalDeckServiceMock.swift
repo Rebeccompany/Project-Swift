@@ -17,13 +17,13 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
     public var expectedUploadString = ""
     
     public var feed: [ExternalSection] = [
-        ExternalSection(title: getCategoryString(category: .stem), decks: [
+        ExternalSection(title: DeckCategory.stem.rawValue, decks: [
             ExternalDeck(id: "1", name: "Stem 1", description: "Stem Desc", icon: .chart, color: .red, category: .stem, ownerId: "id", ownerName: "name", cardCount: 3),
             ExternalDeck(id: "2", name: "Stem 2", description: "Stem Desc 2", icon: .abc, color: .darkBlue, category: .stem, ownerId: "id", ownerName: "name", cardCount: 3),
             ExternalDeck(id: "3", name: "Stem 3", description: "Stem Desc 3", icon: .atom, color: .gray, category: .stem, ownerId: "id", ownerName: "name", cardCount: 3)
         ]),
         
-        ExternalSection(title: getCategoryString(category: .humanities), decks: [
+        ExternalSection(title: DeckCategory.humanities.rawValue, decks: [
             ExternalDeck(id: "4", name: "Humanities 1", description: "Humanities Desc", icon: .gamecontroller, color: .green, category: .humanities, ownerId: "id", ownerName: "name", cardCount: 3)
         ]),
         
@@ -34,12 +34,12 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
             ExternalDeck(id: "8", name: "Languages 4", description: "Languages Desc 4", icon: .books, color: .beigeBrown, category: .languages, ownerId: "id", ownerName: "name", cardCount: 3)
         ]),
         
-        ExternalSection(title: getCategoryString(category: .arts), decks: [
+        ExternalSection(title: DeckCategory.arts.rawValue, decks: [
             ExternalDeck(id: "9", name: "Arts 3", description: "Arts Desc 3", icon: .books, color: .orange, category: .arts, ownerId: "id", ownerName: "name", cardCount: 3),
             ExternalDeck(id: "10", name: "Arts 3", description: "Arts Desc 3", icon: .cpu, color: .lightBlue, category: .arts, ownerId: "id", ownerName: "name", cardCount: 3)
         ]),
         
-        ExternalSection(title: getCategoryString(category: .others), decks: [
+        ExternalSection(title: DeckCategory.others.rawValue, decks: [
             ExternalDeck(id: "11", name: "Others", description: "Others Desc", icon: .books, color: .darkPurple, category: .others, ownerId: "id", ownerName: "name", cardCount: 3)
         ])
     ]
