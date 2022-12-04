@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Gabriel Ferreira de Carvalho on 04/12/22.
+  
+*/
+"hello" = "Hello!";
+"message_1" = "To use our online features, we need you to sign in. You just got to press the Sign in with Apple button below.";
+"message_2" = "You will be able to download and upload your decks. More features are coming for you soon";
+"message_3" = "If you do not wish to Sign in, you can just press the cancel button";
+"cancel" = "Cancel";
+"name_title" = "Just one more step";
+"name_message_1" = "We would love to know how to call you! So please, type in the field below a username.";
+"name_message_2" = "Your username will appear in all your public decks, so everyone knows the amazing person who built that Deck!";
+"name_textfield_title" = "Username";
+"name_textfield_empty_state" = "type your username here";
+"finish" = "Done";

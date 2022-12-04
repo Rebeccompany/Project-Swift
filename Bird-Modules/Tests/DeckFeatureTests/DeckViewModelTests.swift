@@ -153,7 +153,7 @@ final class DeckViewModelTests: XCTestCase {
     func testUploadDeck() async throws {
         externalDeckService.expectedUploadString = "store_id"
         let deck = deckRepositoryMock.data.values.first!.deck
-        sut.publishDeck(deck)
+        sut.publishDeck(deck, user: User(appleIdentifier: "id", userName: "name"))
         XCTAssertEqual(sut.loadingPhase, .loading)
         try await Task.sleep(for: .seconds(0.5))
         XCTAssertEqual(sut.loadingPhase, .showSuccess)
@@ -165,7 +165,7 @@ final class DeckViewModelTests: XCTestCase {
         externalDeckService.error = URLError(.badServerResponse)
         externalDeckService.shouldError = true
         let deck = deckRepositoryMock.data.values.first!.deck
-        sut.publishDeck(deck)
+        sut.publishDeck(deck, user: User(appleIdentifier: "id", userName: "name"))
         XCTAssertEqual(sut.loadingPhase, .loading)
         try await Task.sleep(for: .seconds(0.5))
         XCTAssertEqual(sut.loadingPhase, .showFailure)
@@ -182,7 +182,7 @@ final class DeckViewModelTests: XCTestCase {
         XCTAssertEqual(deckRepositoryMock.data.values.first!.deck.storeId, nil)
     }
     
-    func testDeletePublicDecFailedk() async throws {
+    func testDeletePublicDeckFailed() async throws {
         externalDeckService.expectedUploadString = "store_id"
         externalDeckService.error = URLError(.badServerResponse)
         externalDeckService.shouldError = true
@@ -192,6 +192,60 @@ final class DeckViewModelTests: XCTestCase {
         try await Task.sleep(for: .seconds(0.5))
         XCTAssertEqual(sut.loadingPhase, .showFailure)
         XCTAssertEqual(deckRepositoryMock.data.values.first!.deck.storeId, nil)
+    }
+    
+    func testUpdatePublicDeck() async throws {
+        externalDeckService.expectedUploadString = "store_id"
+        let deck = deckRepositoryMock.data.values.first!.deck
+        sut.updatePublicDeck(deck, user: User(appleIdentifier: "id", userName: "name"))
+        XCTAssertEqual(sut.loadingPhase, .loading)
+        try await Task.sleep(for: .seconds(0.5))
+        XCTAssertEqual(sut.loadingPhase, .showSuccess)
+        XCTAssertEqual(deckRepositoryMock.data.values.first!.deck.storeId, nil)
+    }
+    
+    func testUpdatePublicDeckFailed() async throws {
+        externalDeckService.expectedUploadString = "store_id"
+        externalDeckService.error = URLError(.badServerResponse)
+        externalDeckService.shouldError = true
+        let deck = deckRepositoryMock.data.values.first!.deck
+        sut.updatePublicDeck(deck, user: User(appleIdentifier: "id", userName: "name"))
+        XCTAssertEqual(sut.loadingPhase, .loading)
+        try await Task.sleep(for: .seconds(0.5))
+        XCTAssertEqual(sut.loadingPhase, .showFailure)
+        XCTAssertEqual(deckRepositoryMock.data.values.first!.deck.storeId, nil)
+    }
+    
+    func testIsPublishButtonDisabled() {
+        var deck = newDeck()
+        deck.storeId = nil
+        
+        XCTAssertFalse(sut.isPublishButtonDisabled(for: deck))
+    }
+    
+    func testIsUpdateButtonDisabled() {
+        var deck = newDeck()
+        deck.storeId = "store_id"
+        deck.ownerId = "owner_id"
+        let user = User(appleIdentifier: "owner_id", userName: "name")
+        
+        XCTAssertFalse(sut.isUpdateButtonDisabled(for: deck, user: user))
+    }
+    
+    func testIsShareButtonDisabled() {
+        var deck = newDeck()
+        deck.storeId = "store_id"
+        
+        XCTAssertFalse(sut.isShareButtonDisabled(for: deck))
+    }
+    
+    func testIsDeleteButtonDisabled() {
+        var deck = newDeck()
+        deck.storeId = "store_id"
+        deck.ownerId = "owner_id"
+        let user = User(appleIdentifier: "owner_id", userName: "name")
+        
+        XCTAssertFalse(sut.isDeleteButtonDisabled(for: deck, user: user))
     }
     
     func createCards() {
@@ -252,7 +306,7 @@ final class DeckViewModelTests: XCTestCase {
              cardsIds: [],
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
-             storeId: nil, description: "" )
+             storeId: nil, description: "", ownerId: nil )
     }
     
     func sortById<T: Identifiable>(d0: T, d1: T) -> Bool where T.ID == UUID {

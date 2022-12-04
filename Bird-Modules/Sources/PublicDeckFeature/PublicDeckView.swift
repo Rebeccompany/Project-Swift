@@ -9,13 +9,18 @@ import SwiftUI
 import HummingBird
 import Models
 import Habitat
+import Puffins
 import StoreState
+import Authentication
 
 public struct PublicDeckView: View {
     var deck: ExternalDeck
     
     @StateObject private var interactor: PublicDeckInteractor = PublicDeckInteractor()
     @EnvironmentObject private var store: ShopStore
+    @EnvironmentObject private var auth: AuthenticationModel
+    
+    @State private var showLogin = false
     
     public init(deck: ExternalDeck) {
         self.deck = deck
@@ -102,6 +107,9 @@ public struct PublicDeckView: View {
             guard let id = deck.id else { return }
             interactor.send(.reloadCards(id: id))
         }
+        .fullScreenCover(isPresented: $showLogin) {
+            AuthenticationView(model: auth)
+        }
     }
     
     @ViewBuilder
@@ -123,16 +131,48 @@ public struct PublicDeckView: View {
             HStack {
                 Button {
                     guard let id = deck.id else { return }
-                    interactor.send(.downloadDeck(id: id))
+                    Task {
+                        do {
+                            let isSignedIn = try await auth.isSignedIn()
+                            await MainActor.run {
+                                showLogin = !isSignedIn
+                                if isSignedIn {
+                                    interactor.send(.downloadDeck(id: id))
+                                }
+                            }
+                        } catch {
+                            await MainActor.run {
+                                showLogin = true
+                            }
+                        }
+                    }
                 } label: {
-                    Image(systemName: "square.and.arrow.down")
-                    Text("Download")
+                    Label("Download", systemImage: "square.and.arrow.down")
+                    .frame(minWidth: 140)
+                    .bold()
                 }
-                .bold()
                 .buttonStyle(.borderedProminent)
                 .tint(HBColor.actionColor.opacity(0.15))
                 .foregroundColor(HBColor.actionColor)
                 .padding(.bottom)
+                
+                if let id = deck.id {
+                    ShareLink(
+                        item: DeepLinkURL.url(path: "store/\(id)")) {
+                            Label {
+                                Text("Share")
+                            } icon: {
+                                Image(systemName: "square.and.arrow.up")
+                            }.bold()
+                            
+                            .frame(minWidth: 140)
+
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(HBColor.actionColor.opacity(0.15))
+                    .foregroundColor(HBColor.actionColor)
+                    .padding(.bottom)
+                }
             }
             
             if !deck.description.isEmpty {
@@ -165,7 +205,7 @@ struct PublicDeckView_Previews: PreviewProvider {
         HabitatPreview {
             NavigationStack {
                 NavigationLink {
-                    PublicDeckView(deck: ExternalDeck(id: "id", name: "Albums da Taylor Swift", description: "é Nene", icon: .brain, color: .lightPurple, category: .others))
+                    PublicDeckView(deck: ExternalDeck(id: "id", name: "Albums da Taylor Swift", description: "é Nene", icon: .brain, color: .lightPurple, category: .others, ownerId: "id", ownerName: "name", cardCount: 3))
                 } label: {
                     Text("Navegar")
                 }

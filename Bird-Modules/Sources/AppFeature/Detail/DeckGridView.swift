@@ -16,6 +16,9 @@ struct DeckGridView: View {
     @State private var shouldDisplayAlert = false
     @State private var deckToBeDeleted: Deck?
     
+    @State private var deckToBeEdited: Deck?
+    @State private var isCollectionSheetPresented = false
+    
     private var sortedDecks: [Deck] {
         viewModel.filteredDecks.sorted(using: viewModel.sortOrder)
     }
@@ -54,6 +57,13 @@ struct DeckGridView: View {
                                     } label: {
                                         Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
                                     }
+                                    
+                                    Button {
+                                        deckToBeEdited = deck
+                                        isCollectionSheetPresented = true
+                                    } label: {
+                                        Label(NSLocalizedString("mover_colecao", bundle: .module, comment: ""), systemImage: "tray.and.arrow.down")
+                                    }
                                 }
                         }
                         .buttonStyle(DeckCell.Style(color: deck.color))
@@ -68,6 +78,9 @@ struct DeckGridView: View {
                             } message: {
                                 Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
                             }
+                        } message: {
+                            Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                        }
                     }
                     #if os(iOS)
                     .hoverEffect()
@@ -86,7 +99,9 @@ struct DeckGridView: View {
                 .padding([.horizontal], 12)
                 .padding(.top, 24)
             }
+            .sheet(isPresented: $isCollectionSheetPresented) {
+                CollectionList(viewModel: viewModel, deck: $deckToBeEdited)
+            }
         }
     }
-    
 }

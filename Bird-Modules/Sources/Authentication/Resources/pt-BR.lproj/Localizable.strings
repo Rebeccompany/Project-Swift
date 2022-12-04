@@ -1,0 +1,19 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Gabriel Ferreira de Carvalho on 04/12/22.
+  
+*/
+
+"hello" = "Ola!";
+"message_1" = "Para usar nossas funcionalidades onlines, nós precisamos que você tenha uma conta. Para criar, basta apertar o botão de Entrar com Apple abaixo";
+"message_2" = "Você poderá baixar e publicar baralhos e mais funcionalidades estão chegando!";
+"message_3" = "Se não quiser ter uma conta, basta apertar no botão de cancelar abaixo.";
+"cancel" = "Cancelar";
+"name_title" = "Só mais um passo";
+"name_message_1" = "Nós adorariamos saber como te chamar! Digite um apelido no campo de texto abaixo.";
+"name_message_2" = "Seu apelido vai aparecer em seus baralhos públicos, então todos saberão a pessoa incrível que fez aquele baralho!";
+"name_textfield_title" = "Apelido";
+"name_textfield_empty_state" = "Digite o seu apelido aqui";
+"finish" = "Finalizar";

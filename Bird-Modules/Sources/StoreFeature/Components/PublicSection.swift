@@ -16,15 +16,24 @@ struct PublicSection: View {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 16, alignment: .top)], spacing: 16) {
                 ForEach(section.decks) { deck in
                     NavigationLink(value: deck) {
-                        PublicDeckCell(deck: deck, numberOfCopies: 10, author: "Spixii")
+                        PublicDeckCell(deck: deck)
                     }
                     .frame(height: 200)
                 }
                 .cornerRadius(12)
             }
         } header: {
-            Text(LocalizedStringKey(stringLiteral: section.title), bundle: .module)
-                .font(.title3.bold())
+            HStack {
+                Text(LocalizedStringKey(stringLiteral: section.title), bundle: .module)
+                    .font(.title3.bold())
+                Spacer()
+                NavigationLink(value: FilterRoute.category(category: DeckCategory(rawValue: section.title) ?? .others)) {
+                    HStack {
+                        Text("See all")
+                        Image(systemName: "chevron.right")
+                    }
+                }
+            }
         }
         .padding([.bottom, .leading, .trailing], 16)
     }

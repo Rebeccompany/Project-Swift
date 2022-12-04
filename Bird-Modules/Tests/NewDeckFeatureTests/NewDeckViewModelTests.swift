@@ -60,7 +60,7 @@ class NewDeckViewModelTests: XCTestCase {
     }
 
     func testCreateDeckSuccessfully() throws {
-        try sut.createDeck(collection: nil)
+        let _ = try sut.createDeck(collection: nil)
 
         let containsNewDeck = deckRepository.data.values.map(\.deck).contains(where: {
             $0.id == uuidHandler.lastCreatedID
@@ -70,7 +70,7 @@ class NewDeckViewModelTests: XCTestCase {
     }
 
     func testCreateDeckWithCollectionSucessfully() throws {
-        try sut.createDeck(collection: collectionRepository.collections[0])
+        let _ = try sut.createDeck(collection: collectionRepository.collections[0])
 
         let collectionsContainsNewDeck = collectionRepository.collections[0].decksIds.contains(uuidHandler.lastCreatedID!)
 
@@ -310,7 +310,7 @@ class NewDeckViewModelTests: XCTestCase {
              cardsIds: [],
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
-             storeId: nil, description: "" )
+             storeId: nil, description: "", ownerId: nil)
     }
     
     enum WoodpeckerState {

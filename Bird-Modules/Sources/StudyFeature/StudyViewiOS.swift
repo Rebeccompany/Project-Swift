@@ -180,7 +180,7 @@ struct StudyViewiOS_Previews: PreviewProvider {
     static var repo: DeckRepositoryMock { DeckRepositoryMock() }
 
     static var previews: some View {
-        StudyViewiOS(deck: Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil, description: ""), mode: .spaced)
+        StudyViewiOS(deck: Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil, description: "", ownerId: nil), mode: .spaced)
     }
 }
 #endif

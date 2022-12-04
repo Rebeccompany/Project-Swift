@@ -37,4 +37,35 @@ public enum HBImages {
         Image("Collection", bundle: .module)
     }
     
+    public static var simplifiedSpixiiFire: Image {
+        Image("simplified_fire", bundle: .module)
+    }
+    
+    public static var simplifiedSpixiiHeart: Image {
+        Image("simplified_happy", bundle: .module)
+    }
+    
+    public static var simplifiedSpixiiParty: Image {
+        Image("simplified_very_happy", bundle: .module)
+    }
+    
+    public static var simplifiedSpixiiSad: Image {
+        Image("simplified_very_sad", bundle: .module)
+    }
+    
+    public static var spixiiRocker: Image {
+        Image("spixii_rocker", bundle: .module)
+    }
+    
+    public static var spixiiBeach: Image {
+        Image("spixii_beach", bundle: .module)
+    }
+    
+    public static var errorSpixii: Image {
+        Image("error", bundle: .module)
+    }
+    
+    public static var spixiiHacker: Image {
+        Image("spixii_hacker", bundle: .module)
+    }
 }

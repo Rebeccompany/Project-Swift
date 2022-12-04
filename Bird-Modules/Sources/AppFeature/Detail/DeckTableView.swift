@@ -27,6 +27,9 @@ struct DeckTableView: View {
             EmptyStateView(component: .deck)
         } else {
             content
+                .sheet(isPresented: $showCollectionSelection) {
+                    CollectionList(viewModel: viewModel, deck: $deckToBeEdited)
+                }
         }
     }
     
@@ -57,6 +60,7 @@ struct DeckTableView: View {
 #endif
             
         }
+        .toolbarBackground(.visible, for: .bottomBar)
     }
     
     @ViewBuilder
@@ -80,12 +84,20 @@ struct DeckTableView: View {
                     Text("editar", bundle: .module)
                 }
                 .tint(HBColor.actionColor)
+                Button {
+                    deckToBeEdited = deck
+                    showCollectionSelection = true
+                } label: {
+                    Text("mover_colecao", bundle: .module)
+                }
+                .tint(HBColor.collectionYellow)
             }
             .contextMenu {
                 contextMenu(for: deck)
             }
         }
         .animation(.linear, value: sortedDecks)
+        .toolbarBackground(.visible, for: .tabBar)
         .listStyle(.plain)
         .onDisappear {
             Task {

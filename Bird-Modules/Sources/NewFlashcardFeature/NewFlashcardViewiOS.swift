@@ -240,7 +240,7 @@ extension View {
 struct NewFlashcardViewiOS_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
-            NewFlashcardViewiOS(deck: Deck(id: UUID(), name: "Nome", icon: "chove", color: .darkBlue, collectionId: nil, cardsIds: [], category: DeckCategory.arts, storeId: nil, description: ""), editingFlashcard: nil)
+            NewFlashcardViewiOS(deck: Deck(id: UUID(), name: "Nome", icon: "chove", color: .darkBlue, collectionId: nil, cardsIds: [], category: DeckCategory.arts, storeId: nil, description: "", ownerId: nil), editingFlashcard: nil)
         }
     }
 }

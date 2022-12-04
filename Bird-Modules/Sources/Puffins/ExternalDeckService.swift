@@ -8,6 +8,12 @@
 import Foundation
 import Combine
 import Models
+import Utils
+
+struct Jwt {
+    let key: String
+    let date: Date
+}
 
 public final class ExternalDeckService: ExternalDeckServiceProtocol {
     
@@ -16,23 +22,30 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     
     public static let shared: ExternalDeckService = .init()
     
-    private var jwt: String?
+    private var jwt: Jwt?
     
-    public init(session: EndpointResolverProtocol = URLSession.shared) {
+    private let dateHandler: DateHandlerProtocol
+    
+    public init(session: EndpointResolverProtocol = URLSession.shared,
+                dateHandler: DateHandlerProtocol = DateHandler()) {
         self.session = session
+        self.dateHandler = dateHandler
     }
     
     private func authenticate() -> some Publisher<String, URLError> {
         //swiftlint: disable trailing_closure
         session.dataTaskPublisher(for: .login)
             .decodeWhenSuccess(to: String.self)
-            .handleEvents(receiveOutput: { [weak self] jwt in self?.jwt = jwt })
+            .handleEvents(receiveOutput: { [weak self] jwt in
+                self?.jwt = Jwt(key: jwt, date: self?.dateHandler.today ?? Date.now)
+            })
             .receive(on: RunLoop.main)
     }
     
     private func authenticatePublisher<Output>(_ publisher: @escaping (String) -> some Publisher<Output, URLError>) -> AnyPublisher<Output, URLError> {
-        if let jwt {
-            return publisher(jwt).eraseToAnyPublisher()
+        
+        if let jwt, isInPast8Hours(date: jwt.date) {
+            return publisher(jwt.key).eraseToAnyPublisher()
         } else {
             return authenticate()
                 .flatMap { token in
@@ -41,6 +54,26 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
                 .mapToURLError()
                 .eraseToAnyPublisher()
         }
+    }
+    
+    func isInPast8Hours(date: Date) -> Bool {
+        let jwtDateComponents = Calendar.autoupdatingCurrent.dateComponents([.year, .month, .day, .hour, .minute],
+                                                                            from: date)
+        let nowDateComponents = Calendar.autoupdatingCurrent.dateComponents([.year, .month, .day, .hour, .minute],
+                                                                            from: dateHandler.today)
+        
+        let differences = [
+            nowDateComponents.year! - jwtDateComponents.year!,
+            nowDateComponents.month! - jwtDateComponents.month!,
+            nowDateComponents.day! - jwtDateComponents.day!,
+            nowDateComponents.hour! - jwtDateComponents.hour!,
+            nowDateComponents.minute! - jwtDateComponents.minute!
+        ]
+        
+        return  (differences[0] <= 0) &&
+                (differences[1] <= 0) &&
+                (differences[2] <= 0) &&
+                ((differences[3] <  8) || (differences[3] == 7  && differences[4] >= 59))
     }
     
     public func getDeckFeed() -> AnyPublisher<[ExternalSection], URLError> {
@@ -76,8 +109,8 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         }
     }
     
-    public func uploadNewDeck(_ deck: Deck, with cards: [Card]) -> AnyPublisher<String, URLError> {
-        let dto = DeckAdapter.adapt(deck, with: cards)
+    public func uploadNewDeck(_ deck: Deck, with cards: [Card], owner: User) -> AnyPublisher<String, URLError> {
+        let dto = DeckAdapter.adapt(deck, with: cards, owner: owner)
         let jsonEncoder = JSONEncoder()
         guard let jsonData = try? jsonEncoder.encode(dto) else {
             return Fail(outputType: String.self, failure: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()
@@ -111,67 +144,44 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
                 .decodeWhenSuccess(to: DeckDTO.self)
         }
     }
-}
-
-extension Publisher where Output == URLSession.DataTaskPublisher.Output, Failure == URLSession.DataTaskPublisher.Failure {
     
-    func verifySuccess() -> some Publisher<Data, Failure> {
-        self
-            .tryMap { data, response in
-                let range = 200...299
-                guard let response = response as? HTTPURLResponse,
-                      range.contains(response.statusCode)
-                else {
-                    throw URLError(.badServerResponse)
-                }
-                return data
-            }
-            .mapError { error in
-                if let error = error as? URLError {
-                    return error
-                } else {
-                    return URLError(.cannotDecodeContentData)
-                }
-            }
+    public func updateADeck(_ deck: Deck, with cards: [Card], owner: User) -> AnyPublisher<Void, URLError> {
+        let dto = DeckAdapter.adapt(deck, with: cards, owner: owner)
+        let jsonEncoder = JSONEncoder()
+        guard let jsonData = try? jsonEncoder.encode(dto), let storeId = deck.storeId else {
+            return Fail(outputType: Void.self, failure: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()
+        }
+        
+        return authenticatePublisher { [weak self] token in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session.dataTaskPublisher(for: .update(id: storeId, jsonData), authToken: token)
+                .verifyVoidSuccess()
+        }
     }
     
-    func verifyVoidSuccess() -> some Publisher<Void, Failure> {
-        self
-            .tryMap { _, response in
-                let range = 200...299
-                guard let response = response as? HTTPURLResponse,
-                      range.contains(response.statusCode)
-                else {
-                    throw URLError(.badServerResponse)
-                }
-                return Void()
-            }
-            .mapError { error in
-                if let error = error as? URLError {
-                    return error
-                } else {
-                    return URLError(.cannotDecodeContentData)
-                }
-            }
+    public func deleteAllDeckFromUser(id: String) -> AnyPublisher<Void, URLError> {
+        authenticatePublisher {[weak self] jwt in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session.dataTaskPublisher(for: .deleteDecksFromUser(id: id), authToken: jwt)
+                .verifyVoidSuccess()
+        }
     }
     
-    func decodeWhenSuccess<T: Decodable>(to type: T.Type) -> some Publisher<T, URLError> {
-        self
-            .verifySuccess()
-            .decode(type: type, decoder: JSONDecoder())
-            .mapToURLError()
+    public func searchDecks(type: String, value: String, page: Int) -> AnyPublisher<[ExternalDeck], URLError> {
+        authenticatePublisher {[weak self] token in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session
+                .dataTaskPublisher(for: .searchDecks(type: type, value: value, page: page), authToken: token)
+                .decodeWhenSuccess(to: [ExternalDeck].self)
+        }
     }
-}
-
-extension Publisher {
-    func mapToURLError() -> some Publisher<Output, URLError> {
-        self
-            .mapError { error in
-                if let error = error as? URLError {
-                    return error
-                } else {
-                    return URLError(.cannotDecodeContentData)
-                }
-            }
+    
+    public func decksByCategory(category: DeckCategory, page: Int) -> AnyPublisher<[ExternalDeck], URLError> {
+        authenticatePublisher {[weak self] token in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session
+                .dataTaskPublisher(for: .decksByCategory(category: category.rawValue, page: page), authToken: token)
+                .decodeWhenSuccess(to: [ExternalDeck].self)
+        }
     }
 }

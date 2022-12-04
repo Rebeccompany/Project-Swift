@@ -32,3 +32,6 @@
 "library" = "Library";
 "nova_colecao" = "New Collection";
 "%d cartas_hoje" = "%d cards for today";
+"escolher_coleção" = "Choose Collection";
+"mover_colecao" = "move to...";
+"Remover da coleção" = "Remover da coleção";

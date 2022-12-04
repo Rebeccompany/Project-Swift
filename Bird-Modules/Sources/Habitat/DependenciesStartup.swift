@@ -8,7 +8,9 @@
 import Foundation
 import Storage
 import Puffins
+import Keychain
 import Utils
+import Tweet
 
 public func setupHabitatForProduction() {
     Habitat[\.deckRepository] = DeckRepository.shared
@@ -18,6 +20,10 @@ public func setupHabitatForProduction() {
     Habitat[\.systemObserver] = SystemObserver.shared
     Habitat[\.displayCacher] = DisplayCacher()
     Habitat[\.externalDeckService] = ExternalDeckService.shared
+    Habitat[\.notificationService] = NotificationService()
+    Habitat[\.externalUserService] = ExternalUserService.shared
+    Habitat[\.keychainService] = KeychainService()
+    Habitat[\.notificationCenter] = NotificationCenter.default
 }
 
 public func setupHabitatForIsolatedTesting(
@@ -27,7 +33,11 @@ public func setupHabitatForIsolatedTesting(
     uuidGenerator: UUIDGeneratorProtocol = UUIDHandlerMock(),
     systemObserver: SystemObserverProtocol = SystemObserverMock(),
     displayCacher: DisplayCacherProtocol = DisplayCacher(localStorage: LocalStorageMock()),
-    externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock()
+    externalDeckService: ExternalDeckServiceProtocol = ExternalDeckServiceMock(),
+    notificationService: NotificationServiceProtocol = NotificationService(center: UserNotificationServiceMock()),
+    externalUserService: ExternalUserServiceProtocol = ExternalUserServiceMock(),
+    keychainService: KeychainServiceProtocol = KeychainServiceMock(),
+    notificationCenter: NotificationCenterProtocol = NotificationCenterMock()
 ) {
     Habitat[\.deckRepository] = deckRepository
     Habitat[\.collectionRepository] = collectionRepository
@@ -36,6 +46,10 @@ public func setupHabitatForIsolatedTesting(
     Habitat[\.systemObserver] = systemObserver
     Habitat[\.displayCacher] = displayCacher
     Habitat[\.externalDeckService] = externalDeckService
+    Habitat[\.notificationService] = notificationService
+    Habitat[\.notificationCenter] = notificationCenter
+    Habitat[\.externalUserService] = externalUserService
+    Habitat[\.keychainService] = keychainService
 }
 
 public func setupHabitatForIntegrationTesting() {
@@ -47,4 +61,5 @@ public func setupHabitatForIntegrationTesting() {
     Habitat[\.systemObserver] = SystemObserver.shared
     Habitat[\.displayCacher] = DisplayCacher(localStorage: LocalStorageMock())
     Habitat[\.externalDeckService] = ExternalDeckServiceMock()
+    Habitat[\.keychainService] = KeychainServiceMock()
 }

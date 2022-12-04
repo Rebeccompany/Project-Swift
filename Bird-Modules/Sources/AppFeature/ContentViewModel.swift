@@ -13,6 +13,8 @@ import DeckFeature
 import Habitat
 import Utils
 import SwiftUI
+import Tweet
+import Puffins
 
 //swiftlint:disable trailing_closure
 public final class ContentViewModel: ObservableObject {
@@ -33,12 +35,15 @@ public final class ContentViewModel: ObservableObject {
     @Published var detailType: DetailDisplayType
     @Published var sortOrder: [KeyPathComparator<Deck>]
     @Published var shouldReturnToGrid: Bool
-
+    
     // MARK: Repositories
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
     @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
     @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
+    @Dependency(\.notificationService) private var notificationService: NotificationServiceProtocol
     @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
+    @Dependency(\.externalDeckService) private var externalDeckService: ExternalDeckServiceProtocol
+    @Dependency(\.notificationCenter) private var notificationCenter: NotificationCenterProtocol
     
     private var cancellables: Set<AnyCancellable>
     
@@ -112,12 +117,59 @@ public final class ContentViewModel: ObservableObject {
         detailType = displayCacher.getCurrentDetailType() ?? .grid
         shouldReturnToGrid = detailType == .grid
         
+        notificationService.requestAuthorizationForNotifications()
+        
+        setupDidEnterForeground()
+        setupDidEnterBackgroundPublisher()
+        notificationService.cleanNotifications()
+        
         $decks
             .tryMap(filterDecksForToday)
             .replaceError(with: [])
             .assign(to: &$todayDecks)
     }
     
+    private func setupDidEnterForeground() {
+        notificationCenter
+            .notificationPublisher(for: UIApplication.willEnterForegroundNotification, object: nil)
+            .receive(on: RunLoop.main)
+            .sink { _ in
+                self.notificationService.cleanNotifications()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func setupDidEnterBackgroundPublisher() {
+        notificationCenter
+            .notificationPublisher(for: UIApplication.didEnterBackgroundNotification, object: nil)
+            .receive(on: RunLoop.main)
+            .flatMap { [weak self] _ in
+                guard let self else {
+                    preconditionFailure("self is deinitialized")
+                }
+                return self.deckRepository.deckListener().first()
+            }
+            .replaceError(with: [Deck]())
+            .map { decks in
+                decks.compactMap { [weak self] (deck: Deck) -> Deck? in
+                    guard let date = deck.session?.date,
+                          let self else { return nil }
+                    
+                    if date >= self.dateHandler.today {
+                        return deck
+                    }
+                    return nil
+                }
+            }
+            .sink { [weak self] decks in
+                guard let self else { return }
+                decks.forEach { deck in
+                    self.notificationService.scheduleNotification(for: deck, at: self.dateHandler.today)
+                }
+            }
+            .store(in: &cancellables)
+    }
+        
     func bindingToDeck(_ deck: Deck) -> Binding<Deck> {
         Binding<Deck> { [weak self] in
             guard let self = self,
@@ -152,7 +204,7 @@ public final class ContentViewModel: ObservableObject {
             }
         }
     }
-            
+    
     private func filterDecksBySearchText(_ decks: [Deck], searchText: String) -> [Deck] {
         if searchText.isEmpty {
             return decks
@@ -162,13 +214,11 @@ public final class ContentViewModel: ObservableObject {
     }
     
     private func filterDecksForToday(_ decks: [Deck]) -> [Deck] {
-        
         decks.filter {
             guard let session = $0.session else { return false }
-
-            guard !session.cardIds.isEmpty,
-                let isToday = try? dateHandler.isToday(date: session.date) else { return false }
-            return isToday || session.date < dateHandler.today
+            
+            guard !session.cardIds.isEmpty else { return false }
+            return dateHandler.isToday(date: session.date) || session.date < dateHandler.today
         }
     }
     
@@ -207,7 +257,7 @@ public final class ContentViewModel: ObservableObject {
             .forEach { deck in
                 try deckRepository.deleteDeck(deck)
             }
-            
+        
         selection = Set()
     }
     
@@ -235,6 +285,14 @@ public final class ContentViewModel: ObservableObject {
     func didCollectionPresentationStatusChanged(_ status: Bool) {
         guard status == false else {
             return
+        }
+    }
+    
+    func change(deck: Deck, to collection: DeckCollection?) {
+        if let collection {
+            try? collectionRepository.addDeck(deck, in: collection)
+        } else if let collectionId = deck.collectionId, let collection = collections.first(where: { $0.id == collectionId }) {
+            try? collectionRepository.removeDeck(deck, from: collection)
         }
     }
 }

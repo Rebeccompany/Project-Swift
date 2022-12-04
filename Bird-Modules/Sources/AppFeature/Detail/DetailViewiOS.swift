@@ -12,6 +12,7 @@ import NewDeckFeature
 import DeckFeature
 import Storage
 import Habitat
+import Tweet
 
 #if os(iOS)
 public struct DetailViewiOS: View {
@@ -21,7 +22,6 @@ public struct DetailViewiOS: View {
     @State private var editingDeck: Deck?
     @Binding private var editMode: EditMode
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    
     
     
     init(editMode: Binding<EditMode>) {
@@ -39,6 +39,7 @@ public struct DetailViewiOS: View {
         .searchable(text: $viewModel.searchText, placement: horizontalSizeClass == .compact ? .navigationBarDrawer(displayMode: .always) : .toolbar)
         .toolbar(editMode.isEditing ? .visible : .hidden,
                  for: .bottomBar)
+        .toolbarBackground(.visible, for: .bottomBar)
         .toolbar {
             
             ToolbarItem(placement: .bottomBar) {
@@ -147,7 +148,6 @@ public struct DetailViewiOS: View {
             .buttonStyle(LargeButtonStyle(isDisabled: false))
             .padding()
         }
-        
     }
     
     @ViewBuilder

@@ -5,18 +5,19 @@
 //  Created by Gabriel Ferreira de Carvalho on 14/09/22.
 //
 
-import SwiftUI
-import Models
-import DeckFeature
-import NewDeckFeature
-import HummingBird
 import Flock
-import NewCollectionFeature
+import Models
+import SwiftUI
 import Habitat
 import Storage
-import StoreFeature
-import OnboardingFeature
 import StoreState
+import DeckFeature
+import HummingBird
+import StoreFeature
+import NewDeckFeature
+import Authentication
+import OnboardingFeature
+import NewCollectionFeature
 
 #if os(iOS)
 public struct ContentViewiOS: View {
@@ -24,82 +25,63 @@ public struct ContentViewiOS: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @State private var editModeForCollection: EditMode = .inactive
     @State private var editModeForDeck: EditMode = .inactive
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var path: NavigationPath = .init()
-    @State private var storePath: NavigationPath = .init()
     
     @StateObject private var viewModel: ContentViewModel = ContentViewModel()
-    @StateObject private var shopStore = ShopStore()
+    @StateObject private var appRouter: AppRouter = AppRouter()
+    @StateObject private var shopStore: ShopStore = ShopStore()
+    @StateObject private var authModel: AuthenticationModel = AuthenticationModel()
     
     public init() {}
     
     public var body: some View {
-        if horizontalSizeClass == .compact {
-            TabView {
-                NavigationSplitView(columnVisibility: $columnVisibility) {
-                    sidebar
-                } detail: {
-                    detail
-                }
-                .onChange(of: viewModel.sidebarSelection) { _ in
-                    path.removeLast(path.count - 1)
-                }
-                .onAppear(perform: viewModel.startup)
-                .navigationSplitViewStyle(.balanced)
-                .sheet(isPresented: $onboarding) {
-                    OnboardingView()
-                }
-                .tabItem {
-                    Label {
-                        Text("baralhos", bundle: .module)
-                    } icon: {
-                        Image(systemName: "rectangle.portrait.on.rectangle.portrait.angled")
+        Group {
+            if horizontalSizeClass == .compact {
+                TabView(selection: $appRouter.selectedTab) {
+                    mainView
+                        .tabItem {
+                            Label {
+                                Text("baralhos", bundle: .module)
+                            } icon: {
+                                Image(systemName: "rectangle.portrait.on.rectangle.portrait.angled")
+                            }
+                        }
+                        .tag(AppRouter.Tab.study)
+                    
+                    NavigationStack(path: $appRouter.storePath) {
+                        StoreView(store: shopStore)
+                            .environmentObject(authModel)
                     }
+                    .tabItem {
+                        Label {
+                            Text("library", bundle: .module)
+                        } icon: {
+                            Image(systemName: "books.vertical")
+                        }
+                    }
+                    .tag(AppRouter.Tab.store)
                 }
                 
-                NavigationStack(path: $storePath) {
-                    StoreView(store: shopStore)
-                }
-                .tabItem {
-                    Label {
-                        Text("library", bundle: .module)
-                    } icon: {
-                        Image(systemName: "books.vertical")
-                    }
-                }
-            }
-            .toolbarBackground(.visible, for: .tabBar)
-        } else {
-            NavigationSplitView(columnVisibility: $columnVisibility) {
-                sidebar
-            } detail: {
-                detail
-            }
-            .onChange(of: viewModel.sidebarSelection) { _ in
-                path.removeLast(path.count - 1)
-            }
-            .onAppear(perform: viewModel.startup)
-            .navigationSplitViewStyle(.balanced)
-            .sheet(isPresented: $onboarding) {
-                OnboardingView()
+            } else {
+                mainView
             }
         }
+        .navigationSplitViewStyle(.balanced)
+        .sheet(isPresented: $onboarding) {
+            OnboardingView()
+        }
+        .onChange(of: viewModel.sidebarSelection) { _ in
+            appRouter.path.removeLast(appRouter.path.count - 1)
+        }
+        .onAppear(perform: viewModel.startup)
+        .onOpenURL { appRouter.onOpen(url: $0) }
     }
     
-@ViewBuilder
+    @ViewBuilder
     private var mainView: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             sidebar
         } detail: {
             detail
-        }
-        .onChange(of: viewModel.sidebarSelection) { _ in
-            path.removeLast(path.count - 1)
-        }
-        .onAppear(perform: viewModel.startup)
-        .navigationSplitViewStyle(.balanced)
-        .sheet(isPresented: $onboarding) {
-            OnboardingView()
         }
     }
     
@@ -111,6 +93,7 @@ public struct ContentViewiOS: View {
         )
         .environmentObject(viewModel)
         .environmentObject(shopStore)
+        .environmentObject(authModel)
         .environment(\.editMode, $editModeForCollection)
         .environment(\.horizontalSizeClass, horizontalSizeClass)
     }
@@ -124,9 +107,11 @@ public struct ContentViewiOS: View {
                             .automatic,
                     for: .tabBar)
                 .environmentObject(viewModel)
+                .environmentObject(authModel)
                 .environment(\.editMode, $editModeForDeck)
         } destination: { (route: StudyRoute) in
             StudyRoutes.destination(for: route, viewModel: viewModel)
+                .environmentObject(authModel)
         }
     }
 }

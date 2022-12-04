@@ -12,6 +12,8 @@ import Models
 import Storage
 import Habitat
 import Combine
+import Tweet
+import Utils
 
 
 final class ContentViewModelTests: XCTestCase {
@@ -21,6 +23,10 @@ final class ContentViewModelTests: XCTestCase {
     var displayCacherMock: DisplayCacher!
     var localStorageMock: LocalStorageMock!
     var collectionRepositoryMock: CollectionRepositoryMock!
+    var userNotificationService: UserNotificationServiceMock!
+    var notificationService: NotificationService!
+    var dateHandler: DateHandlerMock!
+    var notificationCenter: NotificationCenterMock!
     var cancelables: Set<AnyCancellable>!
     var deck0: Deck!
     var deck1: Deck!
@@ -33,7 +39,12 @@ final class ContentViewModelTests: XCTestCase {
         collectionRepositoryMock = CollectionRepositoryMock()
         localStorageMock = LocalStorageMock()
         displayCacherMock = DisplayCacher(localStorage: localStorageMock)
-        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock, displayCacher: displayCacherMock)
+        userNotificationService = UserNotificationServiceMock()
+        dateHandler = DateHandlerMock()
+        notificationService = NotificationService(center: userNotificationService)
+        notificationCenter = NotificationCenterMock()
+        
+        setupHabitatForIsolatedTesting(deckRepository: deckRepositoryMock, collectionRepository: collectionRepositoryMock, displayCacher: displayCacherMock, notificationService: notificationService, notificationCenter: notificationCenter)
         sut = ContentViewModel()
         cancelables = Set<AnyCancellable>()
         createData()
@@ -58,6 +69,12 @@ final class ContentViewModelTests: XCTestCase {
         collectionRepositoryMock = nil
         deckRepositoryMock = nil
         cancelables = nil
+        dateHandler = nil
+        notificationService = nil
+        userNotificationService = nil
+        notificationCenter = nil
+        localStorageMock = nil
+        displayCacherMock = nil
         
         deck0 = nil
         deck1 = nil
@@ -271,7 +288,7 @@ final class ContentViewModelTests: XCTestCase {
     
     func testEditDeckWithWrongDeck() {
         sut.startup()
-        let deck = Deck(id: UUID.init(), name: "deck", icon: IconNames.abc.rawValue, color: .beigeBrown, collectionId: UUID.init(), cardsIds: [], category: DeckCategory.arts, storeId: nil, description: "" )
+        let deck = Deck(id: UUID.init(), name: "deck", icon: IconNames.abc.rawValue, color: .beigeBrown, collectionId: UUID.init(), cardsIds: [], category: DeckCategory.arts, storeId: nil, description: "", ownerId: nil )
         
         sut.selection.insert(deck.id)
         
@@ -310,6 +327,77 @@ final class ContentViewModelTests: XCTestCase {
         sut.startup()
         sut.sidebarSelection = .allDecks
         XCTAssertEqual(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), sut.detailTitle)
+    }
+    
+    @MainActor func testSetupDidEnterBackgroundPublisher() async {
+        
+        var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "", ownerId: nil)
+        
+        var cards = [Card(id: UUID(), front: NSAttributedString(string: ""), back: NSAttributedString(string: ""), color: .white, datesLogs: DateLogs(), deckID: deck.id, woodpeckerCardInfo: WoodpeckerCardInfo(interval: 2, hasBeenPresented: true), history: [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), userGrade: .correctEasy, timeSpend: 10, date: dateHandler.today.addingTimeInterval(-86400))])]
+        
+        deck.session = Session(cardIds: cards.map(\.id), date: dateHandler.today.addingTimeInterval(86400), deckId: deck.id, id: UUID())
+        
+        cards = cards.map { var card = $0; card.deckID = deck.id; return card}
+        deck.cardsIds = cards.map(\.id)
+        
+        
+        try? deckRepositoryMock.createDeck(deck, cards: cards)
+        
+        sut.startup()
+        let not0 = Notification(name: UIApplication.didEnterBackgroundNotification)
+        notificationCenter.notificationSubjects[UIApplication.didEnterBackgroundNotification]?.send(not0)
+        try? await Task.sleep(for: .seconds(1))
+        
+        
+        XCTAssertEqual(self.userNotificationService.requests.count, 1)
+        
+    }
+    
+    @MainActor func testSetupDidEnterForeground() async throws {
+        
+        var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "", ownerId: nil)
+        
+        var cards = [Card(id: UUID(), front: NSAttributedString(string: ""), back: NSAttributedString(string: ""), color: .white, datesLogs: DateLogs(), deckID: deck.id, woodpeckerCardInfo: WoodpeckerCardInfo(interval: 2, hasBeenPresented: true), history: [CardSnapshot(woodpeckerCardInfo: WoodpeckerCardInfo(hasBeenPresented: false), userGrade: .correctEasy, timeSpend: 10, date: dateHandler.today.addingTimeInterval(-86400))])]
+        
+        deck.session = Session(cardIds: cards.map(\.id), date: dateHandler.today.addingTimeInterval(86400), deckId: deck.id, id: UUID())
+        
+        cards = cards.map { var card = $0; card.deckID = deck.id; return card}
+        deck.cardsIds = cards.map(\.id)
+        
+        
+        try? deckRepositoryMock.createDeck(deck, cards: cards)
+        
+        sut.startup()
+        userNotificationService.requests.append(UNNotificationRequest(identifier: "sfd", content: UNNotificationContent(), trigger: nil))
+        
+        
+        let not = Notification(name: UIApplication.willEnterForegroundNotification)
+        notificationCenter.notificationSubjects[UIApplication.willEnterForegroundNotification]?.send(not)
+        try? await Task.sleep(for: .seconds(1))
+        
+        XCTAssertTrue(self.userNotificationService.requests.count == 0)
+    }
+
+    func testChangeDeckToNewCollection() {
+        let collection = collectionRepositoryMock.collections.first!
+        let deck = deck0!
+        
+        sut.change(deck: deck, to: collection)
+        
+        XCTAssertTrue(collectionRepositoryMock.collections.first!.decksIds.contains(deck.id))
+        
+    }
+    
+    func testRemoveCollectionFromDeck() {
+        sut.startup()
+        var deck = deck0!
+        collectionRepositoryMock.collections[0].decksIds.append(deck.id)
+        deck.collectionId = collectionRepositoryMock.collections.first!.id
+        let count = collectionRepositoryMock.collections[0].decksIds.count
+        
+        sut.change(deck: deck, to: nil)
+        
+        XCTAssertEqual(collectionRepositoryMock.collections.first!.decksIds.count, count - 1)
     }
     
     func createCards() {
@@ -372,7 +460,7 @@ final class ContentViewModelTests: XCTestCase {
              cardsIds: [],
              spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4),
              category: DeckCategory.arts,
-             storeId: nil, description: "" )
+             storeId: nil, description: "", ownerId: nil )
     }
     
     func sortById<T: Identifiable>(d0: T, d1: T) -> Bool where T.ID == UUID {

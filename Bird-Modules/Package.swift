@@ -20,6 +20,12 @@ let package = Package(
                 "AppFeature"
             ]
         ),
+        .library(
+            name: "ClassKitFeature",
+            targets: [
+                "ClassKitFeature"
+            ]
+        ),
         
         .library(
             name: "DeckFeature",
@@ -112,10 +118,12 @@ let package = Package(
             name: "FlashcardsOnboardingFeature",
             targets: ["FlashcardsOnboardingFeature"]
         ),
+        
         .library(
             name: "StoreFeature",
             targets: ["StoreFeature"]
         ),
+        
         .library(
             name: "PublicDeckFeature",
             targets: ["PublicDeckFeature"]
@@ -124,8 +132,14 @@ let package = Package(
             name: "Puffins",
             targets: ["Puffins"]
         ),
+        .library(
+            name: "Tweet",
+            targets: ["Tweet"]
+        ),
         .library(name: "Peacock", targets: ["Peacock"]),
-        .library(name: "StoreState", targets: ["StoreState"])
+        .library(name: "StoreState", targets: ["StoreState"]),
+        .library(name: "Authentication", targets: ["Authentication"]),
+        .library(name: "Keychain", targets: ["Keychain"])
     ],
     
     dependencies: [
@@ -159,7 +173,18 @@ let package = Package(
                 "NewFlashcardFeature",
                 "OnboardingFeature",
                 "StoreFeature",
-                "StoreState"
+                "Tweet",
+                "StoreState",
+                "ClassKitFeature",
+                "Authentication"
+            ]
+        ),
+        
+        .target(
+            name: "ClassKitFeature",
+            dependencies: [
+                "Storage",
+                "Models"
             ]
         ),
         
@@ -176,20 +201,22 @@ let package = Package(
                 "StudyFeature",
                 "ImportingFeature",
                 "Habitat",
-                "Puffins"
+                "Puffins",
+                "Authentication"
             ]
         ),
             
-        .target(name: "StudyFeature",
-                dependencies: [
-                     "Models",
-                     "HummingBird",
-                     "Woodpecker",
-                     "Storage",
-                     "Utils",
-                     "Habitat",
-                     "FlashcardsOnboardingFeature"
-                ]
+        .target(
+            name: "StudyFeature",
+            dependencies: [
+                "Models",
+                "HummingBird",
+                "Woodpecker",
+                "Storage",
+                "Utils",
+                "Habitat",
+                "FlashcardsOnboardingFeature"
+            ]
         ),
         
         .target(
@@ -205,7 +232,9 @@ let package = Package(
         
         .target(
             name: "Models",
-            dependencies: ["Utils"]
+            dependencies: [
+                "Utils"
+            ]
         ),
         
         .target(
@@ -226,7 +255,8 @@ let package = Package(
                 "HummingBird",
                 "Storage",
                 "Utils",
-                "Habitat"
+                "Habitat",
+                "Puffins"
             ]
         ),
         
@@ -286,7 +316,9 @@ let package = Package(
             dependencies: [
                 "Storage",
                 "Utils",
-                "Puffins"
+                "Puffins",
+                "Tweet",
+                "Keychain"
             ]
         ),
         
@@ -316,7 +348,9 @@ let package = Package(
                 "Habitat",
                 "PublicDeckFeature",
                 "Peacock",
-                "StoreState"
+                "StoreState",
+                "Authentication",
+                "Utils"
             ]
         ),
         
@@ -331,13 +365,21 @@ let package = Package(
         ),
         
         .target(
+            name: "Tweet",
+            dependencies: [
+                "Models",
+                "Utils"
+            ]
+        ),
+        .target(
             name: "PublicDeckFeature",
             dependencies: [
                 "Models",
                 "HummingBird",
                 "Habitat",
                 "Peacock",
-                "StoreState"
+                "StoreState",
+                "Authentication"
             ]
         ),
         
@@ -345,6 +387,20 @@ let package = Package(
             name: "StoreState",
             dependencies: ["Models"]
         ),
+        
+        .target(
+            name: "Authentication",
+            dependencies: [
+                "HummingBird",
+                "Puffins",
+                "Habitat",
+                "Keychain",
+                "Storage",
+                "Utils"
+            ]
+        ),
+        
+        .target(name: "Keychain"),
         
         // MARK: Test Targets
         .testTarget(
@@ -364,7 +420,8 @@ let package = Package(
                 "AppFeature",
                 "Models",
                 "Storage",
-                "Habitat"
+                "Habitat",
+                "Puffins"
             ]
         ),
         
@@ -465,7 +522,8 @@ let package = Package(
                 "Puffins",
                 "StoreFeature",
                 "Habitat",
-                "StoreState"
+                "StoreState",
+                "Models"
             ]
         ),
         
@@ -479,6 +537,14 @@ let package = Package(
         ),
         
         .testTarget(
+            name: "TweetTests",
+            dependencies: [
+                "Models",
+                "Habitat",
+                "Tweet"
+            ]
+        ),
+        .testTarget(
             name: "PublicDeckFeatureTests",
             dependencies: [
                 "PublicDeckFeature",
@@ -486,6 +552,16 @@ let package = Package(
                 "Models",
                 "Puffins",
                 "Habitat"
+            ]
+        ),
+        
+        .testTarget(
+            name: "AuthenticationTests",
+            dependencies: [
+                "Authentication",
+                "Keychain",
+                "Models",
+                "Puffins"
             ]
         )
     ]
