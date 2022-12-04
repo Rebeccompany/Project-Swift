@@ -11,7 +11,7 @@ import HummingBird
 import Habitat
 import Puffins
 import Combine
-
+#warning("Testes e Localização")
 struct SearchDeckView: View {
     
     @StateObject private var model = SearchDeckModel()
@@ -106,7 +106,16 @@ struct SearchDeckView: View {
     
     @ViewBuilder
     private var emptyView: some View {
-        Text("Empty state")
+        VStack {
+            HBImages.spixiiHacker
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .background {
+                    HBColor.primaryBackground
+                }
+                .clipShape(Circle())
+                .padding(24)
+        }
     }
 }
 
@@ -152,7 +161,7 @@ final class SearchDeckModel: ObservableObject {
                 previous.0 == actual.0 && previous.1 == actual.1
             }
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
-            
+            .receive(on: RunLoop.main)
             .handleEvents(receiveOutput: { [weak self] _ in
                 self?.viewState = .loading
                 self?.currentPage = 0

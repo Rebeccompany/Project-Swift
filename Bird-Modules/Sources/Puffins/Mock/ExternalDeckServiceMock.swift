@@ -154,7 +154,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         } else if page > 3 {
             return Just<[ExternalDeck]>([]).setFailureType(to: URLError.self).eraseToAnyPublisher()
         }
-        let decks = Array(1...30).map { i in deck(id: "\(i * (page + 1))") }
+        let decks = Array(1...30).map { i in deck(id: "\(i + (page * 30))") }
         return Just(decks).setFailureType(to: URLError.self).eraseToAnyPublisher()
     }
     
@@ -164,7 +164,7 @@ public final class ExternalDeckServiceMock: ExternalDeckServiceProtocol {
         } else if page > 3 {
             return Just<[ExternalDeck]>([]).setFailureType(to: URLError.self).eraseToAnyPublisher()
         }
-        let decks = Array(1...30).map { i in deck(id: "\(i * (page + 1))") }.map {
+        let decks = Array(1...30).map { i in deck(id: "\(i + (page * 30))") }.map {
             ExternalDeck(id: $0.id, name: $0.name, description: $0.description, icon: $0.icon, color: $0.color, category: category, ownerId: $0.ownerId, ownerName: $0.ownerName, cardCount: $0.cardCount)
         }
         return Just(decks).setFailureType(to: URLError.self).eraseToAnyPublisher()

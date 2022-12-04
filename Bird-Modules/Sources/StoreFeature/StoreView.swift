@@ -69,7 +69,7 @@ public struct StoreView: View {
             case .search:
                 SearchDeckView()
             case .category(let category):
-                DeckCategoryView(category: category.rawValue)
+                DeckCategoryView(category: category)
             }
         }
         .toolbar {
