@@ -18,3 +18,11 @@
 "signout" = "Sign out";
 "delete_account" = "Delete account";
 "search" = "Search";
+"end_of_search" = "That's all folks";
+"done" = "Done";
+"name" = "Name";
+"author" = "Author";
+"filter" = "Filter";
+"retry" = "Retry";
+"error_message" = "Oh no!, something is wrong, check your internet connection and press the button bellow to try again.";
+"loading" = "Loading...";

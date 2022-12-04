@@ -23,7 +23,7 @@ struct ErrorView: View {
                 }
                 .frame(maxWidth: 300)
             
-            Text("Oh no!, something is wrong, check your internet connection and press the button bellow to try again.")
+            Text("error_message".localized(.module))
                 .font(.headline)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 320)
@@ -33,7 +33,7 @@ struct ErrorView: View {
                 action()
             } label: {
                 Label {
-                    Text("Retry")
+                    Text("retry".localized(.module))
                 } icon: {
                     Image(systemName: "gobackward")
                 }

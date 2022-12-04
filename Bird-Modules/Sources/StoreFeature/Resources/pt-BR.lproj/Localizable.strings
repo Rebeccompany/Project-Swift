@@ -18,3 +18,11 @@
 "signout" = "Sair";
 "delete_account" = "Deletar conta";
 "search" = "Buscar";
+"end_of_search" = "Por hoje é só pessoal";
+"done" = "Pronto";
+"name" = "Nome";
+"author" = "Autor";
+"filter" = "Filtrar";
+"retry" = "Tentar novamente";
+"error_message" = "Opa 😢, aconteceu algo errado, verifique sua conexão com a internet e pressione o botão para tentar novamente.";
+"loading" = "Carregando...";

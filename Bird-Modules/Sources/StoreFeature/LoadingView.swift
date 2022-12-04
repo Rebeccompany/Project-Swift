@@ -33,7 +33,7 @@ struct LoadingView: View {
             .onDisappear {
                 isFlipped = false
             }
-            Text("Loading...")
+            Text("loading".localized(.module))
         }
     }
 }

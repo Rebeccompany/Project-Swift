@@ -9,8 +9,8 @@ import SwiftUI
 import Models
 import HummingBird
 import Habitat
-import Puffins
-import Combine
+import Utils
+
 #warning("Testes e Localização")
 struct SearchDeckView: View {
     
@@ -22,13 +22,18 @@ struct SearchDeckView: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .padding(.leading)
-                TextField("Search", text: $model.searchText)
+                TextField(
+                    "search".localized(.module),
+                    text: $model.searchText
+                )
                     .focused($focusState, equals: 1)
                     .padding(.trailing)
                 
-                Picker("Filter", selection: $model.selectedFilter) {
-                    Text("Name").tag(SearchDeckModel.FilterType.name)
-                    Text("Author").tag(SearchDeckModel.FilterType.author)
+                Picker("filter".localized(.module), selection: $model.selectedFilter) {
+                    Text("name".localized(.module))
+                        .tag(SearchDeckModel.FilterType.name)
+                    Text("author".localized(.module))
+                        .tag(SearchDeckModel.FilterType.author)
                 }
             }
             .padding(.vertical, 8)
@@ -41,8 +46,12 @@ struct SearchDeckView: View {
                 case .loaded:
                     loadedView
                 case .error:
-                    ErrorView {
-                        
+                    VStack {
+                        Spacer()
+                        ErrorView {
+                            #warning("Reload")
+                        }
+                        Spacer()
                     }
                 case .loading:
                     VStack {
@@ -54,13 +63,13 @@ struct SearchDeckView: View {
             }
             Spacer()
         }
-        .navigationTitle("Search")
+        .navigationTitle("search".localized(.module))
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button("Done") {
+                Button("done".localized(.module)) {
                     focusState = nil
                 }
             }
@@ -95,7 +104,7 @@ struct SearchDeckView: View {
                                     model.loadMoreDecks()
                                 }
                         } else {
-                            Text("That's all folks")
+                            Text("end_of_search".localized(.module))
                         }
                     }
                 }
