@@ -17,6 +17,17 @@ extension Endpoint {
         Endpoint(path: "api/decks/feed")
     }
     
+    static func searchDecks(type: String, value: String, page: Int) -> Endpoint {
+        let searchQueryItem = URLQueryItem(name: type, value: value)
+        let pageQueryItem = URLQueryItem(name: "page", value: "\(page)")
+        return Endpoint(path: "api/decks/search", queryItems: [searchQueryItem, pageQueryItem])
+    }
+    
+    static func decksByCategory(category: String, page: Int) -> Endpoint {
+        let pageQueryItem = URLQueryItem(name: "page", value: "\(page)")
+        return Endpoint(path: "api/decks/\(category)", queryItems: [pageQueryItem])
+    }
+    
     static func deck(id: String) -> Endpoint {
         Endpoint(path: "api/decks/\(id)")
     }

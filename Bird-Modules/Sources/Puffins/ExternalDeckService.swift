@@ -166,4 +166,22 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
                 .verifyVoidSuccess()
         }
     }
+    
+    public func searchDecks(type: String, value: String, page: Int) -> AnyPublisher<[ExternalDeck], URLError> {
+        authenticatePublisher {[weak self] token in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session
+                .dataTaskPublisher(for: .searchDecks(type: type, value: value, page: page), authToken: token)
+                .decodeWhenSuccess(to: [ExternalDeck].self)
+        }
+    }
+    
+    public func decksByCategory(category: DeckCategory, page: Int) -> AnyPublisher<[ExternalDeck], URLError> {
+        authenticatePublisher {[weak self] token in
+            guard let self else { preconditionFailure("self is deinitialized") }
+            return self.session
+                .dataTaskPublisher(for: .decksByCategory(category: category.rawValue, page: page), authToken: token)
+                .decodeWhenSuccess(to: [ExternalDeck].self)
+        }
+    }
 }

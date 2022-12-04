@@ -27,7 +27,7 @@ struct PublicSection: View {
                 Text(LocalizedStringKey(stringLiteral: section.title), bundle: .module)
                     .font(.title3.bold())
                 Spacer()
-                NavigationLink(value: FilterRoute.search(category: DeckCategory(rawValue: section.title))) {
+                NavigationLink(value: FilterRoute.category(category: DeckCategory(rawValue: section.title) ?? .others)) {
                     HStack {
                         Text("See all")
                         Image(systemName: "chevron.right")

@@ -20,8 +20,6 @@ public struct StoreView: View {
     @StateObject private var interactor = FeedInteractor()
     @EnvironmentObject private var authModel: AuthenticationModel
     @State private var showLogin: Bool = false
-    @State private var isFlipped: Bool = false
-    @State private var showSomething: Bool = false
     
     public init(store: ShopStore) {
         self.store = store
@@ -35,9 +33,9 @@ public struct StoreView: View {
             case .loaded:
                 loadedFeed(state: state)
             case .error:
-                errorView()
+                ErrorView { interactor.send(.loadFeed) }
             case .loading:
-                loadingView()
+                LoadingView()
             }
         }
         .navigationTitle(NSLocalizedString("baralhos_publicos", bundle: .module, comment: ""))
@@ -58,6 +56,9 @@ public struct StoreView: View {
                 }
             }
         }
+        .refreshable {
+            interactor.send(.loadFeed)
+        }
         .navigationDestination(for: ExternalDeck.self) { deck in
             PublicDeckView(deck: deck)
                 .environmentObject(store)
@@ -65,13 +66,15 @@ public struct StoreView: View {
         }
         .navigationDestination(for: FilterRoute.self) { route in
             switch route {
-            case .search(let category):
+            case .search:
                 SearchDeckView()
+            case .category(let category):
+                DeckCategoryView(category: category.rawValue)
             }
         }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                NavigationLink(value: FilterRoute.search(category: nil)) {
+                NavigationLink(value: FilterRoute.search) {
                     Label("Search", systemImage: "magnifyingglass")
                 }
                 signInMenu
@@ -112,43 +115,12 @@ public struct StoreView: View {
             
         }
     }
-    
-    @ViewBuilder
-    private func errorView() -> some View {
-        VStack {
-            HBImages.errorSpixii
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .padding()
-                .clipShape(Circle())
-                .background {
-                    Circle().fill(HBColor.secondaryBackground)
-                }
-                .frame(maxWidth: 300)
-            
-            Text("Oh no!, something is wrong, check your internet connection and press the button bellow to try again.")
-                .font(.headline)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 320)
-                .padding(.bottom)
-            
-            Button {
-                interactor.send(.loadFeed)
-            } label: {
-                Label {
-                    Text("Retry")
-                } icon: {
-                    Image(systemName: "gobackward")
-                }
+}
 
-            }
-            .buttonStyle(LargeButtonStyle(isDisabled: false))
-            .frame(maxWidth: 320)
-        }
-    }
+struct LoadingView: View {
+    @State private var isFlipped: Bool = false
     
-    @ViewBuilder
-    private func loadingView() -> some View {
+    var body: some View {
         VStack {
             ZStack {
                 Rectangle()
@@ -175,6 +147,43 @@ public struct StoreView: View {
     }
 }
 
+struct ErrorView: View {
+    var action: () -> Void
+    
+    var body: some View {
+        VStack {
+            HBImages.errorSpixii
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .padding()
+                .clipShape(Circle())
+                .background {
+                    Circle().fill(HBColor.secondaryBackground)
+                }
+                .frame(maxWidth: 300)
+            
+            Text("Oh no!, something is wrong, check your internet connection and press the button bellow to try again.")
+                .font(.headline)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 320)
+                .padding(.bottom)
+            
+            Button {
+                action()
+            } label: {
+                Label {
+                    Text("Retry")
+                } icon: {
+                    Image(systemName: "gobackward")
+                }
+
+            }
+            .buttonStyle(LargeButtonStyle(isDisabled: false))
+            .frame(maxWidth: 320)
+        }
+    }
+}
+
 struct StoreView_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
@@ -187,5 +196,6 @@ struct StoreView_Previews: PreviewProvider {
 }
 
 enum FilterRoute: Hashable {
-    case search(category: DeckCategory?)
+    case search
+    case category(category: DeckCategory)
 }
