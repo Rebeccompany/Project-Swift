@@ -81,21 +81,6 @@ public struct StudyViewiOS: View {
                         .accessibilityHint(NSLocalizedString("escolha_nivel", bundle: .module, comment: ""))
                         .accessibilityLabel(NSLocalizedString("quatro_botoes", bundle: .module, comment: ""))
                     }
-                    .toolbar {
-                        ToolbarItem {
-                            Button {
-                                shouldDisplaySessionProgress = true
-                            } label: {
-                                Image(systemName: "chart.line.uptrend.xyaxis")
-                                    .foregroundColor(HBColor.actionColor)
-                            }
-                            .popover(isPresented: $shouldDisplaySessionProgress) {
-                                StudyProgressView(numOfTotalSeen: viewModel.getSessionTotalSeenCards(), numOfTotalCards: viewModel.getSessionTotalCards(), numOfReviewingSeen: viewModel.getSessionReviewingSeenCards(mode: mode), numOfReviewingCards: viewModel.getSessionReviewingCards(mode: mode), numOfLearningSeen: viewModel.getSessionLearningSeenCards(mode: mode), numOfLearningCards: viewModel.getSessionLearningCards(mode: mode), studyMode: mode)
-                                .frame(minWidth: 300, minHeight: 600)
-                            }
-                        }
-                    }
-    
                 } else {
                     EndOfStudyViewiOS(mode: mode) {
                         do {
@@ -109,7 +94,20 @@ public struct StudyViewiOS: View {
             }
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(deck.name)
-            .toolbar(content: {
+            .toolbar {
+                ToolbarItem {
+                    Button {
+                        shouldDisplaySessionProgress = true
+                    } label: {
+                        Image(systemName: "chart.line.uptrend.xyaxis")
+                            .foregroundColor(HBColor.actionColor)
+                    }
+                    .popover(isPresented: $shouldDisplaySessionProgress) {
+                        StudyProgressView(numOfTotalSeen: viewModel.getSessionTotalSeenCards(), numOfTotalCards: viewModel.getSessionTotalCards(), numOfReviewingSeen: viewModel.getSessionReviewingSeenCards(mode: mode), numOfReviewingCards: viewModel.getSessionReviewingCards(mode: mode), numOfLearningSeen: viewModel.getSessionLearningSeenCards(mode: mode), numOfLearningCards: viewModel.getSessionLearningCards(mode: mode), studyMode: mode)
+                        .frame(minWidth: 300, minHeight: 600)
+                    }
+                }
+                
                 ToolbarItem {
                     Button {
                         flashcardsOnboarding = true
@@ -122,20 +120,7 @@ public struct StudyViewiOS: View {
                         FlashcardsOnboardingView()
                     }
                 }
-
-                ToolbarItem {
-                    Button {
-                        flashcardsOnboarding = true
-                    } label: {
-                        Image(systemName: "info.circle")
-                            .foregroundColor(HBColor.actionColor)
-                            .accessibility(addTraits: .isButton)
-                    }
-                    .sheet(isPresented: $flashcardsOnboarding) {
-                        FlashcardsOnboardingView()
-                    }
-                }
-                ToolbarItem(placement: .destructiveAction) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button(role: .destructive) {
                         do {
                             if mode == .spaced {
@@ -154,7 +139,7 @@ public struct StudyViewiOS: View {
                     .foregroundColor(.red)
                 }
                 
-            })
+            }
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 viewModel.startup(deck: deck, mode: mode)

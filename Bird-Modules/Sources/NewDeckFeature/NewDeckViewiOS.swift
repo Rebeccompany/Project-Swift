@@ -16,6 +16,7 @@ import Puffins
 public struct NewDeckViewiOS: View {
     @StateObject private var viewModel: NewDeckViewModel = NewDeckViewModel()
     @State private var showingAlert: Bool = false
+    @State private var isLoadingFirstTime = true
     @State private var selectedErrorMessage: AlertText = .deleteDeck
     @State private var activeAlert: ActiveAlert = .error
     @Environment(\.dismiss) private var dismiss
@@ -59,11 +60,15 @@ public struct NewDeckViewiOS: View {
                             .font(.callout)
                             .bold()
                     }
+                    .onChange(of: viewModel.currentSelectedCategory) { newValue in
+                        print("toti", newValue)
+                    }
                     
                     Section {
                         Picker(selection: $viewModel.currentSelectedCategory) {
                             ForEach(DeckCategory.allCases, id: \.self) { category in
                                 getCategoryLabel(category: category)
+                                    .tag(category)
                             }
                         } label: {
                             Text("categoria_selecionada", bundle: .module)
@@ -204,7 +209,10 @@ public struct NewDeckViewiOS: View {
                 }
             }
             .onAppear {
-                viewModel.startUp(editingDeck: editingDeck)
+                if isLoadingFirstTime {
+                    viewModel.startUp(editingDeck: editingDeck)
+                    isLoadingFirstTime.toggle()
+                }
             }
             
             .scrollContentBackground(.hidden)

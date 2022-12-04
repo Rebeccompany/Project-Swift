@@ -217,8 +217,8 @@ public final class ContentViewModel: ObservableObject {
         decks.filter {
             guard let session = $0.session else { return false }
             
-            guard !session.cardIds.isEmpty else { return false }
-            return dateHandler.isToday(date: session.date) || session.date < dateHandler.today
+            guard !session.cardIds.isEmpty, let isToday = try? dateHandler.isToday(date: session.date) else { return false }
+            return isToday || session.date < dateHandler.today
         }
     }
     

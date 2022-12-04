@@ -16,6 +16,9 @@ struct DeckTableView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     #endif
     
+    @State private var showCollectionSelection = false
+    @State private var deckToBeEdited: Deck?
+    
     var editAction: (Deck) -> Void
     
     private var sortedDecks: [Deck] {

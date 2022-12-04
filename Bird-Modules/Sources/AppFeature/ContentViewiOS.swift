@@ -31,6 +31,8 @@ public struct ContentViewiOS: View {
     @StateObject private var shopStore: ShopStore = ShopStore()
     @StateObject private var authModel: AuthenticationModel = AuthenticationModel()
     
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
     public init() {}
     
     public var body: some View {
@@ -100,7 +102,7 @@ public struct ContentViewiOS: View {
     
     @ViewBuilder
     private var detail: some View {
-        Router(path: $path) {
+        Router(path: $appRouter.path) {
             DetailViewiOS(editMode: $editModeForDeck)
                 .toolbar(
                     editModeForDeck.isEditing ? .hidden :

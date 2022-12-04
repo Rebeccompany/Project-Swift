@@ -413,7 +413,7 @@ struct DeckViewiOS_Previews: PreviewProvider {
     static var previews: some View {
         HabitatPreview {
             NavigationStack {
-                DeckView(
+                DeckViewiOS(
                     deck: .constant(Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil, description: "", ownerId: nil))
                 )
                 .environmentObject(AuthenticationModel())

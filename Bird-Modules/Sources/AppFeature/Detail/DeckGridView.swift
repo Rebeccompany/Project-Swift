@@ -67,16 +67,13 @@ struct DeckGridView: View {
                                 }
                         }
                         .buttonStyle(DeckCell.Style(color: deck.color))
-                        #if os(iOS)
-                            .hoverEffect(.lift)
-                        #endif
-                            .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
-                                Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                                    guard let deckToBeDeleted else { return }
-                                    try? viewModel.deleteDeck(deckToBeDeleted)
-                                }
-                            } message: {
-                                Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+#if os(iOS)
+                        .hoverEffect(.lift)
+#endif
+                        .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                                guard let deckToBeDeleted else { return }
+                                try? viewModel.deleteDeck(deckToBeDeleted)
                             }
                         } message: {
                             Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))

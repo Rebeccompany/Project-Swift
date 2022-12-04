@@ -65,6 +65,7 @@ public struct NewDeckViewMacOS: View {
                         Picker(selection: $viewModel.currentSelectedCategory) {
                             ForEach(DeckCategory.allCases, id: \.self) { category in
                                 getCategoryLabel(category: category)
+                                    .tag(category)
                             }
                         } label: {
                             Text("categoria_selecionada", bundle: .module)

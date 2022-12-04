@@ -144,7 +144,6 @@ final class ContentViewModelTests: XCTestCase {
     }
     
     func testDeckReactionToSidebarSelection() throws {
-        let expectation = expectation(description: "Receive the correct decks")
         
         var deck1 = deck1
         deck1?.collectionId = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!
@@ -158,19 +157,11 @@ final class ContentViewModelTests: XCTestCase {
         
         sut.sidebarSelection = .decksFromCollection(collectionRepositoryMock.collections[0])
         
-        sut.$decks
-            .sink { decks in
-                print(decks)
-                XCTAssertEqual(Array([deck1!, deck2!]).sorted { $0.id.uuidString > $1.id.uuidString }, decks.sorted { $0.id.uuidString > $1.id.uuidString })
-                expectation.fulfill()
-            }
-            .store(in: &cancelables)
+        XCTAssertEqual(Array([deck1!, deck2!]).sorted { $0.id.uuidString > $1.id.uuidString }, sut.filteredDecks.sorted { $0.id.uuidString > $1.id.uuidString })
         
-        wait(for: [expectation], timeout: 1)
     }
     
     func testAllDecksFilteredBySearchText() {
-        let expectation = expectation(description: "Receive the correct decks")
         
         deckRepositoryMock.data[deck0.id]!.deck.name = "Swift"
         try? deckRepositoryMock.editDeck(deckRepositoryMock.data[deck0.id]!.deck)
@@ -194,18 +185,10 @@ final class ContentViewModelTests: XCTestCase {
         sut.sidebarSelection = .allDecks
         sut.searchText = "Swift"
         
-        sut.$decks
-            .sink { decks in
-                XCTAssertEqual(decks.sorted(by: self.sortById), expectedResults?.sorted(by: self.sortById))
-                expectation.fulfill()
-            }
-            .store(in: &cancelables)
-        
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(sut.filteredDecks.sorted(by: self.sortById), expectedResults?.sorted(by: self.sortById))
     }
     
     func testCollectionDecksFilteredBySearchText() {
-        let expectation = expectation(description: "Receive the correct decks")
         
         deckRepositoryMock.data[deck1.id]!.deck.name = "Swift"
         deckRepositoryMock.data[deck1.id]!.deck.collectionId = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!
@@ -216,14 +199,7 @@ final class ContentViewModelTests: XCTestCase {
         sut.sidebarSelection = .decksFromCollection(collectionRepositoryMock.collections[0])
         sut.searchText = "Swift"
         
-        sut.$decks
-            .sink { decks in
-                XCTAssertEqual(expectedResults, decks)
-                expectation.fulfill()
-            }
-            .store(in: &cancelables)
-        
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(expectedResults, sut.filteredDecks)
     }
     
     func testDetailNameForSingleCollection() {
