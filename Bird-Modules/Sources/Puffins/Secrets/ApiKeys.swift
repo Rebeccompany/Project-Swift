@@ -8,7 +8,7 @@
 import Foundation
 
 enum ApiKeys {
-    static let baseRoute: String = "spixii.app.br"
+    static let baseRoute: String = "crow-dev.eba-udf2azmf.sa-east-1.elasticbeanstalk.com"
     static let bearerToken: String = ""
 }
 
