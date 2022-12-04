@@ -19,7 +19,7 @@ final class SearchDeckModel: ObservableObject {
     @Published var selectedFilter: FilterType = .name
     @Published var shouldLoadMore: Bool = false
     
-    private var deckService = ExternalDeckServiceMock()
+    @Dependency(\.externalDeckService) private var deckService
     private var cancellables = Set<AnyCancellable>()
     var currentPage = 0
     
@@ -58,7 +58,6 @@ final class SearchDeckModel: ObservableObject {
                 self?.viewState = .loading
                 self?.currentPage = 0
             })
-            .delay(for: .seconds(1), scheduler: RunLoop.main)
             .flatMap { [weak self] searchContent, selectedFilter in
                 guard let self
                 else {
@@ -79,6 +78,17 @@ final class SearchDeckModel: ObservableObject {
     
     func loadMoreDecks() {
         currentPage += 1
+        loadDecks(page: currentPage)
+    }
+    
+    func reloadDecks() {
+        currentPage = 0
+        viewState = .loading
+        decks = []
+        loadDecks(page: currentPage)
+    }
+    
+    private func loadDecks(page: Int) {
         deckService
             .searchDecks(type: selectedFilter.rawValue, value: searchText, page: currentPage)
             .receive(on: RunLoop.main)

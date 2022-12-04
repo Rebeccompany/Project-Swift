@@ -11,7 +11,7 @@ import HummingBird
 import Habitat
 import Utils
 
-#warning("Testes e Localização")
+#warning("Testes")
 struct SearchDeckView: View {
     
     @StateObject private var model = SearchDeckModel()
@@ -49,7 +49,7 @@ struct SearchDeckView: View {
                     VStack {
                         Spacer()
                         ErrorView {
-                            #warning("Reload")
+                            model.reloadDecks()
                         }
                         Spacer()
                     }

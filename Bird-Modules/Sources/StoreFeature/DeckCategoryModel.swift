@@ -20,13 +20,7 @@ final class DeckCategoryModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var currentPage: Int = 0
     
-    private var deckService : ExternalDeckServiceMock = .init()
-    
-    init() {
-        deckService.error = URLError(.badServerResponse)
-        deckService.shouldError = true
-        
-    }
+    @Dependency(\.externalDeckService) private var deckService
     
     func startUp(with category: DeckCategory) {
         viewState = .loading
