@@ -61,7 +61,7 @@
 		BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project_BirdApp.swift; sourceTree = "<group>"; };
 		BA654EE028A142F400EF72C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BA654EE528A142F400EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BA654EEB28A142F500EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BA654EEB28A142F500EF72C8 /* Spixii.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spixii.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA654F1C28A14BF400EF72C8 /* Bird-Modules */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "Bird-Modules"; sourceTree = "<group>"; };
 		BAA072E9292F0999001D6E4F /* Project-BirdClassKitContextProvider.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Project-BirdClassKitContextProvider.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAA072EA292F099A001D6E4F /* ClassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ClassKit.framework; path = System/Library/Frameworks/ClassKit.framework; sourceTree = SDKROOT; };
@@ -152,7 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				BA654EE528A142F400EF72C8 /* Project-Bird.app */,
-				BA654EEB28A142F500EF72C8 /* Project-Bird.app */,
+				BA654EEB28A142F500EF72C8 /* Spixii.app */,
 				5B9440C028DBF2D50060EB4F /* Project-BirdUITests.xctest */,
 				BAA072E9292F0999001D6E4F /* Project-BirdClassKitContextProvider.appex */,
 			);
@@ -239,7 +239,7 @@
 				5B07663928C2797700221DE8 /* AppFeature */,
 			);
 			productName = "Project-Bird (macOS)";
-			productReference = BA654EEB28A142F500EF72C8 /* Project-Bird.app */;
+			productReference = BA654EEB28A142F500EF72C8 /* Spixii.app */;
 			productType = "com.apple.product-type.application";
 		};
 		BAA072E8292F0999001D6E4F /* Project-BirdClassKitContextProvider */ = {
@@ -685,7 +685,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.Spixii;
-				PRODUCT_NAME = "Project-Bird";
+				PRODUCT_NAME = Spixii;
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -720,7 +720,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.Spixii;
-				PRODUCT_NAME = "Project-Bird";
+				PRODUCT_NAME = Spixii;
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

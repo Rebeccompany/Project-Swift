@@ -26,7 +26,7 @@ struct DeckGridView: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading) {
-                if !viewModel.todayDecks.isEmpty {
+                if !viewModel.todayDecks.isEmpty && viewModel.selectedCollection == nil {
                     Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
                         .padding(.leading)
                     #if os(macOS)
