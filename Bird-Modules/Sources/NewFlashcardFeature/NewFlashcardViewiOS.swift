@@ -173,30 +173,6 @@ public struct NewFlashcardViewiOS: View {
 
     }
     
-    private func customAlert() -> Alert {
-        switch activeAlert {
-        case .error:
-            return Alert(title: Text(selectedErrorMessage.texts.title),
-                         message: Text(selectedErrorMessage.texts.message),
-                         dismissButton: .default(Text("fechar", bundle: .module)))
-        case .confirm:
-            return Alert(title: Text("alert_delete_flashcard", bundle: .module),
-                         message: Text("alert_delete_flashcard_text", bundle: .module),
-                         primaryButton: .destructive(Text("deletar", bundle: .module)) {
-                    do {
-                        try viewModel.deleteFlashcard(editingFlashcard: editingFlashcard)
-                        dismiss()
-                    } catch {
-                        activeAlert = .error
-                        showingAlert = true
-                        selectedErrorMessage = .deleteCard
-                    }
-                         },
-                secondaryButton: .cancel(Text("cancelar", bundle: .module))
-            )
-        }
-    }
-    
     @ViewBuilder
     private var customNavigationToolbar: some View {
             Button(NSLocalizedString("feito", bundle: .module, comment: "")) {
