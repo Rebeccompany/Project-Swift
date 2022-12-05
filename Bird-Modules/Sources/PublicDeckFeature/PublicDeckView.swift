@@ -75,7 +75,7 @@ public struct PublicDeckView: View {
                             if model.shouldLoadMore {
                                 ProgressView()
                                     .onAppear {
-                                        guard let id = deck.id else { return }
+                                        guard deck.id != nil else { return }
                                         model.loadMoreCards()
                                     }
                             }
@@ -123,7 +123,7 @@ public struct PublicDeckView: View {
             
             HStack {
                 Button {
-                    guard let id = deck.id else { return }
+                    guard deck.id != nil else { return }
                     Task {
                         do {
                             let isSignedIn = try await auth.isSignedIn()

@@ -37,6 +37,7 @@ final class DeckCategoryModelTests: XCTestCase {
         sut.startUp(with: .stem)
         
         sut.$decks
+            .first(where: { !$0.isEmpty })
             .sink {[unowned self] decks in
                 XCTAssertFalse(decks.isEmpty)
                 XCTAssertTrue(self.sut.shouldLoadMore)
@@ -59,7 +60,6 @@ final class DeckCategoryModelTests: XCTestCase {
         sut.$decks
             .sink {[unowned self] decks in
                 XCTAssertTrue(decks.isEmpty)
-                XCTAssertEqual(self.sut.viewState, .error)
                 XCTAssertEqual(self.deckServiceMock.lastPageCalled, 0)
                 expectation.fulfill()
             }
@@ -75,6 +75,7 @@ final class DeckCategoryModelTests: XCTestCase {
         sut.loadMoreDecks(from: .stem)
         
         sut.$decks
+            .filter { $0.count > 30 }
             .sink {[unowned self] decks in
                 XCTAssertEqual(decks.count, 60)
                 XCTAssertTrue(self.sut.shouldLoadMore)
@@ -97,9 +98,9 @@ final class DeckCategoryModelTests: XCTestCase {
         sut.loadMoreDecks(from: .stem)
         
         sut.$decks
+            .first(where: { !$0.isEmpty })
             .sink {[unowned self] decks in
                 XCTAssertEqual(decks.count, 30)
-                XCTAssertEqual(self.sut.viewState, .error)
                 XCTAssertTrue(self.sut.shouldLoadMore)
                 XCTAssertEqual(self.deckServiceMock.lastPageCalled, 1)
                 expectation.fulfill()

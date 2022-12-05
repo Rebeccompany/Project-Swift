@@ -16,16 +16,16 @@ final class PublicDeckModel: ObservableObject {
     @Dependency(\.externalDeckService) private var deckService
     @Dependency(\.deckRepository) private var deckRepository
     
-    @Published public var deck: ExternalDeck?
-    @Published public var cards: [ExternalCard]
-    @Published public var currentPage: Int
-    @Published public var shouldLoadMore: Bool
-    @Published public var viewState: ViewState
-    @Published public var shouldDisplayDownloadedAlert: Bool
+    @Published var deck: ExternalDeck?
+    @Published var cards: [ExternalCard]
+    @Published var currentPage: Int
+    @Published var shouldLoadMore: Bool
+    @Published var viewState: ViewState
+    @Published var shouldDisplayDownloadedAlert: Bool
     
     private var cancellables = Set<AnyCancellable>()
     
-    public init(
+    init(
         deck: ExternalDeck? = nil,
         cards: [ExternalCard] = [],
         currentPage: Int = 0,

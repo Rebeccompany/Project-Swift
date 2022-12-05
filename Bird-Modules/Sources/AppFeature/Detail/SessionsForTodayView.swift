@@ -55,7 +55,7 @@ struct SessionsForTodayView: View {
         }
         #elseif os(macOS)
         .onChange(of: selectedDeck) { deck in
-            guard let deck else {return}
+            guard let deck else { return }
             
             openWindow(value: StudyWindowData(deck: deck, mode: .spaced))
         }
