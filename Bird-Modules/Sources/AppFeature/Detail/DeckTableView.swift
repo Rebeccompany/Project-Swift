@@ -39,7 +39,7 @@ struct DeckTableView: View {
     @ViewBuilder
     private var content: some View {
         VStack(alignment: .leading) {
-            if !viewModel.todayDecks.isEmpty {
+            if !viewModel.todayDecks.isEmpty && viewModel.selectedCollection == nil {
                 Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
                     .padding(.leading)
                     .padding(.top)
@@ -191,6 +191,13 @@ struct DeckTableView: View {
             try? viewModel.deleteDeck(deck)
         } label: {
             Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
+        }
+        
+        Button {
+            deckToBeEdited = deck
+            showCollectionSelection = true
+        } label: {
+            Text("mover_colecao", bundle: .module)
         }
     }
 }
