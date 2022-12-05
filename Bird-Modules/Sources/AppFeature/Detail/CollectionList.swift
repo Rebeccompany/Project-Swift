@@ -41,17 +41,18 @@ struct CollectionList: View {
                 }
                 .backgroundStyle(HBColor.primaryBackground)
                 
-                Button {
-                    if let deck {
-                        viewModel.change(deck: deck, to: nil)
+                if deck?.collectionId != nil {
+                    Button {
+                        if let deck {
+                            viewModel.change(deck: deck, to: nil)
+                        }
+                        dismiss()
+                    } label: {
+                        Text("remover_da_coleção".localized(.module))
                     }
-                    dismiss()
-                } label: {
-                    Text("remover_da_coleção".localized(.module))
+                    .buttonStyle(DeleteButtonStyle())
+                    .padding()
                 }
-                .buttonStyle(DeleteButtonStyle())
-                .disabled(deck?.collectionId == nil)
-                .padding()
             }
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(Text("escolher_coleção", bundle: .module))
