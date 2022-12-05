@@ -72,31 +72,33 @@ public struct ContentViewMacOS: View {
     
     @ViewBuilder
     private var detail: some View {
-        NavigationStack(path: $appRouter.path) {
-            switch appRouter.sidebarSelection {
-            case .store:
-                storeDetail
-            default:
-                studyDetail
-            }
+        switch appRouter.sidebarSelection {
+        case .store:
+            storeDetail
+        default:
+            studyDetail
         }
     }
     
     @ViewBuilder
     private var studyDetail: some View {
-        DetailViewMacOS()
-        .environmentObject(viewModel)
-        .environmentObject(authModel)
-        .navigationDestination(for: StudyRoute.self) { route in
-            StudyRoutes.destination(for: route, viewModel: viewModel)
-                .environmentObject(authModel)
+        NavigationStack(path: $appRouter.path) {
+            DetailViewMacOS()
+            .environmentObject(viewModel)
+            .environmentObject(authModel)
+            .navigationDestination(for: StudyRoute.self) { route in
+                StudyRoutes.destination(for: route, viewModel: viewModel)
+                    .environmentObject(authModel)
+            }
         }
     }
     
     @ViewBuilder
     private var storeDetail: some View {
-        StoreView(store: shopStore)
-            .environmentObject(authModel)
+        NavigationStack(path: $appRouter.storePath) {
+            StoreView(store: shopStore)
+                .environmentObject(authModel)
+        }
     }
     
 }
