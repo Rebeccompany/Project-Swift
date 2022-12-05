@@ -30,7 +30,7 @@ public struct DetailViewiOS: View {
     
     public var body: some View {
         Group {
-            if viewModel.decks.isEmpty {
+            if viewModel.filteredDecks.isEmpty {
                 emptyState
             } else {
                 content
