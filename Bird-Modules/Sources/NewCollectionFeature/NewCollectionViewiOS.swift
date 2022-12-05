@@ -97,6 +97,8 @@ public struct NewCollectionViewiOS: View {
                                      },
                                      secondaryButton: .cancel(Text("cancelar", bundle: .module))
                         )
+                    case .close:
+                        return Alert(title: Text("does not apply"))
                     }
                 }
                 .navigationTitle(editingCollection == nil ? NSLocalizedString("criar_colecao", bundle: .module, comment: "") : NSLocalizedString("editar_colecao", bundle: .module, comment: ""))

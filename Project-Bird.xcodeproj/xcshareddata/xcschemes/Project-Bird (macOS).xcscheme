@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BA654EEA28A142F500EF72C8"
-               BuildableName = "Project-Bird.app"
+               BuildableName = "Spixii.app"
                BlueprintName = "Project-Bird (macOS)"
                ReferencedContainer = "container:Project-Bird.xcodeproj">
             </BuildableReference>
@@ -61,7 +61,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BA654EEA28A142F500EF72C8"
-            BuildableName = "Project-Bird.app"
+            BuildableName = "Spixii.app"
             BlueprintName = "Project-Bird (macOS)"
             ReferencedContainer = "container:Project-Bird.xcodeproj">
          </BuildableReference>
@@ -78,7 +78,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BA654EEA28A142F500EF72C8"
-            BuildableName = "Project-Bird.app"
+            BuildableName = "Spixii.app"
             BlueprintName = "Project-Bird (macOS)"
             ReferencedContainer = "container:Project-Bird.xcodeproj">
          </BuildableReference>

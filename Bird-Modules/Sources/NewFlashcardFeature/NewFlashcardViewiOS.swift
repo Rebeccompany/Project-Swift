@@ -101,6 +101,8 @@ public struct NewFlashcardViewiOS: View {
                         Text(NSLocalizedString("alert_delete_flashcard_error_text", bundle: .module, comment: ""))
                     case .confirm:
                         Text(NSLocalizedString("alert_delete_flashcard", bundle: .module, comment: ""))
+                    case .close:
+                        Text("does not apply")
                     }
                 }
                 .toolbar {
