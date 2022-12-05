@@ -24,3 +24,5 @@
 "down_focus" = "Descer foco do teclado";
 "feito_disabled" = "Feito desabilitado";
 "salvar" = "salvar";
+"cartao_salvo" = "Flashcard Salvo!";
+"fechar_janela" = "Seu cartão foi salvo no baralho, essa janela pode ser fechada";
