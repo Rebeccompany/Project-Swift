@@ -40,6 +40,7 @@ public struct DeckViewiOS: View {
     @State private var deletedCard: Card?
     @State private var editingFlashcard: Card?
     @State private var confirmationDialogData: PublishConfirmationDialogData?
+    @State private var showAlert = false
     @Binding private var deck: Deck
     
     public init(deck: Binding<Deck>) {
@@ -90,21 +91,31 @@ public struct DeckViewiOS: View {
             }
         }
         .navigationTitle(deck.name)
+        .alert(Text("aviso_login", bundle: .module), isPresented: $showAlert) {
+                    Button("OK", role: .cancel) { }
+                }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Menu {
-                    if let user = authModel.user {
+                if let user = authModel.user {
+                    Menu {
                         loggedInShareMenu(user)
-                    } else {
-                        loggedOffShareMenu()
+                    } label: {
+                        Label(
+                            NSLocalizedString("publicar", bundle: .module, comment: ""),
+                            systemImage: "globe.americas"
+                        )
                     }
-                } label: {
-                    Label(
-                        NSLocalizedString("publicar", bundle: .module, comment: ""),
-                        systemImage: "globe.americas"
-                    )
+                    .disabled(deck.cardCount == 0)
+                } else {
+                    Button {
+                        showAlert = true
+                    } label: {
+                        Label(
+                            NSLocalizedString("publicar", bundle: .module, comment: ""),
+                            systemImage: "globe.americas"
+                        )
+                    }
                 }
-                .disabled(deck.cardCount == 0)
                 
                 Menu {
                     Button {
@@ -401,12 +412,6 @@ public struct DeckViewiOS: View {
             }
         }
     }
-    
-    @ViewBuilder
-    private func loggedOffShareMenu() -> some View {
-        Text("aviso_login", bundle: .module)
-    }
-
 }
 
 struct DeckViewiOS_Previews: PreviewProvider {
