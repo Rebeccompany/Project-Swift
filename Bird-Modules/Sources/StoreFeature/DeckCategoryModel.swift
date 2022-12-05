@@ -36,6 +36,7 @@ final class DeckCategoryModel: ObservableObject {
     private func loadDecks(from category: DeckCategory, page: Int) {
         deckService
             .decksByCategory(category: category, page: page)
+            .receive(on: RunLoop.main)
             .sink { [weak self] completion in
                 switch completion {
                 case .finished:
