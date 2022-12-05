@@ -94,6 +94,7 @@ public struct NewFlashcardViewMacOS: View {
                                     .frame(width: 300)
                                     .padding(.bottom, 30)
                                     .padding(.top, 30)
+                                    .disabled(viewModel.flashcardFront.richText.string.isEmpty || viewModel.flashcardBack.richText.string.isEmpty)
                                 Spacer()
                             }
                         }
