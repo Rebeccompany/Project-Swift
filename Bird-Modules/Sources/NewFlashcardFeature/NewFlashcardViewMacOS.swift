@@ -117,7 +117,7 @@ public struct NewFlashcardViewMacOS: View {
                     customAlert()
                 }
                 .alert(isPresented: $showingCloseAlert) {
-                    let alert = Alert(title: Text("Cartão Salvo!"), message: Text("Seu cartão foi salvo no baralho, essa janela pode ser fechada"))
+                    let alert = Alert(title: Text(NSLocalizedString("cartao_salvo", bundle: .module, comment: "")), message: Text(NSLocalizedString("fechar_janela", bundle: .module, comment: "")))
                     return alert
                 }
                 .toolbar {
