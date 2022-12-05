@@ -82,32 +82,55 @@ struct FillInfoView: View {
                     .padding(.bottom, 16)
             }
             .padding(.horizontal)
-            .frame(maxWidth: 450)
+            .frame(maxWidth: 250)
             
             VStack(alignment: .leading, spacing: 4) {
                 Button {
                     model.completeSignUp(username: userNameField)
                 } label: {
-                    Text("finish".localized(.module))
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity)
+                    HStack {
+                        Text("finish".localized(.module))
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity)
+                            .frame(maxHeight: .infinity)
+                    }
+                    .contentShape(Rectangle())
                 }
                 .tint(HBColor.actionColor)
+                #if os(iOS)
                 .buttonStyle(.borderedProminent)
+                #elseif os(macOS)
+                .buttonStyle(.plain)
+                .background(HBColor.actionColor)
+                .cornerRadius(5)
+                .frame(height: 25)
+                #endif
+                
                 .disabled(userNameField.isEmpty)
                 
                 Button {
                     dismiss()
                 } label: {
-                    Text("cancel".localized(.module))
-                        .frame(maxWidth: .infinity)
+                    HStack {
+                        Text("cancel".localized(.module))
+                            .frame(maxWidth: .infinity)
+                            .frame(maxHeight: .infinity)
+                    }
+                    .contentShape(Rectangle())
                 }
                 .tint(.red)
+                #if os(iOS)
                 .buttonStyle(.bordered)
+                #elseif os(macOS)
+                .buttonStyle(.plain)
+                .background(HBColor.collectionRed)
+                .cornerRadius(5)
+                .frame(height: 25)
+                #endif
                 .padding(.bottom, 8)
             }
             .padding([.horizontal, .bottom])
-            .frame(maxWidth: 450)
+            .frame(maxWidth: 250)
         }
         .navigationBarBackButtonHidden()
         .toolbar {

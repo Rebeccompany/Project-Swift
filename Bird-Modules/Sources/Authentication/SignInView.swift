@@ -62,16 +62,21 @@ struct SignInView: View {
             Button {
                 dismiss()
             } label: {
-                Text("cancel".localized(.module))
-                    .frame(maxWidth: .infinity)
-                    .frame(maxHeight: .infinity)
+                HStack {
+                    Text("cancel".localized(.module))
+                        .frame(maxWidth: .infinity)
+                        .frame(maxHeight: .infinity)
+                }
+                .contentShape(Rectangle())
+                
             }
             .tint(.red)
             #if os(iOS)
             .buttonStyle(.bordered)
-            .frame(height: 50)
+            .frame(height: 45)
             #elseif os(macOS)
             .buttonStyle(.plain)
+            
             .background(HBColor.collectionRed)
             .cornerRadius(7)
             .frame(height: 30)
