@@ -15,6 +15,7 @@ import NewCollectionFeature
 import Habitat
 import Storage
 import OnboardingFeature
+import Authentication
 import StoreState
 
 #if os(macOS)
@@ -25,6 +26,8 @@ public struct ContentViewMacOS: View {
     
     @StateObject private var viewModel: ContentViewModel = ContentViewModel()
     @StateObject private var shopStore = ShopStore()
+    @StateObject private var appRouter: AppRouter = AppRouter()
+    @StateObject private var authModel: AuthenticationModel = AuthenticationModel()
     
     public init() {}
     
@@ -59,16 +62,19 @@ public struct ContentViewMacOS: View {
         CollectionsSidebarMacOS(selection: $viewModel.sidebarSelection)
             .environmentObject(viewModel)
             .environmentObject(shopStore)
+            .environmentObject(authModel)
             .frame(minWidth: 250)
     }
     
     @ViewBuilder
     private var detail: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: $appRouter.path) {
             DetailViewMacOS()
             .environmentObject(viewModel)
+            .environmentObject(authModel)
             .navigationDestination(for: StudyRoute.self) { route in
                 StudyRoutes.destination(for: route, viewModel: viewModel)
+                    .environmentObject(authModel)
             }
         }
     }

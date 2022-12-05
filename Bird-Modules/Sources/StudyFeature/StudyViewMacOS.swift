@@ -156,7 +156,7 @@ struct StudyViewMacOS_Previews: PreviewProvider {
     static var repo: DeckRepositoryMock { DeckRepositoryMock() }
     
     static var previews: some View {
-        StudyViewMacOS(data: StudyWindowData(deck: Deck(id: UUID(), name: "Palavras em Inglês", icon: "flame", color: CollectionColor.darkPurple, datesLogs: DateLogs(), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(), session: Session(cardIds: [UUID(), UUID()], date: Date(), deckId: UUID(), id: UUID()), category: .others, storeId: nil, description: ""), mode: .spaced))
+        StudyViewMacOS(data: StudyWindowData(deck: Deck(id: UUID(), name: "Palavras em Inglês", icon: "flame", color: CollectionColor.darkPurple, datesLogs: DateLogs(), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(), session: Session(cardIds: [UUID(), UUID()], date: Date(), deckId: UUID(), id: UUID()), category: .others, storeId: nil, description: "", ownerId: nil), mode: .spaced))
     }
 }
 #endif

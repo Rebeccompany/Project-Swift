@@ -82,7 +82,9 @@ struct SignInView: View {
                 path.append(AuthenticationRoute.fillInfo)
             }
         }
+        #if os(iOS)
         .toolbar(.hidden, for: .navigationBar)
+        #endif
         
     }
 }

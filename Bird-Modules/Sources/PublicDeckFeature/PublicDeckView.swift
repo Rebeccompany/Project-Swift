@@ -107,9 +107,14 @@ public struct PublicDeckView: View {
             guard let id = deck.id else { return }
             interactor.send(.reloadCards(id: id))
         }
-        .fullScreenCover(isPresented: $showLogin) {
+        #if os(macOS)
+        .sheet(isPresented: $showLogin) {
             AuthenticationView(model: auth)
         }
+        #elseif os(iOS)
+        .fullScreenCover(isPresented: $showLogin) {
+            AuthenticationView(model: auth)
+        }        #endif
     }
     
     @ViewBuilder

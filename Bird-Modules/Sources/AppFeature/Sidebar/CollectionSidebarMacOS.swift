@@ -11,12 +11,14 @@ import NewCollectionFeature
 import HummingBird
 import OnboardingFeature
 import StoreState
+import Authentication
 import StoreFeature
 
 #if os(macOS)
 struct CollectionsSidebarMacOS: View {
     @State private var onboarding: Bool = false
     @EnvironmentObject private var viewModel: ContentViewModel
+    @EnvironmentObject private var authModel: AuthenticationModel
     @EnvironmentObject private var store: ShopStore
     @State private var presentCollectionCreation = false
     @State private var editingCollection: DeckCollection?
@@ -27,7 +29,6 @@ struct CollectionsSidebarMacOS: View {
     }
     
     var body: some View {
-        
         VStack {
             List(selection: $selection) {
                 Button { viewModel.sidebarSelection = .allDecks } label: {
@@ -40,6 +41,15 @@ struct CollectionsSidebarMacOS: View {
                 }
                 .buttonStyle(.plain)
                 .listRowBackground( viewModel.sidebarSelection == .allDecks ? Color.accentColor : nil)
+                
+                NavigationLink {
+                    NavigationStack {
+                        StoreView(store: store)
+                            .environmentObject(authModel)
+                    }
+                } label: {
+                    Label("Store", systemImage: "bag")
+                }
                 
                 Section {
                     ForEach(viewModel.collections) { collection in

@@ -49,7 +49,7 @@ struct CollectionsSidebariOS: View {
             
             if !isCompact {
                 NavigationLink {
-                    NavigationStack {
+                    NavigationStack(path: ) {
                         StoreView(store: store)
                             .environmentObject(authModel)
                     }

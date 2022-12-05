@@ -12,6 +12,8 @@ import HummingBird
 import NewFlashcardFeature
 import ImportingFeature
 import StudyFeature
+import Puffins
+import Authentication
 import Storage
 import Flock
 import Utils
@@ -19,11 +21,14 @@ import Utils
 #if os(macOS)
 public struct DeckViewMacOS: View {
     @StateObject private var viewModel: DeckViewModel = DeckViewModel()
+    @EnvironmentObject private var authModel: AuthenticationModel
+    @State private var shouldDisplayPublishConfirmation: Bool = false
     @State private var shouldDisplayStudyView: Bool = false
     @State private var studyMode: StudyMode = .spaced
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
+    @State private var confirmationDialogData: PublishConfirmationDialogData?
     @State private var deletedCard: Card?
     @Binding private var deck: Deck
     
@@ -78,6 +83,20 @@ public struct DeckViewMacOS: View {
         .toolbar {
             ToolbarItemGroup {
                 Menu {
+                    if let user = authModel.user {
+                        loggedInShareMenu(user)
+                    } else {
+                        loggedOffShareMenu()
+                    }
+                } label: {
+                    Label(
+                        NSLocalizedString("publicar", bundle: .module, comment: ""),
+                        systemImage: "globe.americas"
+                    )
+                }
+                .disabled(deck.cardCount == 0)
+                
+                Menu {
                     Button {
                         let model = NewFlashcardWindowData(deckId: deck.id)
                         openWindow(value: model)
@@ -105,6 +124,45 @@ public struct DeckViewMacOS: View {
                     )
                 }
             }
+        }
+        .confirmationDialog(
+            "Are you sure?",
+            isPresented: $shouldDisplayPublishConfirmation,
+            presenting: confirmationDialogData
+            ) { data in
+                confirmationDialogAction(data)
+            } message: { data in
+                confirmationDialogMessage(data)
+        }
+    }
+    
+    @ViewBuilder
+    private func confirmationDialogAction(_ data: PublishConfirmationDialogData) -> some View {
+        switch data {
+        case .delete:
+            Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                viewModel.deletePublicDeck(deck)
+            }
+        case .update(let user):
+            Button(NSLocalizedString("atualizar", bundle: .module, comment: "")) {
+                viewModel.updatePublicDeck(deck, user: user)
+            }
+        case .publish(let user):
+            Button(NSLocalizedString("publicar", bundle: .module, comment: "")) {
+                viewModel.publishDeck(deck, user: user)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func confirmationDialogMessage(_ data: PublishConfirmationDialogData) -> some View {
+        switch data {
+        case .delete:
+            Text("aviso_deletar", bundle: .module)
+        case .update(_):
+            Text("aviso_atualizar", bundle: .module)
+        case .publish(_):
+            Text("aviso_publicar", bundle: .module)
         }
     }
     
@@ -216,13 +274,89 @@ public struct DeckViewMacOS: View {
                 
         }
     }
+    
+    @ViewBuilder
+    private func loggedInShareMenu(_ user: User) -> some View {
+        Section("Deck") {
+            Button {
+                confirmationDialogData = .publish(user: user)
+                shouldDisplayPublishConfirmation = true
+            } label: {
+                Label {
+                    Text(NSLocalizedString("publicar", bundle: .module, comment: ""))
+                } icon: {
+                    Image(systemName: "arrow.up")
+                }
+
+            }
+            .disabled(viewModel.isPublishButtonDisabled(for: deck))
+            
+            Button {
+                confirmationDialogData = .update(user: user)
+                shouldDisplayPublishConfirmation = true
+            } label: {
+                Label {
+                    Text(NSLocalizedString("atualizar", bundle: .module, comment: ""))
+                } icon: {
+                    Image(systemName: "square.and.pencil")
+                }
+            }
+            .disabled(viewModel.isUpdateButtonDisabled(for: deck, user: user))
+            
+            if let id = deck.storeId {
+                ShareLink(
+                    item: DeepLinkURL.url(path: "store/\(id)")) {
+                        Label {
+                            Text("compartilhar", bundle: .module)
+                        } icon: {
+                            Image(systemName: "square.and.arrow.up")
+                        }.bold()
+                        
+                        .frame(minWidth: 140)
+
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(HBColor.actionColor.opacity(0.15))
+                .foregroundColor(HBColor.actionColor)
+                .padding(.bottom)
+                .disabled(viewModel.isShareButtonDisabled(for: deck))
+            }
+            
+            Button(role: .destructive) {
+                confirmationDialogData = .delete
+                shouldDisplayPublishConfirmation = true
+            } label: {
+                Label {
+                    Text(NSLocalizedString("deletar", bundle: .module, comment: ""))
+                } icon: {
+                    Image(systemName: "trash")
+                }
+
+            }
+            .disabled(viewModel.isDeleteButtonDisabled(for: deck, user: user))
+        }
+        Section(NSLocalizedString("usuario", bundle: .module, comment: "")) {
+            Button(NSLocalizedString("signout", bundle: .module, comment: "")) {
+                authModel.signOut()
+            }
+            
+            Button(NSLocalizedString("deletar_conta", bundle: .module, comment: ""), role: .destructive) {
+                authModel.deleteAccount()
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func loggedOffShareMenu() -> some View {
+        Text("aviso_login", bundle: .module)
+    }
 }
 
 struct DeckViewMacOS_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             DeckViewMacOS(
-                deck: .constant(Deck(id: UUID(), name: "Palavras em Inglês", icon: "flame", color: CollectionColor.darkPurple, datesLogs: DateLogs(), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(), session: Session(cardIds: [UUID(), UUID()], date: Date(), deckId: UUID(), id: UUID()), category: .others, storeId: nil, description: "")))
+                deck: .constant(Deck(id: UUID(), name: "Palavras em Inglês", icon: "flame", color: CollectionColor.darkPurple, datesLogs: DateLogs(), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(), session: Session(cardIds: [UUID(), UUID()], date: Date(), deckId: UUID(), id: UUID()), category: .others, storeId: nil, description: "", ownerId: nil)))
         }
         .preferredColorScheme(.dark)
     }

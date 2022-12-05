@@ -71,6 +71,7 @@ public struct StoreView: View {
                 DeckCategoryView(category: category)
             }
         }
+        #if os(iOS)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 NavigationLink(value: FilterRoute.search) {
@@ -82,6 +83,19 @@ public struct StoreView: View {
         .fullScreenCover(isPresented: $showLogin) {
             AuthenticationView(model: authModel)
         }
+        #elseif os(macOS)
+        .toolbar {
+            ToolbarItemGroup {
+                NavigationLink(value: FilterRoute.search) {
+                    Label("search".localized(.module), systemImage: "magnifyingglass")
+                }
+                signInMenu
+            }
+        }
+        .sheet(isPresented: $showLogin) {
+            AuthenticationView(model: authModel)
+        }
+        #endif
         
     }
     

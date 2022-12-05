@@ -63,6 +63,7 @@ struct SearchDeckView: View {
             Spacer()
         }
         .navigationTitle("search".localized(.module))
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
@@ -73,6 +74,7 @@ struct SearchDeckView: View {
                 }
             }
         }
+        #endif
         .onAppear(perform: model.startUp)
         .onAppear {
             focusState = 1

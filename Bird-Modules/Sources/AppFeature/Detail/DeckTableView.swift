@@ -63,7 +63,9 @@ struct DeckTableView: View {
 #endif
             
         }
+#if os(iOS)
         .toolbarBackground(.visible, for: .bottomBar)
+#endif
     }
     
     @ViewBuilder
@@ -100,7 +102,9 @@ struct DeckTableView: View {
             }
         }
         .animation(.linear, value: sortedDecks)
+        #if os(iOS)
         .toolbarBackground(.visible, for: .tabBar)
+        #endif
         .listStyle(.plain)
         .onDisappear {
             Task {

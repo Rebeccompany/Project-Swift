@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UserNotifications
 import SwiftUI
 
 public class UserNotificationServiceMock: UserNotificationServiceProtocol {

@@ -96,6 +96,7 @@ public struct ContentViewiOS: View {
         .environmentObject(viewModel)
         .environmentObject(shopStore)
         .environmentObject(authModel)
+        .environmentObject(appRouter)
         .environment(\.editMode, $editModeForCollection)
         .environment(\.horizontalSizeClass, horizontalSizeClass)
     }

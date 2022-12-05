@@ -55,6 +55,7 @@ struct CollectionList: View {
             }
             .viewBackgroundColor(HBColor.primaryBackground)
             .navigationTitle(Text("escolher_coleção", bundle: .module))
+            #if os(iOS)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(NSLocalizedString("cancelar", bundle: .module, comment: ""), role: .destructive) {
@@ -63,6 +64,16 @@ struct CollectionList: View {
                     .foregroundColor(.red)
                 }
             }
+            #elseif os(macOS)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(NSLocalizedString("cancelar", bundle: .module, comment: ""), role: .destructive) {
+                        dismiss()
+                    }
+                    .foregroundColor(.red)
+                }
+            }
+            #endif
         }
     }
 }

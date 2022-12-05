@@ -8,6 +8,7 @@
 import SwiftUI
 import Models
 import Utils
+import UserNotifications
 
 public final class NotificationService: NotificationServiceProtocol {
     private let center: UserNotificationServiceProtocol

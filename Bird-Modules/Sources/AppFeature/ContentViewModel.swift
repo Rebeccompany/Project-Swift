@@ -130,8 +130,13 @@ public final class ContentViewModel: ObservableObject {
     }
     
     private func setupDidEnterForeground() {
+#if os(iOS)
+        var notification = UIApplication.willEnterForegroundNotification
+#elseif os(macOS)
+        var notification = NSApplication.didBecomeActiveNotification
+#endif
         notificationCenter
-            .notificationPublisher(for: UIApplication.willEnterForegroundNotification, object: nil)
+            .notificationPublisher(for: notification, object: nil)
             .receive(on: RunLoop.main)
             .sink { _ in
                 self.notificationService.cleanNotifications()
@@ -140,8 +145,13 @@ public final class ContentViewModel: ObservableObject {
     }
     
     private func setupDidEnterBackgroundPublisher() {
+        #if os(iOS)
+        var notification = UIApplication.didEnterBackgroundNotification
+        #elseif os(macOS)
+        var notification = NSApplication.didResignActiveNotification
+        #endif
         notificationCenter
-            .notificationPublisher(for: UIApplication.didEnterBackgroundNotification, object: nil)
+            .notificationPublisher(for: notification, object: nil)
             .receive(on: RunLoop.main)
             .flatMap { [weak self] _ in
                 guard let self else {
