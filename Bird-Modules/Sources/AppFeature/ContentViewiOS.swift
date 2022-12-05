@@ -39,7 +39,7 @@ public struct ContentViewiOS: View {
         Group {
             if horizontalSizeClass == .compact {
                 TabView(selection: $appRouter.selectedTab) {
-                    studyDetail
+                    mainView
                         .tabItem {
                             Label {
                                 Text("baralhos", bundle: .module)
