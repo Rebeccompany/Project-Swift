@@ -32,7 +32,7 @@
 "confirmar_publicao" = "Publicação de deck na biblioteca";
 "confirmar_publicao_delete" = "Você tem certeza que deseja apagar";
 "confirmar_publicao_publicar" = "Você tem certeza que deseja publicar o seu baralho?";
-"aviso_login" = "Você precisa estar logado para publicar um deck, vá para e aba de biblioteca";
+"aviso_login" = "Você precisa estar logado para publicar um baralho. Vá para a aba de biblioteca";
 "aviso_deletar" = "Você tem certeza? Você irá remover esse baralho da biblioteca";
 "aviso_atualizar" = "Você tem certeza? Você irá atualizar esse baralho na biblioteca";
 "aviso_publicar" = "Você tem certeza? Você irá publicar esse baralho na biblioteca";

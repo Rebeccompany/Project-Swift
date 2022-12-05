@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Models
+import HummingBird
 
 struct PublicSection: View {
     var section: ExternalSection
@@ -29,12 +30,17 @@ struct PublicSection: View {
             HStack {
                 Text(LocalizedStringKey(stringLiteral: section.title), bundle: .module)
                     .font(.title3.bold())
+               
                 Spacer()
                 NavigationLink(value: FilterRoute.category(category: DeckCategory(rawValue: section.title) ?? .others)) {
                     HStack {
                         Text("see_all".localized(.module))
                         Image(systemName: "chevron.right")
                     }
+                    .foregroundColor(HBColor.actionColor)
+#if os(macOS)
+                    .padding()
+#endif
                 }
 #if os(macOS)
                 .buttonStyle(.plain)

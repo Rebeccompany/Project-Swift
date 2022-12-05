@@ -24,3 +24,5 @@
 "down_focus" = "Down keyboard focus";
 "feito_disabled" = "Done disabled";
 "salvar" = "Save";
+"cartao_salvo" = "Flashcard Saved!";
+"fechar_janela" = "Your flashcard has been saved in the deck, you can close this window now";
