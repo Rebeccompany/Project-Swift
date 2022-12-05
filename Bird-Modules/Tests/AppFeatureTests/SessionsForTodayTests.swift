@@ -73,6 +73,7 @@ final class SessionsForTodayTests: XCTestCase {
     func testSessionNeverStartedDDPast() throws {
         try deckRepositoryMock.createDeck(deck, cards: pastDDCards)
         sut.startup()
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
         
         XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
         XCTAssertTrue(sut.todayDecks.isEmpty)
@@ -84,6 +85,21 @@ final class SessionsForTodayTests: XCTestCase {
         try deckRepositoryMock.createSession(Session(cardIds: pastDDCards.map(\.id), date: dateHandler.today.addingTimeInterval(-86400), deckId: deck.id, id: UUID()), for: deck)
         sut.startup()
         
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
+        
+        let expectation = expectation(description: "Wait for today decks")
+        
+        sut.$todayDecks
+            .first(where: { !$0.isEmpty })
+            .sink { decks in
+                if !decks.isEmpty {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancelables)
+        
+        wait(for: [expectation], timeout: 1)
+        
         XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
         XCTAssertTrue(sut.todayDecks.contains(where: {$0.id == deck.id}))
     }
@@ -93,6 +109,8 @@ final class SessionsForTodayTests: XCTestCase {
     func testSessionNeverStartedDDToday() throws {
         try deckRepositoryMock.createDeck(deck, cards: todayDDCards)
         sut.startup()
+        
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
         
         XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
         XCTAssertTrue(sut.todayDecks.isEmpty)
@@ -104,6 +122,21 @@ final class SessionsForTodayTests: XCTestCase {
         try deckRepositoryMock.createSession(Session(cardIds: todayDDCards.map(\.id), date: dateHandler.today, deckId: deck.id, id: UUID()), for: deck)
         sut.startup()
         
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
+        
+        let expectation = expectation(description: "Wait for today decks")
+        
+        sut.$todayDecks
+            .first(where: { !$0.isEmpty })
+            .sink { decks in
+                if !decks.isEmpty {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancelables)
+        
+        wait(for: [expectation], timeout: 1)
+        
         XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
         XCTAssertTrue(sut.todayDecks.contains(where: {$0.id == deck.id}))
     }
@@ -113,6 +146,9 @@ final class SessionsForTodayTests: XCTestCase {
     func testSessionDDFuture() throws {
         try deckRepositoryMock.createDeck(deck, cards: futureDDCards)
         sut.startup()
+        
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
+        
         XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
         XCTAssertTrue(sut.todayDecks.isEmpty)
     }
@@ -121,6 +157,8 @@ final class SessionsForTodayTests: XCTestCase {
     func testSessionDDNil() throws {
         try deckRepositoryMock.createDeck(deck, cards: nilDDCards)
         sut.startup()
+        
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
         
         XCTAssertTrue(sut.decks.contains(where: {$0.id == deck.id}))
         XCTAssertTrue(sut.todayDecks.isEmpty)
