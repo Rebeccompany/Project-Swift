@@ -93,7 +93,7 @@ public struct DeckViewiOS: View {
         .navigationTitle(deck.name)
         .alert(Text("aviso_login", bundle: .module), isPresented: $showAlert) {
                     Button("OK", role: .cancel) { }
-                }
+        }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if let user = authModel.user {

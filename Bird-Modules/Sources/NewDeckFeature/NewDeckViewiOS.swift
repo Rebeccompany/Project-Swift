@@ -60,9 +60,6 @@ public struct NewDeckViewiOS: View {
                             .font(.callout)
                             .bold()
                     }
-                    .onChange(of: viewModel.currentSelectedCategory) { newValue in
-                        print("toti", newValue)
-                    }
                     
                     Section {
                         Picker(selection: $viewModel.currentSelectedCategory) {

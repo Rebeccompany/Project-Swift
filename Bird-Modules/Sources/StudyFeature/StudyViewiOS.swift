@@ -44,7 +44,7 @@ public struct StudyViewiOS: View {
         }
         return ""
     }
-    //swiftlint:disable trailing_closure
+    
     public var body: some View {
         NavigationStack {
             ZStack {

@@ -55,9 +55,6 @@ public struct ContentViewMacOS: View {
             OnboardingView()
                 .frame(minWidth: 400, minHeight: 500)
         }
-        .onChange(of: appRouter.path) { newValue in
-            print(newValue, newValue.count)
-        }
     }
     
     @ViewBuilder
