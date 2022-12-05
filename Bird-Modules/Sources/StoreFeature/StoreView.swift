@@ -42,7 +42,19 @@ public struct StoreView: View {
             interactor.bind(to: store)
             interactor.send(.loadFeed)
         }
-        .viewBackgroundColor(HBColor.primaryBackground)
+        .navigationDestination(for: ExternalDeck.self) { deck in
+            PublicDeckView(deck: deck)
+                .environmentObject(store)
+                .environmentObject(authModel)
+        }
+        .navigationDestination(for: FilterRoute.self) { route in
+            switch route {
+            case .search:
+                SearchDeckView()
+            case .category(let category):
+                DeckCategoryView(category: category)
+            }
+        }
     }
     
     @ViewBuilder
@@ -57,19 +69,6 @@ public struct StoreView: View {
         }
         .refreshable {
             interactor.send(.loadFeed)
-        }
-        .navigationDestination(for: ExternalDeck.self) { deck in
-            PublicDeckView(deck: deck)
-                .environmentObject(store)
-                .environmentObject(authModel)
-        }
-        .navigationDestination(for: FilterRoute.self) { route in
-            switch route {
-            case .search:
-                SearchDeckView()
-            case .category(let category):
-                DeckCategoryView(category: category)
-            }
         }
         #if os(iOS)
         .toolbar {

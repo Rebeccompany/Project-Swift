@@ -58,7 +58,6 @@ public struct PublicDeckView: View {
                 
             }
         }
-        .viewBackgroundColor(HBColor.primaryBackground)
     }
     
     @ViewBuilder
