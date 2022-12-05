@@ -42,14 +42,20 @@ struct CollectionsSidebarMacOS: View {
                 .buttonStyle(.plain)
                 .listRowBackground( viewModel.sidebarSelection == .allDecks ? Color.accentColor : nil)
                 
-                NavigationLink {
-                    NavigationStack {
-                        StoreView(store: store)
-                            .environmentObject(authModel)
+                Button { viewModel.sidebarSelection = .store } label: {
+                    HStack {
+                        Label {
+                            Text("library", bundle: .module)
+                        } icon: {
+                            Image(systemName: "books.vertical")
+                        }
+                        .foregroundColor(viewModel.sidebarSelection == .store ? Color.white : nil)
+                        Spacer()
                     }
-                } label: {
-                    Label("Store", systemImage: "bag")
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .listRowBackground( viewModel.sidebarSelection == .store ? Color.accentColor : nil)
                 
                 Section {
                     ForEach(viewModel.collections) { collection in

@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  PublicSection.swift
 //  
 //
 //  Created by Rebecca Mello on 25/10/22.
@@ -19,6 +19,9 @@ struct PublicSection: View {
                         PublicDeckCell(deck: deck)
                     }
                     .frame(height: 200)
+#if os(macOS)
+                    .buttonStyle(.plain)
+#endif
                 }
                 .cornerRadius(12)
             }
@@ -29,10 +32,13 @@ struct PublicSection: View {
                 Spacer()
                 NavigationLink(value: FilterRoute.category(category: DeckCategory(rawValue: section.title) ?? .others)) {
                     HStack {
-                        Text("See all")
+                        Text("see_all".localized(.module))
                         Image(systemName: "chevron.right")
                     }
                 }
+#if os(macOS)
+                .buttonStyle(.plain)
+#endif
             }
         }
         .padding([.bottom, .leading, .trailing], 16)

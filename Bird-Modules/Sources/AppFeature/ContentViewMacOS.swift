@@ -17,6 +17,7 @@ import Storage
 import OnboardingFeature
 import Authentication
 import StoreState
+import StoreFeature
 
 #if os(macOS)
 public struct ContentViewMacOS: View {
@@ -68,6 +69,16 @@ public struct ContentViewMacOS: View {
     
     @ViewBuilder
     private var detail: some View {
+        switch viewModel.sidebarSelection {
+        case .store:
+            storeDetail
+        default:
+            studyDetail
+        }
+    }
+    
+    @ViewBuilder
+    private var studyDetail: some View {
         NavigationStack(path: $appRouter.path) {
             DetailViewMacOS()
             .environmentObject(viewModel)
@@ -76,6 +87,14 @@ public struct ContentViewMacOS: View {
                 StudyRoutes.destination(for: route, viewModel: viewModel)
                     .environmentObject(authModel)
             }
+        }
+    }
+    
+    @ViewBuilder
+    private var storeDetail: some View {
+        NavigationStack(path: $appRouter.storePath) {
+            StoreView(store: shopStore)
+                .environmentObject(authModel)
         }
     }
     

@@ -35,6 +35,7 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
     private func authenticate() -> some Publisher<String, URLError> {
         //swiftlint: disable trailing_closure
         session.dataTaskPublisher(for: .login)
+            .print("API")
             .decodeWhenSuccess(to: String.self)
             .handleEvents(receiveOutput: { [weak self] jwt in
                 self?.jwt = Jwt(key: jwt, date: self?.dateHandler.today ?? Date.now)
@@ -80,6 +81,7 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         authenticatePublisher {[weak self] token in
             guard let self else { preconditionFailure("Self is denitialized") }
             return self.deckFeedPublisher(token: token)
+                .print("API")
         }
     }
     
