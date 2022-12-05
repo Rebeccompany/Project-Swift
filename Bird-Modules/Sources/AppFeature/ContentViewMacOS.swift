@@ -33,9 +33,9 @@ public struct ContentViewMacOS: View {
     public init() {}
     
     public var body: some View {
-        NavigationSplitView {
+        //swiftlint: disable no_navigation_view
+        NavigationView {
             sidebar
-        } detail: {
             detail
         }
         .navigationViewStyle(.columns)

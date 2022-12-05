@@ -97,6 +97,11 @@ struct SearchDeckView: View {
                             NavigationLink(value: deck) {
                                 SearchDeckCell(deck: deck)
                             }
+#if os(macOS)
+                            .buttonStyle(.plain)
+                            .frame(height: 50)
+#endif
+
                         }
                     } footer: {
                         if model.shouldLoadMore {
