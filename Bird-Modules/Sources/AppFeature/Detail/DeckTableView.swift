@@ -192,5 +192,12 @@ struct DeckTableView: View {
         } label: {
             Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
         }
+        
+        Button {
+            deckToBeEdited = deck
+            showCollectionSelection = true
+        } label: {
+            Text("mover_colecao", bundle: .module)
+        }
     }
 }
