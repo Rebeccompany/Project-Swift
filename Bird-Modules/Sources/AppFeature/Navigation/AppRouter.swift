@@ -18,6 +18,11 @@ final class AppRouter: ObservableObject {
     @Published var path: NavigationPath = .init()
     @Published var storePath: NavigationPath = .init()
     @Published var selectedTab: Tab = .study
+#if os(iOS)
+    @Published var sidebarSelection: SidebarRoute? = .allDecks
+#elseif os(macOS)
+    @Published var sidebarSelection: SidebarRoute = .allDecks
+#endif
     
     private var decks: [Deck] = []
     
@@ -103,6 +108,7 @@ final class AppRouter: ObservableObject {
                 
             } receiveValue: {[weak self] deck in
                 self?.selectedTab = .store
+                self?.sidebarSelection = .store
                 //swiftlint: disable empty_count
                 if let count = self?.storePath.count, count > 0 {
                     self?.storePath.removeLast(count)
@@ -149,6 +155,7 @@ final class AppRouter: ObservableObject {
     }
     
     private func navigate(to deck: Deck) {
+        self.sidebarSelection = .allDecks
         selectedTab = .study
         if !path.isEmpty {
             path.removeLast(path.count)

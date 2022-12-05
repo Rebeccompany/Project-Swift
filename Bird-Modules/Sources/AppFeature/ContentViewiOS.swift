@@ -68,8 +68,18 @@ public struct ContentViewiOS: View {
         .sheet(isPresented: $onboarding) {
             OnboardingView()
         }
-        .onChange(of: viewModel.sidebarSelection) { _ in
-            appRouter.path.removeLast(appRouter.path.count - 1)
+        .onChange(of: appRouter.sidebarSelection) { newValue in
+            guard let newValue else {
+                viewModel.selectedCollection = nil
+                return
+            }
+            
+            switch newValue {
+            case .decksFromCollection(let collection):
+                viewModel.selectedCollection = collection
+            default:
+                viewModel.selectedCollection = nil
+            }
         }
         .onAppear(perform: viewModel.startup)
         .onOpenURL { appRouter.onOpen(url: $0) }
@@ -87,7 +97,7 @@ public struct ContentViewiOS: View {
     @ViewBuilder
     private var sidebar: some View {
         CollectionsSidebariOS(
-            selection: $viewModel.sidebarSelection,
+            selection: $appRouter.sidebarSelection,
             editMode: $editModeForCollection
         )
         .environmentObject(viewModel)
@@ -103,7 +113,7 @@ public struct ContentViewiOS: View {
         if horizontalSizeClass == .compact {
             studyDetail
         } else {
-            switch viewModel.sidebarSelection {
+            switch appRouter.sidebarSelection {
             case .store:
                 storeDetail
             default:

@@ -23,18 +23,13 @@ public final class ContentViewModel: ObservableObject {
     @Published var collections: [DeckCollection]
     @Published var decks: [Deck]
     @Published var todayDecks: [Deck]
-    
-    // MARK: View Bindings
-#if os(iOS)
-    @Published var sidebarSelection: SidebarRoute? = .allDecks
-#elseif os(macOS)
-    @Published var sidebarSelection: SidebarRoute = .allDecks
-#endif
     @Published var selection: Set<Deck.ID>
     @Published var searchText: String
     @Published var detailType: DetailDisplayType
     @Published var sortOrder: [KeyPathComparator<Deck>]
     @Published var shouldReturnToGrid: Bool
+    @Published var selectedCollection: DeckCollection?
+    
     
     // MARK: Repositories
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
@@ -48,32 +43,10 @@ public final class ContentViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable>
     
     var detailTitle: String {
-        switch sidebarSelection {
-        case .allDecks:
+        if let selectedCollection {
+            return selectedCollection.name
+        } else {
             return NSLocalizedString("baralhos_title", bundle: .module, comment: "")
-        case .decksFromCollection(let collection):
-            return collection.name
-        #if os(iOS)
-        case .none:
-            return ""
-        #endif
-        default:
-            return ""
-        }
-    }
-    
-    var selectedCollection: DeckCollection? {
-        switch sidebarSelection {
-        case .allDecks:
-            return nil
-        case .decksFromCollection(let collection):
-            return collection
-        #if os(iOS)
-        case .none:
-            return nil
-        #endif
-        default:
-            return nil
         }
     }
     
@@ -94,6 +67,7 @@ public final class ContentViewModel: ObservableObject {
             .listener()
             .handleEvents(receiveCompletion: { [weak self] completion in self?.handleCompletion(completion) })
             .replaceError(with: [])
+            .receive(on: RunLoop.main)
             .eraseToAnyPublisher()
     }
     
@@ -102,11 +76,12 @@ public final class ContentViewModel: ObservableObject {
             .deckListener()
             .handleEvents(receiveCompletion: { [weak self] completion in self?.handleCompletion(completion) })
             .replaceError(with: [])
+            .receive(on: RunLoop.main)
             .eraseToAnyPublisher()
     }
     
     var filteredDecks: [Deck] {
-        let filteredBySelection = mapDecksBySidebarSelection(decks: decks, sidebarSelection: sidebarSelection)
+        let filteredBySelection = mapDecksBySidebarSelection(decks: decks, selectedCollection: selectedCollection)
         let filteredBySearch = filterDecksBySearchText(filteredBySelection, searchText: searchText)
         return filteredBySearch
     }
@@ -130,12 +105,13 @@ public final class ContentViewModel: ObservableObject {
         $decks
             .tryMap(filterDecksForToday)
             .replaceError(with: [])
+            .receive(on: RunLoop.main)
             .assign(to: &$todayDecks)
     }
     
     private func setupDidEnterForeground() {
 #if os(iOS)
-        var notification = UIApplication.willEnterForegroundNotification
+        let notification = UIApplication.willEnterForegroundNotification
 #elseif os(macOS)
         var notification = NSApplication.didBecomeActiveNotification
 #endif
@@ -150,7 +126,7 @@ public final class ContentViewModel: ObservableObject {
     
     private func setupDidEnterBackgroundPublisher() {
         #if os(iOS)
-        var notification = UIApplication.didEnterBackgroundNotification
+        let notification = UIApplication.didEnterBackgroundNotification
         #elseif os(macOS)
         var notification = NSApplication.didResignActiveNotification
         #endif
@@ -208,15 +184,12 @@ public final class ContentViewModel: ObservableObject {
         displayCacher.saveDetailType(detailType: newDetailType)
     }
     
-    private func mapDecksBySidebarSelection(decks: [Deck], sidebarSelection: SidebarRoute?) -> [Deck] {
-        switch sidebarSelection ?? .allDecks {
-        case .allDecks:
-            return decks
-        case .decksFromCollection(let collection):
+    private func mapDecksBySidebarSelection(decks: [Deck], selectedCollection: DeckCollection?) -> [Deck] {
+        if let selectedCollection {
             return decks.filter { deck in
-                deck.collectionId == collection.id
+                deck.collectionId == selectedCollection.id
             }
-        default:
+        } else {
             return decks
         }
     }
