@@ -45,8 +45,8 @@ struct SignInView: View {
                 Text("message_3".localized(.module))
             }
             .padding()
-            .frame(maxWidth: 450)
-            .padding(.bottom, 32)
+            .frame(maxWidth: 300)
+            .padding(.bottom, 24)
             
             
             SignInWithAppleButton(.signIn) {
@@ -55,21 +55,34 @@ struct SignInView: View {
                 model.onSignInCompletion($0)
             }
             .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
-            .frame(height: 44)
+            .frame(height: 50)
             .padding(.horizontal)
-            .frame(maxWidth: 450)
+            .frame(maxWidth: 300)
             
             Button {
                 dismiss()
             } label: {
-                Text("cancel".localized(.module))
-                    .frame(maxWidth: .infinity)
+                HStack {
+                    Text("cancel".localized(.module))
+                        .frame(maxWidth: .infinity)
+                        .frame(maxHeight: .infinity)
+                }
+                .contentShape(Rectangle())
+                
             }
             .tint(.red)
+            #if os(iOS)
             .buttonStyle(.bordered)
-            .frame(height: 44)
+            .frame(height: 45)
+            #elseif os(macOS)
+            .buttonStyle(.plain)
+            
+            .background(HBColor.collectionRed)
+            .cornerRadius(7)
+            .frame(height: 30)
+            #endif
             .padding([.horizontal, .bottom])
-            .frame(maxWidth: 450)
+            .frame(maxWidth: 300)
             
         }
         .onChange(of: model.shouldDismiss) { newValue in
