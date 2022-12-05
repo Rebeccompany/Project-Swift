@@ -9,5 +9,6 @@ import Foundation
 
 public enum SidebarRoute: Hashable {
     case allDecks
+    case store
     case decksFromCollection(_ collection: DeckCollection)
 }

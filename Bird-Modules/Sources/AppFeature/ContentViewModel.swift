@@ -57,6 +57,8 @@ public final class ContentViewModel: ObservableObject {
         case .none:
             return ""
         #endif
+        default:
+            return ""
         }
     }
     
@@ -70,6 +72,8 @@ public final class ContentViewModel: ObservableObject {
         case .none:
             return nil
         #endif
+        default:
+            return nil
         }
     }
     
@@ -212,6 +216,8 @@ public final class ContentViewModel: ObservableObject {
             return decks.filter { deck in
                 deck.collectionId == collection.id
             }
+        default:
+            return decks
         }
     }
     

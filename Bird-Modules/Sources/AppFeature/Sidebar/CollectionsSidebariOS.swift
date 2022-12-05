@@ -25,6 +25,7 @@ struct CollectionsSidebariOS: View {
     @EnvironmentObject private var viewModel: ContentViewModel
     @EnvironmentObject private var store: ShopStore
     @EnvironmentObject private var authModel: AuthenticationModel
+    @EnvironmentObject private var appRoute: AppRouter
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
@@ -48,12 +49,7 @@ struct CollectionsSidebariOS: View {
             )
             
             if !isCompact {
-                NavigationLink {
-                    NavigationStack(path: ) {
-                        StoreView(store: store)
-                            .environmentObject(authModel)
-                    }
-                } label: {
+                NavigationLink(value: SidebarRoute.store) {
                     Label("Store", systemImage: "bag")
                 }
                 .listRowBackground(

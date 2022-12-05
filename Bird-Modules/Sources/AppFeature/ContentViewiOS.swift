@@ -39,7 +39,7 @@ public struct ContentViewiOS: View {
         Group {
             if horizontalSizeClass == .compact {
                 TabView(selection: $appRouter.selectedTab) {
-                    mainView
+                    studyDetail
                         .tabItem {
                             Label {
                                 Text("baralhos", bundle: .module)
@@ -49,10 +49,7 @@ public struct ContentViewiOS: View {
                         }
                         .tag(AppRouter.Tab.study)
                     
-                    NavigationStack(path: $appRouter.storePath) {
-                        StoreView(store: shopStore)
-                            .environmentObject(authModel)
-                    }
+                    storeDetail
                     .tabItem {
                         Label {
                             Text("library", bundle: .module)
@@ -103,7 +100,21 @@ public struct ContentViewiOS: View {
     
     @ViewBuilder
     private var detail: some View {
-        Router(path: $appRouter.path) {
+        if horizontalSizeClass == .compact {
+            studyDetail
+        } else {
+            switch viewModel.sidebarSelection {
+            case .store:
+                storeDetail
+            default:
+                studyDetail
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var studyDetail: some View {
+        NavigationStack(path: $appRouter.path) {
             DetailViewiOS(editMode: $editModeForDeck)
                 .toolbar(
                     editModeForDeck.isEditing ? .hidden :
@@ -112,8 +123,17 @@ public struct ContentViewiOS: View {
                 .environmentObject(viewModel)
                 .environmentObject(authModel)
                 .environment(\.editMode, $editModeForDeck)
-        } destination: { (route: StudyRoute) in
-            StudyRoutes.destination(for: route, viewModel: viewModel)
+                .navigationDestination(for: StudyRoute.self) { route in
+                    StudyRoutes.destination(for: route, viewModel: viewModel)
+                        .environmentObject(authModel)
+                }
+        }
+    }
+    
+    @ViewBuilder
+    private var storeDetail: some View {
+        NavigationStack(path: $appRouter.storePath) {
+            StoreView(store: shopStore)
                 .environmentObject(authModel)
         }
     }
