@@ -33,80 +33,72 @@ public struct ContentViewMacOS: View {
     public init() {}
     
     public var body: some View {
-        //swiftlint: disable no_navigation_view
-        NavigationView {
+        NavigationSplitView {
             sidebar
-            .toolbar {
-                ToolbarItem(placement: .navigation) {
-                    Button(action: toggleSidebar ) {
-                    Image(systemName: "sidebar.left")
-                            .foregroundColor(HBColor.actionColor)
-                    }
-                }
-            }
+        } detail: {
             detail
         }
         .navigationViewStyle(.columns)
-        .onChange(of: viewModel.sidebarSelection) { _ in
-            path.removeLast(path.count)
+        .onChange(of: appRouter.sidebarSelection) { newValue in
+            appRouter.path.removeLast(appRouter.path.count)
+            switch newValue {
+            case .decksFromCollection(let collection):
+                viewModel.selectedCollection = collection
+            default:
+                viewModel.selectedCollection = nil
+            }
         }
         .onAppear(perform: viewModel.startup)
         .navigationSplitViewStyle(.balanced)
+        .onOpenURL { appRouter.onOpen(url: $0) }
         .sheet(isPresented: $onboarding) {
             OnboardingView()
                 .frame(minWidth: 400, minHeight: 500)
+        }
+        .onChange(of: appRouter.path) { newValue in
+            print(newValue, newValue.count)
         }
     }
     
     @ViewBuilder
     private var sidebar: some View {
-        CollectionsSidebarMacOS(selection: $viewModel.sidebarSelection)
+        CollectionsSidebarMacOS(selection: $appRouter.sidebarSelection)
             .environmentObject(viewModel)
             .environmentObject(shopStore)
             .environmentObject(authModel)
+            .environmentObject(appRouter)
             .frame(minWidth: 250)
     }
     
     @ViewBuilder
     private var detail: some View {
-        switch viewModel.sidebarSelection {
-        case .store:
-            storeDetail
-        default:
-            studyDetail
-        }
-    }
-    
-    @ViewBuilder
-    private var studyDetail: some View {
         NavigationStack(path: $appRouter.path) {
-            DetailViewMacOS()
-            .environmentObject(viewModel)
-            .environmentObject(authModel)
-            .navigationDestination(for: StudyRoute.self) { route in
-                StudyRoutes.destination(for: route, viewModel: viewModel)
-                    .environmentObject(authModel)
+            switch appRouter.sidebarSelection {
+            case .store:
+                storeDetail
+            default:
+                studyDetail
             }
         }
     }
     
     @ViewBuilder
-    private var storeDetail: some View {
-        NavigationStack(path: $appRouter.storePath) {
-            StoreView(store: shopStore)
+    private var studyDetail: some View {
+        DetailViewMacOS()
+        .environmentObject(viewModel)
+        .environmentObject(authModel)
+        .navigationDestination(for: StudyRoute.self) { route in
+            StudyRoutes.destination(for: route, viewModel: viewModel)
                 .environmentObject(authModel)
         }
     }
     
-    func toggleSidebar() {
-        #if os(macOS)
-        NSApp
-          .keyWindow?
-          .firstResponder?
-          .tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)),
-                        with: nil)
-        #endif
-      }
+    @ViewBuilder
+    private var storeDetail: some View {
+        StoreView(store: shopStore)
+            .environmentObject(authModel)
+    }
+    
 }
 
 struct ContentViewMacOS_Previews: PreviewProvider {

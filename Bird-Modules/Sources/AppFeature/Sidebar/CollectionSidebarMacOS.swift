@@ -20,6 +20,7 @@ struct CollectionsSidebarMacOS: View {
     @EnvironmentObject private var viewModel: ContentViewModel
     @EnvironmentObject private var authModel: AuthenticationModel
     @EnvironmentObject private var store: ShopStore
+    @EnvironmentObject private var appRouter: AppRouter
     @State private var presentCollectionCreation = false
     @State private var editingCollection: DeckCollection?
     @Binding private var selection: SidebarRoute
@@ -31,44 +32,44 @@ struct CollectionsSidebarMacOS: View {
     var body: some View {
         VStack {
             List(selection: $selection) {
-                Button { viewModel.sidebarSelection = .allDecks } label: {
+                Button { appRouter.sidebarSelection = .allDecks } label: {
                     HStack {
                         Label(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), systemImage: "square.stack")
-                            .foregroundColor(viewModel.sidebarSelection == .allDecks ? Color.white : nil)
+                            .foregroundColor(appRouter.sidebarSelection == .allDecks ? Color.white : nil)
                         Spacer()
                     }
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .listRowBackground( viewModel.sidebarSelection == .allDecks ? Color.accentColor : nil)
+                .listRowBackground( appRouter.sidebarSelection == .allDecks ? Color.accentColor : nil)
                 
-                Button { viewModel.sidebarSelection = .store } label: {
+                Button { appRouter.sidebarSelection = .store } label: {
                     HStack {
                         Label {
                             Text("library", bundle: .module)
                         } icon: {
                             Image(systemName: "books.vertical")
                         }
-                        .foregroundColor(viewModel.sidebarSelection == .store ? Color.white : nil)
+                        .foregroundColor(appRouter.sidebarSelection == .store ? Color.white : nil)
                         Spacer()
                     }
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .listRowBackground( viewModel.sidebarSelection == .store ? Color.accentColor : nil)
+                .listRowBackground( appRouter.sidebarSelection == .store ? Color.accentColor : nil)
                 
                 Section {
                     ForEach(viewModel.collections) { collection in
-                        Button { viewModel.sidebarSelection = .decksFromCollection(collection) } label: {
+                        Button { appRouter.sidebarSelection = .decksFromCollection(collection) } label: {
                             HStack {
                                 Label(collection.name, systemImage: collection.icon.rawValue)
-                                    .foregroundColor(viewModel.sidebarSelection == .decksFromCollection(collection) ? Color.white : nil)
+                                    .foregroundColor(appRouter.sidebarSelection == .decksFromCollection(collection) ? Color.white : nil)
                                 Spacer()
                             }
                             .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
-                        .listRowBackground( viewModel.sidebarSelection == .decksFromCollection(collection) ? Color.accentColor : nil)
+                        .listRowBackground( appRouter.sidebarSelection == .decksFromCollection(collection) ? Color.accentColor : nil)
                         
                         .contextMenu {
                             Button {

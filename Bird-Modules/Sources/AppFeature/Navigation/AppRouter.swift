@@ -16,7 +16,6 @@ import Habitat
 @MainActor
 final class AppRouter: ObservableObject {
     @Published var path: NavigationPath = .init()
-    @Published var storePath: NavigationPath = .init()
     @Published var selectedTab: Tab = .study
 #if os(iOS)
     @Published var sidebarSelection: SidebarRoute? = .allDecks
@@ -109,11 +108,7 @@ final class AppRouter: ObservableObject {
             } receiveValue: {[weak self] deck in
                 self?.selectedTab = .store
                 self?.sidebarSelection = .store
-                //swiftlint: disable empty_count
-                if let count = self?.storePath.count, count > 0 {
-                    self?.storePath.removeLast(count)
-                }
-                self?.storePath.append(deck)
+                self?.path.append(deck)
             }
             .store(in: &cancellables)
 
