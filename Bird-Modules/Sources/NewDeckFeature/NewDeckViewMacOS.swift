@@ -155,6 +155,8 @@ public struct NewDeckViewMacOS: View {
                                      secondaryButton: .cancel(Text("cancelar", bundle: .module))
                         )
                         
+                    case .close:
+                        return Alert(title: Text("does not apply"))
                     }
                     
                 }

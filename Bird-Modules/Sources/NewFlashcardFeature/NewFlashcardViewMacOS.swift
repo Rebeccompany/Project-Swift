@@ -17,14 +17,14 @@ public struct NewFlashcardViewMacOS: View {
     @StateObject private var viewModel = NewFlashcardViewModelMacOS()
     
     @State private var showingAlert: Bool = false
-    @State private var showingCloseAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
+    @State private var size: CGFloat = 16
     
     @StateObject private var frontContext = RichTextContext()
     @StateObject private var backContext = RichTextContext()
     
-    @State private var size: CGFloat = 16
+    @Environment (\.dismiss) private var dismiss
     
     var data: NewFlashcardWindowData
     
@@ -115,10 +115,6 @@ public struct NewFlashcardViewMacOS: View {
                 }
                 .alert(isPresented: $showingAlert) {
                     customAlert()
-                }
-                .alert(isPresented: $showingCloseAlert) {
-                    let alert = Alert(title: Text(NSLocalizedString("cartao_salvo", bundle: .module, comment: "")), message: Text(NSLocalizedString("fechar_janela", bundle: .module, comment: "")))
-                    return alert
                 }
                 .toolbar {
                     
@@ -294,7 +290,8 @@ public struct NewFlashcardViewMacOS: View {
                 }
             }
             
-            showingCloseAlert = true
+            activeAlert = .close
+            showingAlert = true
             
         } label: {
             HStack {
@@ -325,6 +322,7 @@ public struct NewFlashcardViewMacOS: View {
                          primaryButton: .destructive(Text("deletar", bundle: .module)) {
                 do {
                     try viewModel.deleteFlashcard()
+                    dismiss()
                 } catch {
                     activeAlert = .error
                     showingAlert = true
@@ -333,6 +331,8 @@ public struct NewFlashcardViewMacOS: View {
                          },
                          secondaryButton: .cancel(Text("cancelar", bundle: .module))
             )
+        case .close:
+            return Alert(title: Text(NSLocalizedString("cartao_salvo", bundle: .module, comment: "")), message: Text(NSLocalizedString("fechar_janela", bundle: .module, comment: "")))
         }
     }
 

@@ -77,6 +77,8 @@ public struct DeckViewMacOS: View {
                              },
                 secondaryButton: .cancel(Text(NSLocalizedString("cancelar", bundle: .module, comment: "")))
                 )
+            case .close:
+                return Alert(title: Text("does not apply"))
             }
         }
         .navigationTitle(deck.name)
