@@ -16,8 +16,7 @@ import Authentication
 public struct PublicDeckView: View {
     var deck: ExternalDeck
     
-    @StateObject private var interactor: PublicDeckInteractor = PublicDeckInteractor()
-    @EnvironmentObject private var store: ShopStore
+    @StateObject private var model = PublicDeckModel()
     @EnvironmentObject private var auth: AuthenticationModel
     
     @State private var showLogin = false
@@ -27,12 +26,11 @@ public struct PublicDeckView: View {
     }
     
     public var body: some View {
-        let state = store.deckState
         
         Group {
-            switch state.viewState {
+            switch model.viewState {
             case .loaded:
-                if let deck = state.deck {
+                if let deck = model.deck {
                     loadedView(deck)
                 } else {
                     Text("")
@@ -44,16 +42,14 @@ public struct PublicDeckView: View {
             }
         }
         .onAppear {
-            if let deckId = store.deckState.deck?.id, deckId != deck.id {
-                store.deckState = .init()
-            }
-            startUp()
+            guard let id = deck.id else { return }
+            model.startUp(id: id)
         }
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
-        .animation(.linear, value: state.cards)
-        .alert(NSLocalizedString("download_concluded", bundle: .module, comment: ""), isPresented: $store.deckState.shouldDisplayDownloadedAlert) {
+        .animation(.linear, value: model.cards)
+        .alert(NSLocalizedString("download_concluded", bundle: .module, comment: ""), isPresented: $model.shouldDisplayDownloadedAlert) {
             Button("Okay") {
                 
             }
@@ -67,21 +63,20 @@ public struct PublicDeckView: View {
     
     @ViewBuilder
     private func loadedView(_ deck: ExternalDeck) -> some View {
-        let state = store.deckState
         ScrollView {
             LazyVStack {
                 deckHeader(deck)
                 Section {
                     LazyVStack {
-                        if store.deckState.cards.isEmpty {
+                        if model.cards.isEmpty {
                             LoadingFlashcardGrid()
                         } else {
-                            flashcardGrid(store.deckState.cards)
-                            if state.shouldLoadMore {
+                            flashcardGrid(model.cards)
+                            if model.shouldLoadMore {
                                 ProgressView()
                                     .onAppear {
                                         guard let id = deck.id else { return }
-                                        interactor.send(.loadCards(id: id, page: store.deckState.currentPage))
+                                        model.loadMoreCards()
                                     }
                             }
                         }
@@ -97,14 +92,8 @@ public struct PublicDeckView: View {
             }
             .padding()
         }
-        .onAppear {
-            guard let id = deck.id else { return }
-            let state = store.deckState
-            interactor.send(.loadCards(id: id, page: state.currentPage))
-        }
         .refreshable {
-            guard let id = deck.id else { return }
-            interactor.send(.reloadCards(id: id))
+            model.reloadCards()
         }
         #if os(macOS)
         .sheet(isPresented: $showLogin) {
@@ -141,7 +130,7 @@ public struct PublicDeckView: View {
                             await MainActor.run {
                                 showLogin = !isSignedIn
                                 if isSignedIn {
-                                    interactor.send(.downloadDeck(id: id))
+                                    model.downloadDeck()
                                 }
                             }
                         } catch {
@@ -195,12 +184,6 @@ public struct PublicDeckView: View {
                 .padding(.bottom)
             }
         }
-    }
-    
-    private func startUp() {
-        guard let id = deck.id else { return }
-        interactor.bind(to: store)
-        interactor.send(.loadDeck(id: id))
     }
 }
 
