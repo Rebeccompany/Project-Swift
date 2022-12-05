@@ -12,6 +12,111 @@ import Habitat
 import Peacock
 import StoreState
 
+final class PublicDeckModel: ObservableObject {
+    @Dependency(\.externalDeckService) private var deckService
+    @Dependency(\.deckRepository) private var deckRepository
+    
+    @Published var deck: ExternalDeck?
+    @Published var cards: [ExternalCard]
+    @Published var currentPage: Int
+    @Published var shouldLoadMore: Bool
+    @Published var viewState: ViewState
+    @Published var shouldDisplayDownloadedAlert: Bool
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(
+        deck: ExternalDeck? = nil,
+        cards: [ExternalCard] = [],
+        currentPage: Int = 0,
+        shouldLoadMore: Bool = true,
+        viewState: ViewState = .loading,
+        shouldDisplayDownloadedAlert: Bool = false) {
+        self.deck = deck
+        self.cards = cards
+        self.currentPage = currentPage
+        self.shouldLoadMore = shouldLoadMore
+        self.viewState = viewState
+        self.shouldDisplayDownloadedAlert = shouldDisplayDownloadedAlert
+    }
+    
+    func startUp(id: String) {
+        loadDeck(id: id)
+    }
+    
+    func loadMoreCards() {
+        guard let deck, let id = deck.id else { return }
+        currentPage += 1
+        
+        deckService
+            .getCardsFor(deckId: id, page: currentPage)
+            .replaceError(with: [])
+            .receive(on: RunLoop.main)
+            .sink {[weak self] cards in
+                self?.cards.append(contentsOf: cards)
+                self?.shouldLoadMore = !cards.isEmpty
+            }
+            .store(in: &cancellables)
+
+        
+    }
+    
+    func reloadCards() {
+        guard let deck, let id = deck.id else { return }
+        currentPage = 0
+        
+        deckService
+            .getCardsFor(deckId: id, page: currentPage)
+            .replaceError(with: [])
+            .receive(on: RunLoop.main)
+            .sink {[weak self] cards in
+                self?.cards = cards
+                self?.shouldLoadMore = !cards.isEmpty
+            }
+            .store(in: &cancellables)
+    }
+    
+    func downloadDeck() {
+        guard let deck, let id = deck.id else { return }
+        deckService.downloadDeck(with: id)
+            .map(DeckAdapter.adapt)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.viewState = .loaded
+                    self?.shouldDisplayDownloadedAlert = true
+                case .failure(_):
+                    self?.viewState = .error
+                }
+            } receiveValue: {[weak deckRepository] deck, cards in
+                try? deckRepository?.createDeck(deck, cards: cards)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func loadDeck(id: String) {
+        viewState = .loading
+        
+        return deckService
+            .getDeck(by: id)
+            .receive(on: RunLoop.main)
+            .sink {[weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.viewState = .loaded
+                case .failure(_):
+                    self?.viewState = .error
+                }
+            } receiveValue: {[weak self] deck in
+                self?.deck = deck
+                self?.reloadCards()
+            }
+            .store(in: &cancellables)
+    }
+    
+}
+
 final class PublicDeckInteractor: Interactor {
     
     @Dependency(\.externalDeckService) private var deckService

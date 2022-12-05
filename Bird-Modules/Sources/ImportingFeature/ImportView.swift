@@ -71,7 +71,7 @@ public struct ImportView: View {
 struct ImportView_Previews: PreviewProvider {
     static var previews: some View {
         #if os(macOS)
-        ImportView(data: ImportWindowData(deck: Deck(id: UUID(), name: "Deck0", icon: IconNames.abc.rawValue, color: CollectionColor.red, datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0), lastEdit: Date(timeIntervalSince1970: 0), createdAt: Date(timeIntervalSince1970: 0)), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4), category: DeckCategory.arts, storeId: nil, description: "" , ownerId: nil)), isPresenting: .constant(true))
+        ImportView(data: ImportWindowData(deck: Deck(id: UUID(), name: "Deck0", icon: IconNames.abc.rawValue, color: CollectionColor.red, datesLogs: DateLogs(lastAccess: Date(timeIntervalSince1970: 0), lastEdit: Date(timeIntervalSince1970: 0), createdAt: Date(timeIntervalSince1970: 0)), collectionId: nil, cardsIds: [], spacedRepetitionConfig: .init(maxLearningCards: 20, maxReviewingCards: 200, numberOfSteps: 4), category: DeckCategory.arts, storeId: nil, description: "", ownerId: nil)), isPresenting: .constant(true))
         #elseif os(iOS)
         ImportView(deck: Deck(id: UUID(), name: "Deck Nome", icon: IconNames.atom.rawValue, color: CollectionColor.red, collectionId: UUID(), cardsIds: [], category: .humanities, storeId: nil, description: "", ownerId: nil), isPresenting: .constant(true))
         #endif
