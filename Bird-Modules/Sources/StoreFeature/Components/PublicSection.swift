@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Models
+import HummingBird
 
 struct PublicSection: View {
     var section: ExternalSection
@@ -35,6 +36,7 @@ struct PublicSection: View {
                         Text("see_all".localized(.module))
                         Image(systemName: "chevron.right")
                     }
+                    .foregroundColor(HBColor.actionColor)
                 }
 #if os(macOS)
                 .buttonStyle(.plain)
