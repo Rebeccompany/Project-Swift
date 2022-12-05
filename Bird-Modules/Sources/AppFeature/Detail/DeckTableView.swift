@@ -39,7 +39,7 @@ struct DeckTableView: View {
     @ViewBuilder
     private var content: some View {
         VStack(alignment: .leading) {
-            if !viewModel.todayDecks.isEmpty {
+            if !viewModel.todayDecks.isEmpty && viewModel.selectedCollection == nil {
                 Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
                     .padding(.leading)
                     .padding(.top)
