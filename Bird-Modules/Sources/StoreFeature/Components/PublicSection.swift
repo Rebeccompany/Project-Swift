@@ -30,6 +30,7 @@ struct PublicSection: View {
             HStack {
                 Text(LocalizedStringKey(stringLiteral: section.title), bundle: .module)
                     .font(.title3.bold())
+               
                 Spacer()
                 NavigationLink(value: FilterRoute.category(category: DeckCategory(rawValue: section.title) ?? .others)) {
                     HStack {
@@ -37,6 +38,9 @@ struct PublicSection: View {
                         Image(systemName: "chevron.right")
                     }
                     .foregroundColor(HBColor.actionColor)
+#if os(macOS)
+                    .padding()
+#endif
                 }
 #if os(macOS)
                 .buttonStyle(.plain)
