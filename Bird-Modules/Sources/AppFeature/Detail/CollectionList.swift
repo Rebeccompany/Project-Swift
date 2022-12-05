@@ -47,7 +47,7 @@ struct CollectionList: View {
                     }
                     dismiss()
                 } label: {
-                    Text("Remover da coleção")
+                    Text("remover_da_coleção".localized(.module))
                 }
                 .buttonStyle(DeleteButtonStyle())
                 .disabled(deck?.collectionId == nil)
