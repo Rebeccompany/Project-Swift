@@ -81,7 +81,6 @@ public final class ExternalDeckService: ExternalDeckServiceProtocol {
         authenticatePublisher {[weak self] token in
             guard let self else { preconditionFailure("Self is denitialized") }
             return self.deckFeedPublisher(token: token)
-                .print("API")
         }
     }
     
