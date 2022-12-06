@@ -98,6 +98,7 @@ struct DeckGridView: View {
             }
             .sheet(isPresented: $isCollectionSheetPresented) {
                 CollectionList(viewModel: viewModel, deck: $deckToBeEdited)
+                    .frame(width: 500, height: 500)
             }
         }
     }

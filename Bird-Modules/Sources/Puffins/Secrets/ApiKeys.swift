@@ -8,7 +8,7 @@
 import Foundation
 
 enum ApiKeys {
-    static let baseRoute: String = "crow-dev.eba-udf2azmf.sa-east-1.elasticbeanstalk.com"
+    static let baseRoute: String = "crow.herokuapp.com"
     static let bearerToken: String = ""
 }
 
