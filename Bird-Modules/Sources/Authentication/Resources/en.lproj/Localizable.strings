@@ -6,7 +6,7 @@
   
 */
 "hello" = "Hello!";
-"message_1" = "To use our online features, we need you to sign in. You just got to press the Sign in with Apple button below.";
+"message_1" = "To use our online features, we need you to sign in. You just have to press the Sign in with Apple button below.";
 "message_2" = "You will be able to download and upload your decks. More features are coming for you soon";
 "message_3" = "If you do not wish to Sign in, you can just press the cancel button";
 "cancel" = "Cancel";

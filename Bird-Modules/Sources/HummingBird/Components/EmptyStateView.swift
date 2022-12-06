@@ -46,14 +46,20 @@ public struct EmptyStateView: View {
                 Text("clicar_para_criar_colecao", bundle: .module)
                     .foregroundColor(HBColor.collectionGray)
                     .font(.system(size: 15))
+                    .lineLimit(3)
+                    .multilineTextAlignment(.center)
             } else if component == Components.deck {
                 Text("clicar_para_criar_deck", bundle: .module)
                     .foregroundColor(HBColor.collectionGray)
                     .font(.system(size: 15))
+                    .lineLimit(3)
+                    .multilineTextAlignment(.center)
             } else {
                 Text("clicar_para_criar_flashcard", bundle: .module)
                     .foregroundColor(HBColor.collectionGray)
                     .font(.system(size: 15))
+                    .lineLimit(3)
+                    .multilineTextAlignment(.center)
             }
         }
     }

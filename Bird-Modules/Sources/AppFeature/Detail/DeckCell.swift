@@ -47,7 +47,11 @@ struct DeckCell: View {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(Color.white, lineWidth: 3)
             }
+            #if os(iOS)
             .frame(height: 116)
+            #elseif os(macOS)
+            .frame(height: 90)
+            #endif
     }
     
     struct Style: ButtonStyle {

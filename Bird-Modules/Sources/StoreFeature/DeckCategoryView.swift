@@ -11,6 +11,7 @@ import Habitat
 import Combine
 import Utils
 import Puffins
+import HummingBird
 
 struct DeckCategoryView: View {
     
@@ -28,6 +29,10 @@ struct DeckCategoryView: View {
                                 NavigationLink(value: deck) {
                                     SearchDeckCell(deck: deck)
                                 }
+                                #if os(macOS)
+                                .buttonStyle(.plain)
+                                .frame(height: 50)
+                                #endif
                             }
                         } footer: {
                             if model.shouldLoadMore {
@@ -42,10 +47,18 @@ struct DeckCategoryView: View {
                     .padding(.top)
                 }
             case .loading:
-                LoadingView()
+                VStack {
+                    Spacer()
+                    LoadingView()
+                    Spacer()
+                }
             case .error:
-                ErrorView {
-                    model.startUp(with: category)
+                VStack {
+                    Spacer()
+                    ErrorView {
+                        model.startUp(with: category)
+                    }
+                    Spacer()
                 }
             }
         }
@@ -67,5 +80,6 @@ struct DeckCategoryView_Previews: PreviewProvider {
                 DeckCategoryView(category: .humanities)
             }
         }
+        .frame(width: 500, height: 500)
     }
 }

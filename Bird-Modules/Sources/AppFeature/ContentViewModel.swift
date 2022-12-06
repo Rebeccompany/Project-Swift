@@ -23,14 +23,13 @@ public final class ContentViewModel: ObservableObject {
     @Published var collections: [DeckCollection]
     @Published var decks: [Deck]
     @Published var todayDecks: [Deck]
-    
-    // MARK: View Bindings
-    @Published var sidebarSelection: SidebarRoute? = .allDecks
     @Published var selection: Set<Deck.ID>
     @Published var searchText: String
     @Published var detailType: DetailDisplayType
     @Published var sortOrder: [KeyPathComparator<Deck>]
     @Published var shouldReturnToGrid: Bool
+    @Published var selectedCollection: DeckCollection?
+    
     
     // MARK: Repositories
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
@@ -44,20 +43,10 @@ public final class ContentViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable>
     
     var detailTitle: String {
-        switch sidebarSelection ?? .allDecks {
-        case .allDecks:
+        if let selectedCollection {
+            return selectedCollection.name
+        } else {
             return NSLocalizedString("baralhos_title", bundle: .module, comment: "")
-        case .decksFromCollection(let collection):
-            return collection.name
-        }
-    }
-    
-    var selectedCollection: DeckCollection? {
-        switch sidebarSelection ?? .allDecks {
-        case .allDecks:
-            return nil
-        case .decksFromCollection(let collection):
-            return collection
         }
     }
     
@@ -78,6 +67,7 @@ public final class ContentViewModel: ObservableObject {
             .listener()
             .handleEvents(receiveCompletion: { [weak self] completion in self?.handleCompletion(completion) })
             .replaceError(with: [])
+            .receive(on: RunLoop.main)
             .eraseToAnyPublisher()
     }
     
@@ -86,16 +76,14 @@ public final class ContentViewModel: ObservableObject {
             .deckListener()
             .handleEvents(receiveCompletion: { [weak self] completion in self?.handleCompletion(completion) })
             .replaceError(with: [])
-            .combineLatest($sidebarSelection)
-            .compactMap { [weak self] decks, selection in
-                self?.mapDecksBySidebarSelection(decks: decks, sidebarSelection: selection)
-            }
-            .combineLatest($searchText)
-            .compactMap { [weak self] decks, searchText in
-                self?.filterDecksBySearchText(decks, searchText: searchText)
-            }
-            .replaceNil(with: [])
+            .receive(on: RunLoop.main)
             .eraseToAnyPublisher()
+    }
+    
+    var filteredDecks: [Deck] {
+        let filteredBySelection = mapDecksBySidebarSelection(decks: decks, selectedCollection: selectedCollection)
+        let filteredBySearch = filterDecksBySearchText(filteredBySelection, searchText: searchText)
+        return filteredBySearch
     }
     
     func startup() {
@@ -117,12 +105,18 @@ public final class ContentViewModel: ObservableObject {
         $decks
             .tryMap(filterDecksForToday)
             .replaceError(with: [])
+            .receive(on: RunLoop.main)
             .assign(to: &$todayDecks)
     }
     
     private func setupDidEnterForeground() {
+#if os(iOS)
+        let notification = UIApplication.willEnterForegroundNotification
+#elseif os(macOS)
+        var notification = NSApplication.didBecomeActiveNotification
+#endif
         notificationCenter
-            .notificationPublisher(for: UIApplication.willEnterForegroundNotification, object: nil)
+            .notificationPublisher(for: notification, object: nil)
             .receive(on: RunLoop.main)
             .sink { _ in
                 self.notificationService.cleanNotifications()
@@ -131,8 +125,13 @@ public final class ContentViewModel: ObservableObject {
     }
     
     private func setupDidEnterBackgroundPublisher() {
+        #if os(iOS)
+        let notification = UIApplication.didEnterBackgroundNotification
+        #elseif os(macOS)
+        var notification = NSApplication.didResignActiveNotification
+        #endif
         notificationCenter
-            .notificationPublisher(for: UIApplication.didEnterBackgroundNotification, object: nil)
+            .notificationPublisher(for: notification, object: nil)
             .receive(on: RunLoop.main)
             .flatMap { [weak self] _ in
                 guard let self else {
@@ -185,14 +184,13 @@ public final class ContentViewModel: ObservableObject {
         displayCacher.saveDetailType(detailType: newDetailType)
     }
     
-    private func mapDecksBySidebarSelection(decks: [Deck], sidebarSelection: SidebarRoute?) -> [Deck] {
-        switch sidebarSelection ?? .allDecks {
-        case .allDecks:
-            return decks
-        case .decksFromCollection(let collection):
+    private func mapDecksBySidebarSelection(decks: [Deck], selectedCollection: DeckCollection?) -> [Deck] {
+        if let selectedCollection {
             return decks.filter { deck in
-                deck.collectionId == collection.id
+                deck.collectionId == selectedCollection.id
             }
+        } else {
+            return decks
         }
     }
     
@@ -208,8 +206,8 @@ public final class ContentViewModel: ObservableObject {
         decks.filter {
             guard let session = $0.session else { return false }
             
-            guard !session.cardIds.isEmpty else { return false }
-            return dateHandler.isToday(date: session.date) || session.date < dateHandler.today
+            guard !session.cardIds.isEmpty, let isToday = try? dateHandler.isToday(date: session.date) else { return false }
+            return isToday || session.date < dateHandler.today
         }
     }
     

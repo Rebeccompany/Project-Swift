@@ -91,8 +91,14 @@ struct FlashcardView: View {
             }
             
             Spacer()
+            #if os(iOS)
             TextViewRepresentable(text: content)
                 .minimumScaleFactor(0.01)
+            #elseif os(macOS)
+            ScrollView {
+                Text(AttributedString(content))
+            }
+            #endif
             Spacer()
             
             HStack {

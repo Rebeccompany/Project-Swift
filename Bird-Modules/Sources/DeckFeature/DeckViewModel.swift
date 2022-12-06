@@ -47,34 +47,29 @@ public class DeckViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func deckListener(_ deck: Deck) -> AnyPublisher<Deck, RepositoryError> {
-        deckRepository
-            .cardListener(forId: deck.id)
-            .flatMap {[weak self, deck] _ in
-                guard let self = self else {
-                    return Fail<Deck, RepositoryError>(error: .errorOnListening).eraseToAnyPublisher()
-                }
-                
-                return self.deckRepository.fetchDeckById(deck.id)
-            }
-            .eraseToAnyPublisher()
-    }
-    
     func startup(_ deck: Deck) {
         cardListener(deck)
-            .assign(to: &$cards)
+            .sink { [weak self] cards in self?.cards = cards }
+            .store(in: &cancellables)
         
         var deck = deck
         deck.datesLogs.lastAccess = dateHandler.today
         try? deckRepository.editDeck(deck)
     }
     
+    func tearDown() {
+        cancellables
+            .forEach { $0.cancel() }
+    }
+    
     func checkIfCanStudy(_ deck: Deck) -> Bool {
         if cards.isEmpty { return false }
         guard let session = deck.session else { return true }
-        guard !session.cardIds.isEmpty else { return false }
+        guard !session.cardIds.isEmpty,
+            let isToday = try? dateHandler.isToday(date: session.date)
+        else { return false }
         
-        return dateHandler.isToday(date: session.date) || session.date < dateHandler.today   
+        return isToday || session.date < dateHandler.today
     }
     
     func deleteFlashcard(card: Card) throws {
@@ -85,7 +80,7 @@ public class DeckViewModel: ObservableObject {
         if searchFieldContent.isEmpty {
             return cards
         } else {
-            return cards.filter { $0.front.string.contains(searchFieldContent) || $0.back.string.contains(searchFieldContent) }
+            return cards.filter { $0.front.string.capitalized.contains(searchFieldContent.capitalized) || $0.back.string.capitalized.contains(searchFieldContent.capitalized) }
         }
     }
     

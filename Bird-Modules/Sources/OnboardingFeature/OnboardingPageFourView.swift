@@ -27,13 +27,13 @@ struct OnboardingPageFourView: View {
                         
                         Text(NSLocalizedString("pagina_quatro_um", bundle: .module, comment: ""))
                             .lineLimit(nil)
-                            .font(.body)
+                            .font(.system(size: 16))
                             .fontWeight(.regular)
                             .foregroundColor(HBColor.collectionTextColor)
                             .padding(.bottom)
                         Text(NSLocalizedString("pagina_quatro_dois", bundle: .module, comment: ""))
                             .lineLimit(nil)
-                            .font(.body)
+                            .font(.system(size: 16))
                             .fontWeight(.regular)
                             .foregroundColor(HBColor.collectionTextColor)
                             .padding(.bottom)
@@ -45,13 +45,13 @@ struct OnboardingPageFourView: View {
                             .padding(.vertical)
                         Text(NSLocalizedString("pagina_quatro_tres", bundle: .module, comment: ""))
                             .lineLimit(nil)
-                            .font(.body)
+                            .font(.system(size: 16))
                             .fontWeight(.regular)
                             .foregroundColor(HBColor.collectionTextColor)
                             .padding(.bottom)
                         Text(NSLocalizedString("pagina_quatro_quatro", bundle: .module, comment: ""))
                             .lineLimit(nil)
-                            .font(.body)
+                            .font(.system(size: 16))
                             .fontWeight(.regular)
                             .foregroundColor(HBColor.collectionTextColor)
                             .padding(.bottom)
@@ -61,7 +61,6 @@ struct OnboardingPageFourView: View {
                 
             }
             .padding()
-        .viewBackgroundColor(HBColor.primaryBackground)
         }
     }
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import HummingBird
+import Models
 
 public struct StudyProgressView: View {
     let numOfTotalSeen: Int
@@ -53,9 +54,11 @@ public struct StudyProgressView: View {
                 
             }
             .navigationTitle(NSLocalizedString("progress_view", bundle: .module, comment: ""))
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button("OK") {
                         dismiss()
                     }

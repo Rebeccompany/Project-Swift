@@ -30,6 +30,8 @@
 "colecoes_title" = "Collections";
 "baralhos" = "Decks";
 "library" = "Library";
+"nova_colecao" = "New Collection";
+"%d cartas_hoje" = "%d cards for today";
 "escolher_coleção" = "Choose Collection";
-"mover_colecao" = "move to...";
-"Remover da coleção" = "Remover da coleção";
+"mover_colecao" = "Move to...";
+"remover_da_coleção" = "Remove from collection";

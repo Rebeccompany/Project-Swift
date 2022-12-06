@@ -32,7 +32,7 @@
 "confirmar_publicao" = "Deck publication into the library";
 "confirmar_publicao_delete" = "Are you sure you want to remove it from the library?";
 "confirmar_publicao_publicar" = "Are you sure want to publish it into the library?";
-"aviso_login" = "You need to be logged in to publish a Deck, you can go to the store tab and log in";
+"aviso_login" = "You need to be logged in to publish a Deck, you can go to the library tab and log in";
 "aviso_deletar" = "Are you sure? you're going to remove the deck from the library";
 "aviso_atualizar" = "Are you sure? you're going to update the deck from the library";
 "aviso_publicar" = "Are you sure? you're going to publish the deck to the library";

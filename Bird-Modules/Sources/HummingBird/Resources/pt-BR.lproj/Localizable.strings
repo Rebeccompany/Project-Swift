@@ -17,3 +17,5 @@
 "deck" = "baralho";
 "frente" = "Frente";
 "verso" = "Verso";
+"retry" = "Tentar novamente";
+"error_message" = "Opa 😢, aconteceu algo errado, verifique sua conexão com a internet e pressione o botão para tentar novamente.";

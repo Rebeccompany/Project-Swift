@@ -16,6 +16,8 @@ struct SessionsForTodayView: View {
     
     @State private var selectedDeck: Deck?
     
+    @Environment(\.openWindow) private var openWindow
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
@@ -24,25 +26,40 @@ struct SessionsForTodayView: View {
                         Button {
                             selectedDeck = deck
                         } label: {
-                            DeckForTodayCell(deck: deck)
+                            DeckForTodayCell(deck: deck, view: .grid)
                         }
+                        #if os(macOS)
+                        .buttonStyle(.plain)
+                        #endif
                     } else {
                         Button {
                             selectedDeck = deck
                         } label: {
-                            Label(deck.name, systemImage: deck.icon)
+                            DeckForTodayCell(deck: deck, view: .table)
                         }
+                        #if os(macOS)
+                        .buttonStyle(.plain)
+                        #elseif os(iOS)
                         .buttonStyle(.bordered)
-                        .tint(HBColor.color(for: deck.color))
                         .buttonBorderShape(.capsule)
+                        #endif
+                        .tint(HBColor.color(for: deck.color))
                     }
                 }
             }
             .padding(.leading)
         }
+        #if os(iOS)
         .fullScreenCover(item: $selectedDeck) { deck in
-            StudyView(deck: deck, mode: .spaced)
+            StudyViewiOS(deck: deck, mode: .spaced)
         }
+        #elseif os(macOS)
+        .onChange(of: selectedDeck) { deck in
+            guard let deck else { return }
+            
+            openWindow(value: StudyWindowData(deck: deck, mode: .spaced))
+        }
+        #endif
     }
     
 }

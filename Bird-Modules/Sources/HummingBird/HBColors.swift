@@ -183,6 +183,12 @@ public enum HBColor {
         )
     }
     
+    public static var newCollectionSidebar: Color {
+        Color(light: "FFFFFF99",
+              dark: "00000099"
+        )
+    }
+    
 
     public static func color(for collectionColor: CollectionColor) -> Color {
         switch collectionColor {

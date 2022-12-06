@@ -87,19 +87,31 @@ final class ContentViewModelTests: XCTestCase {
     func testStartup() {
         let collectionExpectation = expectation(description: "Connection with collection repository")
         let deckExpectation = expectation(description: "Connection with Deck repository")
+        
+        var collectionCount = 0
+        var decksCount = 0
+        
         sut.startup()
         sut.$collections
             .sink {[unowned self] collections in
-                XCTAssertEqual(collections, collectionRepositoryMock.collections)
-                collectionExpectation.fulfill()
+                if collectionCount > 0 {
+                    XCTAssertEqual(collections, collectionRepositoryMock.collections)
+                    collectionExpectation.fulfill()
+                } else {
+                    collectionCount += 1
+                }
             }
             .store(in: &cancelables)
         
         sut.$decks
             .sink { [unowned self] decks in
-                //                XCTAssertEqual(decks, self.deckRepositoryMock.decks)
-                XCTAssertEqual(self.sut.sidebarSelection, .allDecks)
-                deckExpectation.fulfill()
+                if decksCount > 0 {
+                    XCTAssertEqual(decks, self.deckRepositoryMock.data.map(\.value.deck))
+                    XCTAssertEqual(self.sut.selectedCollection, nil)
+                    deckExpectation.fulfill()
+                } else {
+                    decksCount += 1
+                }
             }
             .store(in: &cancelables)
         
@@ -117,6 +129,9 @@ final class ContentViewModelTests: XCTestCase {
     
     func testDeckBindingGet() {
         var deck: Deck?
+        
+        sut.decks = self.deckRepositoryMock.data.map(\.value.deck)
+        
         deckRepositoryMock
             .fetchDeckById(deck0.id)
             .sink { completion in
@@ -134,6 +149,7 @@ final class ContentViewModelTests: XCTestCase {
     
     func testDeckBindingSet() {
         sut.startup()
+        sut.decks = self.deckRepositoryMock.data.map(\.value.deck)
         let binding = sut.bindingToDeck(deck0)
         
         let newName = "Alterado"
@@ -144,7 +160,6 @@ final class ContentViewModelTests: XCTestCase {
     }
     
     func testDeckReactionToSidebarSelection() throws {
-        let expectation = expectation(description: "Receive the correct decks")
         
         var deck1 = deck1
         deck1?.collectionId = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!
@@ -155,22 +170,15 @@ final class ContentViewModelTests: XCTestCase {
         try deckRepositoryMock.editDeck(deck2!)
         
         sut.startup()
+        sut.collections = collectionRepositoryMock.collections
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
+        sut.selectedCollection = collectionRepositoryMock.collections[0]
         
-        sut.sidebarSelection = .decksFromCollection(collectionRepositoryMock.collections[0])
+        XCTAssertEqual(Array([deck1!, deck2!]).sorted { $0.id.uuidString > $1.id.uuidString }, sut.filteredDecks.sorted { $0.id.uuidString > $1.id.uuidString })
         
-        sut.$decks
-            .sink { decks in
-                print(decks)
-                XCTAssertEqual(Array([deck1!, deck2!]).sorted { $0.id.uuidString > $1.id.uuidString }, decks.sorted { $0.id.uuidString > $1.id.uuidString })
-                expectation.fulfill()
-            }
-            .store(in: &cancelables)
-        
-        wait(for: [expectation], timeout: 1)
     }
     
     func testAllDecksFilteredBySearchText() {
-        let expectation = expectation(description: "Receive the correct decks")
         
         deckRepositoryMock.data[deck0.id]!.deck.name = "Swift"
         try? deckRepositoryMock.editDeck(deckRepositoryMock.data[deck0.id]!.deck)
@@ -178,6 +186,8 @@ final class ContentViewModelTests: XCTestCase {
         try? deckRepositoryMock.editDeck(deckRepositoryMock.data[deck1.id]!.deck)
         deckRepositoryMock.data[deck3.id]!.deck.name = "Swift"
         try? deckRepositoryMock.editDeck(deckRepositoryMock.data[deck3.id]!.deck)
+        
+        sut.startup()
         
         var expectedResults: [Deck]?
         deckRepositoryMock
@@ -189,52 +199,39 @@ final class ContentViewModelTests: XCTestCase {
             }
             .store(in: &cancelables)
         
-        sut.startup()
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
         
-        sut.sidebarSelection = .allDecks
+        sut.selectedCollection = nil
         sut.searchText = "Swift"
         
-        sut.$decks
-            .sink { decks in
-                XCTAssertEqual(decks.sorted(by: self.sortById), expectedResults?.sorted(by: self.sortById))
-                expectation.fulfill()
-            }
-            .store(in: &cancelables)
-        
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(sut.filteredDecks.sorted(by: self.sortById), expectedResults?.sorted(by: self.sortById))
     }
     
     func testCollectionDecksFilteredBySearchText() {
-        let expectation = expectation(description: "Receive the correct decks")
         
         deckRepositoryMock.data[deck1.id]!.deck.name = "Swift"
         deckRepositoryMock.data[deck1.id]!.deck.collectionId = UUID(uuidString: "1f222564-ff0d-4f2d-9598-1a0542899974")!
         try? deckRepositoryMock.editDeck(deckRepositoryMock.data[deck1.id]!.deck)
-        sut.startup()
+        
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
         
         let expectedResults = [deckRepositoryMock.data[deck1.id]!.deck]
-        sut.sidebarSelection = .decksFromCollection(collectionRepositoryMock.collections[0])
+        sut.selectedCollection = collectionRepositoryMock.collections[0]
         sut.searchText = "Swift"
         
-        sut.$decks
-            .sink { decks in
-                XCTAssertEqual(expectedResults, decks)
-                expectation.fulfill()
-            }
-            .store(in: &cancelables)
-        
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(expectedResults, sut.filteredDecks)
     }
     
     func testDetailNameForSingleCollection() {
         sut.startup()
-        sut.sidebarSelection = .decksFromCollection(collectionRepositoryMock.collections[0])
+        sut.selectedCollection = collectionRepositoryMock.collections[0]
         XCTAssertEqual(collectionRepositoryMock.collections[0].name, sut.detailTitle)
     }
     
     func testDeleteSingleCollectionSuccessifully() throws {
         sut.startup()
-        
+
+        sut.collections = collectionRepositoryMock.collections
         let collectionToBeDeleted = collectionRepositoryMock.collections[0]
         try sut.deleteCollection(collectionToBeDeleted)
         
@@ -245,6 +242,7 @@ final class ContentViewModelTests: XCTestCase {
     
     func testDeleteCollectionSuccessifully() throws {
         sut.startup()
+        sut.collections = collectionRepositoryMock.collections
         let indexSet = IndexSet([0])
         let collectionToBeDeleted = collectionRepositoryMock.collections[0]
         
@@ -255,22 +253,9 @@ final class ContentViewModelTests: XCTestCase {
         XCTAssertFalse(doesContainCollection)
     }
     
-    func testSelectedCollectionWhenSidebarIsAllDecks() {
-        sut.startup()
-        sut.sidebarSelection = .allDecks
-        
-        XCTAssertNil(sut.selectedCollection)
-    }
-    
-    func testSelectedCollectionWhenSidebarIsACollection() {
-        sut.startup()
-        sut.sidebarSelection = .decksFromCollection(collectionRepositoryMock.collections[0])
-        
-        XCTAssertEqual(collectionRepositoryMock.collections[0], sut.selectedCollection)
-    }
-    
     func testEditDeckSuccessfully() {
         sut.startup()
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
         let deck = deckRepositoryMock.data[deck0.id]!.deck
         sut.selection.insert(deck.id)
         
@@ -296,6 +281,7 @@ final class ContentViewModelTests: XCTestCase {
     }
     
     func testDeleteDeckSuccessifully() throws {
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
         sut.selection = Set(Array([deckRepositoryMock.data[deck0.id]!.deck, deckRepositoryMock.data[deck1.id]!.deck, deckRepositoryMock.data[deck2.id]!.deck]).map(\.id))
         XCTAssertEqual(4, deckRepositoryMock.data.count)
         
@@ -325,7 +311,7 @@ final class ContentViewModelTests: XCTestCase {
     
     func testDetailNameForAllDecks() {
         sut.startup()
-        sut.sidebarSelection = .allDecks
+        sut.selectedCollection = nil
         XCTAssertEqual(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), sut.detailTitle)
     }
     
@@ -390,6 +376,8 @@ final class ContentViewModelTests: XCTestCase {
     
     func testRemoveCollectionFromDeck() {
         sut.startup()
+        sut.decks = deckRepositoryMock.data.map(\.value.deck)
+        sut.collections = collectionRepositoryMock.collections
         var deck = deck0!
         collectionRepositoryMock.collections[0].decksIds.append(deck.id)
         deck.collectionId = collectionRepositoryMock.collections.first!.id

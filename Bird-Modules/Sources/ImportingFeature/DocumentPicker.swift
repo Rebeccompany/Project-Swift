@@ -10,6 +10,8 @@ import Models
 import Flock
 import Combine
 
+#if os(iOS)
+
 struct DocumentPicker: UIViewControllerRepresentable {
     @Binding var fileContent: [Card]
     var deckId: UUID
@@ -60,3 +62,20 @@ final class DocumentPickerCoordinator: NSObject, UIDocumentPickerDelegate, UINav
     
     
 }
+
+#elseif os(macOS)
+struct DocumentPicker: NSViewRepresentable {
+    @Binding var fileContent: [Card]
+    var deckId: UUID
+    var cancel: () -> Void
+    
+    func makeNSView(context: Context) -> some NSView {
+        NSView()
+    }
+    
+    func updateNSView(_ nsView: NSViewType, context: Context) {
+        
+    }
+}
+
+#endif

@@ -77,7 +77,7 @@ extension Notification {
 }
 
 extension View {
-    public func keyboardToolbar<ToolbarView>(@ViewBuilder view:  @escaping  () -> ToolbarView) -> some View where ToolbarView: View {
+    public func keyboardToolbar<ToolbarView>(@ViewBuilder view: @escaping  () -> ToolbarView) -> some View where ToolbarView: View {
         modifier(KeyboardToolbar(toolbar: view))
     }
 }

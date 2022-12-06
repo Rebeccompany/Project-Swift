@@ -72,10 +72,12 @@ public struct FlashcardsOnboardingView: View {
                         .foregroundColor(HBColor.actionColor)
                 }
             }
+            #if os(iOS)
             .toolbarBackground(.hidden, for: .navigationBar)
+            #endif
             .viewBackgroundColor(HBColor.primaryBackground)
+            .environment(\.locale, .autoupdatingCurrent)
         }
-        Spacer()
     }
 }
 

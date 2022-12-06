@@ -23,8 +23,10 @@ public struct OnboardingView: View {
                 OnboardingPageThreeView().tag(2)
                 OnboardingPageFourView().tag(3)
             }
+            #if os(iOS)
             .tabViewStyle(.page)
             .indexViewStyle(.page(backgroundDisplayMode: .always))
+            #endif
             .animation(.linear, value: tab)
             .toolbar {
                 Button(tab == 3 ? NSLocalizedString("comecar", bundle: .module, comment: "") : NSLocalizedString("pular", bundle: .module, comment: "")) {
@@ -32,7 +34,9 @@ public struct OnboardingView: View {
                 }
                 .foregroundColor(HBColor.actionColor)
             }
+            #if os(iOS)
             .toolbarBackground(.hidden, for: .navigationBar)
+            #endif
             .viewBackgroundColor(HBColor.primaryBackground)
         }
     }

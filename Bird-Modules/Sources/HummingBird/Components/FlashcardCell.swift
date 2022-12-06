@@ -9,7 +9,6 @@ import SwiftUI
 import Models
 
 public struct FlashcardCell: View {
-    //private var card: Card
     private var isFront: Bool
     private var action: () -> Void
     private var front: NSAttributedString
@@ -42,7 +41,13 @@ public struct FlashcardCell: View {
                     Spacer()
                 }
                 Spacer()
+                #if os(iOS)
                 TextViewRepresentable(text: isFront ? front : back)
+                #elseif os(macOS)
+                ScrollView {
+                    Text(isFront ? AttributedString(front) : AttributedString(back))
+                }
+                #endif
                 Spacer()
             }
         }

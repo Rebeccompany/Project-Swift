@@ -20,21 +20,25 @@ struct DeckGridView: View {
     @State private var isCollectionSheetPresented = false
     
     private var sortedDecks: [Deck] {
-        viewModel.decks.sorted(using: viewModel.sortOrder)
+        viewModel.filteredDecks.sorted(using: viewModel.sortOrder)
     }
     
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading) {
-                if !viewModel.todayDecks.isEmpty {
+                if !viewModel.todayDecks.isEmpty && viewModel.selectedCollection == nil {
                     Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
                         .padding(.leading)
+                    #if os(macOS)
+                        .padding(.top)
+                    #endif
                         .font(.title3)
                         .bold()
                     SessionsForTodayView()
                 }
                 Text(NSLocalizedString("baralhos", bundle: .module, comment: ""))
                     .padding(.leading)
+                    .padding(.top)
                     .font(.title3)
                     .bold()
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
@@ -63,7 +67,9 @@ struct DeckGridView: View {
                                 }
                         }
                         .buttonStyle(DeckCell.Style(color: deck.color))
+#if os(iOS)
                         .hoverEffect(.lift)
+#endif
                         .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
                             Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
                                 guard let deckToBeDeleted else { return }
@@ -73,7 +79,18 @@ struct DeckGridView: View {
                             Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
                         }
                     }
-                    
+                    #if os(iOS)
+                    .hoverEffect()
+                    .padding(2)
+                    #endif
+                    .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                        Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                            guard let deckToBeDeleted else { return }
+                            try? viewModel.deleteDeck(deckToBeDeleted)
+                        }
+                    } message: {
+                        Text(NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                    }
                 }
                 .animation(.linear, value: viewModel.sortOrder)
                 .padding([.horizontal], 12)
@@ -81,6 +98,7 @@ struct DeckGridView: View {
             }
             .sheet(isPresented: $isCollectionSheetPresented) {
                 CollectionList(viewModel: viewModel, deck: $deckToBeEdited)
+                    .frame(width: 500, height: 500)
             }
         }
     }

@@ -16,7 +16,12 @@ struct StudyRoutes {
     static func destination(for route: StudyRoute, viewModel: ContentViewModel) -> some View {
         switch route {
         case .deck(let deck):
-            DeckView(deck: viewModel.bindingToDeck(deck))
+            #if os(iOS)
+            DeckViewiOS(deck: viewModel.bindingToDeck(deck))
+            #elseif os(macOS)
+            DeckViewMacOS(deck: viewModel.bindingToDeck(deck))
+            //Text("deck: \(deck.name)")
+            #endif
         case .card(let card):
             Text("card \(card.id.uuidString)")
         }

@@ -63,6 +63,7 @@ struct SearchDeckView: View {
             Spacer()
         }
         .navigationTitle("search".localized(.module))
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
@@ -73,6 +74,7 @@ struct SearchDeckView: View {
                 }
             }
         }
+        #endif
         .onAppear(perform: model.startUp)
         .onAppear {
             focusState = 1
@@ -95,6 +97,11 @@ struct SearchDeckView: View {
                             NavigationLink(value: deck) {
                                 SearchDeckCell(deck: deck)
                             }
+#if os(macOS)
+                            .buttonStyle(.plain)
+                            .frame(height: 50)
+#endif
+
                         }
                     } footer: {
                         if model.shouldLoadMore {
@@ -115,7 +122,7 @@ struct SearchDeckView: View {
     @ViewBuilder
     private var emptyView: some View {
         VStack {
-            HBImages.spixiiHacker
+            HBImages.spixiiSearch
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .background {

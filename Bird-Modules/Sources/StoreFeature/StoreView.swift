@@ -42,7 +42,19 @@ public struct StoreView: View {
             interactor.bind(to: store)
             interactor.send(.loadFeed)
         }
-        .viewBackgroundColor(HBColor.primaryBackground)
+        .navigationDestination(for: ExternalDeck.self) { deck in
+            PublicDeckView(deck: deck)
+                .environmentObject(store)
+                .environmentObject(authModel)
+        }
+        .navigationDestination(for: FilterRoute.self) { route in
+            switch route {
+            case .search:
+                SearchDeckView()
+            case .category(let category):
+                DeckCategoryView(category: category)
+            }
+        }
     }
     
     @ViewBuilder
@@ -58,19 +70,7 @@ public struct StoreView: View {
         .refreshable {
             interactor.send(.loadFeed)
         }
-        .navigationDestination(for: ExternalDeck.self) { deck in
-            PublicDeckView(deck: deck)
-                .environmentObject(store)
-                .environmentObject(authModel)
-        }
-        .navigationDestination(for: FilterRoute.self) { route in
-            switch route {
-            case .search:
-                SearchDeckView()
-            case .category(let category):
-                DeckCategoryView(category: category)
-            }
-        }
+        #if os(iOS)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 NavigationLink(value: FilterRoute.search) {
@@ -82,6 +82,19 @@ public struct StoreView: View {
         .fullScreenCover(isPresented: $showLogin) {
             AuthenticationView(model: authModel)
         }
+        #elseif os(macOS)
+        .toolbar {
+            ToolbarItemGroup {
+                NavigationLink(value: FilterRoute.search) {
+                    Label("search".localized(.module), systemImage: "magnifyingglass")
+                }
+                signInMenu
+            }
+        }
+        .sheet(isPresented: $showLogin) {
+            AuthenticationView(model: authModel)
+        }
+        #endif
         
     }
     

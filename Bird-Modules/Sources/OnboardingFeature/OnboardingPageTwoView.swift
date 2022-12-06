@@ -11,40 +11,41 @@ import Models
 
 struct OnboardingPageTwoView: View {
     var body: some View {
-        VStack {
-            HBImages.BirdTwoOnboarding
-                .resizable()
-                .frame(width: 180, height: 180)
-            
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(NSLocalizedString("flashcards", bundle: .module, comment: ""))
-                        .lineLimit(nil)
-                        .font(.title)
-                        .fontWeight(.semibold)
-                        .foregroundColor(HBColor.actionColor)
-                        .padding(.vertical)
-                    
-                    Text(NSLocalizedString("pagina_dois_um", bundle: .module, comment: ""))
-                        .lineLimit(nil)
-                        .font(.body)
-                        .fontWeight(.regular)
-                        .foregroundColor(HBColor.collectionTextColor)
-                        .padding(.bottom)
-                    
-                    Text(NSLocalizedString("pagina_dois_dois", bundle: .module, comment: ""))
-                        .lineLimit(nil)
-                        .font(.body)
-                        .fontWeight(.regular)
-                        .foregroundColor(HBColor.collectionTextColor)
-                        .padding(.bottom)
+        ScrollView {
+            VStack {
+                HBImages.BirdTwoOnboarding
+                    .resizable()
+                    .frame(width: 180, height: 180)
+                
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(NSLocalizedString("flashcards", bundle: .module, comment: ""))
+                            .lineLimit(nil)
+                            .font(.title)
+                            .fontWeight(.semibold)
+                            .foregroundColor(HBColor.actionColor)
+                            .padding(.vertical)
+                        
+                        Text(NSLocalizedString("pagina_dois_um", bundle: .module, comment: ""))
+                            .lineLimit(nil)
+                            .font(.system(size: 16))
+                            .fontWeight(.regular)
+                            .foregroundColor(HBColor.collectionTextColor)
+                            .padding(.bottom)
+                        
+                        Text(NSLocalizedString("pagina_dois_dois", bundle: .module, comment: ""))
+                            .lineLimit(nil)
+                            .font(.system(size: 16))
+                            .fontWeight(.regular)
+                            .foregroundColor(HBColor.collectionTextColor)
+                            .padding(.bottom)
+                    }
+                    Spacer()
                 }
-                Spacer()
+                HBImages.cardsOnboarding
             }
-            HBImages.cardsOnboarding
+            .padding()
         }
-        .padding()
-        .viewBackgroundColor(HBColor.primaryBackground)
     }
 }
 

@@ -10,11 +10,24 @@ import AppFeature
 
 @main
 struct Project_BirdApp: App {
+    #if os(iOS)
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-        
+    #endif
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            #if os(iOS)
+            ContentViewiOS()
+            #elseif os(macOS)
+            ContentViewMacOS()
+                .frame(minWidth: 1024, minHeight: 640)
+            #endif
         }
+        
+        #if os(macOS)
+        NewFlashcardWindow
+        StudyWindow
+        ImportWindow
+        #endif
     }
 }

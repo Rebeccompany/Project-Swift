@@ -12,23 +12,27 @@ import NewDeckFeature
 
 struct DeckTableView: View {
     @EnvironmentObject private var viewModel: ContentViewModel
+    #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
+    
     @State private var showCollectionSelection = false
     @State private var deckToBeEdited: Deck?
     
     var editAction: (Deck) -> Void
     
     private var sortedDecks: [Deck] {
-        viewModel.decks.sorted(using: viewModel.sortOrder)
+        viewModel.filteredDecks.sorted(using: viewModel.sortOrder)
     }
     
     var body: some View {
-        if viewModel.decks.isEmpty {
+        if viewModel.filteredDecks.isEmpty {
             EmptyStateView(component: .deck)
         } else {
             content
                 .sheet(isPresented: $showCollectionSelection) {
                     CollectionList(viewModel: viewModel, deck: $deckToBeEdited)
+                        .frame(width: 500, height: 500)
                 }
         }
     }
@@ -36,9 +40,10 @@ struct DeckTableView: View {
     @ViewBuilder
     private var content: some View {
         VStack(alignment: .leading) {
-            if !viewModel.todayDecks.isEmpty {
+            if !viewModel.todayDecks.isEmpty && viewModel.selectedCollection == nil {
                 Text(NSLocalizedString("sessões_para_hoje", bundle: .module, comment: ""))
                     .padding(.leading)
+                    .padding(.top)
                     .font(.title3)
                     .bold()
                 SessionsForTodayView()
@@ -47,14 +52,21 @@ struct DeckTableView: View {
                 .padding(.leading)
                 .font(.title3)
                 .bold()
+#if os(iOS)
             if horizontalSizeClass == .compact {
                 list
             } else {
                 table
             }
             
+#elseif os(macOS)
+            table
+#endif
+            
         }
+#if os(iOS)
         .toolbarBackground(.visible, for: .bottomBar)
+#endif
     }
     
     @ViewBuilder
@@ -87,21 +99,13 @@ struct DeckTableView: View {
                 .tint(HBColor.collectionYellow)
             }
             .contextMenu {
-                Button {
-                    editAction(deck)
-                } label: {
-                    Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
-                }
-                
-                Button(role: .destructive) {
-                    try? viewModel.deleteDeck(deck)
-                } label: {
-                    Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
-                }
+                contextMenu(for: deck)
             }
         }
         .animation(.linear, value: sortedDecks)
+        #if os(iOS)
         .toolbarBackground(.visible, for: .tabBar)
+        #endif
         .listStyle(.plain)
         .onDisappear {
             Task {
@@ -114,7 +118,7 @@ struct DeckTableView: View {
     
     @ViewBuilder
     private var table: some View {
-        Table(sortedDecks, selection: $viewModel.selection, sortOrder: $viewModel.sortOrder) {
+        Table(selection: $viewModel.selection, sortOrder: $viewModel.sortOrder) {
             TableColumn("") { deck in
                 Image(systemName: deck.icon)
                     .font(.system(size: 14))
@@ -128,7 +132,6 @@ struct DeckTableView: View {
             }.width(35)
             TableColumn(NSLocalizedString("nome", bundle: .module, comment: ""), value: \.name) { deck in
                 Text(deck.name)
-                    .foregroundColor(.primary)
             }
             TableColumn("Flashcards", value: \.cardCount) { deck in
                 Text("\(deck.cardCount) flashcards")
@@ -139,13 +142,22 @@ struct DeckTableView: View {
             TableColumn(NSLocalizedString("acessar", bundle: .module, comment: "")) { deck in
                 NavigationLink(value: StudyRoute.deck(deck)) {
                     Text(NSLocalizedString("abrir", bundle: .module, comment: ""))
+                    
                 }
                 .tint(HBColor.color(for: deck.color))
                 .buttonStyle(.bordered)
+                #if os(iOS)
                 .buttonBorderShape(.capsule)
+                #endif
             }.width(90)
-        }
-        .animation(.linear, value: viewModel.sortOrder)
+        } rows: {
+            ForEach(sortedDecks) { deck in
+                TableRow(deck)
+                    .contextMenu {
+                        contextMenu(for: deck)
+                    }
+            }
+        }.animation(.linear, value: viewModel.sortOrder)
     }
     
     @ViewBuilder
@@ -158,7 +170,7 @@ struct DeckTableView: View {
                         .fill(HBColor.color(for: deck.color).opacity(0.2))
                     
                         .frame(width: 35, height: 35)
-                        
+                    
                 )
                 .frame(width: 35, height: 35)
                 .padding(.trailing, 8)
@@ -166,5 +178,27 @@ struct DeckTableView: View {
                 .foregroundColor(.primary)
         }
         .padding(.leading, 4)
+    }
+    
+    @ViewBuilder
+    private func contextMenu(for deck: Deck) -> some View {
+        Button {
+            editAction(deck)
+        } label: {
+            Label(NSLocalizedString("editar", bundle: .module, comment: ""), systemImage: "pencil")
+        }
+        
+        Button(role: .destructive) {
+            try? viewModel.deleteDeck(deck)
+        } label: {
+            Label(NSLocalizedString("deletar", bundle: .module, comment: ""), systemImage: "trash")
+        }
+        
+        Button {
+            deckToBeEdited = deck
+            showCollectionSelection = true
+        } label: {
+            Text("mover_colecao", bundle: .module)
+        }
     }
 }

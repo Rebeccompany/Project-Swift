@@ -8,7 +8,7 @@
 import Foundation
 
 /// Snapshot of a card's info for statistics.
-public struct CardSnapshot: Equatable, Hashable {
+public struct CardSnapshot: Equatable, Hashable, Codable {
     /// The woodpeckerCardInfo of the card.
     public let woodpeckerCardInfo: WoodpeckerCardInfo
     /// The userGrade the user has given the card.
