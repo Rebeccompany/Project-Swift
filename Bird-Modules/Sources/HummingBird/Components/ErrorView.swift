@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
-import HummingBird
 
-struct ErrorView: View {
+public struct ErrorView: View {
     var action: () -> Void
     
-    var body: some View {
+    public init(action: @escaping () -> Void) {
+        self.action = action
+    }
+    
+    public var body: some View {
         VStack {
             HBImages.errorSpixii
                 .resizable()

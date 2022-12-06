@@ -17,3 +17,5 @@
 "deck" = "deck";
 "verso" = "Back";
 "frente" = "Front";
+"retry" = "Retry";
+"error_message" = "Oh no! Something is wrong, check your internet connection and press the button bellow to try again.";

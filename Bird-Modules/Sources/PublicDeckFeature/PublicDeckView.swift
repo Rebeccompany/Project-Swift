@@ -38,7 +38,10 @@ public struct PublicDeckView: View {
             case .loading:
                 loadingView()
             case .error:
-                Text("error")
+                ErrorView {
+                    guard let id = deck.id else { return }
+                    model.startUp(id: id)
+                }
             }
         }
         .onAppear {
