@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "error.pdf",
+      "filename" : "Group 1028.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Group 1046.pdf",
       "idiom" : "universal"
     }
   ],

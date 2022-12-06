@@ -122,7 +122,7 @@ struct SearchDeckView: View {
     @ViewBuilder
     private var emptyView: some View {
         VStack {
-            HBImages.spixiiHacker
+            HBImages.spixiiSearch
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .background {
