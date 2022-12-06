@@ -8,7 +8,6 @@
 import SwiftUI
 import Models
 import HummingBird
-
 struct CollectionList: View {
     @ObservedObject private var viewModel: ContentViewModel
     @Binding private var deck: Deck?
@@ -23,6 +22,7 @@ struct CollectionList: View {
     var body: some View {
         NavigationStack {
             VStack {
+                #if os(iOS)
                 List {
                     ForEach(viewModel.collections.filter { $0.id != deck?.collectionId }) { collection in
                         Button {
@@ -40,6 +40,43 @@ struct CollectionList: View {
                     }
                 }
                 .backgroundStyle(HBColor.primaryBackground)
+                #elseif os(macOS)
+                ScrollView {
+                    LazyVStack {
+                        ForEach(viewModel.collections.filter { $0.id != deck?.collectionId }) { collection in
+                            HStack(alignment: .center) {
+                                Button {
+                                    guard let deck else { return }
+                                    viewModel.change(deck: deck, to: collection)
+                                    dismiss()
+                                } label: {
+                                    HStack {
+                                        Label {
+                                            Text(collection.name)
+                                                .font(.system(size: 17))
+                                        } icon: {
+                                            Image(systemName: collection.icon.rawValue)
+                                                .font(.system(size: 17))
+                                        }
+                                        .foregroundColor(HBColor.collectionTextColor)
+                                        Spacer()
+                                    }
+                                    .contentShape(Rectangle())
+                                }
+                                .padding(.leading)
+                                .padding(.top, 5)
+                                .buttonStyle(.plain)
+                                Spacer()
+                            }
+                            Divider()
+                        }
+                    }
+                    .padding(.top)
+                    .backgroundStyle(HBColor.primaryBackground)
+                    
+                }
+                Spacer()
+                #endif
                 
                 if deck?.collectionId != nil {
                     Button {
