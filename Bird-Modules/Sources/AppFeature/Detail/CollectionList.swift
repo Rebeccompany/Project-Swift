@@ -68,7 +68,6 @@ struct CollectionList: View {
                                 .buttonStyle(.plain)
                                 Spacer()
                             }
-//                            .contentShape(Rectangle())
                             Divider()
                         }
                     }
