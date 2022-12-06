@@ -32,6 +32,7 @@ struct DeckTableView: View {
             content
                 .sheet(isPresented: $showCollectionSelection) {
                     CollectionList(viewModel: viewModel, deck: $deckToBeEdited)
+                        .frame(width: 500, height: 500)
                 }
         }
     }

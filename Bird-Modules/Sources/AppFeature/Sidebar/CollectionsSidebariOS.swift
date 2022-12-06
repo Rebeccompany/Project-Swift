@@ -50,7 +50,11 @@ struct CollectionsSidebariOS: View {
             
             if !isCompact {
                 NavigationLink(value: SidebarRoute.store) {
-                    Label("Store", systemImage: "bag")
+                    Label {
+                        Text("library", bundle: .module)
+                    } icon: {
+                        Image(systemName: "books.vertical")
+                    }
                 }
                 .listRowBackground(
                     isCompact ? HBColor.secondaryBackground : nil
@@ -122,7 +126,7 @@ struct CollectionsSidebariOS: View {
         .onChange(of: presentCollectionEdition, perform: viewModel.didCollectionPresentationStatusChanged)
         .scrollContentBackground(.hidden)
         .viewBackgroundColor(HBColor.primaryBackground)
-        .navigationTitle(NSLocalizedString("colecoes_title", bundle: .module, comment: ""))
+        .navigationTitle(horizontalSizeClass == .compact ? NSLocalizedString("colecoes_title", bundle: .module, comment: "") : "Spixii")
         .toolbar {
             ToolbarItem {
                 Button {
