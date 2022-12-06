@@ -61,7 +61,7 @@ struct CollectionList: View {
                                         .foregroundColor(HBColor.collectionTextColor)
                                         Spacer()
                                     }
-//                                    .contentShape(Rectangle())
+                                    .contentShape(Rectangle())
                                 }
                                 .padding(.leading)
                                 .padding(.top, 5)
