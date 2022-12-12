@@ -404,7 +404,8 @@ let package = Package(
         .target(
             name: "Kiwi",
             dependencies: [
-                "Storage"
+                "Storage",
+                "HummingBird"
             ]
         ),
         
