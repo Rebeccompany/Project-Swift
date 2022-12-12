@@ -7,24 +7,53 @@
 
 import SwiftUI
 import WidgetKit
+import HummingBird
 
 struct WidgetView: View {
     public var numBaralhos: Int
     var body: some View {
-        ZStack {
-            VStack {
-                Text("Baralhos Diários")
-                Text("Dia da semana, DD/MM")
-                
-                
-                if numBaralhos > 2 {
-                    HStack {
-                        Image(systemName: "ellipsis.circle")
-                        Text("Mais \(numBaralhos) baralhos")
-                    }
+        VStack(alignment: .leading) {
+            Text("Baralhos Diários")
+                .lineLimit(nil)
+                .font(.title)
+                .fontWeight(.bold)
+                .foregroundColor(HBColor.collectionTextColor)
+            Text("Dia, dd/MM")
+                .lineLimit(nil)
+                .font(.title3)
+                .fontWeight(.medium)
+                .foregroundColor(HBColor.actionColor)
+            
+            HStack {
+                Divider()
+                    .frame(width: 4, height: 50)
+                    .overlay(HBColor.collectionRed)
+                    .cornerRadius(30)
+                ZStack {
+                    Circle()
+                        .frame(width: 35)
+                        .foregroundColor(.blue)
+                    Image(systemName: "gamecontroller")
+                        .foregroundColor(HBColor.collectionRed)
+                }
+                VStack {
+                    Text("Nome do Baralho")
+                        .foregroundColor(HBColor.collectionTextColor)
+                    Text("\(numBaralhos) cartas para hoje")
+                        .foregroundColor(HBColor.collectionTextColor)
+                }
+            }
+            
+            
+            if numBaralhos > 2 {
+                HStack {
+                    Image(systemName: "ellipsis.circle")
+                    Text("Mais \(numBaralhos) baralhos")
+                        .foregroundColor(HBColor.collectionTextColor)
                 }
             }
         }
+        .viewBackgroundColor(HBColor.primaryBackground)
     }
 }
 
