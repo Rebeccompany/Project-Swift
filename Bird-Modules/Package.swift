@@ -139,7 +139,8 @@ let package = Package(
         .library(name: "Peacock", targets: ["Peacock"]),
         .library(name: "StoreState", targets: ["StoreState"]),
         .library(name: "Authentication", targets: ["Authentication"]),
-        .library(name: "Keychain", targets: ["Keychain"])
+        .library(name: "Keychain", targets: ["Keychain"]),
+        .library(name: "Kiwi", targets: ["Kiwi"])
     ],
     
     dependencies: [
@@ -397,6 +398,13 @@ let package = Package(
                 "Keychain",
                 "Storage",
                 "Utils"
+            ]
+        ),
+        
+        .target(
+            name: "Kiwi",
+            dependencies: [
+                "Storage"
             ]
         ),
         
