@@ -2,7 +2,7 @@
 //  Project_Bird_Widget.swift
 //  Project-Bird-Widget
 //
-//  Created by Rebecca Mello on 12/12/22.
+//  Created by Claudia Fiorentino on 12/12/22.
 //
 
 import WidgetKit
@@ -32,12 +32,6 @@ struct Provider: IntentTimelineProvider {
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
-    }
-
-    func recommendations() -> [IntentRecommendation<ConfigurationIntent>] {
-        return [
-            IntentRecommendation(intent: ConfigurationIntent(), description: "My Intent Widget")
-        ]
     }
 }
 
@@ -70,6 +64,6 @@ struct Project_Bird_Widget: Widget {
 struct Project_Bird_Widget_Previews: PreviewProvider {
     static var previews: some View {
         Project_Bird_WidgetEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
-            .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
