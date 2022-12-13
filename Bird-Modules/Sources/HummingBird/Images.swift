@@ -72,4 +72,8 @@ public enum HBImages {
     public static var spixiiSearch: Image {
         Image("spixii_search", bundle: .module)
     }
+    
+    public static var spixiiDrinkingWater: Image {
+        Image("spixiiDrinkingWater", bundle: .module)
+    }
 }
