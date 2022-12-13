@@ -36,6 +36,10 @@ struct Provider: TimelineProvider {
     }
     
     func placeholder(in context: Context) -> WidgetBody {
-        <#code#>
+        WidgetBody(date: .init(), widgetData: .init(deck: []))
     }
+}
+
+class WidgetModel: ObservableObject {
+//    @Dependency 
 }
