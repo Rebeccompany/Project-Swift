@@ -113,9 +113,11 @@ public struct NewFlashcardViewMacOS: View {
                 if viewModel.editingFlashcard == nil {
                     saveButton
                         .padding([.top, .bottom])
+                        .disabled(viewModel.flashcardFront.richText.string.isEmpty || viewModel.flashcardBack.richText.string.isEmpty)
                 } else {
                     saveButton
                         .padding([.top, .bottom])
+                        .disabled(viewModel.flashcardFront.richText.string.isEmpty || viewModel.flashcardBack.richText.string.isEmpty)
                     deleteButton
                 }
 
@@ -218,17 +220,13 @@ public struct NewFlashcardViewMacOS: View {
     }
     
     @ViewBuilder
-    private var textColorButton(): some View {
-        Button {
-            showPopup = true
-        } label: {
+    private func textColorButton(selectedContext: RichTextContext) -> some View {
+        ZStack {
             Image(systemName: "character")
-        }
-        .popover(isPresented: $showPopup) {
-            IconColorGridView {
-                colorGridItems
-            }
-            .frame(minWidth: 300, minHeight: 300)
+                .zIndex(2)
+                .foregroundColor(selectedContext.foregroundColor?.isLight ?? false ? .black : .white)
+            .font(.system(size: 14, weight: .bold))
+            ColorPicker("", selection: selectedContext.foregroundColorBinding, supportsOpacity: false)
         }
     }
     
@@ -239,6 +237,7 @@ public struct NewFlashcardViewMacOS: View {
                 .zIndex(2)
                 .foregroundColor(checkBackgroundColor(color: selectedContext.foregroundColor ?? .clear))
                 .font(.system(size: 14, weight: .bold))
+            
             ColorPicker("", selection: selectedContext.backgroundColorBinding, supportsOpacity: true)
         }
     }
@@ -258,20 +257,6 @@ public struct NewFlashcardViewMacOS: View {
         ForEach(viewModel.colors, id: \.self) { color in
             Button {
                 viewModel.currentSelectedColor = color
-            } label: {
-                HBColor.color(for: color)
-                    .frame(width: 45, height: 45)
-            }
-            .accessibility(label: Text(CollectionColor.getColorString(color)))
-            .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
-        }
-    }
-    
-    @ViewBuilder
-    private func colorGridItems(selectedContext: RichTextContext) -> some View {
-        ForEach(viewModel.colors, id: \.self) { color in
-            Button {
-                
             } label: {
                 HBColor.color(for: color)
                     .frame(width: 45, height: 45)
