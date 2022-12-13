@@ -70,8 +70,7 @@ public struct NewDeckViewiOS: View {
                         } label: {
                             Text("categoria_selecionada", bundle: .module)
                         }
-                        .pickerStyle(.navigationLink
-                        )
+//                        .pickerStyle()
                         .padding()
                         .background(HBColor.secondaryBackground)
                         .cornerRadius(12)

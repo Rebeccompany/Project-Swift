@@ -15,7 +15,7 @@ public enum HBColor {
         Color("CollectionRed", bundle: .module)
     }
     
-    static var collectionOrange: Color {
+    public static var collectionOrange: Color {
         Color("CollectionOrange", bundle: .module)
     }
     
