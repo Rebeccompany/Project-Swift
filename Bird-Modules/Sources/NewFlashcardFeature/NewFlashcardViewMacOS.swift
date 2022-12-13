@@ -19,7 +19,9 @@ public struct NewFlashcardViewMacOS: View {
     @State private var showingAlert: Bool = false
     @State private var selectedErrorMessage: AlertText = .deleteCard
     @State private var activeAlert: ActiveAlert = .error
-    @State private var size: CGFloat = 16
+    @State private var frontSize: CGFloat = 16
+    @State private var backSize: CGFloat = 16
+    @State private var selectedContext: Context = .front
     
     @StateObject private var frontContext = RichTextContext()
     @StateObject private var backContext = RichTextContext()
@@ -42,194 +44,173 @@ public struct NewFlashcardViewMacOS: View {
     
     public var body: some View {
         NavigationStack {
-            ScrollViewReader { _ in
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        HStack {
-                            FlashcardTextEditorViewMacOS(
-                                text: $viewModel.flashcardFront, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
-                                side: NSLocalizedString("frente", bundle: .module, comment: ""),
-                                context: frontContext,
-                                isFront: true
-                            )
-                            .id(NewFlashcardFocus.front)
-                            .frame(minHeight: 450)
-                            
-                            FlashcardTextEditorViewMacOS(
-                                text: $viewModel.flashcardBack, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
-                                side: NSLocalizedString("verso", bundle: .module, comment: ""),
-                                context: backContext,
-                                isFront: false
-                            )
-                            .id(NewFlashcardFocus.back)
-                            .frame(minHeight: 450)
-                        }
-                        
-                        Text("cores", bundle: .module)
-                            .font(.callout)
-                            .bold()
-                            .padding(.top)
-                        
-                        IconColorGridView {
-                            colorGridItems
-                        }
-                        
-                        Spacer()
-                        
-                        if viewModel.editingFlashcard != nil {
-                            HStack {
-                                Spacer()
-                                deleteButton
-                                Spacer()
-                                saveButton
-                                Spacer()
-                            }
-                            .padding(.bottom, 30)
-                            .padding(.top, 30)
-                            
-                        } else {
-                            HStack {
-                                Spacer()
-                                saveButton
-                                    .frame(width: 300)
-                                    .padding(.bottom, 30)
-                                    .padding(.top, 30)
-                                    .disabled(viewModel.flashcardFront.richText.string.isEmpty || viewModel.flashcardBack.richText.string.isEmpty)
-                                Spacer()
-                            }
+            GeometryReader { proxy in
+                HStack(spacing: 0) {
+                    sidebar
+                        .frame(width: 250, height: proxy.size.height)
+                    Group {
+                        switch selectedContext {
+                        case .front:
+                            content(context: frontContext, selectedContext: .front, text: $viewModel.flashcardFront,textSize: $frontSize)
+                        case .back:
+                            content(context: backContext, selectedContext: .back, text: $viewModel.flashcardBack, textSize: $backSize)
                         }
                     }
-                    .padding()
-                    
+                        .frame(width: proxy.size.width - 250, height: proxy.size.height)
                     
                 }
-                .scrollContentBackground(.hidden)
-                .scrollDismissesKeyboard(ScrollDismissesKeyboardMode.interactively)
-                .viewBackgroundColor(HBColor.primaryBackground)
-                .navigationTitle(viewModel.editingFlashcard == nil ? NSLocalizedString("criar_flashcard", bundle: .module, comment: "") : NSLocalizedString("editar_flashcard", bundle: .module, comment: ""))
-                .onAppear {
-                    viewModel.startUp(data)
-                }
-                .onReceive(viewModel.updateTextFieldContextPublisher) { _ in
-                    frontContext.shouldUpdateTextField()
-                    backContext.shouldUpdateTextField()
-                }
-                .alert(isPresented: $showingAlert) {
-                    customAlert()
-                }
-                .toolbar {
-                    
-                    ToolbarItem {
-                        italicButton
-                    }
-                    
-                    ToolbarItem {
-                        boldButton
-                    }
-                    
-                    ToolbarItem {
-                        underlineButton
-                    }
-                    
-                    ToolbarItem {
-                        alignmentMenu
-                    }
-                    
-                    ToolbarItem {
-                        textColorButton
-                    }
-                    
-                    ToolbarItem {
-                        textBackgroundColor
-                    }
-                    
-                    ToolbarItem {
-                        HStack {
-                            Spacer()
-                            sizeTools(size: $size)
-                                .frame(width: 115)
-                                .padding(.horizontal, 4)
-                                .background(.regularMaterial)
-                                .cornerRadius(8)
-                            Spacer()
-                        }
-                    }
-                }
+                .frame(width: proxy.size.width, height: proxy.size.height)
             }
-        }
-        .onChange(of: size) { newValue in
-            activeContext?.fontSize = newValue
-        }
-        .onChange(of: frontContext.isEditingText) { newValue in
-            if newValue && backContext.isEditingText {
-                backContext.toggleIsEditing()
-                backContext.resetSelectedRange()
-                backContext.resetHighlightedRange()
-                size = frontContext.fontSize
+            .navigationTitle(NSLocalizedString("novo_flashcard", bundle: .module, comment: ""))
+            .onChange(of: frontSize) { newValue in
+                frontContext.fontSize = newValue
             }
-        }
-        .onChange(of: backContext.isEditingText) { newValue in
-            if newValue && frontContext.isEditingText {
-                frontContext.toggleIsEditing()
-                frontContext.resetSelectedRange()
-                frontContext.resetHighlightedRange()
-                size = backContext.fontSize
+            .onChange(of: backSize) { newValue in
+                backContext.fontSize = newValue
             }
         }
     }
     
     @ViewBuilder
-    private var italicButton: some View {
-        Button { activeContext?.isItalic.toggle() } label: {
+    private var sidebar: some View {
+        ScrollView {
+            Form {
+                Section {
+                    Picker("", selection: $selectedContext) {
+                        Text("front").tag(Context.front)
+                        Text("back").tag(Context.back)
+                    }
+                    .pickerStyle(.segmented)
+                } header: {
+                    Text("Content")
+                        .font(.headline)
+                }
+                
+                Section {
+                    IconColorGridView {
+                        colorGridItems
+                    }
+                } header: {
+                    Text("Colors")
+                        .font(.headline)
+                        .padding(.top)
+                }
+            }
+            .padding()
+        }
+    }
+    
+    @ViewBuilder private func content(context: RichTextContext, selectedContext: Context, text: Binding<NSAttributedString>, textSize: Binding<CGFloat>) -> some View {
+        FlashcardTextEditorViewMacOS(
+            text: text, color: HBColor.color(for: viewModel.currentSelectedColor ?? CollectionColor.darkBlue),
+            side: NSLocalizedString(selectedContext == .front ? "frente" : "back", bundle: .module, comment: ""),
+            context: context,
+            isFront: selectedContext == .front
+        )
+        .padding()
+        .toolbar {
+            ToolbarItem {
+                italicButton(selectedContext: context)
+            }
+            
+            ToolbarItem {
+                boldButton(selectedContext: context)
+            }
+            
+            ToolbarItem {
+                underlineButton(selectedContext: context)
+            }
+            
+            ToolbarItem {
+                alignmentMenu(selectedContext: context)
+            }
+            
+            ToolbarItem {
+                textColorButton(selectedContext: context)
+            }
+            
+            ToolbarItem {
+                textBackgroundColor(selectedContext: context)
+            }
+            
+            ToolbarItem {
+                HStack {
+                    Spacer()
+                    sizeTools(size: textSize, selectedContext: context)
+                        .frame(width: 115)
+                        .padding(.horizontal, 4)
+                        .background(.regularMaterial)
+                        .cornerRadius(8)
+                    Spacer()
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func italicButton(selectedContext: RichTextContext) -> some View {
+        Button { selectedContext.isItalic.toggle() } label: {
             Image.richTextStyleItalic
                 .frame(width: 18, height: 18)
         }
         .buttonStyle(.bordered)
-        .tint(activeContext?.isItalic ?? false ? HBColor.actionColor : nil)
+        .tint(selectedContext.isItalic ? HBColor.actionColor : nil)
         .keyboardShortcut("i", modifiers: .command)
+        .background(
+            RoundedRectangle(cornerRadius: 6)
+                .fill(Color.white.opacity(selectedContext.isItalic ? 0.05 : 0))
+        )
     }
     
     @ViewBuilder
-    private var boldButton: some View {
-        Button { activeContext?.isBold.toggle() } label: {
+    private func boldButton(selectedContext: RichTextContext) -> some View {
+        Button { selectedContext.isBold.toggle() } label: {
             Image.richTextStyleBold
                 .frame(width: 18, height: 18)
         }
         .buttonStyle(.bordered)
-        .tint(activeContext?.isBold ?? false ? HBColor.actionColor : nil)
+        .tint(selectedContext.isBold ? HBColor.actionColor : nil)
         .keyboardShortcut("b", modifiers: .command)
+        .background(
+            RoundedRectangle(cornerRadius: 6)
+                .fill(Color.white.opacity(selectedContext.isBold ? 0.05 : 0))
+        )
     }
     
     @ViewBuilder
-    private var underlineButton: some View {
-        Button { activeContext?.isUnderlined.toggle() } label: {
+    private func underlineButton(selectedContext: RichTextContext) -> some View {
+        Button { selectedContext.isUnderlined.toggle() } label: {
             Image.richTextStyleUnderline
                 .frame(width: 18, height: 18)
         }
         .buttonStyle(.bordered)
-        .tint(activeContext?.isUnderlined ?? false ? HBColor.actionColor : nil)
+        .tint(selectedContext.isUnderlined ? HBColor.actionColor : nil)
         .keyboardShortcut("u", modifiers: .command)
+        .background(
+            RoundedRectangle(cornerRadius: 6)
+                .fill(Color.white.opacity(selectedContext.isUnderlined ? 0.05 : 0))
+        )
     }
     
     @ViewBuilder
-    private var textColorButton: some View {
+    private func textColorButton(selectedContext: RichTextContext) -> some View {
         ZStack {
             Image(systemName: "character")
                 .zIndex(2)
-                .foregroundColor(activeContext?.foregroundColor?.isLight ?? false ? .black : .white)
+                .foregroundColor(selectedContext.foregroundColor?.isLight ?? false ? .black : .white)
                 .font(.system(size: 14, weight: .bold))
-            ColorPicker("", selection: activeContext?.foregroundColorBinding ?? frontContext.foregroundColorBinding, supportsOpacity: false)
+            ColorPicker("", selection: selectedContext.foregroundColorBinding, supportsOpacity: false)
         }
     }
     
     @ViewBuilder
-    private var textBackgroundColor: some View {
+    private func textBackgroundColor(selectedContext: RichTextContext) -> some View {
         ZStack {
             Image(systemName: "highlighter")
                 .zIndex(2)
-                .foregroundColor(checkBackgroundColor(color: activeContext?.foregroundColor ?? .clear))
+                .foregroundColor(checkBackgroundColor(color: selectedContext.foregroundColor ?? .clear))
                 .font(.system(size: 14, weight: .bold))
-            ColorPicker("", selection: activeContext?.backgroundColorBinding ?? frontContext.backgroundColorBinding, supportsOpacity: true)
+            ColorPicker("", selection: selectedContext.backgroundColorBinding, supportsOpacity: true)
         }
     }
     
@@ -338,11 +319,11 @@ public struct NewFlashcardViewMacOS: View {
     }
 
     @ViewBuilder
-    private var alignmentMenu: some View {
+    private func alignmentMenu(selectedContext: RichTextContext) -> some View {
         Menu {
             ForEach(RichTextAlignment.allCases) { alignment in
                 Button {
-                    activeContext?.alignment = alignment
+                    selectedContext.alignment = alignment
                 } label: {
                     Label {
                         Text(alignment.rawValue)
@@ -353,19 +334,17 @@ public struct NewFlashcardViewMacOS: View {
             }
             
         } label: {
-            activeContext?.alignment.icon
+            selectedContext.alignment.icon
                 .frame(width: 18, height: 18)
         }
         .buttonStyle(.bordered)
     }
     
-    func sizeTools(size: Binding<CGFloat>) -> some View {
+    func sizeTools(size: Binding<CGFloat>, selectedContext: RichTextContext) -> some View {
         HStack {
             Button {
-                guard let activeContext else { return }
-                activeContext.decrementFontSize()
-                self.size -= CGFloat(1)
-                self.size = activeContext.fontSize
+                selectedContext.decrementFontSize()
+                size.wrappedValue -= CGFloat(1)
             } label: {
                 Image(systemName: "minus")
                     .frame(width: 10, height: 10)
@@ -377,10 +356,8 @@ public struct NewFlashcardViewMacOS: View {
                 .frame(minWidth: 50)
             
             Button {
-                guard let activeContext else { return }
-                activeContext.incrementFontSize()
-                self.size += CGFloat(1)
-                self.size = activeContext.fontSize
+                selectedContext.incrementFontSize()
+                size.wrappedValue += CGFloat(1)
             } label: {
                 Image(systemName: "plus")
                     .frame(width: 10, height: 10)
@@ -400,9 +377,10 @@ extension View {
 
 struct NewFlashcardViewMacOS_Previews: PreviewProvider {
     static var previews: some View {
-        HabitatPreview {
-            NewFlashcardViewMacOS(data: NewFlashcardWindowData(deckId: .init()))
-        }
+            HabitatPreview {
+                NewFlashcardViewMacOS(data: NewFlashcardWindowData(deckId: .init()))
+            }
+            .frame(minWidth: 780, minHeight: 640)
     }
 }
 
@@ -412,5 +390,9 @@ extension NSColor {
         let brightness = ((components[0] * 299) + (components[1] * 587) + (components[2] * 114)) / 1000
         return (brightness > 0.5)
     }
+}
+
+enum Context {
+    case front, back
 }
 #endif
