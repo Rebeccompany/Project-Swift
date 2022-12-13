@@ -14,6 +14,7 @@ import Utils
 #if os(macOS)
 struct EndOfStudyViewMacOS: View {
     private let mode: StudyMode
+    @Environment(\.dismiss) private var dismiss
     
     init(mode: StudyMode) {
         self.mode = mode

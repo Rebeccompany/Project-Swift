@@ -7,5 +7,5 @@
 
 import Foundation
 public enum ActiveAlert {
-    case error, confirm, close
+    case error, confirm
 }

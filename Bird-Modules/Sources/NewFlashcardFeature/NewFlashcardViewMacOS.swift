@@ -22,6 +22,7 @@ public struct NewFlashcardViewMacOS: View {
     @State private var frontSize: CGFloat = 16
     @State private var backSize: CGFloat = 16
     @State private var selectedContext: Context = .front
+    @State private var showPopup: Bool = false
     
     @StateObject private var frontContext = RichTextContext()
     @StateObject private var backContext = RichTextContext()
@@ -29,15 +30,7 @@ public struct NewFlashcardViewMacOS: View {
     @Environment (\.dismiss) private var dismiss
     
     var data: NewFlashcardWindowData
-    
-    var activeContext: RichTextContext? {
-        if frontContext.isEditingText {
-            return frontContext
-        } else if backContext.isEditingText {
-            return backContext
-        } else { return nil }
-    }
-    
+
     public init(data: NewFlashcardWindowData) {
         self.data = data
     }
@@ -45,30 +38,51 @@ public struct NewFlashcardViewMacOS: View {
     public var body: some View {
         NavigationStack {
             GeometryReader { proxy in
+                let contentSize = contentSize(screenSize: proxy.size)
                 HStack(spacing: 0) {
                     sidebar
                         .frame(width: 250, height: proxy.size.height)
+                    Divider()
+                        .frame(height: proxy.size.height)
                     Group {
                         switch selectedContext {
                         case .front:
-                            content(context: frontContext, selectedContext: .front, text: $viewModel.flashcardFront,textSize: $frontSize)
+                            content(context: frontContext, selectedContext: .front, text: $viewModel.flashcardFront, textSize: $frontSize)
                         case .back:
                             content(context: backContext, selectedContext: .back, text: $viewModel.flashcardBack, textSize: $backSize)
                         }
                     }
-                        .frame(width: proxy.size.width - 250, height: proxy.size.height)
+                    .frame(width: contentSize.width, height: contentSize.height)
                     
                 }
                 .frame(width: proxy.size.width, height: proxy.size.height)
             }
-            .navigationTitle(NSLocalizedString("novo_flashcard", bundle: .module, comment: ""))
+            .navigationTitle((viewModel.editingFlashcard != nil) ? "editar flashcard" : "novo flashcard")
             .onChange(of: frontSize) { newValue in
                 frontContext.fontSize = newValue
             }
             .onChange(of: backSize) { newValue in
                 backContext.fontSize = newValue
             }
+            .onAppear {
+                viewModel.startUp(data)
+            }
+            .onReceive(viewModel.updateTextFieldContextPublisher) { _ in
+                frontContext.shouldUpdateTextField()
+                backContext.shouldUpdateTextField()
+            }
+            .alert(isPresented: $showingAlert) {
+                customAlert()
+            }
         }
+    }
+    
+    private func contentSize(screenSize: CGSize) -> CGSize {
+        let width = screenSize.width - 250
+        let height = screenSize.height
+        
+        return CGSize(width: width > 0 ? width : 500, height: height)
+        
     }
     
     @ViewBuilder
@@ -95,6 +109,16 @@ public struct NewFlashcardViewMacOS: View {
                         .font(.headline)
                         .padding(.top)
                 }
+                
+                if viewModel.editingFlashcard == nil {
+                    saveButton
+                        .padding([.top, .bottom])
+                } else {
+                    saveButton
+                        .padding([.top, .bottom])
+                    deleteButton
+                }
+
             }
             .padding()
         }
@@ -107,6 +131,7 @@ public struct NewFlashcardViewMacOS: View {
             context: context,
             isFront: selectedContext == .front
         )
+        .aspectRatio(CGSize(width: 10, height: 16), contentMode: .fit)
         .padding()
         .toolbar {
             ToolbarItem {
@@ -193,13 +218,17 @@ public struct NewFlashcardViewMacOS: View {
     }
     
     @ViewBuilder
-    private func textColorButton(selectedContext: RichTextContext) -> some View {
-        ZStack {
+    private var textColorButton(): some View {
+        Button {
+            showPopup = true
+        } label: {
             Image(systemName: "character")
-                .zIndex(2)
-                .foregroundColor(selectedContext.foregroundColor?.isLight ?? false ? .black : .white)
-                .font(.system(size: 14, weight: .bold))
-            ColorPicker("", selection: selectedContext.foregroundColorBinding, supportsOpacity: false)
+        }
+        .popover(isPresented: $showPopup) {
+            IconColorGridView {
+                colorGridItems
+            }
+            .frame(minWidth: 300, minHeight: 300)
         }
     }
     
@@ -239,6 +268,20 @@ public struct NewFlashcardViewMacOS: View {
     }
     
     @ViewBuilder
+    private func colorGridItems(selectedContext: RichTextContext) -> some View {
+        ForEach(viewModel.colors, id: \.self) { color in
+            Button {
+                
+            } label: {
+                HBColor.color(for: color)
+                    .frame(width: 45, height: 45)
+            }
+            .accessibility(label: Text(CollectionColor.getColorString(color)))
+            .buttonStyle(ColorIconButtonStyle(isSelected: viewModel.currentSelectedColor == color ? true : false))
+        }
+    }
+    
+    @ViewBuilder
     private var deleteButton: some View {
         Button {
             activeAlert = .confirm
@@ -257,6 +300,8 @@ public struct NewFlashcardViewMacOS: View {
                 do {
                     try viewModel.createFlashcard()
                     viewModel.reset()
+                    selectedContext = .front
+                    dismiss()
                 } catch {
                     activeAlert = .error
                     showingAlert = true
@@ -265,15 +310,13 @@ public struct NewFlashcardViewMacOS: View {
             } else {
                 do {
                     try viewModel.editFlashcard()
+                    dismiss()
                 } catch {
                     activeAlert = .error
                     showingAlert = true
                     selectedErrorMessage = .editCard
                 }
             }
-            
-            activeAlert = .close
-            showingAlert = true
             
         } label: {
             HStack {
@@ -313,8 +356,6 @@ public struct NewFlashcardViewMacOS: View {
                          },
                          secondaryButton: .cancel(Text("cancelar", bundle: .module))
             )
-        case .close:
-            return Alert(title: Text(NSLocalizedString("cartao_salvo", bundle: .module, comment: "")), message: Text(NSLocalizedString("fechar_janela", bundle: .module, comment: "")))
         }
     }
 
