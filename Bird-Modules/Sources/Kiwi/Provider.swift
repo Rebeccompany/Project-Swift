@@ -38,6 +38,19 @@ struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> WidgetBody {
         WidgetBody(date: .init(), widgetData: .init(deck: []))
     }
+    
+    @main
+    struct SpixiiWidget: Widget {
+        let kind: String = "HelloWidget"
+        
+        var body: some WidgetConfiguration {
+            StaticConfiguration(kind: kind, provider: Provider()) { data in
+                WidgetView(data: data)
+            }
+            .configurationDisplayName("Última mensagem recebida")
+            .description("Saiba da última mensagem recebida no Hello")
+        }
+    }
 }
 
 class WidgetModel: ObservableObject {

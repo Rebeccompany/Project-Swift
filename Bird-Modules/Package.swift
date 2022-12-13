@@ -177,7 +177,8 @@ let package = Package(
                 "Tweet",
                 "StoreState",
                 "ClassKitFeature",
-                "Authentication"
+                "Authentication",
+                "Kiwi"
             ]
         ),
         
