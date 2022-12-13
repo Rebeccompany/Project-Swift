@@ -12,7 +12,22 @@ import Models
 
 struct WidgetView: View {
     public var baralhos: [Deck]
+    @Environment(\.widgetFamily) var family
+    
     var body: some View {
+        switch family {
+        case .systemSmall:
+            smallWidget
+            .viewBackgroundColor(HBColor.primaryBackground)
+            
+        case .systemMedium:
+            
+        }
+        
+    }
+    
+    @ViewBuilder
+    private var smallWidget: some View {
         VStack(alignment: .leading) {
             Text("Baralhos Diários")
                 .lineLimit(nil)
@@ -67,7 +82,6 @@ struct WidgetView: View {
                 }
             }
         }
-        .viewBackgroundColor(HBColor.primaryBackground)
     }
 }
 
