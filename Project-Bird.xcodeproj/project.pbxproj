@@ -77,6 +77,7 @@
 		7C2712392947A39D00BA9AD2 /* Project_Bird_Widget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Project_Bird_Widget.intentdefinition; sourceTree = "<group>"; };
 		7C27123A2947A39E00BA9AD2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7C27123C2947A39E00BA9AD2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9DA6834D2948E5D8001E5B69 /* Project-Bird-WidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Project-Bird-WidgetExtension.entitlements"; sourceTree = "<group>"; };
 		9DC009AE29479CBB00472FBD /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		9DC009B029479CBB00472FBD /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		BA2D684029315EEC008AA2DA /* Project-Bird--macOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Project-Bird--macOS--Info.plist"; sourceTree = "<group>"; };
@@ -169,6 +170,7 @@
 		BA654ED828A142F100EF72C8 = {
 			isa = PBXGroup;
 			children = (
+				9DA6834D2948E5D8001E5B69 /* Project-Bird-WidgetExtension.entitlements */,
 				BA2D684029315EEC008AA2DA /* Project-Bird--macOS--Info.plist */,
 				BA654F1C28A14BF400EF72C8 /* Bird-Modules */,
 				5B07663728C2789F00221DE8 /* macOS */,
@@ -570,6 +572,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "Project-Bird-WidgetExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8JPPDHN68R;
@@ -600,6 +603,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "Project-Bird-WidgetExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8JPPDHN68R;

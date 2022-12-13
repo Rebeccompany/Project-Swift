@@ -177,7 +177,8 @@ let package = Package(
                 "Tweet",
                 "StoreState",
                 "ClassKitFeature",
-                "Authentication"
+                "Authentication",
+                "Kiwi"
             ]
         ),
         
@@ -405,7 +406,8 @@ let package = Package(
             name: "Kiwi",
             dependencies: [
                 "Storage",
-                "HummingBird"
+                "HummingBird",
+                "Models"
             ]
         ),
         
