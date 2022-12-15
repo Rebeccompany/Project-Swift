@@ -15,7 +15,6 @@ import Combine
 import Tweet
 import Utils
 
-
 final class ContentViewModelTests: XCTestCase {
     
     var sut: ContentViewModel!
@@ -315,6 +314,7 @@ final class ContentViewModelTests: XCTestCase {
         XCTAssertEqual(NSLocalizedString("baralhos_title", bundle: .module, comment: ""), sut.detailTitle)
     }
     
+    #if os(iOS)
     @MainActor func testSetupDidEnterBackgroundPublisher() async {
         
         var deck = Deck(id: UUID(), name: "nomim", icon: "", color: .white, collectionId: nil, cardsIds: [], category: .arts, storeId: nil, description: "", ownerId: nil)
@@ -336,7 +336,6 @@ final class ContentViewModelTests: XCTestCase {
         
         
         XCTAssertEqual(self.userNotificationService.requests.count, 1)
-        
     }
     
     @MainActor func testSetupDidEnterForeground() async throws {
@@ -363,6 +362,7 @@ final class ContentViewModelTests: XCTestCase {
         
         XCTAssertTrue(self.userNotificationService.requests.count == 0)
     }
+    #endif
 
     func testChangeDeckToNewCollection() {
         let collection = collectionRepositoryMock.collections.first!

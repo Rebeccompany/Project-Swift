@@ -224,7 +224,6 @@ class NewFlashcardFeatureTestsiOS: XCTestCase {
     func testDeleteFlashcardSuccessfully() throws {
         let id = deckRepository.data[deck.id]!.cards.first?.id
         
-
         let containsFlashcard = deckRepository.data[deck.id]!.cards.contains(where: {
             $0.id == id
         })
