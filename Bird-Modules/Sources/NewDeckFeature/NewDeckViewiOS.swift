@@ -154,8 +154,6 @@ public struct NewDeckViewiOS: View {
                         Text(NSLocalizedString("alert_delete_deck_error_text", bundle: .module, comment: ""))
                     case .confirm:
                         Text(NSLocalizedString("alert_delete_deck", bundle: .module, comment: ""))
-                    case .close:
-                        Text("does not apply")
                     }
                 }
                 .navigationTitle(editingDeck == nil ? NSLocalizedString("criar_deck", bundle: .module, comment: "") : NSLocalizedString("editar_deck", bundle: .module, comment: ""))
