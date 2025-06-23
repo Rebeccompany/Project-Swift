@@ -117,7 +117,7 @@ public struct StudyViewiOS: View {
                             .accessibility(addTraits: .isButton)
                     }
                     .sheet(isPresented: $flashcardsOnboarding) {
-                        FlashcardsOnboardingView()
+                        FlashcardsOnboardingView().presentationDetents([.medium])
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -134,9 +134,9 @@ public struct StudyViewiOS: View {
                             showingErrorAlert = true
                         }
                     } label: {
-                        Text("sair", bundle: .module)
+                        Label("sair", systemImage: "xmark")
                     }
-                    .foregroundColor(.red)
+                    .tint(.red)
                 }
                 
             }

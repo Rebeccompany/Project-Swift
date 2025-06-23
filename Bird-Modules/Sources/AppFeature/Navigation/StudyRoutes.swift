@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Models
-import DeckFeature
+import DeckFeatureV2
 import Storage
 import Flock
 
@@ -17,7 +17,7 @@ struct StudyRoutes {
         switch route {
         case .deck(let deck):
             #if os(iOS)
-            DeckViewiOS(deck: viewModel.bindingToDeck(deck))
+            DeckView(deckBinding: viewModel.bindingToDeck(deck))
             #elseif os(macOS)
             DeckViewMacOS(deck: viewModel.bindingToDeck(deck))
             //Text("deck: \(deck.name)")

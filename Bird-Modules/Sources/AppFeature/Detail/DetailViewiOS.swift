@@ -39,36 +39,6 @@ public struct DetailViewiOS: View {
         .searchable(text: $viewModel.searchText, placement: SearchFieldPlacement.toolbarPrincipal)
         .toolbarBackground(.visible, for: .bottomBar)
         .toolbar {
-            ToolbarSpacer(.flexible)
-
-            if editMode.isEditing {
-                ToolbarItemGroup {
-                    Button {
-                        editingDeck = viewModel.editDeck()
-                        presentDeckEdition = true
-                    } label: {
-                        Text(NSLocalizedString("editar", bundle: .module, comment: ""))
-                    }
-                    .disabled(viewModel.selection.count != 1)
-
-                    Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                        shouldDisplayAlert = true
-                    }
-                    .foregroundColor(.red)
-                    .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
-                        Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                            try? viewModel.deleteDecks()
-                            editingDeck = nil
-                        }
-                        .disabled(viewModel.selection.isEmpty)
-                    } message: {
-                        Text(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
-                    }
-                }
-            }
-
-            ToolbarSpacer(.fixed)
-
             ToolbarItemGroup {
                     Menu {
                         Button {
@@ -107,16 +77,45 @@ public struct DetailViewiOS: View {
                         .foregroundColor(HBColor.actionColor)
             }
 
-            ToolbarSpacer(.fixed)
+            if editMode.isEditing {
+                ToolbarItemGroup(placement: .bottomBar) {
+                    Button {
+                        editingDeck = viewModel.editDeck()
+                        presentDeckEdition = true
+                    } label: {
+                        Text(NSLocalizedString("editar", bundle: .module, comment: ""))
+                    }
+                    .disabled(viewModel.selection.count != 1)
 
-            ToolbarItem(placement: .primaryAction) {
+                    Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                        shouldDisplayAlert = true
+                    }
+                    .foregroundColor(.red)
+                    .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                        Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                            try? viewModel.deleteDecks()
+                            editingDeck = nil
+                        }
+                        .disabled(viewModel.selection.isEmpty)
+                    } message: {
+                        Text(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
+                    }
+                }
+            }
+
+            ToolbarSpacer(.fixed, placement: .bottomBar)
+
+            DefaultToolbarItem(kind: .search, placement: .bottomBar)
+
+            ToolbarSpacer(UIDevice.current.userInterfaceIdiom == .phone ? .fixed : .flexible, placement: .bottomBar)
+
+            ToolbarItem(placement: .bottomBar) {
                 Button {
                     editingDeck = nil
                     presentDeckEdition = true
                 } label: {
                     Image(systemName: "plus")
                 }
-                .buttonStyle(.borderedProminent)
                 .tint(HBColor.actionColor)
                 .popover(isPresented: $presentDeckEdition) {
                     NewDeckViewiOS(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
@@ -133,6 +132,7 @@ public struct DetailViewiOS: View {
         }
         .onChange(of: presentDeckEdition, perform: viewModel.didDeckPresentationStatusChanged)
         .navigationTitle(viewModel.detailTitle)
+        .toolbar(removing: .title)
     }
     
     @ViewBuilder
