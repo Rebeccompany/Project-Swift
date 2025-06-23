@@ -36,88 +36,88 @@ public struct DetailViewiOS: View {
                 content
             }
         }
-        .searchable(text: $viewModel.searchText, placement: horizontalSizeClass == .compact ? .navigationBarDrawer(displayMode: .always) : .toolbar)
-        .toolbar(editMode.isEditing ? .visible : .hidden,
-                 for: .bottomBar)
+        .searchable(text: $viewModel.searchText, placement: SearchFieldPlacement.toolbarPrincipal)
         .toolbarBackground(.visible, for: .bottomBar)
         .toolbar {
-            
-            ToolbarItem(placement: .bottomBar) {
-                Button {
-                    editingDeck = viewModel.editDeck()
-                    presentDeckEdition = true
-                } label: {
-                    Text(NSLocalizedString("editar", bundle: .module, comment: ""))
-                }
-                .disabled(viewModel.selection.count != 1)
-            }
-            
-            ToolbarItem(placement: .bottomBar) {
-                Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                    shouldDisplayAlert = true
-                }
-                .foregroundColor(.red)
-                .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+            ToolbarSpacer(.flexible)
+
+            if editMode.isEditing {
+                ToolbarItemGroup {
+                    Button {
+                        editingDeck = viewModel.editDeck()
+                        presentDeckEdition = true
+                    } label: {
+                        Text(NSLocalizedString("editar", bundle: .module, comment: ""))
+                    }
+                    .disabled(viewModel.selection.count != 1)
+
                     Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
-                        try? viewModel.deleteDecks()
-                        editingDeck = nil
+                        shouldDisplayAlert = true
                     }
-                    .disabled(viewModel.selection.isEmpty)
-                } message: {
-                    Text(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
-                }
-            }
-        }
-        .toolbar {
-            
-            ToolbarItem {
-                Menu {
-                    Button {
-                        viewModel.changeDetailType(for: .grid)
-                        viewModel.shouldReturnToGrid = true
-                    } label: {
-                        Label(NSLocalizedString("icones", bundle: .module, comment: ""), systemImage: "rectangle.grid.2x2")
-                    }
-                    .disabled(editMode.isEditing)
-                    
-                    Button {
-                        viewModel.changeDetailType(for: .table)
-                        viewModel.shouldReturnToGrid = false
-                    } label: {
-                        Label(NSLocalizedString("lista", bundle: .module, comment: ""), systemImage: "list.bullet")
-                    }
-                    
-                    Picker(selection: $viewModel.sortOrder) {
-                        Text(NSLocalizedString("nome", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.name)])
-                        Text(NSLocalizedString("quantidade", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.cardCount)])
-                        Text(NSLocalizedString("ultimo_acesso", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.datesLogs.lastAccess, order: .reverse)])
-                    } label: {
-                        Text(NSLocalizedString("opcoes_organizacao", bundle: .module, comment: ""))
-                    }
-                    
-                } label: {
-                    Label {
-                        Text(NSLocalizedString("visualizacao", bundle: .module, comment: ""))
-                    } icon: {
-                        Image(systemName: viewModel.detailType == .grid ? "rectangle.grid.2x2" : "list.bullet")
+                    .foregroundColor(.red)
+                    .confirmationDialog("Are you sure?", isPresented: $shouldDisplayAlert) {
+                        Button(NSLocalizedString("deletar", bundle: .module, comment: ""), role: .destructive) {
+                            try? viewModel.deleteDecks()
+                            editingDeck = nil
+                        }
+                        .disabled(viewModel.selection.isEmpty)
+                    } message: {
+                        Text(viewModel.selection.isEmpty ? NSLocalizedString("alert_nada_selecionado", bundle: .module, comment: "") : NSLocalizedString("alert_confirmacao_deletar", bundle: .module, comment: ""))
                     }
                 }
             }
-            
-            ToolbarItem {
-                EditButton()
-                    .keyboardShortcut("e", modifiers: .command)
-                    .foregroundColor(HBColor.actionColor)
+
+            ToolbarSpacer(.fixed)
+
+            ToolbarItemGroup {
+                    Menu {
+                        Button {
+                            viewModel.changeDetailType(for: .grid)
+                            viewModel.shouldReturnToGrid = true
+                        } label: {
+                            Label(NSLocalizedString("icones", bundle: .module, comment: ""), systemImage: "rectangle.grid.2x2")
+                        }
+                        .disabled(editMode.isEditing)
+
+                        Button {
+                            viewModel.changeDetailType(for: .table)
+                            viewModel.shouldReturnToGrid = false
+                        } label: {
+                            Label(NSLocalizedString("lista", bundle: .module, comment: ""), systemImage: "list.bullet")
+                        }
+
+                        Picker(selection: $viewModel.sortOrder) {
+                            Text(NSLocalizedString("nome", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.name)])
+                            Text(NSLocalizedString("quantidade", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.cardCount)])
+                            Text(NSLocalizedString("ultimo_acesso", bundle: .module, comment: "")).tag([KeyPathComparator(\Deck.datesLogs.lastAccess, order: .reverse)])
+                        } label: {
+                            Text(NSLocalizedString("opcoes_organizacao", bundle: .module, comment: ""))
+                        }
+
+                    } label: {
+                        Label {
+                            Text(NSLocalizedString("visualizacao", bundle: .module, comment: ""))
+                        } icon: {
+                            Image(systemName: viewModel.detailType == .grid ? "rectangle.grid.2x2" : "list.bullet")
+                        }
+                    }
+
+                    EditButton()
+                        .keyboardShortcut("e", modifiers: .command)
+                        .foregroundColor(HBColor.actionColor)
             }
-            
-            ToolbarItem {
+
+            ToolbarSpacer(.fixed)
+
+            ToolbarItem(placement: .primaryAction) {
                 Button {
                     editingDeck = nil
                     presentDeckEdition = true
                 } label: {
                     Image(systemName: "plus")
-                        .foregroundColor(HBColor.actionColor)
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(HBColor.actionColor)
                 .popover(isPresented: $presentDeckEdition) {
                     NewDeckViewiOS(collection: viewModel.selectedCollection, editingDeck: editingDeck, editMode: $editMode)
                         .frame(minWidth: 300, minHeight: 600)
@@ -144,10 +144,13 @@ public struct DetailViewiOS: View {
                 presentDeckEdition = true
             } label: {
                 Text(NSLocalizedString("criar_baralho", bundle: .module, comment: ""))
+                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(LargeButtonStyle(isDisabled: false))
-            .padding()
+            .tint(HBColor.actionColor)
+            .buttonStyle(.bordered)
+            .glassEffect()
         }
+        .padding()
     }
     
     @ViewBuilder

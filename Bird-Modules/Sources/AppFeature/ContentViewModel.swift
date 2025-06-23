@@ -15,7 +15,6 @@ import Utils
 import SwiftUI
 import Tweet
 import Puffins
-
 //swiftlint:disable trailing_closure
 public final class ContentViewModel: ObservableObject {
     
