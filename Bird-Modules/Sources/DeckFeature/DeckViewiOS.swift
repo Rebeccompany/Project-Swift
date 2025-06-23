@@ -145,7 +145,8 @@ public struct DeckViewiOS: View {
                         systemImage: "plus"
                     )
                 }
-                .foregroundColor(HBColor.actionColor)
+                .tint(HBColor.actionColor)
+                .buttonStyle(.borderedProminent)
                 .fullScreenCover(isPresented: $shouldDisplayNewFlashcard) {
                     NewFlashcardViewiOS(deck: deck, editingFlashcard: editingFlashcard)
                 }

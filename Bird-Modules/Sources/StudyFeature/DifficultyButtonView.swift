@@ -20,6 +20,7 @@ struct RatingButtonStyle: ButtonStyle {
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
+            .buttonStyle(.glass)
             .symbolVariant(currentSymbolVariant)
             .font(.system(size: configuration.isPressed ? 35 : 30))
             .scaleEffect(scaleEffectSize)
@@ -28,30 +29,8 @@ struct RatingButtonStyle: ButtonStyle {
             .aspectRatio(1, contentMode: .fill)
             .frame(width: 70, height: 70)
             .animation(.linear.delay(0.5), value: disabled)
-            .background(
-                Capsule()
-                    .fill(HBColor.secondaryBackground)
-                    .shadow(color: selectedColor, radius: 1, x: 0, y: 2)
-            )
-            .onChange(of: configuration.isPressed) { newValue in
-                withAnimation(.linear(duration: 0.1).delay(newValue ? 0 : 0.2)) {
-                    currentSymbolVariant = newValue ? .fill : .none
-                    scaleEffectSize = newValue ? 1.2 : 1.0
-                    selectedColor = color
-                }
-                
-                if disabled, !newValue {
-                    withAnimation(.linear.delay(0.3)) {
-                        selectedColor = .gray
-                    }
-                }
-            }
-            .onChange(of: disabled) { newValue in
-                withAnimation(.linear(duration: 0.2).delay(newValue ? 0.3 : 0)) {
-                    selectedColor = newValue ? .gray : HBColor.actionColor
-                }
-            }
-        
+            .glassEffect()
+
     }
     
     private func buttonColor(isPressed: Bool) -> Color {
@@ -101,14 +80,22 @@ struct DifficultyButtonView: View {
                 }
             } label: {
                 Image(systemName: !isVOOn ? content.image : "circle")
+                    .aspectRatio(1, contentMode: .fill)
+                    .font(.system(size: 30))
+                    .frame(width: 50, height: 50)
+
             }
             .keyboardShortcut(shortcutValue())
             .disabled(isDisabled)
-            .buttonStyle(RatingButtonStyle(color: content.color, disabled: $isDisabled))
+            .buttonStyle(.glass)
+            .tint(isDisabled ? .secondary : content.color)
+            .buttonBorderShape(.circle)
+            .animation(.default, value: isDisabled)
+
             Text(content.label)
                 .font(.system(size: 14))
                 .fontWeight(.medium)
-                .foregroundColor(isDisabled ? .gray : .primary)
+                .foregroundColor(isDisabled ? .gray : content.color)
                 .padding(.top, 4)
                 .accessibilityHidden(true)
             

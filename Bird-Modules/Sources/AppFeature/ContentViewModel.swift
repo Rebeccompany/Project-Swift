@@ -15,7 +15,6 @@ import Utils
 import SwiftUI
 import Tweet
 import Puffins
-
 //swiftlint:disable trailing_closure
 public final class ContentViewModel: ObservableObject {
     
@@ -29,7 +28,19 @@ public final class ContentViewModel: ObservableObject {
     @Published var sortOrder: [KeyPathComparator<Deck>]
     @Published var shouldReturnToGrid: Bool
     @Published var selectedCollection: DeckCollection?
-    
+
+    var groupedDecks: [String: [Deck]] {
+        Dictionary(grouping: filteredDecks.sorted(using: sortOrder)) { deck in
+            if let collectionId = deck.collectionId {
+                return collections.first { collection in
+                    collection.id == collectionId
+                }?.name ?? "Sem coleções"
+            } else {
+                return "Sem coleções"
+            }
+        }
+    }
+
     
     // MARK: Repositories
     @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol

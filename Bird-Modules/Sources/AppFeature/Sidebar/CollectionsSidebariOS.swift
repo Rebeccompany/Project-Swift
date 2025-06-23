@@ -133,9 +133,9 @@ struct CollectionsSidebariOS: View {
                     onboarding = true
                 } label: {
                     Image(systemName: "info.circle")
-                        .foregroundColor(HBColor.actionColor)
                         .accessibility(addTraits: .isButton)
                 }
+                .tint(HBColor.actionColor)
             }
             
             ToolbarItem {
@@ -146,6 +146,7 @@ struct CollectionsSidebariOS: View {
                         )
                         .frame(minWidth: 300, minHeight: 600)
                     }
+                    .tint(HBColor.actionColor)
             }
             
             ToolbarItem {
@@ -154,6 +155,8 @@ struct CollectionsSidebariOS: View {
                 } label: {
                     Image(systemName: "plus")
                 }
+                .tint(HBColor.actionColor)
+                .buttonStyle(.borderedProminent)
                 .popover(isPresented: $presentCollectionCreation) {
                     NewCollectionViewiOS(
                         editingCollection: editingCollection, editMode: $editMode

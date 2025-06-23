@@ -41,14 +41,18 @@ struct DeckCell: View {
     
     @ViewBuilder
     var rectangle: some View {
+        let color = HBColor.color(for: info.color)
         RoundedRectangle(cornerRadius: 8)
-            .fill(HBColor.color(for: info.color))
-            .overlay {
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.white, lineWidth: 3)
-            }
+            .fill(
+                LinearGradient(
+                    colors: [color, color.exposureAdjust(0.5), color],
+                    startPoint: .leading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .shadow(color: HBColor.black.opacity(0.5), radius: 2)
             #if os(iOS)
-            .frame(height: 116)
+            .frame(height: 120)
             #elseif os(macOS)
             .frame(height: 90)
             #endif
@@ -73,6 +77,6 @@ struct DeckCell_Previews: PreviewProvider {
         DeckCell(info: DeckCellInfo(icon: "flame", numberOfCards: 10, name: "Nome do Baralho 1", color: .otherPink))
             .frame(width: 180, height: 100)
             .previewLayout(.sizeThatFits)
-            .viewBackgroundColor(Color.blue)
+            .viewBackgroundColor(Color.white)
     }
 }

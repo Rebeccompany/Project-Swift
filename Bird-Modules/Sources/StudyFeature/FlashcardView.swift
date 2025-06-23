@@ -13,8 +13,6 @@ struct FlashcardView: View {
     @Binding var viewModel: CardViewModel
     var index: Int
     var cardCount: Int
-    @State private var frontDegree: Double = 0
-    @State private var backDegree: Double = -90
     
     init(viewModel: Binding<CardViewModel>, index: Int, cardCount: Int) {
         self._viewModel = viewModel
@@ -25,15 +23,15 @@ struct FlashcardView: View {
     var body: some View {
         ZStack {
             cardFace(content: viewModel.card.back, face: NSLocalizedString("verso", bundle: .module, comment: ""), description: "arrow.triangle.2.circlepath")
-                .rotation3DEffect(.degrees(backDegree), axis: (x: 0, y: 1, z: 0.0001))
+                .modifier(FlipOpacity(percentage: viewModel.isFlipped ? 1 : 0))
+                .rotation3DEffect(Angle.degrees(viewModel.isFlipped ? 0 : 180), axis: (0,1,0))
             cardFace(content: viewModel.card.front, face: NSLocalizedString("frente", bundle: .module, comment: ""), description: "arrow.triangle.2.circlepath")
-                .rotation3DEffect(.degrees(frontDegree), axis: (x: 0, y: 1, z: 0.0001))
+                .modifier(FlipOpacity(percentage: viewModel.isFlipped ? 0 : 1))
+                .rotation3DEffect(Angle.degrees(viewModel.isFlipped ? 180 : 360), axis: (0,1,0))
         }
         .shadow(color: .black.opacity(0.3), radius: 1, y: -1)
         .onTapGesture(perform: flip)
-        .onChange(of: viewModel.isFlipped) { newValue in
-            flipWithAnimation(newValue)
-        }
+        .animation(.default, value: viewModel.isFlipped)
         .transaction { transaction in
             if index == 0 && !viewModel.isFlipped && cardCount > 1 {
                 transaction.animation = nil
@@ -41,44 +39,26 @@ struct FlashcardView: View {
         }
         
     }
-    
+
+    private struct FlipOpacity: AnimatableModifier {
+       var percentage: CGFloat = 0
+
+       var animatableData: CGFloat {
+          get { percentage }
+          set { percentage = newValue }
+       }
+
+       func body(content: Content) -> some View {
+          content
+               .opacity(Double(percentage.rounded()))
+       }
+    }
+
     private func flip() {
-        
         if index != 0 || cardCount <= 1 {
             viewModel.isFlipped.toggle()
         }
         
-    }
-    
-    private func flipWithoutAnimation(_ newValue: Bool) {
-        if newValue {
-            frontDegree = 90
-            backDegree = 0
-        } else {
-            backDegree = -90
-            frontDegree = 0
-        }
-    }
-    
-    private func flipWithAnimation(_ newValue: Bool) {
-        let animDuration: Double = 0.25
-        if newValue {
-            withAnimation(.linear(duration: animDuration)) {
-                frontDegree = 90
-            }
-            
-            withAnimation(.linear(duration: animDuration).delay(animDuration)) {
-                backDegree = 0
-            }
-        } else {
-            withAnimation(.linear(duration: animDuration)) {
-                backDegree = -90
-            }
-            
-            withAnimation(.linear(duration: animDuration).delay(animDuration)) {
-                frontDegree = 0
-            }
-        }
     }
     
     @ViewBuilder
@@ -154,7 +134,7 @@ struct FlashcardView_Previews: PreviewProvider {
     }
     
     static var previews: some View {
-        FlashcardView(viewModel: .constant(CardViewModel(card: dummy, isFlipped: false)), index: 0, cardCount: 2)
+        FlashcardView(viewModel: .constant(CardViewModel(card: dummy, isFlipped: true)), index: 0, cardCount: 2)
             .frame(width: 340, height: 480)
             .padding()
             .preferredColorScheme(.dark)
