@@ -8,6 +8,7 @@
 import Storage
 import Habitat
 import Models
+import Foundation
 
 final class DeckInteractor {
     @Dependency(\.deckRepository) private var repository
@@ -15,6 +16,10 @@ final class DeckInteractor {
     
     func cardListener(for deck: Deck) -> some AsyncSequence<[Card], Error> {
         repository.cardListener(forId: deck.id).values
+    }
+
+    func fetchDeck(_ id: UUID) -> Deck? {
+        try? repository.fetchDeckById(id)
     }
 
     func canStudySpixiiMode(for deck: Deck) -> Bool {

@@ -19,7 +19,6 @@ import Authentication
 import OnboardingFeature
 import NewCollectionFeature
 
-#if os(iOS)
 public struct ContentViewiOS: View {
     @AppStorage("com.projectbird.birdmodules.appfeature.onboarding") private var onboarding: Bool = true
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
@@ -88,10 +87,6 @@ public struct ContentViewiOS: View {
     private var studyDetail: some View {
         NavigationStack(path: $appRouter.path) {
             DetailViewiOS(editMode: $editModeForDeck, viewModel: viewModel)
-                .toolbar(
-                    editModeForDeck.isEditing ? .hidden :
-                            .automatic,
-                    for: .tabBar)
                 .environment(viewModel)
                 .environment(\.editMode, $editModeForDeck)
                 .navigationDestination(for: StudyRoute.self) { route in
@@ -108,4 +103,3 @@ struct ContentViewiOS_Previews: PreviewProvider {
         }
     }
 }
-#endif

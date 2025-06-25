@@ -25,6 +25,7 @@ protocol ContentInteractorProtocol {
 final class ContentInteractor: ContentInteractorProtocol {
     @Dependency(\.deckRepository) private var deckRepository
     @Dependency(\.collectionRepository) private var collectionRepository
+    @Dependency(\.notificationCenter) private var notificationCenter
 
     func allDecks() -> any AsyncSequence<[Deck], Never> {
         deckRepository
@@ -64,16 +65,5 @@ final class ContentInteractor: ContentInteractorProtocol {
         } else if let collectionId = deck.collectionId, let collection = collections.first(where: { $0.id == collectionId }) {
             try? collectionRepository.removeDeck(deck, from: collection)
         }
-    }
-}
-
-extension Habitat {
-    var contentInteractor: ContentInteractorProtocol {
-        get { Self[ContentInteractorKey.self] }
-        set { Self[ContentInteractorKey.self] = newValue }
-    }
-
-    private struct ContentInteractorKey: HabitatKey {
-        static var currentValue: ContentInteractorProtocol = ContentInteractor()
     }
 }

@@ -40,7 +40,7 @@ struct DeckGridView: View {
                 if (viewModel.selectedCollection != nil) {
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
                             ForEach(sortedDecks) { deck in
-                                NavigationLink(value: StudyRoute.deck(deck)) {
+                                NavigationLink(value: StudyRoute.deck(deck.id)) {
                                     DeckCell(info: DeckCellInfo(deck: deck))
                                         .contextMenu {
                                             Button {
@@ -98,7 +98,7 @@ struct DeckGridView: View {
                         Section {
                             LazyVGrid(columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 24, alignment: .top)], spacing: 24) {
                                 ForEach(groupedDecks[key] ?? []) { deck in
-                                    NavigationLink(value: StudyRoute.deck(deck)) {
+                                    NavigationLink(value: StudyRoute.deck(deck.id)) {
                                         DeckCell(info: DeckCellInfo(deck: deck))
                                             .contextMenu {
                                                 Button {

@@ -39,7 +39,11 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
     func fetchAll() -> AnyPublisher<[Model], RepositoryError> {
         singleRequest(listenerRequest)
     }
-    
+
+    func fetchAll() throws -> [Model] {
+        try singleRequest(listenerRequest)
+    }
+
     func listener(for predicate: NSPredicate? = nil) throws -> AnyPublisher<[Model], RepositoryError> {
         do {
             let predicate = predicate ?? transformer.listenerRequest().predicate
@@ -59,24 +63,28 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
     }
     
     func fetchById(_ id: UUID) -> AnyPublisher<Model, RepositoryError> {
-        let fetchRequest = transformer.requestForAll()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", id as NSUUID)
-        
         do {
-            let data = try dataStorage.mainContext.fetch(fetchRequest)
-            
-            guard let first = data.first,
-                  let mappedData = transformer.entityToModel(first)
-            else {
-                return Fail<Model, RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
-            }
-            
+            let mappedData: Model = try fetchById(id)
             return Just(mappedData).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
         } catch {
             return Fail<Model, RepositoryError>(error: .failedFetching).eraseToAnyPublisher()
         }
     }
-    
+
+    func fetchById(_ id: UUID) throws -> Model {
+        let fetchRequest = transformer.requestForAll()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id as NSUUID)
+        let data = try dataStorage.mainContext.fetch(fetchRequest)
+
+        guard let first = data.first,
+              let mappedData = transformer.entityToModel(first)
+        else {
+            throw RepositoryError.failedFetching
+        }
+
+        return mappedData
+    }
+
     func fetchMultipleById(_ ids: [UUID]) -> AnyPublisher<[Model], RepositoryError> {
         let fetchRequest = transformer.requestForAll()
         fetchRequest.predicate = NSPredicate(format: "id IN %@", ids)
@@ -105,19 +113,24 @@ final class Repository<Model: Identifiable, Entity, Transformer: ModelEntityTran
     
     private func singleRequest(_ request: NSFetchRequest<Entity>) -> AnyPublisher<[Model], RepositoryError> {
         do {
-            let data = try dataStorage.mainContext.fetch(request)
-            let mappedData = data.compactMap(transformer.entityToModel(_:))
-            
-            if mappedData.isEmpty {
-                return Fail<[Model], RepositoryError>(error: RepositoryError.failedFetching).eraseToAnyPublisher()
-            }
-            
-            return Just(mappedData).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
+            let data: [Model] = try singleRequest(request)
+            return Just(data).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()
         } catch {
             return Fail<[Model], RepositoryError>(error: RepositoryError.failedFetching).eraseToAnyPublisher()
         }
     }
-    
+
+    private func singleRequest(_ request: NSFetchRequest<Entity>) throws -> [Model] {
+        let data = try dataStorage.mainContext.fetch(request)
+        let mappedData = data.compactMap(transformer.entityToModel(_:))
+
+        if mappedData.isEmpty {
+            throw RepositoryError.failedFetching
+        }
+
+        return mappedData
+    }
+
     func fetchEntityById(_ id: UUID) throws -> Entity {
         let fetchRequest = transformer.requestForAll()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as NSUUID)

@@ -19,8 +19,6 @@ import Puffins
 
 @Observable
 public final class ContentViewModel {
-    
-    // MARK: Collections
     var collections: [DeckCollection]
     var decks: [Deck]
     var todayDecks: [Deck]
@@ -32,22 +30,15 @@ public final class ContentViewModel {
     var selectedCollection: DeckCollection?
 
     var groupedDecks: [String: [Deck]] {
-        Dictionary(grouping: filteredDecks) { deck in
-            if let collectionId = deck.collectionId {
-                return collections.first { collection in
-                    collection.id == collectionId
-                }?.name ?? "Sem coleções"
-            } else {
-                return "Sem coleções"
-            }
-        }
+        groupByCollectionWorker.executeOptional(.init(decks: filteredDecks, collections: collections)) ?? [:]
     }
 
-    @ObservationIgnored @Dependency(\.contentInteractor) private var interactor
+    private let interactor: ContentInteractorProtocol
+    private let groupByCollectionWorker: GroupDeckByCollectionWorker
+
     @ObservationIgnored @Dependency(\.displayCacher) private var displayCacher
     @ObservationIgnored @Dependency(\.notificationService) private var notificationService
     @ObservationIgnored @Dependency(\.dateHandler) private var dateHandler
-    @ObservationIgnored @Dependency(\.externalDeckService) private var externalDeckService
     @ObservationIgnored @Dependency(\.notificationCenter) private var notificationCenter
 
     private var cancellables: Set<AnyCancellable>
@@ -70,8 +61,10 @@ public final class ContentViewModel {
         self.detailType = .grid
         self.shouldReturnToGrid = true
         self.sortOrder = [KeyPathComparator(\Deck.name)]
+        self.groupByCollectionWorker = .init()
+        self.interactor = ContentInteractor()
     }
-    
+
     var filteredDecks: [Deck] {
         let filteredBySelection = mapDecksBySidebarSelection(decks: decks, selectedCollection: selectedCollection)
         let filteredBySearch = filterDecksBySearchText(filteredBySelection, searchText: searchText)
@@ -214,15 +207,6 @@ public final class ContentViewModel {
             
             guard !session.cardIds.isEmpty, let isToday = try? dateHandler.isToday(date: session.date) else { return false }
             return isToday || session.date < dateHandler.today
-        }
-    }
-    
-    private func handleCompletion(_ completion: Subscribers.Completion<RepositoryError>) {
-        switch completion {
-        case .finished:
-            break
-        case .failure(_):
-            break
         }
     }
     

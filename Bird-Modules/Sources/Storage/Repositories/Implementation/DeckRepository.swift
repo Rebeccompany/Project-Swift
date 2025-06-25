@@ -40,7 +40,15 @@ public final class DeckRepository: DeckRepositoryProtocol {
     public func fetchDeckById(_ id: UUID) -> AnyPublisher<Deck, RepositoryError> {
         deckRepository.fetchById(id)
     }
-    
+
+    public func fetchDeckById(_ id: UUID) throws -> Deck {
+        try deckRepository.fetchById(id)
+    }
+
+    public func fetchAll() throws -> [Deck] {
+        try deckRepository.fetchAll()
+    }
+
     public func fetchDecksByIds(_ ids: [UUID]) -> AnyPublisher<[Deck], RepositoryError> {
         deckRepository.fetchMultipleById(ids)
     }

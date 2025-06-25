@@ -72,7 +72,7 @@ struct DeckTableView: View {
     @ViewBuilder
     private var list: some View {
         List(sortedDecks, selection: $viewModel.selection) { deck in
-            NavigationLink(value: StudyRoute.deck(deck)) {
+            NavigationLink(value: StudyRoute.deck(deck.id)) {
                 cell(for: deck)
             }
             .swipeActions {
@@ -140,7 +140,7 @@ struct DeckTableView: View {
                 Text(deck.datesLogs.lastAccess, style: .date)
             }
             TableColumn(NSLocalizedString("acessar", bundle: .module, comment: "")) { deck in
-                NavigationLink(value: StudyRoute.deck(deck)) {
+                NavigationLink(value: StudyRoute.deck(deck.id)) {
                     Text(NSLocalizedString("abrir", bundle: .module, comment: ""))
                     
                 }

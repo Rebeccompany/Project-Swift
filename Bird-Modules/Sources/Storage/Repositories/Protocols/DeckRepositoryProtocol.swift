@@ -14,7 +14,11 @@ public protocol DeckRepositoryProtocol: AnyObject {
     func fetchDeckById(_ id: UUID) -> AnyPublisher<Deck, RepositoryError>
     func fetchDecksByIds(_ ids: [UUID]) -> AnyPublisher<[Deck], RepositoryError>
     func deckListener() -> AnyPublisher<[Deck], RepositoryError>
-    
+
+    //Non combine APIs
+    func fetchDeckById(_ id: UUID) throws -> Deck
+    func fetchAll() throws -> [Deck]
+
     func createDeck(_ deck: Deck, cards: [Card]) throws
     func deleteDeck(_ deck: Deck) throws
     func editDeck(_ deck: Deck) throws
