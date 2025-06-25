@@ -22,9 +22,7 @@ struct CollectionsSidebariOS: View {
     @State private var editingCollection: DeckCollection?
     @Binding private var editMode: EditMode
     @Binding private var selection: SidebarRoute?
-    @EnvironmentObject private var viewModel: ContentViewModel
-    @EnvironmentObject private var store: ShopStore
-    @EnvironmentObject private var authModel: AuthenticationModel
+    @Environment(ContentViewModel.self) private var viewModel
     @EnvironmentObject private var appRoute: AppRouter
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass

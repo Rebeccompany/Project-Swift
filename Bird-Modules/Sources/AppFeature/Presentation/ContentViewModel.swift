@@ -16,21 +16,23 @@ import SwiftUI
 import Tweet
 import Puffins
 //swiftlint:disable trailing_closure
-public final class ContentViewModel: ObservableObject {
+
+@Observable
+public final class ContentViewModel {
     
     // MARK: Collections
-    @Published var collections: [DeckCollection]
-    @Published var decks: [Deck]
-    @Published var todayDecks: [Deck]
-    @Published var selection: Set<Deck.ID>
-    @Published var searchText: String
-    @Published var detailType: DetailDisplayType
-    @Published var sortOrder: [KeyPathComparator<Deck>]
-    @Published var shouldReturnToGrid: Bool
-    @Published var selectedCollection: DeckCollection?
+    var collections: [DeckCollection]
+    var decks: [Deck]
+    var todayDecks: [Deck]
+    var selection: Set<Deck.ID>
+    var searchText: String
+    var detailType: DetailDisplayType
+    var sortOrder: [KeyPathComparator<Deck>]
+    var shouldReturnToGrid: Bool
+    var selectedCollection: DeckCollection?
 
     var groupedDecks: [String: [Deck]] {
-        Dictionary(grouping: filteredDecks.sorted(using: sortOrder)) { deck in
+        Dictionary(grouping: filteredDecks) { deck in
             if let collectionId = deck.collectionId {
                 return collections.first { collection in
                     collection.id == collectionId
@@ -41,16 +43,13 @@ public final class ContentViewModel: ObservableObject {
         }
     }
 
-    
-    // MARK: Repositories
-    @Dependency(\.collectionRepository) private var collectionRepository: CollectionRepositoryProtocol
-    @Dependency(\.deckRepository) private var deckRepository: DeckRepositoryProtocol
-    @Dependency(\.displayCacher) private var displayCacher: DisplayCacherProtocol
-    @Dependency(\.notificationService) private var notificationService: NotificationServiceProtocol
-    @Dependency(\.dateHandler) private var dateHandler: DateHandlerProtocol
-    @Dependency(\.externalDeckService) private var externalDeckService: ExternalDeckServiceProtocol
-    @Dependency(\.notificationCenter) private var notificationCenter: NotificationCenterProtocol
-    
+    @ObservationIgnored @Dependency(\.contentInteractor) private var interactor
+    @ObservationIgnored @Dependency(\.displayCacher) private var displayCacher
+    @ObservationIgnored @Dependency(\.notificationService) private var notificationService
+    @ObservationIgnored @Dependency(\.dateHandler) private var dateHandler
+    @ObservationIgnored @Dependency(\.externalDeckService) private var externalDeckService
+    @ObservationIgnored @Dependency(\.notificationCenter) private var notificationCenter
+
     private var cancellables: Set<AnyCancellable>
     
     var detailTitle: String {
@@ -73,24 +72,6 @@ public final class ContentViewModel: ObservableObject {
         self.sortOrder = [KeyPathComparator(\Deck.name)]
     }
     
-    private var collectionListener: AnyPublisher<[DeckCollection], Never> {
-        collectionRepository
-            .listener()
-            .handleEvents(receiveCompletion: { [weak self] completion in self?.handleCompletion(completion) })
-            .replaceError(with: [])
-            .receive(on: RunLoop.main)
-            .eraseToAnyPublisher()
-    }
-    
-    private var deckListener: AnyPublisher<[Deck], Never> {
-        deckRepository
-            .deckListener()
-            .handleEvents(receiveCompletion: { [weak self] completion in self?.handleCompletion(completion) })
-            .replaceError(with: [])
-            .receive(on: RunLoop.main)
-            .eraseToAnyPublisher()
-    }
-    
     var filteredDecks: [Deck] {
         let filteredBySelection = mapDecksBySidebarSelection(decks: decks, selectedCollection: selectedCollection)
         let filteredBySearch = filterDecksBySearchText(filteredBySelection, searchText: searchText)
@@ -98,12 +79,9 @@ public final class ContentViewModel: ObservableObject {
     }
     
     func startup() {
-        collectionListener
-            .assign(to: &$collections)
-        
-        deckListener
-            .assign(to: &$decks)
-        
+        setupDeckListener()
+        setupCollectionListener()
+
         detailType = displayCacher.getCurrentDetailType() ?? .grid
         shouldReturnToGrid = detailType == .grid
         
@@ -112,14 +90,31 @@ public final class ContentViewModel: ObservableObject {
         setupDidEnterForeground()
         setupDidEnterBackgroundPublisher()
         notificationService.cleanNotifications()
-        
-        $decks
-            .tryMap(filterDecksForToday)
-            .replaceError(with: [])
-            .receive(on: RunLoop.main)
-            .assign(to: &$todayDecks)
     }
-    
+
+    func setupDeckListener() {
+        Task {
+            for await decks in interactor.allDecks() {
+                let decksForToday = filterDecksForToday(decks)
+
+                await MainActor.run {
+                    self.decks = decks
+                    self.todayDecks = decksForToday
+                }
+            }
+        }
+    }
+
+    func setupCollectionListener() {
+        Task {
+            for await collections in interactor.allCollections() {
+                await MainActor.run {
+                    self.collections = collections
+                }
+            }
+        }
+    }
+
     private func setupDidEnterForeground() {
 #if os(iOS)
         let notification = UIApplication.willEnterForegroundNotification
@@ -144,11 +139,11 @@ public final class ContentViewModel: ObservableObject {
         notificationCenter
             .notificationPublisher(for: notification, object: nil)
             .receive(on: RunLoop.main)
-            .flatMap { [weak self] _ in
+            .map { [weak self] _ in
                 guard let self else {
                     preconditionFailure("self is deinitialized")
                 }
-                return self.deckRepository.deckListener().first()
+                return self.decks
             }
             .replaceError(with: [Deck]())
             .map { decks in
@@ -241,7 +236,7 @@ public final class ContentViewModel: ObservableObject {
     }
     
     func deleteCollection(_ collection: DeckCollection) throws {
-        try collectionRepository.deleteCollection(collection)
+        try interactor.deleteCollection(collection)
     }
     
     func deleteDecks() throws {
@@ -253,11 +248,7 @@ public final class ContentViewModel: ObservableObject {
             throw RepositoryError.couldNotDelete
         }
         
-        try decksToBeDeleted
-            .forEach { deck in
-                try deckRepository.deleteDeck(deck)
-            }
-        
+        try interactor.deleteDecks(decksToBeDeleted)
         selection = Set()
     }
     
@@ -271,7 +262,7 @@ public final class ContentViewModel: ObservableObject {
     }
     
     func deleteDeck(_ deck: Deck) throws {
-        try deckRepository.deleteDeck(deck)
+        try interactor.deleteDeck(deck)
     }
     
     func didDeckPresentationStatusChanged(_ status: Bool) {
@@ -289,10 +280,6 @@ public final class ContentViewModel: ObservableObject {
     }
     
     func change(deck: Deck, to collection: DeckCollection?) {
-        if let collection {
-            try? collectionRepository.addDeck(deck, in: collection)
-        } else if let collectionId = deck.collectionId, let collection = collections.first(where: { $0.id == collectionId }) {
-            try? collectionRepository.removeDeck(deck, from: collection)
-        }
+        interactor.change(deck: deck, to: collection, collections: collections)
     }
 }

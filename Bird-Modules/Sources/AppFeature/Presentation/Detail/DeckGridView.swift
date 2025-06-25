@@ -11,7 +11,7 @@ import Models
 
 struct DeckGridView: View {
     
-    @EnvironmentObject private var viewModel: ContentViewModel
+    @Environment(ContentViewModel.self) private var viewModel
     var editAction: (Deck) -> Void
     @State private var shouldDisplayAlert = false
     @State private var deckToBeDeleted: Deck?

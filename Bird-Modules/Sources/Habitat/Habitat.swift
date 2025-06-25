@@ -14,7 +14,7 @@ public struct Habitat {
     
     private init() {}
     
-    static subscript<Key> (key: Key.Type) -> Key.Value where Key: HabitatKey {
+    public static subscript<Key> (key: Key.Type) -> Key.Value where Key: HabitatKey {
         get { key.currentValue }
         set { key.currentValue = newValue }
     }

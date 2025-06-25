@@ -11,7 +11,7 @@ import HummingBird
 import NewDeckFeature
 
 struct DeckTableView: View {
-    @EnvironmentObject private var viewModel: ContentViewModel
+    @Bindable var viewModel: ContentViewModel
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     #endif
@@ -20,7 +20,7 @@ struct DeckTableView: View {
     @State private var deckToBeEdited: Deck?
     
     var editAction: (Deck) -> Void
-    
+
     private var sortedDecks: [Deck] {
         viewModel.filteredDecks.sorted(using: viewModel.sortOrder)
     }

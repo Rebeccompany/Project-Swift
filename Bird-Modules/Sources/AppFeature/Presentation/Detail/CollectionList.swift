@@ -9,7 +9,7 @@ import SwiftUI
 import Models
 import HummingBird
 struct CollectionList: View {
-    @ObservedObject private var viewModel: ContentViewModel
+    @Bindable private var viewModel: ContentViewModel
     @Binding private var deck: Deck?
     
     @Environment(\.dismiss) private var dismiss
