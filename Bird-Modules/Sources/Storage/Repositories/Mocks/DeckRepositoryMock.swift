@@ -12,7 +12,6 @@ import Models
 
 
 public final class DeckRepositoryMock: DeckRepositoryProtocol {
-    
     public struct Wrapper {
         public var deck: Deck
         public var cards: [Card]
@@ -36,7 +35,19 @@ public final class DeckRepositoryMock: DeckRepositoryProtocol {
         deckSubject = .init(data.values.map(\.deck))
         cardSubject = .init([])
     }
-    
+
+    public func fetchDeckById(_ id: UUID) throws -> Models.Deck {
+        guard let deck = data[id]?.deck else {
+            throw RepositoryError.failedFetching
+        }
+
+        return deck
+    }
+
+    public func fetchAll() throws -> [Models.Deck] {
+        deckSubject.value
+    }
+
     public func fetchDeckById(_ id: UUID) -> AnyPublisher<Deck, RepositoryError> {
         if let deck = data[id]?.deck {
             return Just(deck).setFailureType(to: RepositoryError.self).eraseToAnyPublisher()

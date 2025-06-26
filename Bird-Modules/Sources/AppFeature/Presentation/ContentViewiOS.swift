@@ -19,17 +19,14 @@ import Authentication
 import OnboardingFeature
 import NewCollectionFeature
 
-#if os(iOS)
 public struct ContentViewiOS: View {
     @AppStorage("com.projectbird.birdmodules.appfeature.onboarding") private var onboarding: Bool = true
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @State private var editModeForCollection: EditMode = .inactive
     @State private var editModeForDeck: EditMode = .inactive
     
-    @StateObject private var viewModel: ContentViewModel = ContentViewModel()
+    @State private var viewModel: ContentViewModel = ContentViewModel()
     @StateObject private var appRouter: AppRouter = AppRouter()
-    @StateObject private var shopStore: ShopStore = ShopStore()
-    @StateObject private var authModel: AuthenticationModel = AuthenticationModel()
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
@@ -43,7 +40,7 @@ public struct ContentViewiOS: View {
         .sheet(isPresented: $onboarding) {
             OnboardingView()
         }
-        .onChange(of: appRouter.sidebarSelection) { newValue in
+        .onChange(of: appRouter.sidebarSelection) { _, newValue in
             guard let newValue else {
                 viewModel.selectedCollection = nil
                 return
@@ -75,9 +72,7 @@ public struct ContentViewiOS: View {
             selection: $appRouter.sidebarSelection,
             editMode: $editModeForCollection
         )
-        .environmentObject(viewModel)
-        .environmentObject(shopStore)
-        .environmentObject(authModel)
+        .environment(viewModel)
         .environmentObject(appRouter)
         .environment(\.editMode, $editModeForCollection)
         .environment(\.horizontalSizeClass, horizontalSizeClass)
@@ -91,26 +86,12 @@ public struct ContentViewiOS: View {
     @ViewBuilder
     private var studyDetail: some View {
         NavigationStack(path: $appRouter.path) {
-            DetailViewiOS(editMode: $editModeForDeck)
-                .toolbar(
-                    editModeForDeck.isEditing ? .hidden :
-                            .automatic,
-                    for: .tabBar)
-                .environmentObject(viewModel)
-                .environmentObject(authModel)
+            DetailViewiOS(editMode: $editModeForDeck, viewModel: viewModel)
+                .environment(viewModel)
                 .environment(\.editMode, $editModeForDeck)
                 .navigationDestination(for: StudyRoute.self) { route in
                     StudyRoutes.destination(for: route, viewModel: viewModel)
-                        .environmentObject(authModel)
                 }
-        }
-    }
-    
-    @ViewBuilder
-    private var storeDetail: some View {
-        NavigationStack(path: $appRouter.storePath) {
-            StoreView(store: shopStore)
-                .environmentObject(authModel)
         }
     }
 }
@@ -122,4 +103,3 @@ struct ContentViewiOS_Previews: PreviewProvider {
         }
     }
 }
-#endif

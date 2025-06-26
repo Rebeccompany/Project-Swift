@@ -3,18 +3,15 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5B07663A28C2797700221DE8 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 5B07663928C2797700221DE8 /* AppFeature */; };
 		5B9440C328DBF2D60060EB4F /* Project_BirdUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9440C228DBF2D60060EB4F /* Project_BirdUITests.swift */; };
 		5B9440C528DBF2D60060EB4F /* Project_BirdUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9440C428DBF2D60060EB4F /* Project_BirdUITestsLaunchTests.swift */; };
 		9D1A9FC728AEAB950065DE6E /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 9D1A9FC628AEAB950065DE6E /* AppFeature */; };
 		BA654F0628A142F500EF72C8 /* Project_BirdApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */; };
-		BA654F0728A142F500EF72C8 /* Project_BirdApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */; };
 		BA654F0A28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
-		BA654F0B28A142F500EF72C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA654EE028A142F400EF72C8 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,7 +46,6 @@
 		BA654EDE28A142F100EF72C8 /* Project_BirdApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project_BirdApp.swift; sourceTree = "<group>"; };
 		BA654EE028A142F400EF72C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BA654EE528A142F400EF72C8 /* Project-Bird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Bird.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BA654EEB28A142F500EF72C8 /* Spixii.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spixii.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA654F1C28A14BF400EF72C8 /* Bird-Modules */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "Bird-Modules"; sourceTree = "<group>"; };
 		BAA072EA292F099A001D6E4F /* ClassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ClassKit.framework; path = System/Library/Frameworks/ClassKit.framework; sourceTree = SDKROOT; };
 		BAA072ED292F099A001D6E4F /* ContextRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextRequestHandler.swift; sourceTree = "<group>"; };
@@ -71,14 +67,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D1A9FC728AEAB950065DE6E /* AppFeature in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BA654EE828A142F500EF72C8 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5B07663A28C2797700221DE8 /* AppFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +118,6 @@
 			isa = PBXGroup;
 			children = (
 				BA654EE528A142F400EF72C8 /* Project-Bird.app */,
-				BA654EEB28A142F500EF72C8 /* Spixii.app */,
 				5B9440C028DBF2D50060EB4F /* Project-BirdUITests.xctest */,
 			);
 			name = Products;
@@ -197,27 +184,6 @@
 			productReference = BA654EE528A142F400EF72C8 /* Project-Bird.app */;
 			productType = "com.apple.product-type.application";
 		};
-		BA654EEA28A142F500EF72C8 /* Project-Bird (macOS) */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BA654F1128A142F500EF72C8 /* Build configuration list for PBXNativeTarget "Project-Bird (macOS)" */;
-			buildPhases = (
-				BA654EE728A142F500EF72C8 /* Sources */,
-				BA654EE828A142F500EF72C8 /* Frameworks */,
-				BA654EE928A142F500EF72C8 /* Resources */,
-				BA654F1B28A149F400EF72C8 /* Swift Lint */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Project-Bird (macOS)";
-			packageProductDependencies = (
-				5B07663928C2797700221DE8 /* AppFeature */,
-			);
-			productName = "Project-Bird (macOS)";
-			productReference = BA654EEB28A142F500EF72C8 /* Spixii.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -233,9 +199,6 @@
 						TestTargetID = BA654EE428A142F400EF72C8;
 					};
 					BA654EE428A142F400EF72C8 = {
-						CreatedOnToolsVersion = 13.4.1;
-					};
-					BA654EEA28A142F500EF72C8 = {
 						CreatedOnToolsVersion = 13.4.1;
 					};
 				};
@@ -255,7 +218,6 @@
 			projectRoot = "";
 			targets = (
 				BA654EE428A142F400EF72C8 /* Project-Bird (iOS) */,
-				BA654EEA28A142F500EF72C8 /* Project-Bird (macOS) */,
 				5B9440BF28DBF2D50060EB4F /* Project-BirdUITests */,
 			);
 		};
@@ -274,14 +236,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA654F0A28A142F500EF72C8 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BA654EE928A142F500EF72C8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BA654F0B28A142F500EF72C8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,24 +261,6 @@
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\n    echo \"warning: Swiftlint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
-		BA654F1B28A149F400EF72C8 /* Swift Lint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Swift Lint";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: Swiftlint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -342,14 +278,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA654F0628A142F500EF72C8 /* Project_BirdApp.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BA654EE728A142F500EF72C8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BA654F0728A142F500EF72C8 /* Project_BirdApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,76 +521,6 @@
 			};
 			name = Release;
 		};
-		BA654F1228A142F500EF72C8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconMacOS;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = KN33W3MRZC;
-				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Project-Bird--macOS--Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Spixii;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.Spixii;
-				PRODUCT_NAME = Spixii;
-				SDKROOT = macosx;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		BA654F1328A142F500EF72C8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconMacOS;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = KN33W3MRZC;
-				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Project-Bird--macOS--Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Spixii;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.grupo2.Spixii;
-				PRODUCT_NAME = Spixii;
-				SDKROOT = macosx;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -693,22 +551,9 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BA654F1128A142F500EF72C8 /* Build configuration list for PBXNativeTarget "Project-Bird (macOS)" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BA654F1228A142F500EF72C8 /* Debug */,
-				BA654F1328A142F500EF72C8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5B07663928C2797700221DE8 /* AppFeature */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AppFeature;
-		};
 		9D1A9FC628AEAB950065DE6E /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;

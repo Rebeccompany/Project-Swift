@@ -11,9 +11,8 @@ import StudyFeature
 import HummingBird
 
 struct SessionsForTodayView: View {
-    
-    @EnvironmentObject private var viewModel: ContentViewModel
-    
+    @Environment(ContentViewModel.self) private var viewModel
+
     @State private var selectedDeck: Deck?
     
     @Environment(\.openWindow) private var openWindow

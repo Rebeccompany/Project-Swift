@@ -16,59 +16,62 @@ public struct DeckView: View {
     @State private var scrollAfterHeader = false
 
 
-    public init(deckBinding: Binding<Deck>) {
-        model = DeckViewModel(deckBinding: deckBinding)
+    public init(deckId: UUID) {
+        model = DeckViewModel(id: deckId)
     }
 
     public var body: some View {
-        ScrollView {
-            LazyVStack {
-                DeckHeader(deck: model.deck)
-                    .onScrollVisibilityChange { isVisible in
-                        scrollAfterHeader = !isVisible
-                    }
-                Section {
-                    LazyVGrid(
-                        columns: [
-                            GridItem(
-                                .adaptive(minimum: 160, maximum: 180),
-                                spacing: 12,
-                                alignment: .top
-                            )
-                        ],
-                        spacing: 12,
-                        pinnedViews: .sectionFooters
-                    ) {
-                        ForEach(model.state.filteredCards) { card in
-                            DeckCard(card: card, model: model)
+        if let deck = model.state.deck {
+            ScrollView {
+                LazyVStack {
+                    DeckHeader(deck: deck)
+                        .onScrollVisibilityChange { isVisible in
+                            scrollAfterHeader = !isVisible
                         }
-                    }
-                } header: {
-                    HStack {
-                        Text("Cards")
-                            .font(.headline.bold())
-                        Spacer()
-                        Text("\(model.state.cards.count) cartas")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
+                    Section {
+                        LazyVGrid(
+                            columns: [
+                                GridItem(
+                                    .adaptive(minimum: 160, maximum: 180),
+                                    spacing: 12,
+                                    alignment: .top
+                                )
+                            ],
+                            spacing: 12,
+                            pinnedViews: .sectionFooters
+                        ) {
+                            ForEach(model.state.filteredCards) { card in
+                                DeckCard(card: card, model: model)
+                            }
+                        }
+                    } header: {
+                        HStack {
+                            Text("Cards")
+                                .font(.headline.bold())
+                            Spacer()
+                            Text("\(model.state.cards.count) cartas")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
 
-                }.padding()
+                    }.padding()
 
+                }
             }
+            .toolbar {
+                topBar()
+                bottomBar()
+            }
+            .ignoresSafeArea(edges: .top)
+            .searchable(text: $model.state.filterValue)
+            .sheet(item: $model.state.sheetRoute, content: sheet(for:))
+            .fullScreenCover(item: $model.state.fullScreenRoute, content: cover(for:))
+            .onAppear(perform: model.startup)
+            .onDisappear(perform: model.tearDown)
+            .animation(.snappy, value: model.state.filteredCards)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle((scrollAfterHeader ? model.state.deck?.name : "") ?? "")
         }
-        .toolbar {
-            topBar()
-            bottomBar()
-        }
-        .ignoresSafeArea(edges: .top)
-        .searchable(text: $model.state.filterValue)
-        .sheet(item: $model.state.sheetRoute, content: sheet(for:))
-        .fullScreenCover(item: $model.state.fullScreenRoute, content: cover(for:))
-        .onAppear(perform: model.startup)
-        .animation(.snappy, value: model.state.filteredCards)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(scrollAfterHeader ? model.deck.name : "")
     }
 
     @ToolbarContentBuilder
@@ -88,7 +91,7 @@ public struct DeckView: View {
             .buttonStyle(.glass)
             .menuStyle(.button)
             .buttonBorderShape(.circle)
-            .tint(HBColor.color(for: model.deck.color))
+            .tint(HBColor.color(for: model.state.deck?.color ?? .lightBlue))
         }
     }
 
@@ -113,11 +116,15 @@ public struct DeckView: View {
     private func sheet(for route: DeckSheetRoute) -> some View {
         switch route {
         case .addCard:
-            NewFlashcardViewiOS(deck: model.deck)
+            if let deck = model.state.deck {
+                NewFlashcardViewiOS(deck: deck)
+            }
         case .importCards:
             Text("")
         case let .editCard(card):
-            NewFlashcardViewiOS(deck: model.deck, editingFlashcard: card)
+            if let deck = model.state.deck {
+                NewFlashcardViewiOS(deck: deck, editingFlashcard: card)
+            }
         }
     }
 
@@ -125,30 +132,9 @@ public struct DeckView: View {
     private func cover(for route: DeckFullScreenRoute) -> some View {
         switch route {
         case .study(let studyMode):
-            StudyViewiOS(deck: model.deck, mode: studyMode)
+            if let deck = model.state.deck {
+                StudyViewiOS(deck: deck, mode: studyMode)
+            }
         }
-    }
-}
-
-
-#Preview {
-    NavigationStack {
-        DeckView(
-            deckBinding:
-                    .constant(
-                        Deck(
-                            id: .init(),
-                            name: "Swift",
-                            icon: "swift",
-                            color: .lightBlue,
-                            collectionId: nil,
-                            cardsIds: [],
-                            category: .humanities,
-                            storeId: nil,
-                            description: "",
-                            ownerId: nil
-                        )
-                    )
-        )
     }
 }

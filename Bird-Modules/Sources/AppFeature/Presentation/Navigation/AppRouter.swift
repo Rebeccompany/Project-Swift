@@ -159,7 +159,7 @@ final class AppRouter: ObservableObject {
         if !path.isEmpty {
             path.removeLast(path.count)
         }
-        path.append(StudyRoute.deck(deck))
+        path.append(StudyRoute.deck(deck.id))
     }
 }
 

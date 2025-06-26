@@ -16,7 +16,7 @@ import Tweet
 
 #if os(iOS)
 public struct DetailViewiOS: View {
-    @EnvironmentObject private var viewModel: ContentViewModel
+    @Bindable private var viewModel: ContentViewModel
     @State private var presentDeckEdition = false
     @State private var shouldDisplayAlert = false
     @State private var editingDeck: Deck?
@@ -24,8 +24,9 @@ public struct DetailViewiOS: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     
-    init(editMode: Binding<EditMode>) {
+    init(editMode: Binding<EditMode>, viewModel: ContentViewModel) {
         self._editMode = editMode
+        self.viewModel = viewModel
     }
     
     public var body: some View {
@@ -161,7 +162,7 @@ public struct DetailViewiOS: View {
                 presentDeckEdition = true
             }
         } else {
-            DeckTableView { deck in
+            DeckTableView(viewModel: viewModel) { deck in
                 editingDeck = deck
                 presentDeckEdition = true
             }

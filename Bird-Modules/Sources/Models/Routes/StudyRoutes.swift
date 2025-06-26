@@ -9,6 +9,6 @@ import Foundation
 import SwiftUI
 
 public enum StudyRoute: Hashable {
-    case deck(_ deck: Deck)
+    case deck(_ deck: UUID)
     case card(_ card: Card)
 }

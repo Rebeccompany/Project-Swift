@@ -11,7 +11,7 @@ import HummingBird
 import NewDeckFeature
 
 struct DeckTableView: View {
-    @EnvironmentObject private var viewModel: ContentViewModel
+    @Bindable var viewModel: ContentViewModel
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     #endif
@@ -20,7 +20,7 @@ struct DeckTableView: View {
     @State private var deckToBeEdited: Deck?
     
     var editAction: (Deck) -> Void
-    
+
     private var sortedDecks: [Deck] {
         viewModel.filteredDecks.sorted(using: viewModel.sortOrder)
     }
@@ -72,7 +72,7 @@ struct DeckTableView: View {
     @ViewBuilder
     private var list: some View {
         List(sortedDecks, selection: $viewModel.selection) { deck in
-            NavigationLink(value: StudyRoute.deck(deck)) {
+            NavigationLink(value: StudyRoute.deck(deck.id)) {
                 cell(for: deck)
             }
             .swipeActions {
@@ -140,7 +140,7 @@ struct DeckTableView: View {
                 Text(deck.datesLogs.lastAccess, style: .date)
             }
             TableColumn(NSLocalizedString("acessar", bundle: .module, comment: "")) { deck in
-                NavigationLink(value: StudyRoute.deck(deck)) {
+                NavigationLink(value: StudyRoute.deck(deck.id)) {
                     Text(NSLocalizedString("abrir", bundle: .module, comment: ""))
                     
                 }
